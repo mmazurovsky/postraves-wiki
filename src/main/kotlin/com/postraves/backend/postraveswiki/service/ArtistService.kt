@@ -16,8 +16,9 @@ interface ArtistService : BaseMethodsService<ArtistDto> {
 
 @Service
 class ArtistServiceImpl(
-    val artistRepo: ArtistRepo,
-    @Qualifier("baseMethodsServiceImpl") val  baseMethodsService: BaseMethodsService<ArtistDto> = BaseMethodsServiceImpl(artistRepo)
+    private val artistRepo: ArtistRepo,
+    @Qualifier("baseMethodsServiceImpl")
+    private val baseMethodsService: BaseMethodsService<ArtistDto> = BaseMethodsServiceImpl(artistRepo)
     ) : ArtistService {
 
     override fun findById(id: Long): ArtistDto {

@@ -47,13 +47,13 @@ tasks.withType<Test> {
 buildscript {
     configurations["classpath"].resolutionStrategy.eachDependency {
         if (requested.group == "org.jooq") {
-            useVersion("3.12.4")
+            useVersion("3.14.12")
         }
     }
 }
 
 jooq {
-    version.set("3.15.0")  // default (can be omitted)
+    version.set("3.14.12")  // default (can be omitted)
     edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)  // default (can be omitted)
 
     configurations {
@@ -89,12 +89,13 @@ jooq {
                     generate.apply {
                         isDeprecated = false
                         isRecords = true
-                        isImmutablePojos = true
-                        isFluentSetters = true
+                        isImmutablePojos = false
+                        // I changed it to false in order to build
+                        isFluentSetters = false
                     }
                     target.apply {
-                        packageName = "nu.studer.sample"
-                        directory = "build/generated-src/jooq/main"  // default (can be omitted)
+                        packageName = "jooq"
+                        directory = "src/main/kotlin/com/postraves/backend/postraveswiki/generated"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }

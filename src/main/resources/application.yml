@@ -18,18 +18,6 @@ spring:
   config:
     activate:
       on-profile: prod
-aws:
-  cognito:
-    region: ${AWS_COGNITO_REGION}
-    user-pools-id: ${AWS_COGNITO_USER_POOLS_ID}
-s3:
-  access:
-    key:
-      id: ${S3_ACCESS_KEY_ID}
-      secret: ${S3_ACCESS_KEY_SECRET}
-webscraper:
-  link: ${WEBSCRAPER_LINK}
-
 ---
 spring:
   config:
@@ -52,65 +40,71 @@ spring:
         use_sql_comments: true
         jdbc:
           time_zone: UTC
-server:
-  port: 8443
-  ssl:
-    enabled: true
-    key-alias: baeldung
-    key-store: classpath:keystore/baeldung.p12
-    key-store-password: 123456
-    key-store-type: PKCS12
-security:
-  firebase-props:
-    enable-strict-server-session: false
-    enable-check-session-revoked: false
-    enable-logout-everywhere: false
-    session-expiry-in-days: 5
-  cookie-props:
-    max-age-in-minutes: 7200
-    http-only: true
-    secure: true
-    domain: ${DOMAIN}
-    path: /
-  allow-credentials: true
-  allowed-origins:
-    - https://${DOMAIN}
-    - http://localhost:3000
-  allowed-methods:
-    - GET
-    - POST
-    - PUT
-    - PATCH
-    - DELETE
-    - OPTIONS
-  allowed-headers:
-    - Authorization
-    - Origin
-    - Content-Type
-    - Accept
-    - Accept-Encoding
-    - Accept-Language
-    - Access-Control-Allow-Origin
-    - Access-Control-Allow-Headers
-    - Access-Control-Request-Method
-    - X-Requested-With
-    - X-Auth-Token
-    - X-Xsrf-Token
-    - Cache-Control
-    - Id-Token
-  allowed-public-apis:
-    - /favicon.ico
-    - /session/login
-    - /event/public/**
-    - /artist/public/**
-    - /unity/public/**
-    - /place/public/**
-    - /common/public/**
-    - /user/public/**
-    - /country/public/**
-    - /city/public/**
-  exposed-headers:
-    - X-Xsrf-Token
+logging:
+  level:
+    org:
+      jooq:
+        tools:
+          LoggerListener: DEBUG
+#server:
+#  port: 8443
+#  ssl:
+#    enabled: true
+#    key-alias: baeldung
+#    key-store: classpath:keystore/baeldung.p12
+#    key-store-password: 123456
+#    key-store-type: PKCS12
+#security:
+#  firebase-props:
+#    enable-strict-server-session: false
+#    enable-check-session-revoked: false
+#    enable-logout-everywhere: false
+#    session-expiry-in-days: 5
+#  cookie-props:
+#    max-age-in-minutes: 7200
+#    http-only: true
+#    secure: true
+#    domain: ${DOMAIN}
+#    path: /
+#  allow-credentials: true
+#  allowed-origins:
+#    - https://${DOMAIN}
+#    - http://localhost:3000
+#  allowed-methods:
+#    - GET
+#    - POST
+#    - PUT
+#    - PATCH
+#    - DELETE
+#    - OPTIONS
+#  allowed-headers:
+#    - Authorization
+#    - Origin
+#    - Content-Type
+#    - Accept
+#    - Accept-Encoding
+#    - Accept-Language
+#    - Access-Control-Allow-Origin
+#    - Access-Control-Allow-Headers
+#    - Access-Control-Request-Method
+#    - X-Requested-With
+#    - X-Auth-Token
+#    - X-Xsrf-Token
+#    - Cache-Control
+#    - Id-Token
+#  allowed-public-apis:
+#    - /favicon.ico
+#    - /session/login
+#    - /event/public/**
+#    - /artist/public/**
+#    - /unity/public/**
+#    - /place/public/**
+#    - /common/public/**
+#    - /user/public/**
+#    - /country/public/**
+#    - /city/public/**
+#  exposed-headers:
+#    - X-Xsrf-Token
 ---
 spring:
   config:
@@ -125,3 +119,4 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
+---
