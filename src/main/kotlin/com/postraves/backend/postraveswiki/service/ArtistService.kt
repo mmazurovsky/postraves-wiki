@@ -1,16 +1,17 @@
 package com.postraves.backend.postraveswiki.service
 
 import com.postraves.backend.postraveswiki.repo.ArtistRepo
-import com.postraves.backend.postraveswiki.data.dto.ArtistDto
+import com.postraves.backend.postraveswiki.data.dto.ArtistFullDto
+import com.postraves.backend.postraveswiki.data.dto.ArtistShortDto
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 
-interface ArtistService : BaseMethodsService<ArtistDto> {
-    override fun findById(id: Long) : ArtistDto
-    override fun findAll(): List<ArtistDto>
-    override fun save(dto: ArtistDto): ArtistDto
-    override fun update(dto: ArtistDto): ArtistDto
+interface ArtistService : BaseMethodsService<ArtistShortDto, ArtistFullDto> {
+    override fun findById(id: Long) : ArtistFullDto
+    override fun findAll(): List<ArtistShortDto>
+    override fun save(dto: ArtistFullDto): ArtistFullDto
+    override fun update(dto: ArtistFullDto): ArtistFullDto
     override fun deleteById(id: Long)
 }
 
@@ -18,22 +19,22 @@ interface ArtistService : BaseMethodsService<ArtistDto> {
 class ArtistServiceImpl(
     private val artistRepo: ArtistRepo,
     @Qualifier("baseMethodsServiceImpl")
-    private val baseMethodsService: BaseMethodsService<ArtistDto> = BaseMethodsServiceImpl(artistRepo)
+    private val baseMethodsService: BaseMethodsService<ArtistShortDto, ArtistFullDto> = BaseMethodsServiceImpl(artistRepo)
     ) : ArtistService {
 
-    override fun findById(id: Long): ArtistDto {
+    override fun findById(id: Long): ArtistFullDto {
         return baseMethodsService.findById(id)
     }
 
-    override fun findAll(): List<ArtistDto> {
+    override fun findAll(): List<ArtistShortDto> {
         return baseMethodsService.findAll()
     }
 
-    override fun save(dto: ArtistDto): ArtistDto {
+    override fun save(dto: ArtistFullDto): ArtistFullDto {
         return baseMethodsService.save(dto)
     }
 
-    override fun update(dto: ArtistDto): ArtistDto {
+    override fun update(dto: ArtistFullDto): ArtistFullDto {
         return baseMethodsService.update(dto)
     }
 

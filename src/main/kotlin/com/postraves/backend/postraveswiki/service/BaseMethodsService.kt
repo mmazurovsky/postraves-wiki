@@ -1,47 +1,41 @@
 package com.postraves.backend.postraveswiki.service
 
 import com.postraves.backend.postraveswiki.repo.BaseOperationsRepo
-import com.postraves.backend.postraveswiki.data.dto.BaseDto
-import com.postraves.backend.postraveswiki.data.projection.BaseProjection
-import org.springframework.beans.factory.annotation.Autowired
+import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
+import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
 import org.springframework.stereotype.Service
 
-interface BaseMethodsService<DTO : BaseDto> {
-    fun save(dto: DTO) : DTO
-    fun update(dto: DTO) : DTO
-    fun findById(id: Long) : DTO
+interface BaseMethodsService<SHORTDTO : BaseShortDto, FULLDTO : BaseFullDto> {
+    fun save(dto: FULLDTO) : FULLDTO
+    fun update(dto: FULLDTO) : FULLDTO
+    fun findById(id: Long) : FULLDTO
     fun deleteById(id: Long)
-    fun findAll(): List<DTO>
+    fun findAll(): List<SHORTDTO>
 }
 
 @Service
-class BaseMethodsServiceImpl<DTO : BaseDto, PROJ : BaseProjection<DTO>,  DAO : BaseOperationsRepo<DTO, PROJ>>
+class BaseMethodsServiceImpl<SHORTDTO : BaseShortDto, FULLDTO : BaseFullDto,  DAO : BaseOperationsRepo<SHORTDTO, FULLDTO>>
     (
     private val baseMethodsDao: DAO
-    ) : BaseMethodsService<DTO> {
+    ) : BaseMethodsService<SHORTDTO, FULLDTO> {
 
-    override fun findById(id: Long): DTO {
-        val pro = baseMethodsDao.findById(id) ?: throw TODO()
-        return pro.convertToDto()
+    override fun findById(id: Long): FULLDTO {
+        return baseMethodsDao.findById(id) ?: throw TODO()
     }
 
-    override fun save(dto: DTO) : DTO {
-        val pro = baseMethodsDao.save(dto) ?: throw TODO()
-        return pro.convertToDto()
+    override fun save(dto: FULLDTO): FULLDTO {
+        TODO("Not yet implemented")
     }
 
-    override fun update(dto: DTO) : DTO {
-        val pro = baseMethodsDao.update(dto) ?: throw TODO()
-        return pro.convertToDto()
+    override fun update(dto: FULLDTO): FULLDTO {
+        TODO("Not yet implemented")
     }
 
     override fun deleteById(id: Long) {
-        baseMethodsDao.deleteById(id)
+        TODO("Not yet implemented")
     }
 
-    override fun findAll() : List<DTO> {
-        val projs = baseMethodsDao.findAll()
-        val dtos = projs.map { it.convertToDto() }.toList()
-        return dtos
+    override fun findAll(): List<SHORTDTO> {
+        TODO("Not yet implemented")
     }
 }

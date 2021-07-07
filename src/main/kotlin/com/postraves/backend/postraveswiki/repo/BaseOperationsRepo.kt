@@ -1,9 +1,9 @@
 package com.postraves.backend.postraveswiki.repo
 
-interface BaseOperationsRepo<DTO, PROJ> {
-    fun findById(id: Long) : PROJ?
-    fun save(dto: DTO) : PROJ?
-    fun update(dto: DTO) : PROJ?
-    fun deleteById(id: Long)
-    fun findAll(): List<PROJ>
+interface BaseOperationsRepo<SHORTDTO, FULLDTO> {
+    fun findById(id: Long) : FULLDTO?
+    fun save(dto: FULLDTO) : FULLDTO?
+    fun update(dto: FULLDTO) : FULLDTO?
+    fun deleteById(id: Long) : FULLDTO?
+    fun findAll(): List<SHORTDTO>
 }

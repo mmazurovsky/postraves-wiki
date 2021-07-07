@@ -1,14 +1,25 @@
 package com.postraves.backend.postraveswiki.controller
 
-import com.postraves.backend.postraveswiki.data.dto.BaseDto
+import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
+import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/default")
-interface BaseRequests<DTO : BaseDto> {
+interface BaseRequests<SHORTDTO : BaseShortDto, FULLDTO : BaseFullDto> {
+
+    @PostMapping
+    fun save(@RequestBody dto: FULLDTO): ResponseEntity<FULLDTO>
+
+    @PutMapping
+    fun update(@RequestBody dto: FULLDTO): ResponseEntity<FULLDTO>
 
     @GetMapping("/public/{id}")
-    fun findById(@PathVariable id: Long): DTO
+    fun findById(@PathVariable id: Long): ResponseEntity<FULLDTO>
+
+    @GetMapping
+    fun findAll(): ResponseEntity<List<SHORTDTO>>
+
+    @DeleteMapping("/{id}")
+    fun deleteById(@PathVariable id: Long): ResponseEntity<FULLDTO>
 }
