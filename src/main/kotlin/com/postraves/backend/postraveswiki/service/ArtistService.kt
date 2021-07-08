@@ -7,13 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 
-interface ArtistService : BaseMethodsService<ArtistShortDto, ArtistFullDto> {
-    override fun findById(id: Long) : ArtistFullDto
-    override fun findAll(): List<ArtistShortDto>
-    override fun save(dto: ArtistFullDto): ArtistFullDto
-    override fun update(dto: ArtistFullDto): ArtistFullDto
-    override fun deleteById(id: Long)
-}
+interface ArtistService : BaseMethodsService<ArtistShortDto, ArtistFullDto>
 
 @Service
 class ArtistServiceImpl(
