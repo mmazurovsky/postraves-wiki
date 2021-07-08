@@ -7,7 +7,7 @@ package jooq.tables
 import jooq.Public
 import jooq.keys.USER_BOOKMARKS_EVENT_PKEY
 import jooq.keys.USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_EVENT_ID_FKEY
-import jooq.keys.USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_USER_ENTITY_ID_FKEY
+import jooq.keys.USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_USER_PROFILE_ID_FKEY
 import jooq.tables.records.UserBookmarksEventRecord
 
 import kotlin.collections.List
@@ -62,9 +62,9 @@ open class UserBookmarksEvent(
     override fun getRecordType(): Class<UserBookmarksEventRecord> = UserBookmarksEventRecord::class.java
 
     /**
-     * The column <code>public.user_bookmarks_event.user_entity_id</code>.
+     * The column <code>public.user_bookmarks_event.user_profile_id</code>.
      */
-    val USER_ENTITY_ID: TableField<UserBookmarksEventRecord, Long?> = createField(DSL.name("user_entity_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val USER_PROFILE_ID: TableField<UserBookmarksEventRecord, Long?> = createField(DSL.name("user_profile_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
      * The column <code>public.user_bookmarks_event.event_id</code>.
@@ -93,15 +93,15 @@ open class UserBookmarksEvent(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserBookmarksEventRecord> = USER_BOOKMARKS_EVENT_PKEY
     override fun getKeys(): List<UniqueKey<UserBookmarksEventRecord>> = listOf(USER_BOOKMARKS_EVENT_PKEY)
-    override fun getReferences(): List<ForeignKey<UserBookmarksEventRecord, *>> = listOf(USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_USER_ENTITY_ID_FKEY, USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_EVENT_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UserBookmarksEventRecord, *>> = listOf(USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_USER_PROFILE_ID_FKEY, USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_EVENT_ID_FKEY)
 
-    private lateinit var _userEntity: UserEntity
+    private lateinit var _userProfile: UserProfile
     private lateinit var _event: Event
-    fun userEntity(): UserEntity {
-        if (!this::_userEntity.isInitialized)
-            _userEntity = UserEntity(this, USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_USER_ENTITY_ID_FKEY)
+    fun userProfile(): UserProfile {
+        if (!this::_userProfile.isInitialized)
+            _userProfile = UserProfile(this, USER_BOOKMARKS_EVENT__USER_BOOKMARKS_EVENT_USER_PROFILE_ID_FKEY)
 
-        return _userEntity;
+        return _userProfile;
     }
     fun event(): Event {
         if (!this::_event.isInitialized)

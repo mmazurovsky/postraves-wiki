@@ -13,12 +13,13 @@ import jooq.tables.Place
 import jooq.tables.Scene
 import jooq.tables.TicketPrice
 import jooq.tables.TimetableItem
+import jooq.tables.TimetableItemPerformingGroup
 import jooq.tables.Unity
 import jooq.tables.UnityArtist
 import jooq.tables.UnityEvent
 import jooq.tables.UserBookmarksArtist
 import jooq.tables.UserBookmarksEvent
-import jooq.tables.UserEntity
+import jooq.tables.UserProfile
 
 
 
@@ -68,6 +69,11 @@ val TICKET_PRICE = TicketPrice.TICKET_PRICE
 val TIMETABLE_ITEM = TimetableItem.TIMETABLE_ITEM
 
 /**
+ * The table <code>public.timetable_item_performing_group</code>.
+ */
+val TIMETABLE_ITEM_PERFORMING_GROUP = TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP
+
+/**
  * The table <code>public.unity</code>.
  */
 val UNITY = Unity.UNITY
@@ -93,6 +99,6 @@ val USER_BOOKMARKS_ARTIST = UserBookmarksArtist.USER_BOOKMARKS_ARTIST
 val USER_BOOKMARKS_EVENT = UserBookmarksEvent.USER_BOOKMARKS_EVENT
 
 /**
- * The table <code>public.user_entity</code>.
+ * The table <code>public.user_profile</code>.
  */
-val USER_ENTITY = UserEntity.USER_ENTITY
+val USER_PROFILE = UserProfile.USER_PROFILE

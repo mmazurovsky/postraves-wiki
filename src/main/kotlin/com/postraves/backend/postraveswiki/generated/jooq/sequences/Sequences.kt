@@ -13,6 +13,6 @@ import org.jooq.impl.SQLDataType
 
 
 /**
- * The sequence <code>public.hibernate_sequence</code>
+ * The sequence <code>public.id_sequence</code>
  */
-val HIBERNATE_SEQUENCE: Sequence<Long> = Internal.createSequence("hibernate_sequence", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val ID_SEQUENCE: Sequence<Long> = Internal.createSequence("id_sequence", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)

@@ -8,7 +8,6 @@ import java.time.OffsetDateTime
 
 import jooq.Public
 import jooq.keys.COUNTRY_EMOJI_CODE_KEY
-import jooq.keys.COUNTRY_NAME_KEY
 import jooq.keys.COUNTRY_PHONE_CODE_KEY
 import jooq.keys.COUNTRY_PKEY
 import jooq.tables.records.CountryRecord
@@ -19,7 +18,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row5
+import org.jooq.Row4
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -65,19 +64,14 @@ open class Country(
     override fun getRecordType(): Class<CountryRecord> = CountryRecord::class.java
 
     /**
-     * The column <code>public.country.id</code>.
+     * The column <code>public.country.name</code>.
      */
-    val ID: TableField<CountryRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val NAME: TableField<CountryRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(3).nullable(false), this, "")
 
     /**
      * The column <code>public.country.created_date_time</code>.
      */
     val CREATED_DATE_TIME: TableField<CountryRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
-
-    /**
-     * The column <code>public.country.name</code>.
-     */
-    val NAME: TableField<CountryRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(3).nullable(false), this, "")
 
     /**
      * The column <code>public.country.phone_code</code>.
@@ -110,7 +104,7 @@ open class Country(
     constructor(child: Table<out Record>, key: ForeignKey<out Record, CountryRecord>): this(Internal.createPathAlias(child, key), child, key, COUNTRY, null)
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<CountryRecord> = COUNTRY_PKEY
-    override fun getKeys(): List<UniqueKey<CountryRecord>> = listOf(COUNTRY_PKEY, COUNTRY_NAME_KEY, COUNTRY_PHONE_CODE_KEY, COUNTRY_EMOJI_CODE_KEY)
+    override fun getKeys(): List<UniqueKey<CountryRecord>> = listOf(COUNTRY_PKEY, COUNTRY_PHONE_CODE_KEY, COUNTRY_EMOJI_CODE_KEY)
     override fun `as`(alias: String): Country = Country(DSL.name(alias), this)
     override fun `as`(alias: Name): Country = Country(alias, this)
 
@@ -125,7 +119,7 @@ open class Country(
     override fun rename(name: Name): Country = Country(name, null)
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row5<Long?, OffsetDateTime?, String?, String?, String?> = super.fieldsRow() as Row5<Long?, OffsetDateTime?, String?, String?, String?>
+    override fun fieldsRow(): Row4<String?, OffsetDateTime?, String?, String?> = super.fieldsRow() as Row4<String?, OffsetDateTime?, String?, String?>
 }

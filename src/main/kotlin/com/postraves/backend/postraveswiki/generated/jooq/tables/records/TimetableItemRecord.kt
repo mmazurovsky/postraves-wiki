@@ -9,7 +9,7 @@ import java.time.OffsetDateTime
 import jooq.tables.TimetableItem
 
 import org.jooq.Field
-import org.jooq.Record3
+import org.jooq.Record1
 import org.jooq.Record7
 import org.jooq.Row7
 import org.jooq.impl.UpdatableRecordImpl
@@ -21,15 +21,15 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class TimetableItemRecord() : UpdatableRecordImpl<TimetableItemRecord>(TimetableItem.TIMETABLE_ITEM), Record7<Long?, Long?, Long?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?, String?> {
 
-    var eventId: Long?
+    var id: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var sceneId: Long?
+    var eventId: Long?
         set(value) = set(1, value)
         get() = get(1) as Long?
 
-    var artistId: Long?
+    var sceneId: Long?
         set(value) = set(2, value)
         get() = get(2) as Long?
 
@@ -53,7 +53,7 @@ open class TimetableItemRecord() : UpdatableRecordImpl<TimetableItemRecord>(Time
     // Primary key information
     // -------------------------------------------------------------------------
 
-    override fun key(): Record3<Long?, Long?, Long?> = super.key() as Record3<Long?, Long?, Long?>
+    override fun key(): Record1<Long?> = super.key() as Record1<Long?>
 
     // -------------------------------------------------------------------------
     // Record7 type implementation
@@ -61,40 +61,40 @@ open class TimetableItemRecord() : UpdatableRecordImpl<TimetableItemRecord>(Time
 
     override fun fieldsRow(): Row7<Long?, Long?, Long?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?, String?> = super.fieldsRow() as Row7<Long?, Long?, Long?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?, String?>
     override fun valuesRow(): Row7<Long?, Long?, Long?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?, String?> = super.valuesRow() as Row7<Long?, Long?, Long?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?, String?>
-    override fun field1(): Field<Long?> = TimetableItem.TIMETABLE_ITEM.EVENT_ID
-    override fun field2(): Field<Long?> = TimetableItem.TIMETABLE_ITEM.SCENE_ID
-    override fun field3(): Field<Long?> = TimetableItem.TIMETABLE_ITEM.ARTIST_ID
+    override fun field1(): Field<Long?> = TimetableItem.TIMETABLE_ITEM.ID
+    override fun field2(): Field<Long?> = TimetableItem.TIMETABLE_ITEM.EVENT_ID
+    override fun field3(): Field<Long?> = TimetableItem.TIMETABLE_ITEM.SCENE_ID
     override fun field4(): Field<OffsetDateTime?> = TimetableItem.TIMETABLE_ITEM.CREATED_DATE_TIME
     override fun field5(): Field<OffsetDateTime?> = TimetableItem.TIMETABLE_ITEM.STARTING_DATE_TIME
     override fun field6(): Field<OffsetDateTime?> = TimetableItem.TIMETABLE_ITEM.ENDING_DATE_TIME
     override fun field7(): Field<String?> = TimetableItem.TIMETABLE_ITEM.TYPE_OF_PERFORMANCE
-    override fun component1(): Long? = eventId
-    override fun component2(): Long? = sceneId
-    override fun component3(): Long? = artistId
+    override fun component1(): Long? = id
+    override fun component2(): Long? = eventId
+    override fun component3(): Long? = sceneId
     override fun component4(): OffsetDateTime? = createdDateTime
     override fun component5(): OffsetDateTime? = startingDateTime
     override fun component6(): OffsetDateTime? = endingDateTime
     override fun component7(): String? = typeOfPerformance
-    override fun value1(): Long? = eventId
-    override fun value2(): Long? = sceneId
-    override fun value3(): Long? = artistId
+    override fun value1(): Long? = id
+    override fun value2(): Long? = eventId
+    override fun value3(): Long? = sceneId
     override fun value4(): OffsetDateTime? = createdDateTime
     override fun value5(): OffsetDateTime? = startingDateTime
     override fun value6(): OffsetDateTime? = endingDateTime
     override fun value7(): String? = typeOfPerformance
 
     override fun value1(value: Long?): TimetableItemRecord {
-        this.eventId = value
+        this.id = value
         return this
     }
 
     override fun value2(value: Long?): TimetableItemRecord {
-        this.sceneId = value
+        this.eventId = value
         return this
     }
 
     override fun value3(value: Long?): TimetableItemRecord {
-        this.artistId = value
+        this.sceneId = value
         return this
     }
 
@@ -132,10 +132,10 @@ open class TimetableItemRecord() : UpdatableRecordImpl<TimetableItemRecord>(Time
     /**
      * Create a detached, initialised TimetableItemRecord
      */
-    constructor(eventId: Long? = null, sceneId: Long? = null, artistId: Long? = null, createdDateTime: OffsetDateTime? = null, startingDateTime: OffsetDateTime? = null, endingDateTime: OffsetDateTime? = null, typeOfPerformance: String? = null): this() {
+    constructor(id: Long? = null, eventId: Long? = null, sceneId: Long? = null, createdDateTime: OffsetDateTime? = null, startingDateTime: OffsetDateTime? = null, endingDateTime: OffsetDateTime? = null, typeOfPerformance: String? = null): this() {
+        this.id = id
         this.eventId = eventId
         this.sceneId = sceneId
-        this.artistId = artistId
         this.createdDateTime = createdDateTime
         this.startingDateTime = startingDateTime
         this.endingDateTime = endingDateTime

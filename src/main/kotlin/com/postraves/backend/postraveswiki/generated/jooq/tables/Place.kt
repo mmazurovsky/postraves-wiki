@@ -10,7 +10,7 @@ import jooq.Public
 import jooq.keys.PLACE_AUTH_UID_KEY
 import jooq.keys.PLACE_NAME_KEY
 import jooq.keys.PLACE_PKEY
-import jooq.keys.PLACE__PLACE_CITY_ID_FKEY
+import jooq.keys.PLACE__PLACE_CITY_NAME_FKEY
 import jooq.tables.records.PlaceRecord
 
 import kotlin.collections.List
@@ -95,19 +95,19 @@ open class Place(
     val ABOUT: TableField<PlaceRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.place.rating</code>.
+     * The column <code>public.place.base_rating</code>.
      */
-    val RATING: TableField<PlaceRecord, Int?> = createField(DSL.name("rating"), SQLDataType.INTEGER, this, "")
+    val BASE_RATING: TableField<PlaceRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
 
     /**
-     * The column <code>public.place.followers_count</code>.
+     * The column <code>public.place.overall_followers_count</code>.
      */
-    val FOLLOWERS_COUNT: TableField<PlaceRecord, Int?> = createField(DSL.name("followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
+    val OVERALL_FOLLOWERS_COUNT: TableField<PlaceRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.place.city_id</code>.
+     * The column <code>public.place.city_name</code>.
      */
-    val CITY_ID: TableField<PlaceRecord, Long?> = createField(DSL.name("city_id"), SQLDataType.BIGINT, this, "")
+    val CITY_NAME: TableField<PlaceRecord, String?> = createField(DSL.name("city_name"), SQLDataType.VARCHAR(40), this, "")
 
     /**
      * The column <code>public.place.street_address</code>.
@@ -156,12 +156,12 @@ open class Place(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<PlaceRecord> = PLACE_PKEY
     override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY, PLACE_AUTH_UID_KEY, PLACE_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<PlaceRecord, *>> = listOf(PLACE__PLACE_CITY_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<PlaceRecord, *>> = listOf(PLACE__PLACE_CITY_NAME_FKEY)
 
     private lateinit var _city: City
     fun city(): City {
         if (!this::_city.isInitialized)
-            _city = City(this, PLACE__PLACE_CITY_ID_FKEY)
+            _city = City(this, PLACE__PLACE_CITY_NAME_FKEY)
 
         return _city;
     }
@@ -181,5 +181,5 @@ open class Place(
     // -------------------------------------------------------------------------
     // Row14 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row14<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, Long?, String?, Double?, Double?, String?, String?> = super.fieldsRow() as Row14<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, Long?, String?, Double?, Double?, String?, String?>
+    override fun fieldsRow(): Row14<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, Double?, Double?, String?, String?> = super.fieldsRow() as Row14<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, Double?, Double?, String?, String?>
 }

@@ -7,9 +7,8 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.CITY_NAME_KEY
 import jooq.keys.CITY_PKEY
-import jooq.keys.CITY__CITY_COUNTRY_ID_FKEY
+import jooq.keys.CITY__CITY_COUNTRY_NAME_FKEY
 import jooq.tables.records.CityRecord
 
 import kotlin.collections.List
@@ -18,7 +17,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row5
+import org.jooq.Row4
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -64,9 +63,9 @@ open class City(
     override fun getRecordType(): Class<CityRecord> = CityRecord::class.java
 
     /**
-     * The column <code>public.city.id</code>.
+     * The column <code>public.city.name</code>.
      */
-    val ID: TableField<CityRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val NAME: TableField<CityRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
      * The column <code>public.city.created_date_time</code>.
@@ -74,19 +73,14 @@ open class City(
     val CREATED_DATE_TIME: TableField<CityRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.city.name</code>.
-     */
-    val NAME: TableField<CityRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
-
-    /**
      * The column <code>public.city.time_offset</code>.
      */
     val TIME_OFFSET: TableField<CityRecord, Int?> = createField(DSL.name("time_offset"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.city.country_id</code>.
+     * The column <code>public.city.country_name</code>.
      */
-    val COUNTRY_ID: TableField<CityRecord, Long?> = createField(DSL.name("country_id"), SQLDataType.BIGINT, this, "")
+    val COUNTRY_NAME: TableField<CityRecord, String?> = createField(DSL.name("country_name"), SQLDataType.VARCHAR(3), this, "")
 
     private constructor(alias: Name, aliased: Table<CityRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<CityRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -109,13 +103,13 @@ open class City(
     constructor(child: Table<out Record>, key: ForeignKey<out Record, CityRecord>): this(Internal.createPathAlias(child, key), child, key, CITY, null)
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<CityRecord> = CITY_PKEY
-    override fun getKeys(): List<UniqueKey<CityRecord>> = listOf(CITY_PKEY, CITY_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<CityRecord, *>> = listOf(CITY__CITY_COUNTRY_ID_FKEY)
+    override fun getKeys(): List<UniqueKey<CityRecord>> = listOf(CITY_PKEY)
+    override fun getReferences(): List<ForeignKey<CityRecord, *>> = listOf(CITY__CITY_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country
     fun country(): Country {
         if (!this::_country.isInitialized)
-            _country = Country(this, CITY__CITY_COUNTRY_ID_FKEY)
+            _country = Country(this, CITY__CITY_COUNTRY_NAME_FKEY)
 
         return _country;
     }
@@ -133,7 +127,7 @@ open class City(
     override fun rename(name: Name): City = City(name, null)
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row5<Long?, OffsetDateTime?, String?, Int?, Long?> = super.fieldsRow() as Row5<Long?, OffsetDateTime?, String?, Int?, Long?>
+    override fun fieldsRow(): Row4<String?, OffsetDateTime?, Int?, String?> = super.fieldsRow() as Row4<String?, OffsetDateTime?, Int?, String?>
 }

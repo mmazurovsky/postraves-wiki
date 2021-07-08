@@ -41,11 +41,11 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
         set(value) = set(4, value)
         get() = get(4) as String?
 
-    var rating: Int?
+    var baseRating: Int?
         set(value) = set(5, value)
         get() = get(5) as Int?
 
-    var followersCount: Int?
+    var overallFollowersCount: Int?
         set(value) = set(6, value)
         get() = get(6) as Int?
 
@@ -86,8 +86,8 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
     override fun field3(): Field<String?> = Event.EVENT.NAME
     override fun field4(): Field<String?> = Event.EVENT.IMAGE_LINK
     override fun field5(): Field<String?> = Event.EVENT.ABOUT
-    override fun field6(): Field<Int?> = Event.EVENT.RATING
-    override fun field7(): Field<Int?> = Event.EVENT.FOLLOWERS_COUNT
+    override fun field6(): Field<Int?> = Event.EVENT.BASE_RATING
+    override fun field7(): Field<Int?> = Event.EVENT.OVERALL_FOLLOWERS_COUNT
     override fun field8(): Field<String?> = Event.EVENT.STATUS
     override fun field9(): Field<OffsetDateTime?> = Event.EVENT.START_DATE_TIME
     override fun field10(): Field<OffsetDateTime?> = Event.EVENT.END_DATE_TIME
@@ -98,8 +98,8 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
     override fun component3(): String? = name
     override fun component4(): String? = imageLink
     override fun component5(): String? = about
-    override fun component6(): Int? = rating
-    override fun component7(): Int? = followersCount
+    override fun component6(): Int? = baseRating
+    override fun component7(): Int? = overallFollowersCount
     override fun component8(): String? = status
     override fun component9(): OffsetDateTime? = startDateTime
     override fun component10(): OffsetDateTime? = endDateTime
@@ -110,8 +110,8 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
     override fun value3(): String? = name
     override fun value4(): String? = imageLink
     override fun value5(): String? = about
-    override fun value6(): Int? = rating
-    override fun value7(): Int? = followersCount
+    override fun value6(): Int? = baseRating
+    override fun value7(): Int? = overallFollowersCount
     override fun value8(): String? = status
     override fun value9(): OffsetDateTime? = startDateTime
     override fun value10(): OffsetDateTime? = endDateTime
@@ -144,12 +144,12 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
     }
 
     override fun value6(value: Int?): EventRecord {
-        this.rating = value
+        this.baseRating = value
         return this
     }
 
     override fun value7(value: Int?): EventRecord {
-        this.followersCount = value
+        this.overallFollowersCount = value
         return this
     }
 
@@ -197,14 +197,14 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
     /**
      * Create a detached, initialised EventRecord
      */
-    constructor(id: Long? = null, createdDateTime: OffsetDateTime? = null, name: String? = null, imageLink: String? = null, about: String? = null, rating: Int? = null, followersCount: Int? = null, status: String? = null, startDateTime: OffsetDateTime? = null, endDateTime: OffsetDateTime? = null, ticketsLink: String? = null, placeId: Long? = null): this() {
+    constructor(id: Long? = null, createdDateTime: OffsetDateTime? = null, name: String? = null, imageLink: String? = null, about: String? = null, baseRating: Int? = null, overallFollowersCount: Int? = null, status: String? = null, startDateTime: OffsetDateTime? = null, endDateTime: OffsetDateTime? = null, ticketsLink: String? = null, placeId: Long? = null): this() {
         this.id = id
         this.createdDateTime = createdDateTime
         this.name = name
         this.imageLink = imageLink
         this.about = about
-        this.rating = rating
-        this.followersCount = followersCount
+        this.baseRating = baseRating
+        this.overallFollowersCount = overallFollowersCount
         this.status = status
         this.startDateTime = startDateTime
         this.endDateTime = endDateTime

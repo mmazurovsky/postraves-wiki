@@ -4,7 +4,7 @@
 package jooq
 
 
-import jooq.sequences.HIBERNATE_SEQUENCE
+import jooq.sequences.ID_SEQUENCE
 import jooq.tables.Artist
 import jooq.tables.City
 import jooq.tables.Country
@@ -14,12 +14,13 @@ import jooq.tables.Place
 import jooq.tables.Scene
 import jooq.tables.TicketPrice
 import jooq.tables.TimetableItem
+import jooq.tables.TimetableItemPerformingGroup
 import jooq.tables.Unity
 import jooq.tables.UnityArtist
 import jooq.tables.UnityEvent
 import jooq.tables.UserBookmarksArtist
 import jooq.tables.UserBookmarksEvent
-import jooq.tables.UserEntity
+import jooq.tables.UserProfile
 
 import kotlin.collections.List
 
@@ -88,6 +89,11 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     val TIMETABLE_ITEM get() = TimetableItem.TIMETABLE_ITEM
 
     /**
+     * The table <code>public.timetable_item_performing_group</code>.
+     */
+    val TIMETABLE_ITEM_PERFORMING_GROUP get() = TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP
+
+    /**
      * The table <code>public.unity</code>.
      */
     val UNITY get() = Unity.UNITY
@@ -113,14 +119,14 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     val USER_BOOKMARKS_EVENT get() = UserBookmarksEvent.USER_BOOKMARKS_EVENT
 
     /**
-     * The table <code>public.user_entity</code>.
+     * The table <code>public.user_profile</code>.
      */
-    val USER_ENTITY get() = UserEntity.USER_ENTITY
+    val USER_PROFILE get() = UserProfile.USER_PROFILE
 
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getSequences(): List<Sequence<*>> = listOf(
-        HIBERNATE_SEQUENCE
+        ID_SEQUENCE
     )
 
     override fun getTables(): List<Table<*>> = listOf(
@@ -133,11 +139,12 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
         Scene.SCENE,
         TicketPrice.TICKET_PRICE,
         TimetableItem.TIMETABLE_ITEM,
+        TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP,
         Unity.UNITY,
         UnityArtist.UNITY_ARTIST,
         UnityEvent.UNITY_EVENT,
         UserBookmarksArtist.USER_BOOKMARKS_ARTIST,
         UserBookmarksEvent.USER_BOOKMARKS_EVENT,
-        UserEntity.USER_ENTITY
+        UserProfile.USER_PROFILE
     )
 }

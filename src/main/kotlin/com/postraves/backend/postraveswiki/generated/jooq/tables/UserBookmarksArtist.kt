@@ -7,7 +7,7 @@ package jooq.tables
 import jooq.Public
 import jooq.keys.USER_BOOKMARKS_ARTIST_PKEY
 import jooq.keys.USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_ARTIST_ID_FKEY
-import jooq.keys.USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_USER_ENTITY_ID_FKEY
+import jooq.keys.USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_USER_PROFILE_ID_FKEY
 import jooq.tables.records.UserBookmarksArtistRecord
 
 import kotlin.collections.List
@@ -62,9 +62,9 @@ open class UserBookmarksArtist(
     override fun getRecordType(): Class<UserBookmarksArtistRecord> = UserBookmarksArtistRecord::class.java
 
     /**
-     * The column <code>public.user_bookmarks_artist.user_entity_id</code>.
+     * The column <code>public.user_bookmarks_artist.user_profile_id</code>.
      */
-    val USER_ENTITY_ID: TableField<UserBookmarksArtistRecord, Long?> = createField(DSL.name("user_entity_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val USER_PROFILE_ID: TableField<UserBookmarksArtistRecord, Long?> = createField(DSL.name("user_profile_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
      * The column <code>public.user_bookmarks_artist.artist_id</code>.
@@ -93,15 +93,15 @@ open class UserBookmarksArtist(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserBookmarksArtistRecord> = USER_BOOKMARKS_ARTIST_PKEY
     override fun getKeys(): List<UniqueKey<UserBookmarksArtistRecord>> = listOf(USER_BOOKMARKS_ARTIST_PKEY)
-    override fun getReferences(): List<ForeignKey<UserBookmarksArtistRecord, *>> = listOf(USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_USER_ENTITY_ID_FKEY, USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_ARTIST_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UserBookmarksArtistRecord, *>> = listOf(USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_USER_PROFILE_ID_FKEY, USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_ARTIST_ID_FKEY)
 
-    private lateinit var _userEntity: UserEntity
+    private lateinit var _userProfile: UserProfile
     private lateinit var _artist: Artist
-    fun userEntity(): UserEntity {
-        if (!this::_userEntity.isInitialized)
-            _userEntity = UserEntity(this, USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_USER_ENTITY_ID_FKEY)
+    fun userProfile(): UserProfile {
+        if (!this::_userProfile.isInitialized)
+            _userProfile = UserProfile(this, USER_BOOKMARKS_ARTIST__USER_BOOKMARKS_ARTIST_USER_PROFILE_ID_FKEY)
 
-        return _userEntity;
+        return _userProfile;
     }
     fun artist(): Artist {
         if (!this::_artist.isInitialized)

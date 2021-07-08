@@ -8,7 +8,6 @@ import java.time.OffsetDateTime
 
 import jooq.Public
 import jooq.keys.TIMETABLE_ITEM_PKEY
-import jooq.keys.TIMETABLE_ITEM__TIMETABLE_ITEM_ARTIST_ID_FKEY
 import jooq.keys.TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY
 import jooq.keys.TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY
 import jooq.tables.records.TimetableItemRecord
@@ -65,19 +64,19 @@ open class TimetableItem(
     override fun getRecordType(): Class<TimetableItemRecord> = TimetableItemRecord::class.java
 
     /**
+     * The column <code>public.timetable_item.id</code>.
+     */
+    val ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+
+    /**
      * The column <code>public.timetable_item.event_id</code>.
      */
-    val EVENT_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("event_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val EVENT_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("event_id"), SQLDataType.BIGINT, this, "")
 
     /**
      * The column <code>public.timetable_item.scene_id</code>.
      */
-    val SCENE_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("scene_id"), SQLDataType.BIGINT.nullable(false), this, "")
-
-    /**
-     * The column <code>public.timetable_item.artist_id</code>.
-     */
-    val ARTIST_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("artist_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val SCENE_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("scene_id"), SQLDataType.BIGINT, this, "")
 
     /**
      * The column <code>public.timetable_item.created_date_time</code>.
@@ -121,11 +120,10 @@ open class TimetableItem(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<TimetableItemRecord> = TIMETABLE_ITEM_PKEY
     override fun getKeys(): List<UniqueKey<TimetableItemRecord>> = listOf(TIMETABLE_ITEM_PKEY)
-    override fun getReferences(): List<ForeignKey<TimetableItemRecord, *>> = listOf(TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY, TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY, TIMETABLE_ITEM__TIMETABLE_ITEM_ARTIST_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<TimetableItemRecord, *>> = listOf(TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY, TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY)
 
     private lateinit var _event: Event
     private lateinit var _scene: Scene
-    private lateinit var _artist: Artist
     fun event(): Event {
         if (!this::_event.isInitialized)
             _event = Event(this, TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY)
@@ -137,12 +135,6 @@ open class TimetableItem(
             _scene = Scene(this, TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY)
 
         return _scene;
-    }
-    fun artist(): Artist {
-        if (!this::_artist.isInitialized)
-            _artist = Artist(this, TIMETABLE_ITEM__TIMETABLE_ITEM_ARTIST_ID_FKEY)
-
-        return _artist;
     }
     override fun `as`(alias: String): TimetableItem = TimetableItem(DSL.name(alias), this)
     override fun `as`(alias: Name): TimetableItem = TimetableItem(alias, this)

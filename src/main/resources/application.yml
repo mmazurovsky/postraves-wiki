@@ -28,6 +28,8 @@ spring:
     password: ${LOCAL_PG_PASSWORD}
     url: jdbc:postgresql://localhost:5432/postraves
     username: mmazurovsky
+    flyway:
+      locations: classpath:/db/migration/postgres
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect

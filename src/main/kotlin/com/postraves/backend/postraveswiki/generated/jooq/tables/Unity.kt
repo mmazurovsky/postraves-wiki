@@ -10,7 +10,7 @@ import jooq.Public
 import jooq.keys.UNITY_AUTH_UID_KEY
 import jooq.keys.UNITY_NAME_KEY
 import jooq.keys.UNITY_PKEY
-import jooq.keys.UNITY__UNITY_COUNTRY_ID_FKEY
+import jooq.keys.UNITY__UNITY_COUNTRY_NAME_FKEY
 import jooq.tables.records.UnityRecord
 
 import kotlin.collections.List
@@ -95,19 +95,19 @@ open class Unity(
     val ABOUT: TableField<UnityRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.unity.rating</code>.
+     * The column <code>public.unity.base_rating</code>.
      */
-    val RATING: TableField<UnityRecord, Int?> = createField(DSL.name("rating"), SQLDataType.INTEGER, this, "")
+    val BASE_RATING: TableField<UnityRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
 
     /**
-     * The column <code>public.unity.followers_count</code>.
+     * The column <code>public.unity.overall_followers_count</code>.
      */
-    val FOLLOWERS_COUNT: TableField<UnityRecord, Int?> = createField(DSL.name("followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
+    val OVERALL_FOLLOWERS_COUNT: TableField<UnityRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.unity.country_id</code>.
+     * The column <code>public.unity.country_name</code>.
      */
-    val COUNTRY_ID: TableField<UnityRecord, Long?> = createField(DSL.name("country_id"), SQLDataType.BIGINT, this, "")
+    val COUNTRY_NAME: TableField<UnityRecord, String?> = createField(DSL.name("country_name"), SQLDataType.VARCHAR(3), this, "")
 
     /**
      * The column <code>public.unity.instagram_link</code>.
@@ -146,12 +146,12 @@ open class Unity(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UnityRecord> = UNITY_PKEY
     override fun getKeys(): List<UniqueKey<UnityRecord>> = listOf(UNITY_PKEY, UNITY_AUTH_UID_KEY, UNITY_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<UnityRecord, *>> = listOf(UNITY__UNITY_COUNTRY_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UnityRecord, *>> = listOf(UNITY__UNITY_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country
     fun country(): Country {
         if (!this::_country.isInitialized)
-            _country = Country(this, UNITY__UNITY_COUNTRY_ID_FKEY)
+            _country = Country(this, UNITY__UNITY_COUNTRY_NAME_FKEY)
 
         return _country;
     }
@@ -171,5 +171,5 @@ open class Unity(
     // -------------------------------------------------------------------------
     // Row12 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row12<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, Long?, String?, String?, String?> = super.fieldsRow() as Row12<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, Long?, String?, String?, String?>
+    override fun fieldsRow(): Row12<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?, String?> = super.fieldsRow() as Row12<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?, String?>
 }

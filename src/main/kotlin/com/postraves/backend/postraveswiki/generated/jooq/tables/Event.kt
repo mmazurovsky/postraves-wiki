@@ -89,14 +89,14 @@ open class Event(
     val ABOUT: TableField<EventRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.event.rating</code>.
+     * The column <code>public.event.base_rating</code>.
      */
-    val RATING: TableField<EventRecord, Int?> = createField(DSL.name("rating"), SQLDataType.INTEGER, this, "")
+    val BASE_RATING: TableField<EventRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
 
     /**
-     * The column <code>public.event.followers_count</code>.
+     * The column <code>public.event.overall_followers_count</code>.
      */
-    val FOLLOWERS_COUNT: TableField<EventRecord, Int?> = createField(DSL.name("followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
+    val OVERALL_FOLLOWERS_COUNT: TableField<EventRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column <code>public.event.status</code>.

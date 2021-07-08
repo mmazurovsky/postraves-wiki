@@ -1,7 +1,7 @@
 package com.postraves.backend.postraveswiki.controller
 
-import com.postraves.backend.postraveswiki.data.dto.ArtistFullDto
-import com.postraves.backend.postraveswiki.data.dto.ArtistShortDto
+import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
+import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.service.ArtistService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping

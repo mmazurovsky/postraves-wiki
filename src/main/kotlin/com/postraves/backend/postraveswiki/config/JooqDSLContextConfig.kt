@@ -21,7 +21,7 @@ class JooqDSLContextConfig(
     private val connection: Connection = DriverManager.getConnection(url, username, password)
     private val dslContext = DSL.using(connection, dialect)
 
-    fun getContext(): DSLContext {
+    fun getDSLContext(): DSLContext {
         return dslContext
     }
 }

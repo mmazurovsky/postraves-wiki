@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
     id("nu.studer.jooq") version "5.2.1"
+    id("org.flywaydb.flyway") version "7.11.1"
 }
 
 group = "com.postraves.backend"
@@ -31,6 +32,7 @@ dependencies {
     runtimeOnly ("org.postgresql:postgresql:42.2.18")
     implementation("org.flywaydb:flyway-core:7.1.1")
     implementation("org.springframework:spring-jdbc:5.3.8")
+    implementation("org.flywaydb:flyway-core:7.1.1")
 }
 
 tasks.withType<KotlinCompile> {
@@ -42,6 +44,13 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+flyway {
+    url = "jdbc:postgresql://localhost:5432/postraves"
+    user = "mmazurovsky"
+    password = System.getenv("LOCAL_PG_PASSWORD")
+    schemas = arrayOf("public")
 }
 
 buildscript {
@@ -75,16 +84,16 @@ jooq {
                     database.apply {
                         name = "org.jooq.meta.postgres.PostgresDatabase"
                         inputSchema = "public"
-                        forcedTypes.addAll(arrayOf(
-                            org.jooq.meta.jaxb.ForcedType()
-                                .withName("varchar")
-                                .withIncludeExpression(".*")
-                                .withIncludeTypes("JSONB?"),
-                            org.jooq.meta.jaxb.ForcedType()
-                                .withName("varchar")
-                                .withIncludeExpression(".*")
-                                .withIncludeTypes("INET")
-                        ).toList())
+//                        forcedTypes.addAll(arrayOf(
+//                            org.jooq.meta.jaxb.ForcedType()
+//                                .withName("varchar")
+//                                .withIncludeExpression(".*")
+//                                .withIncludeTypes("JSONB?"),
+//                            org.jooq.meta.jaxb.ForcedType()
+//                                .withName("varchar")
+//                                .withIncludeExpression(".*")
+//                                .withIncludeTypes("INET")
+//                        ).toList())
                     }
                     generate.apply {
                         isDeprecated = false

@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class UserBookmarksEventRecord() : UpdatableRecordImpl<UserBookmarksEventRecord>(UserBookmarksEvent.USER_BOOKMARKS_EVENT), Record2<Long?, Long?> {
 
-    var userEntityId: Long?
+    var userProfileId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
@@ -38,15 +38,15 @@ open class UserBookmarksEventRecord() : UpdatableRecordImpl<UserBookmarksEventRe
 
     override fun fieldsRow(): Row2<Long?, Long?> = super.fieldsRow() as Row2<Long?, Long?>
     override fun valuesRow(): Row2<Long?, Long?> = super.valuesRow() as Row2<Long?, Long?>
-    override fun field1(): Field<Long?> = UserBookmarksEvent.USER_BOOKMARKS_EVENT.USER_ENTITY_ID
+    override fun field1(): Field<Long?> = UserBookmarksEvent.USER_BOOKMARKS_EVENT.USER_PROFILE_ID
     override fun field2(): Field<Long?> = UserBookmarksEvent.USER_BOOKMARKS_EVENT.EVENT_ID
-    override fun component1(): Long? = userEntityId
+    override fun component1(): Long? = userProfileId
     override fun component2(): Long? = eventId
-    override fun value1(): Long? = userEntityId
+    override fun value1(): Long? = userProfileId
     override fun value2(): Long? = eventId
 
     override fun value1(value: Long?): UserBookmarksEventRecord {
-        this.userEntityId = value
+        this.userProfileId = value
         return this
     }
 
@@ -64,8 +64,8 @@ open class UserBookmarksEventRecord() : UpdatableRecordImpl<UserBookmarksEventRe
     /**
      * Create a detached, initialised UserBookmarksEventRecord
      */
-    constructor(userEntityId: Long? = null, eventId: Long? = null): this() {
-        this.userEntityId = userEntityId
+    constructor(userProfileId: Long? = null, eventId: Long? = null): this() {
+        this.userProfileId = userProfileId
         this.eventId = eventId
     }
 }

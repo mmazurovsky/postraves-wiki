@@ -10,7 +10,7 @@ import jooq.Public
 import jooq.keys.ARTIST_AUTH_UID_KEY
 import jooq.keys.ARTIST_NAME_KEY
 import jooq.keys.ARTIST_PKEY
-import jooq.keys.ARTIST__ARTIST_COUNTRY_ID_FKEY
+import jooq.keys.ARTIST__ARTIST_COUNTRY_NAME_FKEY
 import jooq.tables.records.ArtistRecord
 
 import kotlin.collections.List
@@ -95,19 +95,19 @@ open class Artist(
     val ABOUT: TableField<ArtistRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.artist.rating</code>.
+     * The column <code>public.artist.base_rating</code>.
      */
-    val RATING: TableField<ArtistRecord, Int?> = createField(DSL.name("rating"), SQLDataType.INTEGER, this, "")
+    val BASE_RATING: TableField<ArtistRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
 
     /**
-     * The column <code>public.artist.followers_count</code>.
+     * The column <code>public.artist.overall_followers_count</code>.
      */
-    val FOLLOWERS_COUNT: TableField<ArtistRecord, Int?> = createField(DSL.name("followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
+    val OVERALL_FOLLOWERS_COUNT: TableField<ArtistRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.artist.country_id</code>.
+     * The column <code>public.artist.country_name</code>.
      */
-    val COUNTRY_ID: TableField<ArtistRecord, Long?> = createField(DSL.name("country_id"), SQLDataType.BIGINT, this, "")
+    val COUNTRY_NAME: TableField<ArtistRecord, String?> = createField(DSL.name("country_name"), SQLDataType.VARCHAR(3), this, "")
 
     /**
      * The column <code>public.artist.instagram_link</code>.
@@ -141,12 +141,12 @@ open class Artist(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<ArtistRecord> = ARTIST_PKEY
     override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY, ARTIST_AUTH_UID_KEY, ARTIST_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<ArtistRecord, *>> = listOf(ARTIST__ARTIST_COUNTRY_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<ArtistRecord, *>> = listOf(ARTIST__ARTIST_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country
     fun country(): Country {
         if (!this::_country.isInitialized)
-            _country = Country(this, ARTIST__ARTIST_COUNTRY_ID_FKEY)
+            _country = Country(this, ARTIST__ARTIST_COUNTRY_NAME_FKEY)
 
         return _country;
     }
@@ -166,5 +166,5 @@ open class Artist(
     // -------------------------------------------------------------------------
     // Row11 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, Long?, String?, String?> = super.fieldsRow() as Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, Long?, String?, String?>
+    override fun fieldsRow(): Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?> = super.fieldsRow() as Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?>
 }
