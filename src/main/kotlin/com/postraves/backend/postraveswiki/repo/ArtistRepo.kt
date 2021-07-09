@@ -10,15 +10,17 @@ import jooq.tables.references.COUNTRY
 import org.jooq.Record
 import org.springframework.stereotype.Repository
 
-interface ArtistRepo : BaseOperationsRepo<ArtistRecord, ArtistWriteDto, ArtistShortDto, ArtistFullDto>
+interface ArtistRepo :
+    BaseRepo<ArtistWriteDto, ArtistShortDto, ArtistFullDto>, BaseRatingRepo<ArtistFullDto>
 
 @Repository
-class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig, val saveRepo: SaveRepo<ArtistRecord, ArtistWriteDto>) :
-    ArtistRepo {
+class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig)
+    : ArtistRepo {
 
     override fun findById(id: Long): ArtistFullDto {
         val selectedRecord: Record? = contextConfig.getDSLContext()
-            .selectFrom(ARTIST.fullOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME)))
+            .selectFrom(ARTIST
+                .fullOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME)))
             .where(ARTIST.ID.eq(id))
             .fetchOne()
 
@@ -29,12 +31,14 @@ class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig, val saveRepo: Save
     }
 
     override fun save(dto: ArtistWriteDto): ArtistFullDto? {
-        val recordId = saveRepo.save(dto)
+        val record = dto.convertToDbRecord()
+        val recordId = record.store().toLong()
         return this.findById(recordId)
     }
 
     override fun update(dto: ArtistWriteDto): ArtistFullDto? {
-        val recordId = saveRepo.save(dto)
+        val record = dto.convertToDbRecord()
+        val recordId = record.store().toLong()
         return this.findById(recordId)
     }
 
@@ -45,5 +49,14 @@ class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig, val saveRepo: Save
                 ?.delete() == null
         ) throw TODO()
         else return dto
+    }
+
+    override fun findAll(): List<ArtistShortDto> {
+        val results = contextConfig.getDSLContext()
+            .selectFrom(ARTIST.fullOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME)))
+            .fetch()
+            .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
+            .toList()
+        return results
     }
 }

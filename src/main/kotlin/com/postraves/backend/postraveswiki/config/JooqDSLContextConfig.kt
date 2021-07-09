@@ -17,7 +17,7 @@ class JooqDSLContextConfig(
     @Value("\${spring.datasource.password}")
     private val password: String? = null
 ) {
-    private val dialect: SQLDialect = SQLDialect.POSTGRES
+    private val dialect: SQLDialect = SQLDialect.H2
     private val connection: Connection = DriverManager.getConnection(url, username, password)
     private val dslContext = DSL.using(connection, dialect)
 

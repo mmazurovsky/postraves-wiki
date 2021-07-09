@@ -5,8 +5,9 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
+    kotlin("plugin.serialization") version "1.5.20"
     id("nu.studer.jooq") version "5.2.1"
-    id("org.flywaydb.flyway") version "7.11.1"
+//    id("org.flywaydb.flyway") version "7.11.1"
 }
 
 group = "com.postraves.backend"
@@ -29,10 +30,14 @@ dependencies {
     jooqGenerator("org.postgresql:postgresql:42.2.14")
     implementation("org.jooq:jooq:3.14.12")
     runtimeOnly("com.h2database:h2:1.4.200")
+//    implementation("io.zonky.test:embedded-postgres:1.3.0")
     runtimeOnly ("org.postgresql:postgresql:42.2.18")
-    implementation("org.flywaydb:flyway-core:7.1.1")
+    compileOnly("org.flywaydb:flyway-core:7.1.1")
     implementation("org.springframework:spring-jdbc:5.3.8")
-    implementation("org.flywaydb:flyway-core:7.1.1")
+    testCompileOnly("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+//    implementation("org.springframework.data:spring-data-jpa:2.5.2")
 }
 
 tasks.withType<KotlinCompile> {
@@ -42,16 +47,16 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test> {
+tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-flyway {
-    url = "jdbc:postgresql://localhost:5432/postraves"
-    user = "mmazurovsky"
-    password = System.getenv("LOCAL_PG_PASSWORD")
-    schemas = arrayOf("public")
-}
+//flyway {
+//    url = "jdbc:postgresql://localhost:5432/postraves"
+//    user = "mmazurovsky"
+//    password = System.getenv("LOCAL_PG_PASSWORD")
+//    schemas = arrayOf("public")
+//}
 
 buildscript {
     configurations["classpath"].resolutionStrategy.eachDependency {

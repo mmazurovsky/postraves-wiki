@@ -21,7 +21,6 @@ data class ArtistFullDto(
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord?, countryRecord: CountryRecord?) : ArtistFullDto {
             return ArtistFullDto(
-                //TODO record id wont be null
                 id = artistRecord?.id ?: throw TODO(),
                 name = artistRecord.name ?: throw TODO(),
                 baseRating = artistRecord.baseRating ?: throw TODO(),

@@ -1,25 +1,4 @@
 spring:
-  datasource:
-    hikari:
-      connectionTimeout: 20000
-      maximumPoolSize: 5
-    devtools:
-      restart:
-        poll-interval: 2s
-        quiet-period: 1s
-    flyway:
-      locations: classpath:/db/migration/postgres
-    profiles:
-      active: test
-    servlet:
-      multipart:
-        max-file-size: 10MB
-        max-request-size: 10MB
-  config:
-    activate:
-      on-profile: prod
----
-spring:
   config:
     activate:
       on-profile: dev
@@ -28,8 +7,8 @@ spring:
     password: ${LOCAL_PG_PASSWORD}
     url: jdbc:postgresql://localhost:5432/postraves
     username: mmazurovsky
-    flyway:
-      locations: classpath:/db/migration/postgres
+  flyway:
+    locations: classpath:/db/migration/postgres
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -114,10 +93,18 @@ spring:
       on-profile: test
   datasource:
     driverClassName: org.h2.Driver
+    username: admin
+    password: admin
+    url: jdbc:h2:mem:testdb;DATABASE_TO_UPPER=false;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS public
+  flyway:
+    locations: classpath:/db/migration/postgres
+    user: admin
     password: admin
     url: jdbc:h2:mem:testdb
-    username: admin
+    schemas: public
+    init-sqls: SET SCHEMA public;
   jpa:
+    show-sql: true
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop

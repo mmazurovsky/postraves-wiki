@@ -1,9 +1,10 @@
 package com.postraves.backend.postraveswiki.data.dto.writing
 
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import jooq.tables.records.ArtistRecord
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ArtistWriteDto(
     val id: Long?,
     val name: String,
@@ -13,9 +14,9 @@ data class ArtistWriteDto(
     val instagramLink: String?,
     val about: String?,
     val soundcloudFollowersCount: Int?,
-) : BaseWriteDto<ArtistRecord> {
+) : BaseWriteDto {
 
-    override fun convertToDbRecord() : ArtistRecord {
+    fun convertToDbRecord() : ArtistRecord {
         return ArtistRecord(
             id = id,
             name = name,
@@ -24,8 +25,8 @@ data class ArtistWriteDto(
             soundcloudLink = soundcloudLink,
             instagramLink = instagramLink,
             about = about,
-            baseRating = soundcloudFollowersCount?.div(5) ?: 0,
-            overallFollowersCount = 0,
+            baseRating = if (id != null) null else soundcloudFollowersCount?.div(5) ?: 0,
+            overallFollowersCount = if (id != null) null else 0,
             )
     }
 }

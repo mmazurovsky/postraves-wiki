@@ -8,6 +8,5 @@ interface BaseShortDto : BaseDto
 
 interface BaseFullDto : BaseDto
 
-interface BaseWriteDto<RECORD : UpdatableRecord<RECORD>> : BaseDto {
-    fun convertToDbRecord() : RECORD
+interface BaseWriteDto : BaseDto {
 }
