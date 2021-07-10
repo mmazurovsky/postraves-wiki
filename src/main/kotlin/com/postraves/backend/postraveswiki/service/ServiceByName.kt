@@ -1,11 +1,7 @@
 package com.postraves.backend.postraveswiki.service
 
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
-import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
-import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
-import com.postraves.backend.postraveswiki.repo.BaseRepo
-import com.postraves.backend.postraveswiki.repo.RepoByName
-import org.jooq.UpdatableRecord
+import com.postraves.backend.postraveswiki.repo.ByNameRepo
 import org.springframework.stereotype.Service
 
 interface ServiceByName<FULLDTO : BaseFullDto> {
@@ -16,7 +12,7 @@ interface ServiceByName<FULLDTO : BaseFullDto> {
 @Service
 class ServiceByNameImpl<
         FULLDTO : BaseFullDto,
-        REPO : RepoByName<FULLDTO>>
+        REPO : ByNameRepo<FULLDTO>>
     (
     private val repoByName: REPO
 ) : ServiceByName<FULLDTO> {

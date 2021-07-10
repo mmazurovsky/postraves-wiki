@@ -16,17 +16,12 @@ data class ArtistWriteDto(
     val soundcloudFollowersCount: Int?,
 ) : BaseWriteDto {
 
-    fun convertToDbRecord() : ArtistRecord {
-        return ArtistRecord(
-            id = id,
-            name = name,
-            imageLink = imageLink,
-            countryName = countryName,
-            soundcloudLink = soundcloudLink,
-            instagramLink = instagramLink,
-            about = about,
-            baseRating = if (id != null) null else soundcloudFollowersCount?.div(5) ?: 0,
-            overallFollowersCount = if (id != null) null else 0,
-            )
+    fun transferDataToDbRecord(record: ArtistRecord) {
+        record.name = name
+        record.imageLink = imageLink
+        record.countryName = countryName
+        record.soundcloudLink = soundcloudLink
+        record.instagramLink = instagramLink
+        record.about = about
     }
 }

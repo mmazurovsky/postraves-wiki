@@ -3,8 +3,6 @@ package com.postraves.backend.postraveswiki.repo
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
-import org.jooq.UpdatableRecord
-import org.springframework.stereotype.Repository
 
 interface BaseRepo<WRITEDTO : BaseWriteDto,
         SHORTDTO : BaseShortDto,

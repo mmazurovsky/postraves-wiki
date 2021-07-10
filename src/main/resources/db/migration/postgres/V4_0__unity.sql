@@ -1,6 +1,6 @@
 CREATE TABLE unity
 (
-    id                       BIGINT                   UNIQUE NOT NULL,
+    id                       BIGSERIAL                UNIQUE NOT NULL,
     auth_uid                 VARCHAR(28)              UNIQUE,
     created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
     name                     VARCHAR(60)              UNIQUE NOT NULL,

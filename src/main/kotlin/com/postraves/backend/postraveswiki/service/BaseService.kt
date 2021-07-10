@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service
 interface BaseService<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto, FULLDTO : BaseFullDto> {
     fun save(dto: WRITEDTO): FULLDTO
     fun update(dto: WRITEDTO): FULLDTO
-//    fun findById(id: Long): FULLDTO
-//    fun deleteById(id: Long)
     fun findAll(): List<SHORTDTO>
 }
 

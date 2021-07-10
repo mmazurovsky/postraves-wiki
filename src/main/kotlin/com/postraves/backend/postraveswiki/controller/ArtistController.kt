@@ -4,32 +4,37 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.service.ArtistService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/artist")
-class ArtistController(private val artistService: ArtistService) : BaseRequests<ArtistWriteDto, ArtistShortDto, ArtistFullDto> {
+class ArtistController(private val artistService: ArtistService)
+    : BaseRequests<ArtistWriteDto, ArtistShortDto, ArtistFullDto>, RatingRequests<ArtistShortDto, ArtistFullDto> {
 
-    override fun save(dto: ArtistWriteDto): ResponseEntity<ArtistFullDto> {
-        return ResponseEntity.ok(artistService.save(dto))
+    override fun save(dto: ArtistWriteDto): ArtistFullDto {
+        return artistService.save(dto)
     }
 
-    override fun update(dto: ArtistWriteDto): ResponseEntity<ArtistFullDto> {
-        TODO("Not yet implemented")
+    override fun update(dto: ArtistWriteDto): ArtistFullDto {
+        return artistService.update(dto)
     }
 
-    @GetMapping("/public/{id}")
-    fun findById(@PathVariable id: Long): ResponseEntity<ArtistFullDto> {
-        return ResponseEntity.ok(artistService.findById(id))
+    override fun findById(id: Long): ArtistFullDto {
+        return artistService.findById(id)
     }
 
-    override fun findAll(): ResponseEntity<List<ArtistShortDto>> {
-        TODO("Not yet implemented")
+    override fun findAll(): List<ArtistShortDto> {
+        return artistService.findAll()
     }
 
-    @DeleteMapping("/{id}")
-    fun deleteById(@PathVariable id: Long): ResponseEntity<ArtistFullDto> {
-        TODO("Not yet implemented")
+    override fun deleteById(id: Long): ArtistFullDto {
+        return artistService.deleteById(id)
+    }
+
+    override fun findOverallRating(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
+        //todo change city to country in service
+        return artistService.findOverallTopInCountry(cityName, maxQuantity)
     }
 }

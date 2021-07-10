@@ -1,6 +1,6 @@
 CREATE TABLE timetable_item
 (
-    id                          BIGINT                   UNIQUE NOT NULL,
+    id                          BIGSERIAL                UNIQUE NOT NULL,
     event_id                    BIGINT                   REFERENCES event(id) ON UPDATE CASCADE ON DELETE CASCADE,
     scene_id                    BIGINT                   REFERENCES scene(id) ON UPDATE CASCADE ON DELETE CASCADE,
     created_date_time           TIMESTAMP                WITH TIME ZONE NOT NULL,

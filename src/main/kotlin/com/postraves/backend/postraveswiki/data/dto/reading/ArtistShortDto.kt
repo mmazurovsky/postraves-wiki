@@ -4,7 +4,9 @@ import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ArtistShortDto(
     val id: Long,
     val name: String,
@@ -22,7 +24,7 @@ data class ArtistShortDto(
                 overallFollowersCount = artistRecord.overallFollowersCount ?: throw TODO(),
                 imageLink = artistRecord.imageLink,
                 country =
-                if (countryRecord != null) CountryDto(
+                if (countryRecord?.name != null) CountryDto(
                     name = countryRecord.name ?: throw TODO(),
                     phoneCode = countryRecord.phoneCode ?: throw TODO(),
                     emojiCode = countryRecord.emojiCode ?: throw TODO())

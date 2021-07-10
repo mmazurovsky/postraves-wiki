@@ -1,6 +1,6 @@
 CREATE TABLE scene
 (
-    id                       BIGINT                   UNIQUE NOT NULL,
+    id                       BIGSERIAL                UNIQUE NOT NULL,
     created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
     name                     VARCHAR(60)              NOT NULL,
     image_link               TEXT,

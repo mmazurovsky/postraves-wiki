@@ -1,6 +1,6 @@
 CREATE TABLE event
 (
-    id                       BIGINT                   UNIQUE NOT NULL,
+    id                       BIGSERIAL                UNIQUE NOT NULL,
     created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
     name                     VARCHAR(80)              UNIQUE NOT NULL,
     image_link               TEXT,

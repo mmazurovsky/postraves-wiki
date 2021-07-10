@@ -11,12 +11,11 @@ data class CountryDto(
     val phoneCode: String,
     val emojiCode: String,
 ) : BaseShortDto, BaseFullDto, BaseWriteDto {
-    fun convertToDbRecord(): CountryRecord {
-        return CountryRecord(
-            name = name,
-            phoneCode = phoneCode,
-            emojiCode = emojiCode,
-        )
+
+    fun transferDataToDbRecord(countryRecord: CountryRecord) {
+        countryRecord.name = name
+        countryRecord.phoneCode = phoneCode
+        countryRecord.emojiCode = emojiCode
     }
     
     companion object FactoryDbRecord {

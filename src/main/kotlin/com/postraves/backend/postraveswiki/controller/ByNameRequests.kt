@@ -8,17 +8,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/default")
-interface BaseRequests<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto, FULLDTO : BaseFullDto> {
+interface ByNameRequests<SHORTDTO : BaseShortDto, FULLDTO : BaseFullDto> {
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun save(@RequestBody dto: WRITEDTO): FULLDTO
-
-    @PutMapping
+    @GetMapping("/public/{name}")
     @ResponseStatus(HttpStatus.OK)
-    fun update(@RequestBody dto: WRITEDTO): FULLDTO
+    fun findByName(@PathVariable name: String): FULLDTO
 
-    @GetMapping
+    @DeleteMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
-    fun findAll(): List<SHORTDTO>
+    fun deleteByName(@PathVariable name: String): FULLDTO
 }

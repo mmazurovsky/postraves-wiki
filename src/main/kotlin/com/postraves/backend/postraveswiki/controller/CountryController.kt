@@ -5,32 +5,32 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CountryService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/country")
-class CountryController(private val countryService: CountryService) : BaseRequests<CountryDto, CountryDto, CountryDto> {
+class CountryController(private val countryService: CountryService)
+    : BaseRequests<CountryDto, CountryDto, CountryDto>, ByNameRequests<CountryDto, CountryDto> {
 
-    override fun save(dto: CountryDto): ResponseEntity<CountryDto> {
-        return ResponseEntity.ok(countryService.save(dto))
+    override fun save(dto: CountryDto): CountryDto {
+        return countryService.save(dto)
     }
 
-    override fun update(dto: CountryDto): ResponseEntity<CountryDto> {
-        return ResponseEntity.ok(countryService.update(dto))
+    override fun update(dto: CountryDto): CountryDto {
+        return countryService.update(dto)
     }
 
-    @GetMapping("/public/{name}")
-    fun findByName(@PathVariable name: String): ResponseEntity<CountryDto> {
-        return ResponseEntity.ok(countryService.findByName(name))
+    override fun findByName(name: String): CountryDto {
+        return countryService.findByName(name)
     }
 
-    override fun findAll(): ResponseEntity<List<CountryDto>> {
-        return ResponseEntity.ok(countryService.findAll())
+    override fun findAll(): List<CountryDto> {
+        return countryService.findAll()
     }
 
-    @DeleteMapping("/{name}")
-    fun deleteByName(@PathVariable name: String): ResponseEntity<CountryDto> {
-        return ResponseEntity.ok(countryService.deleteByName(name))
+    override fun deleteByName(name: String): CountryDto {
+        return countryService.deleteByName(name)
     }
 }
