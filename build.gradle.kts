@@ -41,6 +41,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
     implementation(kotlin("test"))
 //    implementation("org.springframework.data:spring-data-jpa:2.5.2")
+//    implementation("org.springframework.data:spring-data-redis:2.5.2")
+//    implementation("redis.clients:jedis:3.6.1")
+    implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {

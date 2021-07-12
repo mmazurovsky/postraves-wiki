@@ -21,6 +21,11 @@ spring:
         use_sql_comments: true
         jdbc:
           time_zone: UTC
+  redis:
+    host: localhost
+    port: 6379
+#    sentinel:
+#      master: mymaster
 logging:
   level:
     org:
