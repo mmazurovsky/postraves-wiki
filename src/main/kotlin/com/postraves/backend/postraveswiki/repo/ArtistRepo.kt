@@ -7,6 +7,7 @@ import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.ARTIST
 import jooq.tables.references.COUNTRY
+import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.SelectWhereStep
 import org.springframework.stereotype.Repository
@@ -18,10 +19,12 @@ interface ArtistRepo :
     RatingRepo<ArtistShortDto>
 
 @Repository
-class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig) : ArtistRepo {
+class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : ArtistRepo {
+
+    private val dsl: DSLContext by lazy { dslContextConfig.getDSLContext() }
 
     private fun findByIdWithoutConvertion(id: Long): ArtistRecord {
-        val record = contextConfig.getDSLContext()
+        val record = dsl
             .selectFrom(ARTIST)
             .where(ARTIST.ID.eq(id))
             .fetchOne()
@@ -29,7 +32,7 @@ class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig) : ArtistRepo {
     }
 
     private fun selectArtistList(): SelectWhereStep<Record> {
-        val select = contextConfig.getDSLContext()
+        val select = dsl
             .selectFrom(
                 ARTIST
                     .leftOuterJoin(COUNTRY)
@@ -39,7 +42,7 @@ class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig) : ArtistRepo {
     }
 
     override fun findById(id: Long): ArtistFullDto {
-        val selectedRecord: Record? = contextConfig.getDSLContext()
+        val selectedRecord: Record? = dsl
             .selectFrom(
                 ARTIST
                     .leftOuterJoin(COUNTRY)
@@ -55,7 +58,7 @@ class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig) : ArtistRepo {
     }
 
     override fun save(dto: ArtistWriteDto): ArtistFullDto? {
-        val artistToSave = contextConfig.getDSLContext().newRecord(ARTIST)
+        val artistToSave = dsl.newRecord(ARTIST)
         dto.transferDataToDbRecord(artistToSave)
         artistToSave.createdDateTime = OffsetDateTime.now()
         artistToSave.overallFollowersCount = 0
@@ -76,7 +79,7 @@ class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig) : ArtistRepo {
 
     override fun deleteById(id: Long): ArtistFullDto {
         val dto = this.findById(id)
-        if (contextConfig.getDSLContext().fetchOne(ARTIST, ARTIST.ID.eq(id))
+        if (dsl.fetchOne(ARTIST, ARTIST.ID.eq(id))
                 ?.delete() == null
         ) throw TODO()
         else return dto
@@ -103,7 +106,7 @@ class ArtistRepoImpl(val contextConfig: JooqDSLContextConfig) : ArtistRepo {
     }
 
     override fun changeBaseRating(id: Long, newBaseRating: Int) {
-        val artistRecord = contextConfig.getDSLContext()
+        val artistRecord = dsl
             .selectFrom(ARTIST)
             .where(ARTIST.ID.eq(id))
             .fetchOne()

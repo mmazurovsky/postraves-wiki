@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 class WeeklyFollowersDeltaRepoTest(
     @Value("\${spring.redis.port}") redisPort: Int,
     @Autowired private val weeklyFollowersDeltaRepo: WeeklyFollowersDeltaRepoImpl,
-    ) {
+) {
 
     private var redisServer: RedisServer = RedisServer(redisPort)
 
@@ -158,9 +158,7 @@ class WeeklyFollowersDeltaRepoTest(
     @Test
     @Order(7)
     fun returnAllToInitial() {
-        runBlocking {
-            weeklyFollowersDeltaRepo.returnAllValuesToInitial(entityType)
-        }
+        weeklyFollowersDeltaRepo.returnAllValuesToInitial(entityType)
 
         val result = weeklyFollowersDeltaRepo.getTop(entityType, 50)
         assertEquals(5, result.size)
