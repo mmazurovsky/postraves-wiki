@@ -3,7 +3,9 @@ package com.postraves.backend.postraveswiki.repo
 import com.postraves.backend.postraveswiki.config.JooqDSLContextConfig
 import com.postraves.backend.postraveswiki.config.RedisConfig
 import io.lettuce.core.api.async.multi
+import org.springframework.stereotype.Repository
 
+@Repository
 class WeeklyFollowersDeltaRepoImpl(
     val redisConfig: RedisConfig
 ) {
@@ -24,15 +26,19 @@ class WeeklyFollowersDeltaRepoImpl(
         return decrementValue.get().toInt()
     }
 
-    fun getTop(entityType: String, quantity: Long) : List<Map<String, Double>> {
+    fun getTop(entityType: String, quantity: Long) : List<Map<Long, Int>> {
         val top = redisConfig.getRedisClient().zrevrangeWithScores("$entityType:weeklyFollowersDelta", 0, quantity-1)
         // todo i dont know what will be if not enough values
-        return top.get().map { mapOf(it.value to it.score) }.toList()
+        return top.get().map { mapOf(it.value.toLong() to it.score.toInt()) }.toList()
     }
 
-    private fun setInitialWeeklyFollowersDelta(entityType: String, entityId: Long) {
-        val initValue = redisConfig.getRedisClient().zadd("$entityType:weeklyFollowersDelta", 0, entityId.toString())
+    fun setInitialWeeklyFollowersDelta(entityType: String, entityId: Long) {
+        val initValue = redisConfig.getRedisClient().zadd("$entityType:weeklyFollowersDelta", 0.0, entityId.toString())
         initValue.get()
+    }
+
+    fun clearAllData() {
+        redisConfig.getRedisClient().flushall().get()
     }
 
     suspend fun returnAllValuesToInitial(entityType: String) {

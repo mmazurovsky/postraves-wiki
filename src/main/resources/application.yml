@@ -96,6 +96,11 @@ spring:
   config:
     activate:
       on-profile: test
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: ${LOCAL_PG_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/postraves
+    username: mmazurovsky
   flyway:
     locations: classpath:/db/migration/postgres
     user: ${spring.datasource.username}
@@ -103,6 +108,9 @@ spring:
     url: ${spring.datasource.url}
     schemas: public
     baseline-on-migrate: true
+  redis:
+    host: localhost
+    port: 6379
   jpa:
     show-sql: true
     hibernate:

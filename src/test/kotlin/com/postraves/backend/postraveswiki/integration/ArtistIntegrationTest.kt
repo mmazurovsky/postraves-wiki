@@ -32,7 +32,6 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @ActiveProfiles(value = ["test"])
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc(addFilters = false)
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Testcontainers
 class ArtistIntegrationTest(
@@ -81,7 +80,7 @@ class ArtistIntegrationTest(
 
     private fun saveOrUpdateArtist(
         artist: ArtistWriteDto, endpoint: String, expectedStatus: ResultMatcher,
-        mockMvcFunction: (mockMvc: MockMvc, endpoint: String, body: String, expectedStatus: ResultMatcher) -> String
+        mockMvcFunction: (MockMvc, String, String, ResultMatcher) -> String
     ): ArtistFullDto {
 
         val artistJson = Json.encodeToString(artist)

@@ -44,6 +44,8 @@ dependencies {
 //    implementation("org.springframework.data:spring-data-redis:2.5.2")
 //    implementation("redis.clients:jedis:3.6.1")
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
+    testImplementation("com.github.kstyrc:embedded-redis:0.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
 }
 
 tasks.withType<KotlinCompile> {
@@ -126,4 +128,8 @@ jooq {
             }
         }
     }
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    languageVersion = "1.4"
 }

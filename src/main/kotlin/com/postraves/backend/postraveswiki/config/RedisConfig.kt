@@ -2,6 +2,7 @@ package com.postraves.backend.postraveswiki.config
 
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
+import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.async.RedisAsyncCommands
 import io.lettuce.core.codec.RedisCodec
 import org.springframework.beans.factory.annotation.Value
@@ -23,9 +24,10 @@ class RedisConfig(
 //    private val redisTemplate = RedisTemplate<String, Int>()
     private val client: RedisClient = RedisClient
     .create(RedisURI.Builder.redis(redisHost ?: throw TODO(), redisPort ?: throw TODO()).build())
-    private val connection = client.connect()
+    private lateinit var connection: StatefulRedisConnection<String, String>
 
     fun getRedisClient(): RedisAsyncCommands<String, String> {
+        if (!::connection.isInitialized) connection = client.connect()
         return connection.async()
     }
 }
