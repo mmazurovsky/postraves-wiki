@@ -338,6 +338,7 @@ class ArtistIntegrationTest (
             makeGetRequest(mockMvc, "/artist/public/overallRating?cityName=BE&maxQuantity=10", status().isOk)
         val responseOverallRating = Json.decodeFromString<List<ArtistShortDto>>(responseOverallRatingJson)
 
+        assertEquals(4, responseOverallRating.size)
         responseOverallRating.forEachIndexed { index, artistShortDto ->
             when (index) {
                 0 -> {
