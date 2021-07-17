@@ -6,7 +6,9 @@ import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import jooq.tables.records.CityRecord
 import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
+import org.jetbrains.annotations.Nullable
 import org.jooq.DSLContext
+import org.jooq.Record
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
@@ -47,9 +49,9 @@ class CityImplRepo(val dsl: DSLContext) :
     }
 
     override fun update(dto: CityWriteDto): CityDto? {
-        val countryToUpdate = findByNameWithoutConvertion(dto.name)
-        dto.transferDataToDbRecord(countryToUpdate)
-        countryToUpdate.update()
+        val recordToUpdate = findByNameWithoutConvertion(dto.name)
+        dto.transferDataToDbRecord(recordToUpdate)
+        recordToUpdate.update()
         return findByName(dto.name)
     }
 

@@ -44,8 +44,7 @@ class ArtistIntegrationTest (
         )
 
         val countryJson = Json.encodeToString(country)
-        val responseCountryJson = makePostRequest(mockMvc, "/country", countryJson, status().isCreated)
-        val responseCountry = Json.decodeFromString<CountryDto>(responseCountryJson)
+        makePostRequest(mockMvc, "/country", countryJson, status().isCreated)
     }
 
     @AfterEach
