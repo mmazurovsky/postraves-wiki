@@ -2,6 +2,10 @@ package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.config.RedisConfig
 import io.lettuce.core.api.async.RedisAsyncCommands
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -10,26 +14,26 @@ class WeeklyFollowersDeltaRepoImpl(
 ) {
     private val redisClient: RedisAsyncCommands<String, String> by lazy { redisConfig.getRedisClient() }
 
-    fun getWeeklyFollowersDelta(entityType: String, entityId: Long) : Int {
+    fun getWeeklyFollowersDelta(entityType: String, entityId: Long): Int {
         val delta = redisClient.zscore("$entityType:weeklyFollowersDelta", entityId.toString())
         // dont know if null check appropriate here
         return delta.get().toInt()
     }
 
-    fun incrementWeeklyFollowersDelta(entityType: String, entityId: Long) : Int {
+    fun incrementWeeklyFollowersDelta(entityType: String, entityId: Long): Int {
         val incrementedValue = redisClient.zincrby("$entityType:weeklyFollowersDelta", 1.0, entityId.toString())
         return incrementedValue.get().toInt()
     }
 
-    fun decrementWeeklyFollowersDelta(entityType: String, entityId: Long) : Int {
+    fun decrementWeeklyFollowersDelta(entityType: String, entityId: Long): Int {
         val decrementValue = redisClient.zincrby("$entityType:weeklyFollowersDelta", -1.0, entityId.toString())
         return decrementValue.get().toInt()
     }
 
-    fun getTop(entityType: String, quantity: Long) : List<Map<Long, Int>> {
-        val top = redisClient.zrevrangeWithScores("$entityType:weeklyFollowersDelta", 0, quantity-1)
-        // todo i dont know what will be if not enough values
-        return top.get().map { mapOf(it.value.toLong() to it.score.toInt()) }.toList()
+    fun getTop(entityType: String, quantity: Long): List<Map<Long, Int>> {
+        val topFuture = redisClient.zrevrangeWithScores("$entityType:weeklyFollowersDelta", 0, quantity - 1)
+        val top = topFuture.get()
+        return top.map { mapOf(it.value.toLong() to it.score.toInt()) }.toList()
     }
 
     fun setInitialWeeklyFollowersDelta(entityType: String, entityId: Long) {
@@ -37,7 +41,7 @@ class WeeklyFollowersDeltaRepoImpl(
     }
 
     fun clearAllData() {
-        redisClient.flushall().get()
+        redisClient.flushall()
     }
 
     fun returnAllValuesToInitial(entityType: String) {

@@ -11,7 +11,6 @@ interface ByIdService<FULLDTO : BaseFullDto> {
     fun deleteById(id: Long): FULLDTO
 }
 
-@Service
 class ByIdServiceImpl<FULLDTO : BaseFullDto, REPO : ByIdRepo<FULLDTO>>
     (private val byIdRepo: REPO) :
     ByIdService<FULLDTO> {

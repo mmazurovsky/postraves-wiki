@@ -6,7 +6,6 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.service.ArtistService
-import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
@@ -21,13 +20,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
@@ -54,10 +49,8 @@ class ArtistIntegrationTest (
     }
 
     @AfterEach
-    private fun cleanDb() {
-        artistService.findAll().forEach { artistService.deleteById(it.id) }
+    private fun cleanDb() = artistService.findAll().forEach { artistService.deleteById(it.id) }
 //        countryService.findAll().forEach { countryService.deleteByName(it.name) }
-    }
 
     private fun saveOrUpdateArtist(
         artist: ArtistWriteDto, endpoint: String, expectedStatus: ResultMatcher,
@@ -86,10 +79,6 @@ class ArtistIntegrationTest (
             body,
             expectedStatus
         )
-    }
-
-    @Test
-    fun contextLoads() {
     }
 
     @Test

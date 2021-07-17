@@ -1,9 +1,9 @@
 package com.postraves.backend.postraveswiki.repo
 
-import com.postraves.backend.postraveswiki.config.JooqDSLContextConfig
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import jooq.tables.records.CountryRecord
 import jooq.tables.references.COUNTRY
+import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
@@ -12,11 +12,11 @@ interface CountryRepo :
     ByNameRepo<CountryDto>
 
 @Repository
-class CountryImplRepo(val contextConfig: JooqDSLContextConfig) :
+class CountryImplRepo(val dsl: DSLContext) :
     CountryRepo {
 
     private fun findByNameWithoutConvertion(name: String) : CountryRecord {
-        val record = contextConfig.getDSLContext()
+        val record = dsl
             .selectFrom(COUNTRY)
             .where(COUNTRY.NAME.eq(name))
             .fetchOne()
@@ -24,15 +24,15 @@ class CountryImplRepo(val contextConfig: JooqDSLContextConfig) :
     }
 
     override fun findByName(name: String): CountryDto {
-        val selectedRecord = contextConfig.getDSLContext()
+        val selectedRecord = dsl
             .selectFrom(COUNTRY)
             .where(COUNTRY.NAME.eq(name))
             .fetchOneInto(COUNTRY)
-        return CountryDto.createOutOfDbRecords(selectedRecord)
+        return if (selectedRecord != null) CountryDto.createOutOfDbRecords(selectedRecord) else throw TODO()
     }
 
     override fun save(dto: CountryDto): CountryDto? {
-        val countryToSave = contextConfig.getDSLContext().newRecord(COUNTRY)
+        val countryToSave = dsl.newRecord(COUNTRY)
         dto.transferDataToDbRecord(countryToSave)
         countryToSave.createdDateTime = OffsetDateTime.now()
         countryToSave.store()
@@ -48,14 +48,14 @@ class CountryImplRepo(val contextConfig: JooqDSLContextConfig) :
 
     override fun deleteByName(name: String): CountryDto {
         val dto = this.findByName(name)
-        if (contextConfig.getDSLContext().fetchOne(COUNTRY, COUNTRY.NAME.eq(name))
+        if (dsl.fetchOne(COUNTRY, COUNTRY.NAME.eq(name))
                 ?.delete() == null
         ) throw TODO()
         else return dto
     }
 
     override fun findAll(): List<CountryDto> {
-        val results = contextConfig.getDSLContext()
+        val results = dsl
             .selectFrom(COUNTRY)
             .fetch()
             .map { CountryDto.createOutOfDbRecords(it.into(COUNTRY)) }

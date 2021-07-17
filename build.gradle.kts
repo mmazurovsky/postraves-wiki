@@ -27,25 +27,23 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation ("com.google.firebase:firebase-admin:7.1.0")
+    implementation("org.jooq:jooq:3.14.13")
     jooqGenerator("org.postgresql:postgresql:42.2.14")
-    implementation("org.jooq:jooq:3.14.12")
-//    runtimeOnly("com.h2database:h2:1.4.200")
-//    implementation("io.zonky.test:embedded-database-spring-test:2.0.1")
     testImplementation("org.testcontainers:postgresql:1.15.3")
     testImplementation("org.testcontainers:junit-jupiter:1.15.3")
     runtimeOnly ("org.postgresql:postgresql:42.2.18")
     implementation("org.flywaydb:flyway-core:7.1.1")
     implementation("org.springframework:spring-jdbc:5.3.8")
-//    testCompileOnly("org.junit.jupiter:junit-jupiter-api:5.7.1")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
     implementation(kotlin("test"))
-//    implementation("org.springframework.data:spring-data-jpa:2.5.2")
-//    implementation("org.springframework.data:spring-data-redis:2.5.2")
-//    implementation("redis.clients:jedis:3.6.1")
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
     testImplementation("com.github.kstyrc:embedded-redis:0.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.1")
+//    implementation("io.r2dbc:r2dbc-postgresql:0.8.8.RELEASE")
+//    implementation("io.r2dbc:r2dbc-bom:Arabba-SR10")
+//    implementation("org.springframework.data:spring-data-r2dbc:1.3.3")
+
 }
 
 tasks.withType<KotlinCompile> {
@@ -54,10 +52,6 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "11"
     }
 }
-
-//tasks.named<Test>("test") {
-//    useJUnitPlatform()
-//}
 
 tasks.test {
     useJUnitPlatform()
@@ -70,16 +64,16 @@ flyway {
     schemas = arrayOf("public")
 }
 
-buildscript {
-    configurations["classpath"].resolutionStrategy.eachDependency {
-        if (requested.group == "org.jooq") {
-            useVersion("3.14.12")
-        }
-    }
-}
+//buildscript {
+//    configurations["classpath"].resolutionStrategy.eachDependency {
+//        if (requested.group == "org.jooq") {
+//            useVersion("3.15.1")
+//        }
+//    }
+//}
 
 jooq {
-    version.set("3.14.12")  // default (can be omitted)
+    version.set("3.14.13")  // default (can be omitted)
     edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)  // default (can be omitted)
 
     configurations {

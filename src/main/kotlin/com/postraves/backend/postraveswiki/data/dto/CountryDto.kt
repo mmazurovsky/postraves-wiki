@@ -19,11 +19,11 @@ data class CountryDto(
     }
     
     companion object FactoryDbRecord {
-        fun createOutOfDbRecords(countryRecord: CountryRecord?) : CountryDto {
+        fun createOutOfDbRecords(countryRecord: CountryRecord) : CountryDto {
             return CountryDto(
-                name = countryRecord?.name ?: throw TODO(),
-                phoneCode = countryRecord?.phoneCode ?: throw TODO(),
-                emojiCode = countryRecord?.emojiCode ?: throw TODO(),
+                name = countryRecord.name ?: throw TODO(),
+                phoneCode = countryRecord.phoneCode ?: throw TODO(),
+                emojiCode = countryRecord.emojiCode ?: throw TODO(),
             )
         }
     }

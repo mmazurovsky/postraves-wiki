@@ -9,7 +9,6 @@ interface ServiceByName<FULLDTO : BaseFullDto> {
     fun deleteByName(name: String): FULLDTO
 }
 
-@Service
 class ServiceByNameImpl<
         FULLDTO : BaseFullDto,
         REPO : ByNameRepo<FULLDTO>>
