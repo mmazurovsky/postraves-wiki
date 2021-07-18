@@ -11,10 +11,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -22,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.lang.ArithmeticException
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -81,7 +79,7 @@ class CityIntegrationTest(
     }
 
     @Test
-    fun updateCityWithCountryAssociation() {
+    fun updateCityWithNewCountryAssociation() {
 
         val city = CityWriteDto(
             name = "Brugge",
@@ -104,4 +102,75 @@ class CityIntegrationTest(
         assertEquals("+9", cityFinalDecoded.country.phoneCode)
     }
 
+    @Test
+    fun saveCityAndDeleteByName() {
+
+        val city = CityWriteDto(
+            name = "Brugge",
+            countryName = "BE",
+            timeOffset = -3
+        )
+
+        val cityJson = Json.encodeToString(city)
+        Requests.makePostRequest(mockMvc, "/city", cityJson, status().isCreated)
+
+        Requests.makeDeleteRequest(mockMvc, "/city/Brugge", status().isOk)
+
+        val cityListJson = Requests.makeGetRequest(mockMvc, "/city", status().isOk)
+        val cityListDecoded = Json.decodeFromString<List<CityDto>>(cityListJson)
+
+        assertEquals(0, cityListDecoded.size)
+    }
+
+    @Test
+    fun saveMultipleAndFindAll() {
+
+        val city1 = CityWriteDto(
+            name = "Brugge",
+            countryName = "BE",
+            timeOffset = -3
+        )
+
+        val city2 = CityWriteDto(
+            name = "Ant",
+            countryName = "CHE",
+            timeOffset = -1
+        )
+
+        val city3 = CityWriteDto(
+            name = "Amst",
+            countryName = "CHE",
+            timeOffset = -1
+        )
+
+        val cityJson1 = Json.encodeToString(city1)
+        val cityJson2 = Json.encodeToString(city2)
+        val cityJson3 = Json.encodeToString(city3)
+        Requests.makePostRequest(mockMvc, "/city", cityJson1, status().isCreated)
+        Requests.makePostRequest(mockMvc, "/city", cityJson2, status().isCreated)
+        Requests.makePostRequest(mockMvc, "/city", cityJson3, status().isCreated)
+
+        val cityListJson = Requests.makeGetRequest(mockMvc, "/city", status().isOk)
+
+        val cityListDecoded = Json.decodeFromString<List<CityDto>>(cityListJson)
+
+        assertEquals(3, cityListDecoded.size)
+    }
+
+    @Test
+    fun tryToSaveCityWithoutCountryRefShouldBeBadRequest() {
+
+        val city = mapOf(
+            "name" to "Brugge",
+            "timeOffset" to "-1"
+        )
+
+        val cityJson = Json.encodeToString(city)
+
+        Requests.makePostRequest(mockMvc, "/city", cityJson, status().isBadRequest)
+
+//        assertThrows<ArithmeticException> {
+//            Requests.makePostRequest(mockMvc, "/city", cityJson, status().isBadRequest)
+//        }
+    }
 }
