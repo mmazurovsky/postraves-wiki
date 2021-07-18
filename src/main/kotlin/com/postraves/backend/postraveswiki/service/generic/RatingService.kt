@@ -1,8 +1,7 @@
 package com.postraves.backend.postraveswiki.service
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
-import com.postraves.backend.postraveswiki.repo.RatingRepo
+import com.postraves.backend.postraveswiki.repo.generic.RatingRepo
 import org.springframework.stereotype.Service
 
 interface RatingService<SHORTDTO: BaseShortDto> {

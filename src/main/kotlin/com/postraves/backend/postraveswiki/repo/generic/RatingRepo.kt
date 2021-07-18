@@ -1,6 +1,5 @@
-package com.postraves.backend.postraveswiki.repo
+package com.postraves.backend.postraveswiki.repo.generic
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
 
 interface RatingRepo<SHORTDTO : BaseShortDto> {

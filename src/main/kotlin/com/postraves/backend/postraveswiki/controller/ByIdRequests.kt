@@ -8,9 +8,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/default")
-interface RatingRequests<SHORTDTO : BaseShortDto> {
+interface ByIdRequests<FULLDTO : BaseFullDto> {
 
-    @GetMapping("/public/overallRating")
+    @GetMapping("/public/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun findOverallRating(@RequestParam cityName: String, @RequestParam maxQuantity: Int) : List<SHORTDTO>
+    fun findById(@PathVariable id: Long): FULLDTO
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun deleteById(@PathVariable id: Long)
 }

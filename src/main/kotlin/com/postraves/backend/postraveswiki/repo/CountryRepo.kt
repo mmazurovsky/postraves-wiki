@@ -1,6 +1,8 @@
 package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.repo.generic.BaseRepo
+import com.postraves.backend.postraveswiki.repo.generic.ByNameRepo
 import jooq.tables.records.CountryRecord
 import jooq.tables.references.COUNTRY
 import org.jooq.DSLContext
@@ -8,14 +10,14 @@ import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
 interface CountryRepo :
-    BaseRepo<CountryDto, CountryDto, CountryDto>,
+    BaseRepo<CountryDto, CountryDto>,
     ByNameRepo<CountryDto>
 
 @Repository
 class CountryImplRepo(val dsl: DSLContext) :
     CountryRepo {
 
-    private fun findByNameWithoutConvertion(name: String) : CountryRecord {
+    private fun findByNameWithoutConvertion(name: String): CountryRecord {
         val record = dsl
             .selectFrom(COUNTRY)
             .where(COUNTRY.NAME.eq(name))
@@ -31,27 +33,24 @@ class CountryImplRepo(val dsl: DSLContext) :
         return if (selectedRecord != null) CountryDto.createOutOfDbRecords(selectedRecord) else throw TODO()
     }
 
-    override fun save(dto: CountryDto): CountryDto? {
+    override fun save(dto: CountryDto): CountryDto {
         val countryToSave = dsl.newRecord(COUNTRY)
         dto.transferDataToDbRecord(countryToSave)
         countryToSave.createdDateTime = OffsetDateTime.now()
         countryToSave.store()
-        return findByName(dto.name)
+        return findByName(countryToSave.name ?: throw TODO())
     }
 
-    override fun update(dto: CountryDto): CountryDto? {
+    override fun update(dto: CountryDto) {
         val countryToUpdate = findByNameWithoutConvertion(dto.name)
         dto.transferDataToDbRecord(countryToUpdate)
         countryToUpdate.update()
-        return findByName(dto.name)
     }
 
-    override fun deleteByName(name: String): CountryDto {
-        val dto = this.findByName(name)
+    override fun deleteByName(name: String) {
         if (dsl.fetchOne(COUNTRY, COUNTRY.NAME.eq(name))
                 ?.delete() == null
         ) throw TODO()
-        else return dto
     }
 
     override fun findAll(): List<CountryDto> {

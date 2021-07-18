@@ -21,9 +21,9 @@ data class ArtistFullDto(
 //    val eventsShort: List<EventShortDto>
 ) : BaseFullDto {
     companion object FactoryDbRecord {
-        fun createOutOfDbRecords(artistRecord: ArtistRecord?, countryRecord: CountryRecord?) : ArtistFullDto {
+        fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistFullDto {
             return ArtistFullDto(
-                id = artistRecord?.id ?: throw TODO(),
+                id = artistRecord.id ?: throw TODO(),
                 name = artistRecord.name ?: throw TODO(),
                 baseRating = artistRecord.baseRating ?: throw TODO(),
                 overallFollowersCount = artistRecord.overallFollowersCount ?: throw TODO(),
@@ -32,11 +32,8 @@ data class ArtistFullDto(
                 soundcloudLink = artistRecord.soundcloudLink,
                 about = artistRecord.about,
                 country =
-                if (countryRecord?.name != null)
-                    CountryDto(
-                    name = countryRecord.name ?: throw TODO(),
-                    phoneCode = countryRecord.phoneCode ?: throw TODO(),
-                    emojiCode = countryRecord.emojiCode ?: throw TODO())
+                if (countryRecord.name != null)
+                    CountryDto.createOutOfDbRecords(countryRecord)
                 else null
             )
         }

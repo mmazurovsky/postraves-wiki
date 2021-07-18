@@ -7,21 +7,17 @@ import com.postraves.backend.postraveswiki.repo.ArtistRepo
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
-
 interface ArtistService :
-    BaseService<ArtistWriteDto, ArtistShortDto, ArtistFullDto>,
+    BaseService<ArtistWriteDto, ArtistShortDto>,
     ByIdService<ArtistFullDto>,
     RatingService<ArtistShortDto>
 
 @Service
 class ArtistServiceImpl(
     private val artistRepo: ArtistRepo,
-    @Qualifier("baseServiceImpl")
     private val baseService:
-    BaseService<ArtistWriteDto, ArtistShortDto, ArtistFullDto> = BaseServiceImpl(artistRepo),
-    @Qualifier("ratingServiceImpl")
+    BaseService<ArtistWriteDto, ArtistShortDto> = BaseServiceImpl(artistRepo),
     private val ratingService: RatingService<ArtistShortDto> = RatingServiceImpl(artistRepo),
-    @Qualifier("byIdServiceImpl")
     private val byIdService: ByIdService<ArtistFullDto> = ByIdServiceImpl(artistRepo)
     ) : ArtistService {
 
@@ -29,15 +25,15 @@ class ArtistServiceImpl(
         return byIdService.findById(id)
     }
 
-    override fun deleteById(id: Long) : ArtistFullDto {
+    override fun deleteById(id: Long) {
         return byIdService.deleteById(id)
     }
 
-    override fun save(dto: ArtistWriteDto): ArtistFullDto {
+    override fun save(dto: ArtistWriteDto):ArtistShortDto {
         return baseService.save(dto)
     }
 
-    override fun update(dto: ArtistWriteDto): ArtistFullDto {
+    override fun update(dto: ArtistWriteDto) {
         return baseService.update(dto)
     }
 

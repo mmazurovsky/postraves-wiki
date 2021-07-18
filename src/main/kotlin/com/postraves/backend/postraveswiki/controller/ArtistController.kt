@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/artist")
 class ArtistController(private val artistService: ArtistService)
-    : BaseRequests<ArtistWriteDto, ArtistShortDto, ArtistFullDto>, RatingRequests<ArtistShortDto, ArtistFullDto> {
+    : BaseRequests<ArtistWriteDto, ArtistShortDto>, ByIdRequests<ArtistFullDto>, RatingRequests<ArtistShortDto> {
 
-    override fun save(dto: ArtistWriteDto): ArtistFullDto {
+    override fun save(dto: ArtistWriteDto): ArtistShortDto {
         return artistService.save(dto)
     }
 
-    override fun update(dto: ArtistWriteDto): ArtistFullDto {
-        return artistService.update(dto)
+    override fun update(dto: ArtistWriteDto) {
+        artistService.update(dto)
     }
 
     override fun findById(id: Long): ArtistFullDto {
@@ -27,8 +27,8 @@ class ArtistController(private val artistService: ArtistService)
         return artistService.findAll()
     }
 
-    override fun deleteById(id: Long): ArtistFullDto {
-        return artistService.deleteById(id)
+    override fun deleteById(id: Long) {
+        artistService.deleteById(id)
     }
 
     override fun findOverallRating(cityName: String, maxQuantity: Int): List<ArtistShortDto> {

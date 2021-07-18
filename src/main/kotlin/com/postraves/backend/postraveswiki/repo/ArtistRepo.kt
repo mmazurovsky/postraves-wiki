@@ -4,6 +4,9 @@ import com.postraves.backend.postraveswiki.config.JooqDSLContextConfig
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
+import com.postraves.backend.postraveswiki.repo.generic.BaseRepo
+import com.postraves.backend.postraveswiki.repo.generic.ByIdRepo
+import com.postraves.backend.postraveswiki.repo.generic.RatingRepo
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.ARTIST
 import jooq.tables.references.COUNTRY
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
 interface ArtistRepo :
-    BaseRepo<ArtistWriteDto, ArtistShortDto, ArtistFullDto>,
+    BaseRepo<ArtistWriteDto, ArtistShortDto>,
     ByIdRepo<ArtistFullDto>,
     RatingRepo<ArtistShortDto>
 
@@ -23,9 +26,17 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
 
     private val dsl: DSLContext by lazy { dslContextConfig.getDSLContext() }
 
-    private fun findByIdWithoutConvertion(id: Long): ArtistRecord {
+    private fun findByIdWithoutJoins(id: Long): ArtistRecord {
         val record = dsl
             .selectFrom(ARTIST)
+            .where(ARTIST.ID.eq(id))
+            .fetchOne()
+        return record ?: throw TODO()
+    }
+
+    private fun findByIdWithJoins(id: Long): Record {
+        val record = dsl
+            .selectFrom(ARTIST.leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME)))
             .where(ARTIST.ID.eq(id))
             .fetchOne()
         return record ?: throw TODO()
@@ -42,22 +53,19 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
     }
 
     override fun findById(id: Long): ArtistFullDto {
-        val selectedRecord: Record? = dsl
+        val selectedRecord = dsl
             .selectFrom(
                 ARTIST
                     .leftOuterJoin(COUNTRY)
                     .on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
             )
             .where(ARTIST.ID.eq(id))
-            .fetchOne()
+            .fetchOne() ?: throw TODO()
 
-        val artistRecord = selectedRecord?.into(ARTIST)
-        val countryRecord = selectedRecord?.into(COUNTRY)
-
-        return ArtistFullDto.createOutOfDbRecords(artistRecord, countryRecord)
+        return ArtistFullDto.createOutOfDbRecords(selectedRecord.into(ARTIST), selectedRecord.into(COUNTRY))
     }
 
-    override fun save(dto: ArtistWriteDto): ArtistFullDto? {
+    override fun save(dto: ArtistWriteDto): ArtistShortDto {
         val artistToSave = dsl.newRecord(ARTIST)
         dto.transferDataToDbRecord(artistToSave)
         artistToSave.createdDateTime = OffsetDateTime.now()
@@ -65,24 +73,22 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
         artistToSave.baseRating = dto.soundcloudFollowersCount?.div(5) ?: 0
         artistToSave.store()
         val id = artistToSave.id ?: throw TODO()
-        return this.findById(id)
+        val record = findByIdWithJoins(id)
+        return ArtistShortDto.createOutOfDbRecords(record.into(ARTIST), record.into(COUNTRY))
     }
 
-    override fun update(dto: ArtistWriteDto): ArtistFullDto? {
+    override fun update(dto: ArtistWriteDto) {
         dto.id ?: throw TODO()
-        val artistToUpdate = findByIdWithoutConvertion(dto.id)
+        val artistToUpdate = findByIdWithoutJoins(dto.id)
         dto.transferDataToDbRecord(artistToUpdate)
         artistToUpdate.update()
-        val id = artistToUpdate.id ?: throw TODO()
-        return this.findById(id)
+        artistToUpdate.id ?: throw TODO()
     }
 
-    override fun deleteById(id: Long): ArtistFullDto {
-        val dto = this.findById(id)
+    override fun deleteById(id: Long) {
         if (dsl.fetchOne(ARTIST, ARTIST.ID.eq(id))
                 ?.delete() == null
         ) throw TODO()
-        else return dto
     }
 
     override fun findOverallTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {

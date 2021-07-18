@@ -6,6 +6,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.service.ArtistService
+import com.postraves.backend.postraveswiki.utils.Requests
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
@@ -51,35 +52,6 @@ class ArtistIntegrationTest (
     private fun cleanDb() = artistService.findAll().forEach { artistService.deleteById(it.id) }
 //        countryService.findAll().forEach { countryService.deleteByName(it.name) }
 
-    private fun saveOrUpdateArtist(
-        artist: ArtistWriteDto, endpoint: String, expectedStatus: ResultMatcher,
-        mockMvcFunction: (MockMvc, String, String, ResultMatcher) -> String
-    ): ArtistFullDto {
-
-        val artistJson = Json.encodeToString(artist)
-        val responseArtistJson = mockMvcFunction(mockMvc, endpoint, artistJson, expectedStatus)
-        val responseArtist = Json.decodeFromString<ArtistFullDto>(responseArtistJson)
-        return responseArtist
-    }
-
-    val postFunc = { mockMvc: MockMvc, endpoint: String, body: String, expectedStatus: ResultMatcher ->
-        makePostRequest(
-            mockMvc,
-            endpoint,
-            body,
-            expectedStatus
-        )
-    }
-
-    val putFunc = { mockMvc: MockMvc, endpoint: String, body: String, expectedStatus: ResultMatcher ->
-        makePutRequest(
-            mockMvc,
-            endpoint,
-            body,
-            expectedStatus
-        )
-    }
-
     @Test
     fun saveArtistWithCountryAssociation() {
 
@@ -94,23 +66,24 @@ class ArtistIntegrationTest (
             soundcloudFollowersCount = 100,
         )
 
-        val responseArtist = saveOrUpdateArtist(
-            artist = artistToSave,
-            endpoint = "/artist", expectedStatus = status().isCreated,
-            mockMvcFunction = postFunc
-        )
+        val artistJson = Json.encodeToString(artistToSave)
+        val artistIdRespJson = makePostRequest(mockMvc, "/artist", artistJson, status().isCreated)
+        val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
 
-        assertNotNull(responseArtist.id)
-        assertEquals("Amelie Lens", responseArtist.name)
-        assertEquals(20, responseArtist.baseRating)
-        assertEquals(0, responseArtist.overallFollowersCount)
-        assertEquals("image", responseArtist.imageLink)
-        assertEquals("soundcloud", responseArtist.soundcloudLink)
-        assertEquals("instagram", responseArtist.instagramLink)
-        assertEquals("About Amelie", responseArtist.about)
-        assertEquals("BE", responseArtist.country?.name)
-        assertEquals("+7", responseArtist.country?.phoneCode)
-        assertEquals("EBE", responseArtist.country?.emojiCode)
+        val artistRespJson = makeGetRequest(mockMvc, "/artist/public/$artistId", status().isOk)
+        val artistDecoded = Json.decodeFromString<ArtistFullDto>(artistRespJson)
+
+        assertNotNull(artistDecoded.id)
+        assertEquals("Amelie Lens", artistDecoded.name)
+        assertEquals(20, artistDecoded.baseRating)
+        assertEquals(0, artistDecoded.overallFollowersCount)
+        assertEquals("image", artistDecoded.imageLink)
+        assertEquals("soundcloud", artistDecoded.soundcloudLink)
+        assertEquals("instagram", artistDecoded.instagramLink)
+        assertEquals("About Amelie", artistDecoded.about)
+        assertEquals("BE", artistDecoded.country?.name)
+        assertEquals("+7", artistDecoded.country?.phoneCode)
+        assertEquals("EBE", artistDecoded.country?.emojiCode)
     }
 
     @Test
@@ -127,11 +100,14 @@ class ArtistIntegrationTest (
             soundcloudFollowersCount = 100,
         )
 
-        val responseSavedArtist = saveOrUpdateArtist(
-            artist = artistToSave,
-            endpoint = "/artist", expectedStatus = status().isCreated,
-            mockMvcFunction = postFunc
-        )
+        val responseSavedArtist =
+        makePostRequest(mockMvc, "/artist", Json.encodeToString(artistToSave), status().isCreated)
+        val responseSavedArtistDecoded
+//            saveOrUpdateArtist(
+//            artist = artistToSave,
+//            endpoint = "/artist", expectedStatus = status().isCreated,
+//            mockMvcFunction = postFunc
+//        )
 
         val artistToUpdate = artistToSave.copy(
             id = responseSavedArtist.id,

@@ -8,15 +8,15 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/default")
-interface BaseRequests<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto, FULLDTO : BaseFullDto> {
+interface BaseRequests<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto> {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun save(@RequestBody dto: WRITEDTO): FULLDTO
+    fun save(@RequestBody dto: WRITEDTO): SHORTDTO
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    fun update(@RequestBody dto: WRITEDTO): FULLDTO
+    fun update(@RequestBody dto: WRITEDTO)
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

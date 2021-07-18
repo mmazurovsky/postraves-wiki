@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/country")
 class CountryController(private val countryService: CountryService)
-    : BaseRequests<CountryDto, CountryDto, CountryDto>, ByNameRequests<CountryDto, CountryDto> {
+    : BaseRequests<CountryDto, CountryDto>, ByNameRequests<CountryDto> {
 
     override fun save(dto: CountryDto): CountryDto {
         return countryService.save(dto)
     }
 
-    override fun update(dto: CountryDto): CountryDto {
-        return countryService.update(dto)
+    override fun update(dto: CountryDto) {
+        countryService.update(dto)
     }
 
     override fun findByName(name: String): CountryDto {
@@ -30,7 +30,7 @@ class CountryController(private val countryService: CountryService)
         return countryService.findAll()
     }
 
-    override fun deleteByName(name: String): CountryDto {
-        return countryService.deleteByName(name)
+    override fun deleteByName(name: String) {
+        countryService.deleteByName(name)
     }
 }
