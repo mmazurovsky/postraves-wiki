@@ -1,12 +1,9 @@
-package com.postraves.backend.postraveswiki.security.dataclass;
+package com.postraves.backend.postraveswiki.security.dataclass
 
-import lombok.Data;
-
-@Data
-public class CookieProperties {
-    String domain;
-    String path;
-    boolean httpOnly;
-    boolean secure;
-    int maxAgeInMinutes;
-}
+data class CookieProperties(
+    var domain: String? = null,
+    var path: String? = null,
+    var httpOnly: Boolean = false,
+    var secure: Boolean = false,
+    var maxAgeInMinutes: Int = 0
+)

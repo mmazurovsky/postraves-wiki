@@ -6,6 +6,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.repo.UserRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
+import com.postraves.backend.postraveswiki.service.generic.BaseService
 import org.springframework.stereotype.Service
 
 interface UserService : BaseService<UserWriteDto, UserShortDto> {
@@ -24,23 +25,23 @@ class UserServiceImpl(
     ) : UserService {
 
     override fun findMyProfile(): UserFullDto {
-        return userRepo.findMyProfile(securityService.userAuthUid)
+        return userRepo.findMyProfile(securityService.userAuthUid ?: throw TODO())
     }
 
     override fun deleteMyProfile() {
-        userRepo.deleteMyProfile(securityService.userAuthUid)
+        userRepo.deleteMyProfile(securityService.userAuthUid ?: throw TODO())
     }
 
     override fun followArtist(id: Long) {
-        userRepo.followArtist(securityService.userAuthUid, id)
+        userRepo.followArtist(securityService.userAuthUid ?: throw TODO(), id)
     }
 
     override fun unfollowArtist(id: Long) {
-        userRepo.unfollowArtist(securityService.userAuthUid, id)
+        userRepo.unfollowArtist(securityService.userAuthUid ?: throw TODO(), id)
     }
 
     override fun findMyFollowsArtist(): List<ArtistShortDto> {
-        return userRepo.findMyFollowsArtist(securityService.userAuthUid)
+        return userRepo.findMyFollowsArtist(securityService.userAuthUid ?: throw TODO())
     }
 
     override fun findByAuthUid(authUid: String): UserFullDto? {
@@ -48,13 +49,13 @@ class UserServiceImpl(
     }
 
     override fun save(dto: UserWriteDto):UserShortDto {
-        return userRepo.save(dto, securityService.userAuthUid)
+        return userRepo.save(dto, securityService.userAuthUid ?: throw TODO())
     }
 
    override fun update(dto: UserWriteDto) {
        // get auth id
        // pass it with dto
-       userRepo.update(dto, securityService.userAuthUid)
+       userRepo.update(dto, securityService.userAuthUid ?: throw TODO())
     }
 
     override fun findAll(): List<UserShortDto> {

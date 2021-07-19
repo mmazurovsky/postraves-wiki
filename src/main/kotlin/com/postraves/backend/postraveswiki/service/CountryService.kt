@@ -2,6 +2,8 @@ package com.postraves.backend.postraveswiki.service
 
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.repo.CountryRepo
+import com.postraves.backend.postraveswiki.service.generic.BaseService
+import com.postraves.backend.postraveswiki.service.generic.ServiceByName
 import org.springframework.stereotype.Service
 
 interface CountryService :
@@ -11,27 +13,27 @@ interface CountryService :
 @Service
 class CountryServiceImpl(
     private val countryRepo: CountryRepo,
-    private val baseService: BaseService<CountryDto, CountryDto> = BaseServiceImpl(countryRepo),
-    private val serviceByName: ServiceByName<CountryDto> = ServiceByNameImpl(countryRepo),
-    ) : CountryService {
+    )
+    : CountryService
+{
 
     override fun findByName(name: String): CountryDto {
-        return serviceByName.findByName(name)
+        return countryRepo.findByName(name)
     }
 
     override fun save(dto: CountryDto):CountryDto {
-        return baseService.save(dto)
+        return countryRepo.save(dto)
     }
 
     override fun update(dto: CountryDto) {
-        baseService.update(dto)
+        countryRepo.update(dto)
     }
 
     override fun deleteByName(name: String) {
-        serviceByName.deleteByName(name)
+        countryRepo.deleteByName(name)
     }
 
     override fun findAll(): List<CountryDto> {
-        return baseService.findAll()
+        return countryRepo.findAll()
     }
 }

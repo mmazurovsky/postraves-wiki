@@ -1,14 +1,10 @@
-package com.postraves.backend.postraveswiki.security.dataclass;
+package com.postraves.backend.postraveswiki.security.dataclass
 
-import com.google.firebase.auth.FirebaseToken;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.google.firebase.auth.FirebaseToken
 
-@Data
-@AllArgsConstructor
-public class Credentials {
-    private CredentialType type;
-    private FirebaseToken decodedToken;
-    private String idToken;
-    private String session;
-}
+data class Credentials (
+    var type: CredentialType? = null,
+    var decodedToken: FirebaseToken? = null,
+    var idToken: String? = null,
+    var session: String? = null
+)

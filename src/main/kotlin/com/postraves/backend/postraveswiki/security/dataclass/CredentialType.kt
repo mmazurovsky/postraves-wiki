@@ -1,5 +1,5 @@
-package com.postraves.backend.postraveswiki.security.dataclass;
+package com.postraves.backend.postraveswiki.security.dataclass
 
-public enum CredentialType {
+enum class CredentialType {
     ID_TOKEN, SESSION
 }

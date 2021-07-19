@@ -1,16 +1,16 @@
 package com.postraves.backend.postraveswiki.controller
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
-import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 
 @RequestMapping("/default")
 interface RatingRequests<SHORTDTO : BaseShortDto> {
 
     @GetMapping("/public/overallRating")
     @ResponseStatus(HttpStatus.OK)
-    fun findOverallRating(@RequestParam cityName: String, @RequestParam maxQuantity: Int) : List<SHORTDTO>
+    fun findOverallRating(@RequestParam cityName: String, @RequestParam maxQuantity: Int): List<SHORTDTO>
 }

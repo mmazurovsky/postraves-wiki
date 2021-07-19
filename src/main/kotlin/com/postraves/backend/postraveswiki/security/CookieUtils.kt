@@ -1,71 +1,69 @@
-package com.postraves.backend.postraveswiki.security;
+package com.postraves.backend.postraveswiki.security
 
-import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties
+import lombok.RequiredArgsConstructor
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import org.springframework.web.util.WebUtils
+import javax.servlet.http.Cookie
 
 @Service
 @RequiredArgsConstructor
-public class CookieUtils {
+class CookieUtils(
+    private val httpServletRequest: HttpServletRequest? = null,
+    private val httpServletResponse: HttpServletResponse? = null,
+    private val restSecProps: SecurityProperties? = null
+) {
 
-    private final HttpServletRequest httpServletRequest;
-    private final HttpServletResponse httpServletResponse;
-    private final SecurityProperties restSecProps;
-
-    public Cookie getCookie(String name) {
-        return WebUtils.getCookie(httpServletRequest, name);
+    fun getCookie(name: String?): Cookie? {
+        return WebUtils.getCookie(httpServletRequest!!, name!!)
     }
 
-    public void setCookie(String name, String value, int expiryInMinutes) {
-        int expiresInSeconds = expiryInMinutes * 60 * 60;
-        Cookie cookie = new Cookie(name, value);
-        cookie.setSecure(restSecProps.getCookieProps().isSecure());
-        cookie.setPath(restSecProps.getCookieProps().getPath());
-        cookie.setDomain(restSecProps.getCookieProps().getDomain());
-        cookie.setMaxAge(expiresInSeconds);
-        httpServletResponse.addCookie(cookie);
+    fun setCookie(name: String?, value: String?, expiryInMinutes: Int) {
+        val expiresInSeconds = expiryInMinutes * 60 * 60
+        val cookie = Cookie(name, value)
+        cookie.secure = restSecProps!!.cookieProps!!.secure
+        cookie.path = restSecProps.cookieProps!!.path
+        cookie.domain = restSecProps.cookieProps!!.domain
+        cookie.maxAge = expiresInSeconds
+        httpServletResponse!!.addCookie(cookie)
     }
 
-    public void setSecureCookie(String name, String value, int expiryInMinutes) {
-        int expiresInSeconds = expiryInMinutes * 60 * 60;
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(restSecProps.getCookieProps().isHttpOnly());
-        cookie.setSecure(restSecProps.getCookieProps().isSecure());
-        cookie.setPath(restSecProps.getCookieProps().getPath());
-        cookie.setDomain(restSecProps.getCookieProps().getDomain());
-        cookie.setMaxAge(expiresInSeconds);
-        httpServletResponse.addCookie(cookie);
+    fun setSecureCookie(name: String?, value: String?, expiryInMinutes: Int) {
+        val expiresInSeconds = expiryInMinutes * 60 * 60
+        val cookie = Cookie(name, value)
+        cookie.isHttpOnly = restSecProps!!.cookieProps!!.httpOnly
+        cookie.secure = restSecProps.cookieProps!!.secure
+        cookie.path = restSecProps.cookieProps!!.path
+        cookie.domain = restSecProps.cookieProps!!.domain
+        cookie.maxAge = expiresInSeconds
+        httpServletResponse!!.addCookie(cookie)
     }
 
-    public void setSecureCookie(String name, String value) {
-        int expiresInMinutes = restSecProps.getCookieProps().getMaxAgeInMinutes();
-        setSecureCookie(name, value, expiresInMinutes);
+    fun setSecureCookie(name: String?, value: String?) {
+        val expiresInMinutes = restSecProps!!.cookieProps!!.maxAgeInMinutes
+        setSecureCookie(name, value, expiresInMinutes)
     }
 
-    public void deleteSecureCookie(String name) {
-        int expiresInSeconds = 0;
-        Cookie cookie = new Cookie(name, null);
-        cookie.setHttpOnly(restSecProps.getCookieProps().isHttpOnly());
-        cookie.setSecure(restSecProps.getCookieProps().isSecure());
-        cookie.setPath(restSecProps.getCookieProps().getPath());
-        cookie.setDomain(restSecProps.getCookieProps().getDomain());
-        cookie.setMaxAge(expiresInSeconds);
-        httpServletResponse.addCookie(cookie);
+    fun deleteSecureCookie(name: String?) {
+        val expiresInSeconds = 0
+        val cookie = Cookie(name, null)
+        cookie.isHttpOnly = restSecProps!!.cookieProps!!.httpOnly
+        cookie.secure = restSecProps!!.cookieProps!!.secure
+        cookie.path = restSecProps!!.cookieProps!!.path
+        cookie.domain = restSecProps!!.cookieProps!!.domain
+        cookie.maxAge = expiresInSeconds
+        httpServletResponse!!.addCookie(cookie)
     }
 
-    public void deleteCookie(String name) {
-        int expiresInSeconds = 0;
-        Cookie cookie = new Cookie(name, null);
-        cookie.setPath(restSecProps.getCookieProps().getPath());
-        cookie.setDomain(restSecProps.getCookieProps().getDomain());
-        cookie.setMaxAge(expiresInSeconds);
-        httpServletResponse.addCookie(cookie);
+    fun deleteCookie(name: String?) {
+        val expiresInSeconds = 0
+        val cookie = Cookie(name, null)
+        cookie.path = restSecProps!!.cookieProps!!.path
+        cookie.domain = restSecProps.cookieProps!!.domain
+        cookie.maxAge = expiresInSeconds
+        httpServletResponse!!.addCookie(cookie)
     }
-
 }

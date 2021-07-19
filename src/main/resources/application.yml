@@ -1,3 +1,56 @@
+#debug: true
+security:
+  firebase-props:
+    enable-strict-server-session: false
+    enable-check-session-revoked: false
+    enable-logout-everywhere: false
+    session-expiry-in-days: 5
+    cookie-props:
+      max-age-in-minutes: 7200
+      http-only: true
+      secure: true
+      domain: ${DOMAIN}
+      path: /
+    allow-credentials: true
+    allowed-origins:
+      - https://${DOMAIN}
+      - http://localhost:3000
+    allowed-methods:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      - OPTIONS
+    allowed-headers:
+      - Authorization
+      - Origin
+      - Content-Type
+      - Accept
+      - Accept-Encoding
+      - Accept-Language
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - Access-Control-Request-Method
+      - X-Requested-With
+      - X-Auth-Token
+      - X-Xsrf-Token
+      - Cache-Control
+      - Id-Token
+    allowed-public-apis:
+      - /favicon.ico
+      - /session/login
+      - /event/public/**
+      - /artist/public/**
+      - /unity/public/**
+      - /place/public/**
+      - /common/public/**
+      - /user/public/**
+      - /country/public/**
+      - /city/public/**
+    exposed-headers:
+      - X-Xsrf-Token
+---
 spring:
   config:
     activate:
@@ -45,57 +98,6 @@ spring:
 #    key-store: classpath:keystore/baeldung.p12
 #    key-store-password: 123456
 #    key-store-type: PKCS12
-#security:
-#  firebase-props:
-#    enable-strict-server-session: false
-#    enable-check-session-revoked: false
-#    enable-logout-everywhere: false
-#    session-expiry-in-days: 5
-#  cookie-props:
-#    max-age-in-minutes: 7200
-#    http-only: true
-#    secure: true
-#    domain: ${DOMAIN}
-#    path: /
-#  allow-credentials: true
-#  allowed-origins:
-#    - https://${DOMAIN}
-#    - http://localhost:3000
-#  allowed-methods:
-#    - GET
-#    - POST
-#    - PUT
-#    - PATCH
-#    - DELETE
-#    - OPTIONS
-#  allowed-headers:
-#    - Authorization
-#    - Origin
-#    - Content-Type
-#    - Accept
-#    - Accept-Encoding
-#    - Accept-Language
-#    - Access-Control-Allow-Origin
-#    - Access-Control-Allow-Headers
-#    - Access-Control-Request-Method
-#    - X-Requested-With
-#    - X-Auth-Token
-#    - X-Xsrf-Token
-#    - Cache-Control
-#    - Id-Token
-#  allowed-public-apis:
-#    - /favicon.ico
-#    - /session/login
-#    - /event/public/**
-#    - /artist/public/**
-#    - /unity/public/**
-#    - /place/public/**
-#    - /common/public/**
-#    - /user/public/**
-#    - /country/public/**
-#    - /city/public/**
-#  exposed-headers:
-#    - X-Xsrf-Token
 ---
 spring:
   config:

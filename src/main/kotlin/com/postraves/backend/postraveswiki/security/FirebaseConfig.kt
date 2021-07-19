@@ -1,39 +1,40 @@
-package com.postraves.backend.postraveswiki.security;
+package com.postraves.backend.postraveswiki.security
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j
+import com.postraves.backend.postraveswiki.security.FirebaseConfig
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import com.google.firebase.FirebaseOptions
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.firebase.FirebaseApp
+import org.springframework.stereotype.Component
+import java.io.IOException
+import javax.annotation.PostConstruct
 
 @Component
 @Slf4j
-public class FirebaseConfig {
-    static FileInputStream serviceAccount;
-
+class FirebaseConfig {
     @PostConstruct
-    private void initFirebaseApp() {
+    private fun initFirebaseApp() {
         try {
-            serviceAccount = new FileInputStream("src/main/resources/secret/postraves-firebase-adminsdk-2s69q-3648f1af4e.json");
-        } catch (FileNotFoundException e) {
-            log.info("Firebase file not found", e);
+            serviceAccount =
+                FileInputStream("src/main/resources/secret/postraves-firebase-adminsdk-2s69q-3648f1af4e.json")
+        } catch (e: FileNotFoundException) {
+//            FirebaseConfig.log.info("Firebase file not found", e)
         }
-
-        FirebaseOptions options = null;
+        var options: FirebaseOptions? = null
         try {
-            options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-        } catch (IOException e) {
-            log.debug("Can't set Firebase credentials", e);
+            options = FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build()
+        } catch (e: IOException) {
+//            FirebaseConfig.log.debug("Can't set Firebase credentials", e)
         }
+        assert(options != null)
+        FirebaseApp.initializeApp(options)
+    }
 
-        assert options != null;
-        FirebaseApp.initializeApp(options);
+    companion object {
+        var serviceAccount: FileInputStream? = null
     }
 }

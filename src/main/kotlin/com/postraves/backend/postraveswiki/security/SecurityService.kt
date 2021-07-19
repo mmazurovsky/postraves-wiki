@@ -1,49 +1,45 @@
-package com.postraves.backend.postraveswiki.security;
+package com.postraves.backend.postraveswiki.security
 
-import com.google.auth.Credentials;
-import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.auth.Credentials
+import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties
+import lombok.RequiredArgsConstructor
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
+import javax.servlet.http.HttpServletRequest
 
 @Service
 @RequiredArgsConstructor
-public class SecurityService {
+class SecurityService(
+    private val httpServletRequest: HttpServletRequest? = null,
+    private val cookieUtils: CookieUtils? = null,
+    private val securityProps: SecurityProperties? = null
+) {
 
-    private final HttpServletRequest httpServletRequest;
-    private final CookieUtils cookieUtils;
-    private final SecurityProperties securityProps;
-
-    public String getUserAuthUid() {
-        String userPrincipal = null;
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Object principal = securityContext.getAuthentication().getPrincipal();
-        if (principal instanceof String) {
-            userPrincipal = ((String) principal);
+    val userAuthUid: String?
+        get() {
+            var userPrincipal: String? = null
+            val securityContext = SecurityContextHolder.getContext()
+            val principal = securityContext.authentication.principal
+            if (principal is String) {
+                userPrincipal = principal
+            }
+            return userPrincipal
         }
-        return userPrincipal;
-    }
+    val credentials: Credentials
+        get() {
+            val securityContext = SecurityContextHolder.getContext()
+            return securityContext.authentication.credentials as Credentials
+        }
+    val isPublic: Boolean
+        get() = securityProps!!.allowedPublicApis!!.contains(httpServletRequest!!.requestURI)
 
-    public Credentials getCredentials() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return (Credentials) securityContext.getAuthentication().getCredentials();
-    }
-
-    public boolean isPublic() {
-        return securityProps.getAllowedPublicApis().contains(httpServletRequest.getRequestURI());
-    }
-
-    public String getBearerToken(HttpServletRequest request) {
-        String bearerToken = null;
-        String authorization = request.getHeader("Authorization");
+    fun getBearerToken(request: HttpServletRequest): String? {
+        var bearerToken: String? = null
+        val authorization = request.getHeader("Authorization")
         if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
-            bearerToken = authorization.substring(7);
+            bearerToken = authorization.substring(7)
         }
-        return bearerToken;
+        return bearerToken
     }
 }

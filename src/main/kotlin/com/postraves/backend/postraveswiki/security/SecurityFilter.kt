@@ -1,85 +1,90 @@
-package com.postraves.backend.postraveswiki.security;
+package com.postraves.backend.postraveswiki.security
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
-import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto;
-import com.postraves.backend.postraveswiki.security.dataclass.CredentialType;
-import com.postraves.backend.postraveswiki.security.dataclass.Credentials;
-import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties;
-import com.postraves.backend.postraveswiki.service.UserService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j
+import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.beans.factory.annotation.Autowired
+import com.postraves.backend.postraveswiki.service.UserService
+import kotlin.Throws
+import javax.servlet.ServletException
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.FilterChain
+import com.google.firebase.auth.FirebaseToken
+import com.postraves.backend.postraveswiki.security.dataclass.CredentialType
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
+import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
+import com.postraves.backend.postraveswiki.security.dataclass.Credentials
+import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
+import java.io.IOException
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
-public class SecurityFilter extends OncePerRequestFilter {
+class SecurityFilter(
+    private val securityService: SecurityService? = null,
+    private val restSecProps: SecurityProperties? = null,
+    private val cookieUtils: CookieUtils? = null,
+    private val securityProps: SecurityProperties? = null,
+    private val userService: UserService? = null
+) : OncePerRequestFilter() {
 
-    private final SecurityService securityService;
-    private final SecurityProperties restSecProps;
-    private final CookieUtils cookieUtils;
-    private final SecurityProperties securityProps;
-    private final UserService userService;
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        verifyToken(request);
-        filterChain.doFilter(request, response);
+    @Throws(ServletException::class, IOException::class)
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
+        verifyToken(request)
+        filterChain.doFilter(request, response)
     }
 
-    private void verifyToken(HttpServletRequest request) {
-        String session = null;
-        FirebaseToken decodedToken = null;
-        CredentialType type = null;
-        boolean strictServerSessionEnabled = securityProps.getFirebaseProps().isEnableStrictServerSession();
-        Cookie sessionCookie = cookieUtils.getCookie("session");
-        String token = securityService.getBearerToken(request);
+    private fun verifyToken(request: HttpServletRequest) {
+        var session: String? = null
+        var decodedToken: FirebaseToken? = null
+        var type: CredentialType? = null
+        val strictServerSessionEnabled = securityProps!!.firebaseProps!!.enableStrictServerSession
+        val sessionCookie = cookieUtils!!.getCookie("session")
+        val token = securityService!!.getBearerToken(request)
         if (token == null || token.isEmpty()) {
-            log.info("Incoming token is not provided");
+//            SecurityFilter.log.info("Incoming token is not provided")
         } else {
-            log.info("Incoming token is provided");
+//            SecurityFilter.log.info("Incoming token is provided")
         }
         try {
             if (sessionCookie != null) {
-                session = sessionCookie.getValue();
-                decodedToken = FirebaseAuth.getInstance().verifySessionCookie(session,
-                        securityProps.getFirebaseProps().isEnableCheckSessionRevoked());
-                type = CredentialType.SESSION;
+                session = sessionCookie.value
+                decodedToken = FirebaseAuth.getInstance().verifySessionCookie(
+                    session,
+                    securityProps!!.firebaseProps!!.enableCheckSessionRevoked
+                )
+                type = CredentialType.SESSION
             } else if (!strictServerSessionEnabled) {
-                if (token != null && !token.equalsIgnoreCase("undefined")) {
-                    decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-                    type = CredentialType.ID_TOKEN;
+                if (token != null && !token.equals("undefined", ignoreCase = true)) {
+                    decodedToken = FirebaseAuth.getInstance().verifyIdToken(token)
+                    type = CredentialType.ID_TOKEN
                 }
             }
-        } catch (FirebaseAuthException e) {
-            e.printStackTrace();
-            log.error("Firebase Exception:: " + e.getLocalizedMessage());
+        } catch (e: FirebaseAuthException) {
+            e.printStackTrace()
+//            SecurityFilter.log.error("Firebase Exception:: " + e.localizedMessage)
         }
-        assert decodedToken != null;
-        UserFullDto userProfile = firebaseTokenToUser(decodedToken);
+        assert(decodedToken != null)
+        val userProfile = firebaseTokenToUser(decodedToken)
         if (userProfile != null) {
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(decodedToken.getUid(),
-                    new Credentials(type, decodedToken, token, session), null);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            val authentication = UsernamePasswordAuthenticationToken(
+                decodedToken!!.uid,
+                Credentials(type, decodedToken, token, session), null
+            )
+            authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+            SecurityContextHolder.getContext().authentication = authentication
         }
     }
 
-    private UserFullDto firebaseTokenToUser(FirebaseToken decodedToken) {
-        return userService.findByAuthUid(decodedToken.getUid());
+    private fun firebaseTokenToUser(decodedToken: FirebaseToken?): UserFullDto? {
+        return userService!!.findByAuthUid(decodedToken!!.uid)
     }
 }

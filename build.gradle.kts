@@ -39,7 +39,6 @@ dependencies {
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
     testImplementation("com.github.kstyrc:embedded-redis:0.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.1")
 //    implementation("io.r2dbc:r2dbc-postgresql:0.8.8.RELEASE")
 //    implementation("io.r2dbc:r2dbc-bom:Arabba-SR10")
 //    implementation("org.springframework.data:spring-data-r2dbc:1.3.3")
@@ -63,14 +62,6 @@ flyway {
     password = System.getenv("LOCAL_PG_PASSWORD")
     schemas = arrayOf("public")
 }
-
-//buildscript {
-//    configurations["classpath"].resolutionStrategy.eachDependency {
-//        if (requested.group == "org.jooq") {
-//            useVersion("3.15.1")
-//        }
-//    }
-//}
 
 jooq {
     version.set("3.14.13")  // default (can be omitted)
@@ -123,6 +114,7 @@ jooq {
         }
     }
 }
+
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     languageVersion = "1.4"

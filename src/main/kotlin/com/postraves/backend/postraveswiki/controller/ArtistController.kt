@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/artist")
-class ArtistController(private val artistService: ArtistService)
+class ArtistController
+    (
+    private val artistService: ArtistService
+)
     : BaseRequests<ArtistWriteDto, ArtistShortDto>, ByIdRequests<ArtistFullDto>, RatingRequests<ArtistShortDto> {
 
     override fun save(dto: ArtistWriteDto): ArtistShortDto {

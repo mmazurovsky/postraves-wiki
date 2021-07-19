@@ -4,7 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.repo.ArtistRepo
-import org.springframework.beans.factory.annotation.Qualifier
+import com.postraves.backend.postraveswiki.service.generic.*
 import org.springframework.stereotype.Service
 
 interface ArtistService :
@@ -15,45 +15,41 @@ interface ArtistService :
 @Service
 class ArtistServiceImpl(
     private val artistRepo: ArtistRepo,
-    private val baseService:
-    BaseService<ArtistWriteDto, ArtistShortDto> = BaseServiceImpl(artistRepo),
-    private val ratingService: RatingService<ArtistShortDto> = RatingServiceImpl(artistRepo),
-    private val byIdService: ByIdService<ArtistFullDto> = ByIdServiceImpl(artistRepo)
-    ) : ArtistService {
+) : ArtistService {
 
     override fun findById(id: Long): ArtistFullDto {
-        return byIdService.findById(id)
+        return artistRepo.findById(id)
     }
 
     override fun deleteById(id: Long) {
-        return byIdService.deleteById(id)
+        artistRepo.deleteById(id)
     }
 
-    override fun save(dto: ArtistWriteDto):ArtistShortDto {
-        return baseService.save(dto)
+    override fun save(dto: ArtistWriteDto): ArtistShortDto {
+        return artistRepo.save(dto)
     }
 
     override fun update(dto: ArtistWriteDto) {
-        return baseService.update(dto)
+        artistRepo.update(dto)
     }
 
     override fun findOverallTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {
-        return ratingService.findOverallTopInCountry(countryName, maxQuantity)
+        return artistRepo.findOverallTopInCountry(countryName, maxQuantity)
     }
 
     override fun findWeeklyTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {
-        return ratingService.findWeeklyTopInCountry(countryName, maxQuantity)
+        return artistRepo.findWeeklyTopInCountry(countryName, maxQuantity)
     }
 
     override fun findOfTheWeekInCountry(countryName: String): ArtistShortDto {
-        return ratingService.findOfTheWeekInCountry(countryName)
+        return artistRepo.findOfTheWeekInCountry(countryName)
     }
 
     override fun changeBaseRating(id: Long, socialMediaFollowersCount: Int) {
-        return ratingService.changeBaseRating(id, socialMediaFollowersCount)
+        artistRepo.changeBaseRating(id, socialMediaFollowersCount)
     }
 
     override fun findAll(): List<ArtistShortDto> {
-        return baseService.findAll()
+        return artistRepo.findAll()
     }
 }

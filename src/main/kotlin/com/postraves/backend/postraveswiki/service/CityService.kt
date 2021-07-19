@@ -3,7 +3,8 @@ package com.postraves.backend.postraveswiki.service
 import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.repo.CityRepo
-import org.springframework.beans.factory.annotation.Qualifier
+import com.postraves.backend.postraveswiki.service.generic.BaseService
+import com.postraves.backend.postraveswiki.service.generic.ServiceByName
 import org.springframework.stereotype.Service
 
 interface CityService :
@@ -13,27 +14,25 @@ interface CityService :
 @Service
 class CityServiceImpl(
     private val cityRepo: CityRepo,
-    private val baseService: BaseService<CityWriteDto, CityDto> = BaseServiceImpl(cityRepo),
-    private val serviceByName: ServiceByName<CityDto> = ServiceByNameImpl(cityRepo),
     ) : CityService {
 
     override fun findByName(name: String): CityDto {
-        return serviceByName.findByName(name)
+        return cityRepo.findByName(name)
     }
 
     override fun save(dto: CityWriteDto):CityDto {
-        return baseService.save(dto)
+        return cityRepo.save(dto)
     }
 
     override fun update(dto: CityWriteDto) {
-        baseService.update(dto)
+        cityRepo.update(dto)
     }
 
     override fun deleteByName(name: String) {
-        serviceByName.deleteByName(name)
+        cityRepo.deleteByName(name)
     }
 
     override fun findAll(): List<CityDto> {
-        return baseService.findAll()
+        return cityRepo.findAll()
     }
 }

@@ -7,6 +7,7 @@ import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -29,6 +30,8 @@ class CountryIntegrationTest(
     @Autowired private val mockMvc: MockMvc,
 ) : AbstractPostgresTest() {
 
+    private val countryEndpoint: String = "/country"
+
     @AfterEach
     private fun cleanDb() = countryService.findAll().forEach { countryService.deleteByName(it.name) }
 
@@ -42,7 +45,9 @@ class CountryIntegrationTest(
         )
 
         val countryJson = Json.encodeToString(countryToSave)
-        val response = Requests.makePostRequest(mockMvc, "/country", countryJson, status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
+
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/BE", status().isOk)
         val responseCountry = Json.decodeFromString<CountryDto>(response)
 
         assertEquals(countryToSave.name, responseCountry.name)
@@ -60,11 +65,13 @@ class CountryIntegrationTest(
         )
 
         val countryJson = Json.encodeToString(countryToSave)
-        Requests.makePostRequest(mockMvc, "/country", countryJson, status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
         val countryToUpdate = countryToSave.copy(phoneCode = "+8", emojiCode = "BEBE")
         val countryUpdateJson = Json.encodeToString(countryToUpdate)
-        val response = Requests.makePutRequest(mockMvc, "/country", countryUpdateJson, status().isOk)
+        Requests.makePutRequest(mockMvc, countryEndpoint, countryUpdateJson, status().isOk)
+
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/BE", status().isOk)
         val responseCountry = Json.decodeFromString<CountryDto>(response)
 
         assertEquals(countryToUpdate.name, responseCountry.name)
@@ -82,9 +89,9 @@ class CountryIntegrationTest(
         )
 
         val countryJson = Json.encodeToString(countryToSave)
-        Requests.makePostRequest(mockMvc, "/country", countryJson, status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        val response = Requests.makeGetRequest(mockMvc, "/country/public/BE", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/BE", status().isOk)
         val responseCountry = Json.decodeFromString<CountryDto>(response)
 
         assertEquals(countryToSave.name, responseCountry.name)
@@ -102,10 +109,10 @@ class CountryIntegrationTest(
         )
 
         val countryJson = Json.encodeToString(countryToSave)
-        Requests.makePostRequest(mockMvc, "/country", countryJson, status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        Requests.makeDeleteRequest(mockMvc, "/country/BE", status().isOk)
-        val response = Requests.makeGetRequest(mockMvc, "/country", status().isOk)
+        Requests.makeDeleteRequest(mockMvc, "$countryEndpoint/BE", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, countryEndpoint, status().isOk)
         val responseDecoded = Json.decodeFromString<List<CountryDto>>(response)
         assertEquals(0, responseDecoded.size)
     }
@@ -134,11 +141,11 @@ class CountryIntegrationTest(
         val countryJson1 = Json.encodeToString(countryToSave1)
         val countryJson2 = Json.encodeToString(countryToSave2)
         val countryJson3 = Json.encodeToString(countryToSave3)
-        Requests.makePostRequest(mockMvc, "/country", countryJson1, status().isCreated)
-        Requests.makePostRequest(mockMvc, "/country", countryJson2, status().isCreated)
-        Requests.makePostRequest(mockMvc, "/country", countryJson3, status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson1, status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson2, status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson3, status().isCreated)
 
-        val response = Requests.makeGetRequest(mockMvc, "/country", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, countryEndpoint, status().isOk)
         val responseCountryList = Json.decodeFromString<List<CountryDto>>(response)
 
         assertEquals(3, responseCountryList.size)

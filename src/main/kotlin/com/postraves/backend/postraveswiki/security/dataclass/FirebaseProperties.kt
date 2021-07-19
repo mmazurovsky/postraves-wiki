@@ -1,14 +1,9 @@
-package com.postraves.backend.postraveswiki.security.dataclass;
+package com.postraves.backend.postraveswiki.security.dataclass
 
-import lombok.Data;
-
-@Data
-public class FirebaseProperties {
-
-    int sessionExpiryInDays;
-    String databaseUrl;
-    boolean enableStrictServerSession;
-    boolean enableCheckSessionRevoked;
-    boolean enableLogoutEverywhere;
-
-}
+data class FirebaseProperties (
+    var sessionExpiryInDays: Int = 0,
+    var databaseUrl: String? = null,
+    var enableStrictServerSession: Boolean = false,
+    var enableCheckSessionRevoked: Boolean = false,
+    var enableLogoutEverywhere: Boolean = false
+)

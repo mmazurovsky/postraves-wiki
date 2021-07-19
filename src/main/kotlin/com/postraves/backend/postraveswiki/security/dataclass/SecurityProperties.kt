@@ -1,22 +1,17 @@
-package com.postraves.backend.postraveswiki.security.dataclass;
+package com.postraves.backend.postraveswiki.security.dataclass
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties("security")
-@Data
-public class SecurityProperties {
-
-    CookieProperties cookieProps;
-    FirebaseProperties firebaseProps;
-    boolean allowCredentials;
-    List<String> allowedOrigins;
-    List<String> allowedHeaders;
-    List<String> exposedHeaders;
-    List<String> allowedMethods;
-    List<String> allowedPublicApis;
-}
+data class SecurityProperties (
+    var cookieProps: CookieProperties? = null,
+    var firebaseProps: FirebaseProperties? = null,
+    var allowCredentials: Boolean = false,
+    var allowedOrigins: List<String>? = null,
+    var allowedHeaders: List<String>? = null,
+    var exposedHeaders: List<String>? = null,
+    var allowedMethods: List<String>? = null,
+    var allowedPublicApis: List<String>? = null
+)
