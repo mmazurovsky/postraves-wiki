@@ -8,46 +8,55 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Repository
 
+interface WeeklyFollowersDeltaRepo {
+    fun getWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long): Int
+    fun incrementWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long): Int
+    fun decrementWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long): Int
+    fun findWeeklyTopInCountry(entityType: String, countryName: String, quantity: Long): Map<Long, Int>
+    fun setInitialWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long)
+    fun returnAllValuesToInitial(entityType: String, countryName: String)
+}
+
 @Repository
 class WeeklyFollowersDeltaRepoImpl(
     private val redisConfig: RedisConfig,
-) {
+) : WeeklyFollowersDeltaRepo {
     private val redisClient: RedisAsyncCommands<String, String> by lazy { redisConfig.getRedisClient() }
 
-    fun getWeeklyFollowersDelta(entityType: String, entityId: Long): Int {
-        val delta = redisClient.zscore("$entityType:weeklyFollowersDelta", entityId.toString())
-        // dont know if null check appropriate here
+    override fun getWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long): Int {
+        val delta = redisClient.zscore("$entityType:$countryName:weeklyFollowersDelta", entityId.toString())
         return delta.get().toInt()
     }
 
-    fun incrementWeeklyFollowersDelta(entityType: String, entityId: Long): Int {
-        val incrementedValue = redisClient.zincrby("$entityType:weeklyFollowersDelta", 1.0, entityId.toString())
+    override fun incrementWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long): Int {
+        val incrementedValue = redisClient.zincrby("$entityType:$countryName:weeklyFollowersDelta", 1.0, entityId.toString())
         return incrementedValue.get().toInt()
     }
 
-    fun decrementWeeklyFollowersDelta(entityType: String, entityId: Long): Int {
-        val decrementValue = redisClient.zincrby("$entityType:weeklyFollowersDelta", -1.0, entityId.toString())
+    override fun decrementWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long): Int {
+        val decrementValue = redisClient.zincrby("$entityType:$countryName:weeklyFollowersDelta", -1.0, entityId.toString())
         return decrementValue.get().toInt()
     }
 
-    fun getTop(entityType: String, quantity: Long): List<Map<Long, Int>> {
-        val topFuture = redisClient.zrevrangeWithScores("$entityType:weeklyFollowersDelta", 0, quantity - 1)
+    override fun findWeeklyTopInCountry(entityType: String, countryName: String, quantity: Long): Map<Long, Int> {
+        val topFuture = redisClient.zrevrangeWithScores("$entityType:$countryName:weeklyFollowersDelta", 0, quantity - 1)
         val top = topFuture.get()
-        return top.map { mapOf(it.value.toLong() to it.score.toInt()) }.toList()
+        val map = top.map { it.value.toLong() to it.score.toInt() }.toMap()
+        return map
     }
 
-    fun setInitialWeeklyFollowersDelta(entityType: String, entityId: Long) {
-        redisClient.zadd("$entityType:weeklyFollowersDelta", 0.0, entityId.toString())
+    override fun setInitialWeeklyFollowersDelta(entityType: String, countryName: String, entityId: Long) {
+        redisClient.zadd("$entityType:$countryName:weeklyFollowersDelta", 0.0, entityId.toString())
     }
 
     fun clearAllData() {
         redisClient.flushall()
     }
 
-    fun returnAllValuesToInitial(entityType: String) {
-        val list = redisClient.zrange("$entityType:weeklyFollowersDelta", 0, -1).get()
+    override fun returnAllValuesToInitial(entityType: String, countryName: String) {
+        val list = redisClient.zrange("$entityType:$countryName:weeklyFollowersDelta", 0, -1).get()
         redisClient.multi()
-        list.forEach { setInitialWeeklyFollowersDelta(entityType, it.toLong()) }
+        list.forEach { setInitialWeeklyFollowersDelta(entityType, countryName, it.toLong()) }
         redisClient.exec()
 
 //        val membersOfSortedSet = redisConfig.getRedisClient().zrange("$entityType:weeklyFollowersDelta", 0, -1)

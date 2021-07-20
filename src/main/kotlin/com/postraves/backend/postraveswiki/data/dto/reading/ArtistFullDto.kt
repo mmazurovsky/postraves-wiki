@@ -17,12 +17,12 @@ data class ArtistFullDto(
     val soundcloudLink: String?,
     val instagramLink: String?,
     val about: String?,
-    var isFollowed: Boolean = false,
+    val isFollowed: Boolean,
 //    val unitiesShort: List<UnityShortForArtistDto> = ArrayList<>()
 //    val eventsShort: List<EventShortDto>
 ) : BaseFullDto {
     companion object FactoryDbRecord {
-        fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistFullDto {
+        fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord, isFollowed: Boolean) : ArtistFullDto {
             return ArtistFullDto(
                 id = artistRecord.id ?: throw TODO(),
                 name = artistRecord.name ?: throw TODO(),
@@ -35,7 +35,8 @@ data class ArtistFullDto(
                 country =
                 if (countryRecord.name != null)
                     CountryDto.createOutOfDbRecords(countryRecord)
-                else null
+                else null,
+                isFollowed = isFollowed
             )
         }
     }

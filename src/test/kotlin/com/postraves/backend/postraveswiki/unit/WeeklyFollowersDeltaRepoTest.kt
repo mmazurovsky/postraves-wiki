@@ -1,12 +1,9 @@
 package com.postraves.backend.postraveswiki.unit
 
 import com.postraves.backend.postraveswiki.repo.WeeklyFollowersDeltaRepoImpl
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
@@ -32,6 +29,7 @@ class WeeklyFollowersDeltaRepoTest(
 
     companion object {
         private const val entityType = "artist"
+        private const val countryName = "be"
         private const val defaultEntityId: Long = 1
     }
 
@@ -49,105 +47,108 @@ class WeeklyFollowersDeltaRepoTest(
     private fun doInWhileLoop(
         numberOfOperations: Int,
         entityType: String,
+        countryName: String,
         entityId: Long,
-        func: (String, Long) -> Int
+        func: (String, String, Long) -> Int
     ) {
         var i = 0
         while (i != numberOfOperations) {
             i++
-            func(entityType, entityId)
+            func(entityType, countryName, entityId)
         }
     }
 
-    private val lambdaIncrement = { entityType: String, entityId: Long ->
+    private val lambdaIncrement = { entityType: String, countryName: String, entityId: Long ->
         weeklyFollowersDeltaRepo.incrementWeeklyFollowersDelta(
-            entityType, entityId
+            entityType, countryName, entityId
         )
     }
 
-    private val lambdaDecrement = { entityType: String, entityId: Long ->
+    private val lambdaDecrement = { entityType: String, countryName: String, entityId: Long ->
         weeklyFollowersDeltaRepo.decrementWeeklyFollowersDelta(
-            entityType, entityId
+            entityType, countryName, entityId
         )
     }
 
     @Test
     @Order(1)
     fun setInitialFollowersDeltaForEntityAndGetIt() {
-        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, defaultEntityId)
-        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, defaultEntityId)
+        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
+        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
         assertEquals(0, result)
     }
 
     @Test
     @Order(2)
     fun incrementFollowersDeltaAndGetIt() {
-        weeklyFollowersDeltaRepo.incrementWeeklyFollowersDelta(entityType, defaultEntityId)
-        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, defaultEntityId)
+        weeklyFollowersDeltaRepo.incrementWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
+        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
         assertEquals(1, result)
     }
 
     @Test
     @Order(3)
     fun decrementFollowersDeltaAndGetIt() {
-        weeklyFollowersDeltaRepo.decrementWeeklyFollowersDelta(entityType, defaultEntityId)
-        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, defaultEntityId)
+        weeklyFollowersDeltaRepo.decrementWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
+        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
         assertEquals(0, result)
     }
 
     @Test
     @Order(4)
     fun incrementFollowersDeltaMultipleTimesAndGetIt() {
-        doInWhileLoop(5, entityType, defaultEntityId, lambdaIncrement)
-        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, defaultEntityId)
+        doInWhileLoop(5, entityType, countryName, defaultEntityId, lambdaIncrement)
+        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
         assertEquals(5, result)
     }
 
     @Test
     @Order(5)
     fun decrementFollowersDeltaMultipleTimesAndGetIt() {
-        doInWhileLoop(10, entityType, defaultEntityId, lambdaDecrement)
-        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, defaultEntityId)
+        doInWhileLoop(10, entityType, countryName, defaultEntityId, lambdaDecrement)
+        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, countryName, defaultEntityId)
         assertEquals(-5, result)
     }
 
     @Test
     @Order(6)
     fun addNewEntitiesIncrementSomeOfThemAndGetTop() {
-        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, 2)
-        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, 3)
-        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, 4)
-        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, 5)
+        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, countryName, 2)
+        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, countryName, 3)
+        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, countryName, 4)
+        weeklyFollowersDeltaRepo.setInitialWeeklyFollowersDelta(entityType, countryName, 5)
 
-        doInWhileLoop(10, entityType, 2, lambdaDecrement)
-        doInWhileLoop(1, entityType, 3, lambdaIncrement)
-        doInWhileLoop(2, entityType, 4, lambdaIncrement)
-        doInWhileLoop(10, entityType, 5, lambdaIncrement)
+        doInWhileLoop(10, entityType, countryName, 2, lambdaDecrement)
+        doInWhileLoop(1, entityType, countryName, 3, lambdaIncrement)
+        doInWhileLoop(2, entityType, countryName, 4, lambdaIncrement)
+        doInWhileLoop(10, entityType, countryName, 5, lambdaIncrement)
 
 
-        val result = weeklyFollowersDeltaRepo.getTop(entityType, 50)
+        val result = weeklyFollowersDeltaRepo.findWeeklyTopInCountry(entityType, countryName, 50)
         assertEquals(5, result.size)
-        result.forEachIndexed { index, map ->
-            when (index) {
+        var mapIterationIndex = -1
+        result.forEach {
+            mapIterationIndex++
+            when (mapIterationIndex) {
                 0 -> {
-                    assertEquals(5, map.keys.first())
-                    assertEquals(10, map.values.first())
+                    assertEquals(5, it.key)
+                    assertEquals(10, it.value)
                 }
                 1 -> {
-                    assertEquals(4, map.keys.first())
-                    assertEquals(2, map.values.first())
+                    assertEquals(4, it.key)
+                    assertEquals(2, it.value)
                 }
                 2 -> {
-                    assertEquals(3, map.keys.first())
-                    assertEquals(1, map.values.first())
+                    assertEquals(3, it.key)
+                    assertEquals(1, it.value)
                 }
                 3 -> {
-                    assertEquals(1, map.keys.first())
-                    assertEquals(-5, map.values.first())
+                    assertEquals(1, it.key)
+                    assertEquals(-5, it.value)
                 }
                 4 -> {
-                    assertEquals(2, map.keys.first())
-                    assertEquals(-10, map.values.first())
+                    assertEquals(2, it.key)
+                    assertEquals(-10, it.value)
                 }
             }
         }
@@ -156,12 +157,12 @@ class WeeklyFollowersDeltaRepoTest(
     @Test
     @Order(7)
     fun returnAllToInitial() {
-        weeklyFollowersDeltaRepo.returnAllValuesToInitial(entityType)
+        weeklyFollowersDeltaRepo.returnAllValuesToInitial(entityType, countryName)
 
-        val result = weeklyFollowersDeltaRepo.getTop(entityType, 50)
+        val result = weeklyFollowersDeltaRepo.findWeeklyTopInCountry(entityType, countryName, 50)
         assertEquals(5, result.size)
-        result.forEach { map ->
-            assertEquals(0, map.values.first())
+        result.forEach {
+            assertEquals(0, it.value)
         }
     }
 }

@@ -22,7 +22,8 @@ interface UserService : BaseService<UserWriteDto, UserShortDto> {
 @Service
 class UserServiceImpl(
     private val userRepo: UserRepo,
-    private val securityService: SecurityService
+    private val securityService: SecurityService,
+    private val artistService: ArtistService,
     ) : UserService {
 
     override fun findMyProfile(): UserFullDto? {
@@ -37,10 +38,12 @@ class UserServiceImpl(
 
     override fun followArtist(id: Long) {
         userRepo.followArtist(securityService.userAuthUid ?: throw TODO(), id)
+        artistService.incrementOverallFollowers(id)
     }
 
     override fun unfollowArtist(id: Long) {
         userRepo.unfollowArtist(securityService.userAuthUid ?: throw TODO(), id)
+        artistService.decrementOverallFollowers(id)
     }
 
     override fun findMyFollowsArtist(): List<ArtistShortDto> {
