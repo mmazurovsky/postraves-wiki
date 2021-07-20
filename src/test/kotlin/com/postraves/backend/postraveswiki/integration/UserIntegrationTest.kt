@@ -8,21 +8,21 @@ import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.ArtistService
+import com.postraves.backend.postraveswiki.service.CityService
+import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.UserService
 import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -37,7 +37,9 @@ class UserIntegrationTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val userService: UserService,
     @Autowired private val artistService: ArtistService,
-) : AbstractPostgresTest() {
+    @Autowired private val cityService: CityService,
+    @Autowired private val countryService: CountryService,
+    ) : AbstractPostgresTest() {
 
     @MockBean
     private lateinit var securityService: SecurityService
@@ -66,6 +68,12 @@ class UserIntegrationTest(
     private fun cleanDb() {
         userService.deleteMyProfile()
         artistService.findAll().forEach { artistService.deleteById(it.id) }
+    }
+
+    @AfterAll
+    private fun cleanUp() {
+        cityService.findAll().forEach { cityService.deleteByName(it.name) }
+        countryService.findAll().forEach { countryService.deleteByName(it.name) }
     }
 
     @Test

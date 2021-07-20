@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct
 @Component
 @Slf4j
 class FirebaseConfig {
+
     @PostConstruct
     private fun initFirebaseApp() {
         try {
@@ -33,7 +34,9 @@ class FirebaseConfig {
             logger.debug("Can't set Firebase credentials", e)
         }
         assert(options != null)
-        FirebaseApp.initializeApp(options)
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseApp.initializeApp(options)
+        }
     }
 
     companion object {
