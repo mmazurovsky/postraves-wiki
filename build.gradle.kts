@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.5.2"
+    id("org.springframework.boot") version "2.5.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
@@ -39,6 +39,7 @@ dependencies {
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
     testImplementation("com.github.kstyrc:embedded-redis:0.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
+    implementation("io.github.microutils:kotlin-logging:1.12.5")
 //    implementation("io.r2dbc:r2dbc-postgresql:0.8.8.RELEASE")
 //    implementation("io.r2dbc:r2dbc-bom:Arabba-SR10")
 //    implementation("org.springframework.data:spring-data-r2dbc:1.3.3")

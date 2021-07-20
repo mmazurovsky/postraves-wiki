@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import lombok.RequiredArgsConstructor
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,11 +28,9 @@ import java.util.*
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
-@RequiredArgsConstructor
 class SecurityConfig(
-    private val objectMapper: ObjectMapper? = null,
-//    private val restSecProps: SecurityProperties? = null,
-    private val tokenAuthenticationFilter: SecurityFilter? = null
+    @Autowired private val objectMapper: ObjectMapper,
+    @Autowired private val tokenAuthenticationFilter: SecurityFilter
 ) : WebSecurityConfigurerAdapter() {
 
     @Bean
@@ -47,7 +46,7 @@ class SecurityConfig(
             errorObject["timestamp"] = Timestamp(Date().time)
             httpServletResponse.contentType = "application/json;charset=UTF-8"
             httpServletResponse.status = errorCode
-            httpServletResponse.writer.write(objectMapper!!.writeValueAsString(errorObject))
+            httpServletResponse.writer.write(objectMapper.writeValueAsString(errorObject))
         }
     }
 
@@ -64,16 +63,16 @@ class SecurityConfig(
         return source
     }
 
-    @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable().formLogin().disable()
             .httpBasic().disable().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint())
-            .and().authorizeRequests()
-            .anyRequest().permitAll()
-//            .antMatchers(*restSecProps!!.allowedPublicApis.toList()).permitAll()
-//            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
             .and()
-//            .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .authorizeRequests()
+//            .anyRequest().permitAll()
+            .antMatchers("/**/public/**").permitAll()
+            .antMatchers("/**").authenticated()
+            .and()
+            .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 }

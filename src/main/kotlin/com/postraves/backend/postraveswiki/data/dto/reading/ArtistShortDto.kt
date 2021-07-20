@@ -14,6 +14,7 @@ data class ArtistShortDto(
     val baseRating: Int,
     val overallFollowersCount: Int,
     val country: CountryDto?,
+    var isFollowed: Boolean = false,
 ) : BaseShortDto {
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistShortDto {
@@ -28,7 +29,7 @@ data class ArtistShortDto(
                     name = countryRecord.name ?: throw TODO(),
                     phoneCode = countryRecord.phoneCode ?: throw TODO(),
                     emojiCode = countryRecord.emojiCode ?: throw TODO())
-                else null
+                else null,
             )
         }
     }

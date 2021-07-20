@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) : BaseRequests<UserWriteDto, UserShortDto> {
 
     @GetMapping("/myProfile")
-    fun findMyProfile(): UserFullDto {
+    fun findMyProfile(): UserFullDto? {
         return userService.findMyProfile()
     }
 

@@ -7,7 +7,6 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.USER_PROFILE_AUTH_UID_KEY
 import jooq.keys.USER_PROFILE_NAME_KEY
 import jooq.keys.USER_PROFILE_PKEY
 import jooq.keys.USER_PROFILE__USER_PROFILE_CITY_NAME_FKEY
@@ -19,7 +18,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row11
+import org.jooq.Row10
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -65,14 +64,9 @@ open class UserProfile(
     override fun getRecordType(): Class<UserProfileRecord> = UserProfileRecord::class.java
 
     /**
-     * The column <code>public.user_profile.id</code>.
-     */
-    val ID: TableField<UserProfileRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
-
-    /**
      * The column <code>public.user_profile.auth_uid</code>.
      */
-    val AUTH_UID: TableField<UserProfileRecord, String?> = createField(DSL.name("auth_uid"), SQLDataType.VARCHAR(28), this, "")
+    val AUTH_UID: TableField<UserProfileRecord, String?> = createField(DSL.name("auth_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
 
     /**
      * The column <code>public.user_profile.created_date_time</code>.
@@ -140,7 +134,7 @@ open class UserProfile(
     constructor(child: Table<out Record>, key: ForeignKey<out Record, UserProfileRecord>): this(Internal.createPathAlias(child, key), child, key, USER_PROFILE, null)
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserProfileRecord> = USER_PROFILE_PKEY
-    override fun getKeys(): List<UniqueKey<UserProfileRecord>> = listOf(USER_PROFILE_PKEY, USER_PROFILE_AUTH_UID_KEY, USER_PROFILE_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<UserProfileRecord>> = listOf(USER_PROFILE_PKEY, USER_PROFILE_NAME_KEY)
     override fun getReferences(): List<ForeignKey<UserProfileRecord, *>> = listOf(USER_PROFILE__USER_PROFILE_CITY_NAME_FKEY)
 
     private lateinit var _city: City
@@ -164,7 +158,7 @@ open class UserProfile(
     override fun rename(name: Name): UserProfile = UserProfile(name, null)
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?> = super.fieldsRow() as Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?>
+    override fun fieldsRow(): Row10<String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?> = super.fieldsRow() as Row10<String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?>
 }

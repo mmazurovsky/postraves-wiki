@@ -17,6 +17,7 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row12
@@ -67,7 +68,7 @@ open class Unity(
     /**
      * The column <code>public.unity.id</code>.
      */
-    val ID: TableField<UnityRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val ID: TableField<UnityRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.unity.auth_uid</code>.
@@ -144,6 +145,7 @@ open class Unity(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, UnityRecord>): this(Internal.createPathAlias(child, key), child, key, UNITY, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<UnityRecord, Long?> = super.getIdentity() as Identity<UnityRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<UnityRecord> = UNITY_PKEY
     override fun getKeys(): List<UniqueKey<UnityRecord>> = listOf(UNITY_PKEY, UNITY_AUTH_UID_KEY, UNITY_NAME_KEY)
     override fun getReferences(): List<ForeignKey<UnityRecord, *>> = listOf(UNITY__UNITY_COUNTRY_NAME_FKEY)

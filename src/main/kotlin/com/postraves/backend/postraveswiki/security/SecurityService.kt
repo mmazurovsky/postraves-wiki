@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils
 import javax.servlet.http.HttpServletRequest
 
 @Service
-@RequiredArgsConstructor
 class SecurityService(
     private val httpServletRequest: HttpServletRequest? = null,
     private val cookieUtils: CookieUtils? = null,
@@ -20,19 +19,18 @@ class SecurityService(
         get() {
             var userPrincipal: String? = null
             val securityContext = SecurityContextHolder.getContext()
-            val principal = securityContext.authentication.principal
+            val principal = securityContext.authentication?.principal
             if (principal is String) {
                 userPrincipal = principal
             }
             return userPrincipal
         }
+
     val credentials: Credentials
         get() {
             val securityContext = SecurityContextHolder.getContext()
             return securityContext.authentication.credentials as Credentials
         }
-    val isPublic: Boolean
-        get() = securityProps!!.allowedPublicApis!!.contains(httpServletRequest!!.requestURI)
 
     fun getBearerToken(request: HttpServletRequest): String? {
         var bearerToken: String? = null

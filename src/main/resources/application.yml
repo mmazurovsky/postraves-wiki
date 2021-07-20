@@ -15,13 +15,6 @@ security:
     allowed-origins:
       - https://${DOMAIN}
       - http://localhost:3000
-    allowed-methods:
-      - GET
-      - POST
-      - PUT
-      - PATCH
-      - DELETE
-      - OPTIONS
     allowed-headers:
       - Authorization
       - Origin
@@ -37,17 +30,6 @@ security:
       - X-Xsrf-Token
       - Cache-Control
       - Id-Token
-    allowed-public-apis:
-      - /favicon.ico
-      - /session/login
-      - /event/public/**
-      - /artist/public/**
-      - /unity/public/**
-      - /place/public/**
-      - /common/public/**
-      - /user/public/**
-      - /country/public/**
-      - /city/public/**
     exposed-headers:
       - X-Xsrf-Token
 ---

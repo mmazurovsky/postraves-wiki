@@ -10,12 +10,13 @@ import com.postraves.backend.postraveswiki.service.generic.BaseService
 import org.springframework.stereotype.Service
 
 interface UserService : BaseService<UserWriteDto, UserShortDto> {
-    fun findMyProfile() : UserFullDto
+    fun findMyProfile() : UserFullDto?
     fun deleteMyProfile()
     fun followArtist(id: Long)
     fun unfollowArtist(id: Long)
     fun findMyFollowsArtist() : List<ArtistShortDto>
-    fun findByAuthUid(authUid: String) : UserFullDto?
+    fun findByAuthUidForSecurityService(authUid: String) : UserFullDto?
+    fun checkIsFollowedArtist(id: Long) : Boolean
 }
 
 @Service
@@ -24,8 +25,10 @@ class UserServiceImpl(
     private val securityService: SecurityService
     ) : UserService {
 
-    override fun findMyProfile(): UserFullDto {
-        return userRepo.findMyProfile(securityService.userAuthUid ?: throw TODO())
+    override fun findMyProfile(): UserFullDto? {
+        return if (securityService.userAuthUid != null)
+            userRepo.findMyProfile(securityService.userAuthUid ?: throw TODO())
+        else null
     }
 
     override fun deleteMyProfile() {
@@ -44,8 +47,14 @@ class UserServiceImpl(
         return userRepo.findMyFollowsArtist(securityService.userAuthUid ?: throw TODO())
     }
 
-    override fun findByAuthUid(authUid: String): UserFullDto? {
-        return userRepo.findByAuthUid(authUid)
+    override fun findByAuthUidForSecurityService(authUid: String): UserFullDto? {
+        return userRepo.findMyProfile(authUid)
+    }
+
+    override fun checkIsFollowedArtist(id: Long): Boolean {
+        return if (findMyProfile() != null)
+            userRepo.checkIsFollowedArtist(securityService.userAuthUid ?: throw TODO(), id)
+        else false
     }
 
     override fun save(dto: UserWriteDto):UserShortDto {

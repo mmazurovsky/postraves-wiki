@@ -15,6 +15,7 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row6
@@ -65,7 +66,7 @@ open class Scene(
     /**
      * The column <code>public.scene.id</code>.
      */
-    val ID: TableField<SceneRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val ID: TableField<SceneRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.scene.created_date_time</code>.
@@ -112,6 +113,7 @@ open class Scene(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, SceneRecord>): this(Internal.createPathAlias(child, key), child, key, SCENE, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<SceneRecord, Long?> = super.getIdentity() as Identity<SceneRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<SceneRecord> = SCENE_PKEY
     override fun getKeys(): List<UniqueKey<SceneRecord>> = listOf(SCENE_PKEY)
     override fun getReferences(): List<ForeignKey<SceneRecord, *>> = listOf(SCENE__SCENE_PLACE_ID_FKEY)

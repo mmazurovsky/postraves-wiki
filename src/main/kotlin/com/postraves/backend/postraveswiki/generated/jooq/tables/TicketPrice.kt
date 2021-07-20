@@ -15,6 +15,7 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row6
@@ -65,7 +66,7 @@ open class TicketPrice(
     /**
      * The column <code>public.ticket_price.id</code>.
      */
-    val ID: TableField<TicketPriceRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val ID: TableField<TicketPriceRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.ticket_price.created_date_time</code>.
@@ -112,6 +113,7 @@ open class TicketPrice(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, TicketPriceRecord>): this(Internal.createPathAlias(child, key), child, key, TICKET_PRICE, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<TicketPriceRecord, Long?> = super.getIdentity() as Identity<TicketPriceRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<TicketPriceRecord> = TICKET_PRICE_PKEY
     override fun getKeys(): List<UniqueKey<TicketPriceRecord>> = listOf(TICKET_PRICE_PKEY)
     override fun getReferences(): List<ForeignKey<TicketPriceRecord, *>> = listOf(TICKET_PRICE__TICKET_PRICE_EVENT_ID_FKEY)

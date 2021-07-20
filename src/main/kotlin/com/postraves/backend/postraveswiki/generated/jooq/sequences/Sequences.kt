@@ -13,6 +13,36 @@ import org.jooq.impl.SQLDataType
 
 
 /**
- * The sequence <code>public.id_sequence</code>
+ * The sequence <code>public.artist_id_seq</code>
  */
-val ID_SEQUENCE: Sequence<Long> = Internal.createSequence("id_sequence", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val ARTIST_ID_SEQ: Sequence<Long> = Internal.createSequence("artist_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
+ * The sequence <code>public.event_id_seq</code>
+ */
+val EVENT_ID_SEQ: Sequence<Long> = Internal.createSequence("event_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
+ * The sequence <code>public.place_id_seq</code>
+ */
+val PLACE_ID_SEQ: Sequence<Long> = Internal.createSequence("place_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
+ * The sequence <code>public.scene_id_seq</code>
+ */
+val SCENE_ID_SEQ: Sequence<Long> = Internal.createSequence("scene_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
+ * The sequence <code>public.ticket_price_id_seq</code>
+ */
+val TICKET_PRICE_ID_SEQ: Sequence<Long> = Internal.createSequence("ticket_price_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
+ * The sequence <code>public.timetable_item_id_seq</code>
+ */
+val TIMETABLE_ITEM_ID_SEQ: Sequence<Long> = Internal.createSequence("timetable_item_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
+ * The sequence <code>public.unity_id_seq</code>
+ */
+val UNITY_ID_SEQ: Sequence<Long> = Internal.createSequence("unity_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)

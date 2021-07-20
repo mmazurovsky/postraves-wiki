@@ -16,8 +16,6 @@ import kotlin.test.assertEquals
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(properties = ["spring.flyway.enabled=false"])

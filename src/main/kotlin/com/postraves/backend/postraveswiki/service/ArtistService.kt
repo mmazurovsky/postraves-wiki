@@ -15,10 +15,13 @@ interface ArtistService :
 @Service
 class ArtistServiceImpl(
     private val artistRepo: ArtistRepo,
+    private val userService: UserService,
 ) : ArtistService {
 
     override fun findById(id: Long): ArtistFullDto {
-        return artistRepo.findById(id)
+        val artist = artistRepo.findById(id)
+        artist.isFollowed = userService.checkIsFollowedArtist(id)
+        return artist
     }
 
     override fun deleteById(id: Long) {

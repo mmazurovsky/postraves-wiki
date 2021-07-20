@@ -16,6 +16,7 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row12
@@ -66,7 +67,7 @@ open class Event(
     /**
      * The column <code>public.event.id</code>.
      */
-    val ID: TableField<EventRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val ID: TableField<EventRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.event.created_date_time</code>.
@@ -143,6 +144,7 @@ open class Event(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, EventRecord>): this(Internal.createPathAlias(child, key), child, key, EVENT, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<EventRecord, Long?> = super.getIdentity() as Identity<EventRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<EventRecord> = EVENT_PKEY
     override fun getKeys(): List<UniqueKey<EventRecord>> = listOf(EVENT_PKEY, EVENT_NAME_KEY)
     override fun getReferences(): List<ForeignKey<EventRecord, *>> = listOf(EVENT__EVENT_PLACE_ID_FKEY)

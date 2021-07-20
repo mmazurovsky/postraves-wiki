@@ -4,7 +4,13 @@
 package jooq
 
 
-import jooq.sequences.ID_SEQUENCE
+import jooq.sequences.ARTIST_ID_SEQ
+import jooq.sequences.EVENT_ID_SEQ
+import jooq.sequences.PLACE_ID_SEQ
+import jooq.sequences.SCENE_ID_SEQ
+import jooq.sequences.TICKET_PRICE_ID_SEQ
+import jooq.sequences.TIMETABLE_ITEM_ID_SEQ
+import jooq.sequences.UNITY_ID_SEQ
 import jooq.tables.Artist
 import jooq.tables.City
 import jooq.tables.Country
@@ -18,8 +24,8 @@ import jooq.tables.TimetableItemPerformingGroup
 import jooq.tables.Unity
 import jooq.tables.UnityArtist
 import jooq.tables.UnityEvent
-import jooq.tables.UserBookmarksArtist
-import jooq.tables.UserBookmarksEvent
+import jooq.tables.UserFollowsArtist
+import jooq.tables.UserFollowsEvent
 import jooq.tables.UserProfile
 
 import kotlin.collections.List
@@ -109,14 +115,14 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     val UNITY_EVENT get() = UnityEvent.UNITY_EVENT
 
     /**
-     * The table <code>public.user_bookmarks_artist</code>.
+     * The table <code>public.user_follows_artist</code>.
      */
-    val USER_BOOKMARKS_ARTIST get() = UserBookmarksArtist.USER_BOOKMARKS_ARTIST
+    val USER_FOLLOWS_ARTIST get() = UserFollowsArtist.USER_FOLLOWS_ARTIST
 
     /**
-     * The table <code>public.user_bookmarks_event</code>.
+     * The table <code>public.user_follows_event</code>.
      */
-    val USER_BOOKMARKS_EVENT get() = UserBookmarksEvent.USER_BOOKMARKS_EVENT
+    val USER_FOLLOWS_EVENT get() = UserFollowsEvent.USER_FOLLOWS_EVENT
 
     /**
      * The table <code>public.user_profile</code>.
@@ -126,7 +132,13 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getSequences(): List<Sequence<*>> = listOf(
-        ID_SEQUENCE
+        ARTIST_ID_SEQ,
+        EVENT_ID_SEQ,
+        PLACE_ID_SEQ,
+        SCENE_ID_SEQ,
+        TICKET_PRICE_ID_SEQ,
+        TIMETABLE_ITEM_ID_SEQ,
+        UNITY_ID_SEQ
     )
 
     override fun getTables(): List<Table<*>> = listOf(
@@ -143,8 +155,8 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
         Unity.UNITY,
         UnityArtist.UNITY_ARTIST,
         UnityEvent.UNITY_EVENT,
-        UserBookmarksArtist.USER_BOOKMARKS_ARTIST,
-        UserBookmarksEvent.USER_BOOKMARKS_EVENT,
+        UserFollowsArtist.USER_FOLLOWS_ARTIST,
+        UserFollowsEvent.USER_FOLLOWS_EVENT,
         UserProfile.USER_PROFILE
     )
 }

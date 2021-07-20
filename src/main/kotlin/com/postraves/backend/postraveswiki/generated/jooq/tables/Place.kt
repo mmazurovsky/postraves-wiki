@@ -17,6 +17,7 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row14
@@ -67,7 +68,7 @@ open class Place(
     /**
      * The column <code>public.place.id</code>.
      */
-    val ID: TableField<PlaceRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val ID: TableField<PlaceRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.place.auth_uid</code>.
@@ -154,6 +155,7 @@ open class Place(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlaceRecord>): this(Internal.createPathAlias(child, key), child, key, PLACE, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<PlaceRecord, Long?> = super.getIdentity() as Identity<PlaceRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<PlaceRecord> = PLACE_PKEY
     override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY, PLACE_AUTH_UID_KEY, PLACE_NAME_KEY)
     override fun getReferences(): List<ForeignKey<PlaceRecord, *>> = listOf(PLACE__PLACE_CITY_NAME_FKEY)

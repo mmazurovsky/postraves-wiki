@@ -17,6 +17,7 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row11
@@ -67,7 +68,7 @@ open class Artist(
     /**
      * The column <code>public.artist.id</code>.
      */
-    val ID: TableField<ArtistRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val ID: TableField<ArtistRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.artist.auth_uid</code>.
@@ -139,6 +140,7 @@ open class Artist(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, ArtistRecord>): this(Internal.createPathAlias(child, key), child, key, ARTIST, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<ArtistRecord, Long?> = super.getIdentity() as Identity<ArtistRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<ArtistRecord> = ARTIST_PKEY
     override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY, ARTIST_AUTH_UID_KEY, ARTIST_NAME_KEY)
     override fun getReferences(): List<ForeignKey<ArtistRecord, *>> = listOf(ARTIST__ARTIST_COUNTRY_NAME_FKEY)

@@ -81,7 +81,7 @@ open class Country(
     /**
      * The column <code>public.country.emoji_code</code>.
      */
-    val EMOJI_CODE: TableField<CountryRecord, String?> = createField(DSL.name("emoji_code"), SQLDataType.CLOB.nullable(false), this, "")
+    val EMOJI_CODE: TableField<CountryRecord, String?> = createField(DSL.name("emoji_code"), SQLDataType.VARCHAR(20).nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<CountryRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<CountryRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)

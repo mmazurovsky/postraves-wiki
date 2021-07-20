@@ -1,8 +1,6 @@
 package com.postraves.backend.postraveswiki.security
 
 import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties
-import lombok.RequiredArgsConstructor
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -10,7 +8,6 @@ import org.springframework.web.util.WebUtils
 import javax.servlet.http.Cookie
 
 @Service
-@RequiredArgsConstructor
 class CookieUtils(
     private val httpServletRequest: HttpServletRequest? = null,
     private val httpServletResponse: HttpServletResponse? = null,

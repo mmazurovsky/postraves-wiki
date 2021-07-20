@@ -17,8 +17,8 @@ import jooq.tables.TimetableItemPerformingGroup
 import jooq.tables.Unity
 import jooq.tables.UnityArtist
 import jooq.tables.UnityEvent
-import jooq.tables.UserBookmarksArtist
-import jooq.tables.UserBookmarksEvent
+import jooq.tables.UserFollowsArtist
+import jooq.tables.UserFollowsEvent
 import jooq.tables.UserProfile
 
 
@@ -89,14 +89,14 @@ val UNITY_ARTIST = UnityArtist.UNITY_ARTIST
 val UNITY_EVENT = UnityEvent.UNITY_EVENT
 
 /**
- * The table <code>public.user_bookmarks_artist</code>.
+ * The table <code>public.user_follows_artist</code>.
  */
-val USER_BOOKMARKS_ARTIST = UserBookmarksArtist.USER_BOOKMARKS_ARTIST
+val USER_FOLLOWS_ARTIST = UserFollowsArtist.USER_FOLLOWS_ARTIST
 
 /**
- * The table <code>public.user_bookmarks_event</code>.
+ * The table <code>public.user_follows_event</code>.
  */
-val USER_BOOKMARKS_EVENT = UserBookmarksEvent.USER_BOOKMARKS_EVENT
+val USER_FOLLOWS_EVENT = UserFollowsEvent.USER_FOLLOWS_EVENT
 
 /**
  * The table <code>public.user_profile</code>.

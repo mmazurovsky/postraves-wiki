@@ -2,7 +2,6 @@ package com.postraves.backend.postraveswiki.security
 
 import lombok.extern.slf4j.Slf4j
 import org.springframework.web.filter.OncePerRequestFilter
-import org.springframework.beans.factory.annotation.Autowired
 import com.postraves.backend.postraveswiki.service.UserService
 import kotlin.Throws
 import javax.servlet.ServletException
@@ -26,10 +25,9 @@ import java.io.IOException
 @Slf4j
 class SecurityFilter(
     private val securityService: SecurityService? = null,
-    private val restSecProps: SecurityProperties? = null,
     private val cookieUtils: CookieUtils? = null,
     private val securityProps: SecurityProperties? = null,
-    private val userService: UserService? = null
+    private val userService: UserService
 ) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
@@ -50,9 +48,9 @@ class SecurityFilter(
         val sessionCookie = cookieUtils!!.getCookie("session")
         val token = securityService!!.getBearerToken(request)
         if (token == null || token.isEmpty()) {
-//            SecurityFilter.log.info("Incoming token is not provided")
+            logger.info("Incoming token is not provided")
         } else {
-//            SecurityFilter.log.info("Incoming token is provided")
+            logger.info("Incoming token is provided")
         }
         try {
             if (sessionCookie != null) {
@@ -70,9 +68,8 @@ class SecurityFilter(
             }
         } catch (e: FirebaseAuthException) {
             e.printStackTrace()
-//            SecurityFilter.log.error("Firebase Exception:: " + e.localizedMessage)
+            logger.error("Firebase Exception:: " + e.localizedMessage)
         }
-        assert(decodedToken != null)
         val userProfile = firebaseTokenToUser(decodedToken)
         if (userProfile != null) {
             val authentication = UsernamePasswordAuthenticationToken(
@@ -85,6 +82,6 @@ class SecurityFilter(
     }
 
     private fun firebaseTokenToUser(decodedToken: FirebaseToken?): UserFullDto? {
-        return userService!!.findByAuthUid(decodedToken!!.uid)
+        return if (decodedToken == null) null else userService.findByAuthUidForSecurityService(decodedToken.uid)
     }
 }

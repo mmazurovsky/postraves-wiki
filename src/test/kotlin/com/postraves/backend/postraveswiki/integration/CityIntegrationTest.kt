@@ -22,7 +22,6 @@ import kotlin.test.assertEquals
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CityIntegrationTest(

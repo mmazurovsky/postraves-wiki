@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
 interface UserRepo {
-    fun findMyProfile(authUid: String): UserFullDto
+    fun findMyProfile(authUid: String): UserFullDto?
     fun save(dto: UserWriteDto, authUid: String): UserShortDto
     fun update(dto: UserWriteDto, authUid: String)
     fun deleteMyProfile(authUid: String)
     fun followArtist(userAuthUid: String, id: Long)
     fun unfollowArtist(userAuthUid: String, id: Long)
     fun findMyFollowsArtist(authUid: String): List<ArtistShortDto>
-    fun findByAuthUid(authUid: String): UserFullDto?
+    fun checkIsFollowedArtist(userAuthUid: String, id: Long): Boolean
 }
 
 @Repository
@@ -31,7 +31,7 @@ class UserRepoImpl(
 
     private val dsl: DSLContext by lazy { dslContextConfig.getDSLContext() }
 
-    private fun findByAuthUidWithJoins(authUid: String): Record {
+    private fun findByAuthUidWithJoins(authUid: String): Record? {
         val record = dsl
             .selectFrom(
                 USER_PROFILE
@@ -40,7 +40,7 @@ class UserRepoImpl(
             )
             .where(USER_PROFILE.AUTH_UID.eq(authUid))
             .fetchOne()
-        return record ?: throw TODO()
+        return record
     }
 
     private fun findByAuthUidWithoutJoins(authUid: String): UserProfileRecord {
@@ -51,9 +51,10 @@ class UserRepoImpl(
         return record ?: throw TODO()
     }
 
-    override fun findMyProfile(authUid: String): UserFullDto {
+    override fun findMyProfile(authUid: String): UserFullDto? {
         val user = findByAuthUidWithJoins(authUid)
-        return UserFullDto.createOutOfDbRecords(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY))
+        return if (user == null) null
+        else UserFullDto.createOutOfDbRecords(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY))
     }
 
     override fun save(dto: UserWriteDto, authUid: String): UserShortDto {
@@ -64,7 +65,7 @@ class UserRepoImpl(
         userToSave.overallFollowersCount = 0
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
-        return UserShortDto.createOutOfDbRecords(record.into(USER_PROFILE))
+        return UserShortDto.createOutOfDbRecords(record?.into(USER_PROFILE) ?: throw TODO())
     }
 
     override fun update(dto: UserWriteDto, authUid: String) {
@@ -74,17 +75,17 @@ class UserRepoImpl(
     }
 
     override fun deleteMyProfile(authUid: String) {
-        if (dsl.fetchOne(USER_PROFILE, USER_PROFILE.AUTH_UID.eq(authUid))
-                ?.delete() == null
-        ) throw TODO()
+        dsl.fetchOne(USER_PROFILE, USER_PROFILE.AUTH_UID.eq(authUid))
+            ?.delete()
     }
 
     override fun followArtist(userAuthUid: String, id: Long) {
         // checking that artist exists
         artistRepo.findById(id)
-        val userFollowArtist = dsl.newRecord(USER_BOOKMARKS_ARTIST)
+        val userFollowArtist = dsl.newRecord(USER_FOLLOWS_ARTIST)
         userFollowArtist.artistId = id
-        //TODO
+        userFollowArtist.userProfileUid = userAuthUid
+        userFollowArtist.store()
 //        userFollowArtist.userProfileId = userAuthUid
     }
 
@@ -92,9 +93,9 @@ class UserRepoImpl(
         artistRepo.findById(id)
         //todo
         if (dsl.fetchOne(
-                USER_BOOKMARKS_ARTIST,
-                USER_BOOKMARKS_ARTIST.ARTIST_ID.eq(id),
-                USER_BOOKMARKS_ARTIST.USER_PROFILE_ID.eq(1)
+                USER_FOLLOWS_ARTIST,
+                USER_FOLLOWS_ARTIST.ARTIST_ID.eq(id),
+                USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(userAuthUid)
             )
                 ?.delete() == null
         ) throw TODO()
@@ -104,26 +105,27 @@ class UserRepoImpl(
         //todo
         return dsl
             .selectFrom(
-                USER_BOOKMARKS_ARTIST
-                    .leftOuterJoin(ARTIST).on(USER_BOOKMARKS_ARTIST.ARTIST_ID.eq(ARTIST.ID))
+                USER_FOLLOWS_ARTIST
+                    .leftOuterJoin(ARTIST).on(USER_FOLLOWS_ARTIST.ARTIST_ID.eq(ARTIST.ID))
                     .leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
             )
-            .where(USER_BOOKMARKS_ARTIST.USER_PROFILE_ID.eq(1))
+            .where(USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
             .fetch()
             .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
             .toList()
     }
 
-    override fun findByAuthUid(authUid: String): UserFullDto? {
-        return try {
-            val recordWithJoins = findByAuthUidWithJoins(authUid)
-            UserFullDto.createOutOfDbRecords(
-                recordWithJoins.into(USER_PROFILE),
-                recordWithJoins.into(CITY),
-                recordWithJoins.into(COUNTRY)
+    override fun checkIsFollowedArtist(userAuthUid: String, id: Long): Boolean {
+        val record = dsl
+            .selectFrom(
+                USER_FOLLOWS_ARTIST
+                    .leftOuterJoin(ARTIST).on(USER_FOLLOWS_ARTIST.ARTIST_ID.eq(ARTIST.ID))
+                    .leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
             )
-        } catch (e: Exception) {
-            null
-        }
+            .where(USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(userAuthUid))
+            .fetchOne()
+
+        return if (record == null) false else true
     }
+
 }

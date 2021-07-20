@@ -1,7 +1,6 @@
 CREATE TABLE user_profile
 (
-    id                       BIGSERIAL                   UNIQUE NOT NULL,
-    auth_uid                 VARCHAR(28)              UNIQUE,
+    auth_uid                 VARCHAR(28)              UNIQUE NOT NULL,
     created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
     name                     VARCHAR(40)              UNIQUE NOT NULL,
     image_link               TEXT,
@@ -11,5 +10,5 @@ CREATE TABLE user_profile
     city_name                VARCHAR(40)              REFERENCES city(name),
     instagram_link           TEXT,
     telegram_link            TEXT,
-    PRIMARY KEY (id)
+    PRIMARY KEY (auth_uid)
 );

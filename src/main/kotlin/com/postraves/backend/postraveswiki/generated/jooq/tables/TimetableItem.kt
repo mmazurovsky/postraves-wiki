@@ -16,6 +16,7 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row7
@@ -66,7 +67,7 @@ open class TimetableItem(
     /**
      * The column <code>public.timetable_item.id</code>.
      */
-    val ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.timetable_item.event_id</code>.
@@ -118,6 +119,7 @@ open class TimetableItem(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, TimetableItemRecord>): this(Internal.createPathAlias(child, key), child, key, TIMETABLE_ITEM, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<TimetableItemRecord, Long?> = super.getIdentity() as Identity<TimetableItemRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<TimetableItemRecord> = TIMETABLE_ITEM_PKEY
     override fun getKeys(): List<UniqueKey<TimetableItemRecord>> = listOf(TIMETABLE_ITEM_PKEY)
     override fun getReferences(): List<ForeignKey<TimetableItemRecord, *>> = listOf(TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY, TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY)
