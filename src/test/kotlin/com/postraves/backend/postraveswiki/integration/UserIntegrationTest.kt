@@ -19,6 +19,7 @@ import org.junit.jupiter.api.*
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -26,6 +27,7 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import redis.embedded.RedisServer
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -39,7 +41,13 @@ class UserIntegrationTest(
     @Autowired private val artistService: ArtistService,
     @Autowired private val cityService: CityService,
     @Autowired private val countryService: CountryService,
+    @Value("\${spring.redis.port}") redisPort: Int,
     ) : AbstractPostgresTest() {
+
+    private val redisServer = RedisServer(redisPort)
+    init {
+        redisServer.start()
+    }
 
     @MockBean
     private lateinit var securityService: SecurityService
@@ -74,6 +82,7 @@ class UserIntegrationTest(
     private fun cleanUp() {
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
+        redisServer.stop()
     }
 
     @Test
@@ -193,6 +202,8 @@ class UserIntegrationTest(
         assertEquals(artistToSave.imageLink, artistNotFollowed.imageLink)
         assertEquals(artistToSave.countryName, artistNotFollowed.country!!.name)
         assertEquals(false, artistNotFollowed.isFollowed)
+        assertEquals(0, artistNotFollowed.overallFollowersCount)
+        assertEquals(0, artistNotFollowed.weeklyFollowersDelta)
 
         userService.followArtist(artistId)
 
@@ -203,5 +214,7 @@ class UserIntegrationTest(
         assertEquals(artistToSave.imageLink, artistFollowed.imageLink)
         assertEquals(artistToSave.countryName, artistFollowed.country!!.name)
         assertEquals(true, artistFollowed.isFollowed)
+        assertEquals(1, artistFollowed.overallFollowersCount)
+        assertEquals(1, artistFollowed.weeklyFollowersDelta)
     }
 }

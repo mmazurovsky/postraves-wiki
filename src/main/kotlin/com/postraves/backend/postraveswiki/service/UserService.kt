@@ -5,6 +5,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.repo.UserRepo
+import com.postraves.backend.postraveswiki.repo.WeeklyFollowersDeltaRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.generic.BaseService
 import org.springframework.stereotype.Service
@@ -24,6 +25,7 @@ class UserServiceImpl(
     private val userRepo: UserRepo,
     private val securityService: SecurityService,
     private val artistService: ArtistService,
+    private val weeklyFollowersDeltaRepo: WeeklyFollowersDeltaRepo,
     ) : UserService {
 
     override fun findMyProfile(): UserFullDto? {
@@ -37,13 +39,25 @@ class UserServiceImpl(
     }
 
     override fun followArtist(id: Long) {
+        // todo check if no association already
+        val entityType = "artist"
         userRepo.followArtist(securityService.userAuthUid ?: throw TODO(), id)
+        // todo refactor it
+        val countryName = artistService.findById(id).country?.name
         artistService.incrementOverallFollowers(id)
+        if (countryName != null)
+            weeklyFollowersDeltaRepo.incrementWeeklyFollowersDelta(entityType, countryName, id)
     }
 
     override fun unfollowArtist(id: Long) {
+        // todo check if association exists already
+        val entityType = "artist"
         userRepo.unfollowArtist(securityService.userAuthUid ?: throw TODO(), id)
+        // todo refactor it
+        val countryName = artistService.findById(id).country?.name
         artistService.decrementOverallFollowers(id)
+        if (countryName != null)
+            weeklyFollowersDeltaRepo.incrementWeeklyFollowersDelta(entityType, countryName, id)
     }
 
     override fun findMyFollowsArtist(): List<ArtistShortDto> {

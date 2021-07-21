@@ -18,6 +18,7 @@ data class ArtistFullDto(
     val instagramLink: String?,
     val about: String?,
     val isFollowed: Boolean,
+    var weeklyFollowersDelta: Int? = null
 //    val unitiesShort: List<UnityShortForArtistDto> = ArrayList<>()
 //    val eventsShort: List<EventShortDto>
 ) : BaseFullDto {

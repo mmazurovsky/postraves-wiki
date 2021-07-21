@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
 import kotlin.test.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -26,6 +27,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisServer
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
@@ -35,9 +37,15 @@ class ArtistIntegrationTest (
     @Autowired private val artistService: ArtistService,
     @Autowired private val countryService: CountryService,
     @Autowired private val mockMvc: MockMvc,
-) : AbstractPostgresTest() {
+    @Value("\${spring.redis.port}") redisPort: Int,
+    ) : AbstractPostgresTest() {
 
     private val artistEndpoint: String = "/artist"
+
+    private val redisServer = RedisServer(redisPort)
+    init {
+        redisServer.start()
+    }
 
     @BeforeAll
     private fun createCountryForAssociations() {
@@ -55,7 +63,10 @@ class ArtistIntegrationTest (
     private fun cleanDb() = artistService.findAll().forEach { artistService.deleteById(it.id) }
 
     @AfterAll
-    private fun cleanUp() =  countryService.findAll().forEach { countryService.deleteByName(it.name) }
+    private fun cleanUp() {
+        countryService.findAll().forEach { countryService.deleteByName(it.name) }
+        redisServer.stop()
+    }
 
 
     @Test

@@ -7,7 +7,9 @@ import com.postraves.backend.postraveswiki.repo.ArtistRepo
 import com.postraves.backend.postraveswiki.repo.WeeklyBestRepo
 import com.postraves.backend.postraveswiki.repo.WeeklyFollowersDeltaRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
-import com.postraves.backend.postraveswiki.service.generic.*
+import com.postraves.backend.postraveswiki.service.generic.BaseService
+import com.postraves.backend.postraveswiki.service.generic.ByIdService
+import com.postraves.backend.postraveswiki.service.generic.RatingService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -33,8 +35,14 @@ class ArtistServiceImpl(
 
     override fun findById(id: Long): ArtistFullDto {
         val user = userService.findMyProfile()
-        return if (user == null) artistRepo.findById(id)
+        val foundArtist = if (user == null) artistRepo.findById(id)
         else artistRepo.findByIdForUser(securityService.userAuthUid!!, id)
+        // todo encaps it
+        val weeklyFollowersDelta = if (foundArtist.country != null)
+            weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, foundArtist.country.name, foundArtist.id)
+        else null
+        foundArtist.weeklyFollowersDelta = weeklyFollowersDelta
+        return foundArtist
     }
 
     override fun deleteById(id: Long) {
@@ -42,8 +50,7 @@ class ArtistServiceImpl(
     }
 
     override fun findListByIds(ids: Set<Long>): List<ArtistShortDto> {
-        val found = artistRepo.findListByIds(ids.toSet())
-        return found
+        return artistRepo.findListByIds(ids.toSet())
     }
 
     override fun save(dto: ArtistWriteDto): ArtistShortDto {
@@ -55,20 +62,22 @@ class ArtistServiceImpl(
     }
 
     override fun findOverallTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {
+        // todo rewrite get from redis
         return artistRepo.findOverallTopInCountry(countryName, maxQuantity)
     }
 
+    // todo rewrite with getting from redis
     override fun findWeeklyTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {
         val topMap = weeklyFollowersDeltaRepo.findWeeklyTopInCountry(entityType, countryName, 50)
         // todo maybe order gets lost here
         val ids = topMap.keys
         val topArtists = findListByIds(ids)
         Collections.sort(topArtists, Comparator.comparing { ids.indexOf(it.id) })
-        topArtists.forEach{it.weeklyFollowersCount = topMap[it.id] }
+        topArtists.forEach { it.weeklyFollowersDelta = topMap[it.id] }
         return topArtists
     }
 
-    override fun findOfTheWeekInCountry(countryName: String): ArtistShortDto {
+    override fun findBestOfTheWeekInCountry(countryName: String): ArtistShortDto {
         TODO()
     }
 
@@ -76,12 +85,16 @@ class ArtistServiceImpl(
         artistRepo.changeBaseRating(id, socialMediaFollowersCount)
     }
 
+    // todo rewrite with redis
     override fun incrementOverallFollowers(id: Long) {
-        if (securityService.userAuthUid != null) artistRepo.incrementOverallFollowers(id)
+//        if (securityService.userAuthUid != null)
+            artistRepo.incrementOverallFollowers(id)
     }
 
+    // todo rewrite with redis
     override fun decrementOverallFollowers(id: Long) {
-        if (securityService.userAuthUid != null) artistRepo.decrementOverallFollowers(id)
+//        if (securityService.userAuthUid != null)
+            artistRepo.decrementOverallFollowers(id)
     }
 
     override fun findAll(): List<ArtistShortDto> {

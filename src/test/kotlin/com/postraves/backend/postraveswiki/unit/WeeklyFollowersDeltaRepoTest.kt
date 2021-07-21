@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 
 @SpringBootTest
@@ -21,8 +22,7 @@ class WeeklyFollowersDeltaRepoTest(
     @Autowired private val weeklyFollowersDeltaRepo: WeeklyFollowersDeltaRepoImpl,
 ) {
 
-    private var redisServer: RedisServer = RedisServer(redisPort)
-
+    private val redisServer = RedisServer(redisPort)
     init {
         redisServer.start()
     }
@@ -164,5 +164,19 @@ class WeeklyFollowersDeltaRepoTest(
         result.forEach {
             assertEquals(0, it.value)
         }
+    }
+
+    @Test
+    @Order(8)
+    fun getNotExistingValue() {
+        val result = weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, countryName, 10)
+        assertEquals(0, result)
+    }
+
+    @Test
+    @Order(9)
+    fun tryToIncrementNotExistingValue() {
+        val result = weeklyFollowersDeltaRepo.incrementWeeklyFollowersDelta(entityType, countryName, 10)
+        assertEquals(1, result)
     }
 }

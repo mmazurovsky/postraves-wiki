@@ -16,10 +16,10 @@ class WeeklyBestRepoImpl(
     private val redisClient: RedisAsyncCommands<String, String> by lazy { redisConfig.getRedisClient() }
 
     override fun setWeeklyBest(entityType: String, countryName: String, entity: Map<String, String>) {
-        redisClient.hset("$entityType:$countryName:weeklyBest", entity)
+        redisClient.hset("$entityType:${countryName.lowercase()}:weeklyBest", entity)
     }
 
     override fun getWeeklyBest(entityType: String, countryName: String) : Map<String, String> {
-        return redisClient.hgetall("$entityType:$countryName:weeklyBest").get()
+        return redisClient.hgetall("$entityType:${countryName.lowercase()}:weeklyBest").get()
     }
 }
