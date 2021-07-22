@@ -6,8 +6,6 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.repo.generic.BaseRepo
 import com.postraves.backend.postraveswiki.repo.generic.ByIdRepo
-import com.postraves.backend.postraveswiki.repo.generic.RatingRepo
-import jooq.tables.Artist
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.ARTIST
 import jooq.tables.references.COUNTRY
@@ -20,8 +18,7 @@ import java.time.OffsetDateTime
 
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
-    ByIdRepo<ArtistFullDto, ArtistShortDto>,
-    RatingRepo<ArtistShortDto>
+    ByIdRepo<ArtistFullDto, ArtistShortDto>
 
 @Repository
 class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : ArtistRepo {
@@ -29,12 +26,7 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
     private val dsl: DSLContext by lazy { dslContextConfig.getDSLContext() }
 
     private fun findByIdWithoutJoins(id: Long): ArtistRecord {
-        val record =
-//            dsl
-//            .selectFrom(ARTIST)
-//            .where(ARTIST.ID.eq(id))
-//            .fetchOne()
-            dsl.fetchOne(ARTIST, ARTIST.ID.eq(id))
+        val record = dsl.fetchOne(ARTIST, ARTIST.ID.eq(id))
         return record ?: throw TODO()
     }
 
@@ -84,8 +76,6 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
         dto.transferDataToDbRecord(artistToSave)
         // TODO separate function for initialization
         artistToSave.createdDateTime = OffsetDateTime.now()
-        artistToSave.overallFollowersCount = 0
-        artistToSave.baseRating = dto.soundcloudFollowersCount?.div(5) ?: 0
         artistToSave.store()
         val id = artistToSave.id ?: throw TODO()
         val record = findByIdWithJoins(id)
@@ -111,44 +101,6 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
             .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
             .toList()
         return results
-    }
-
-    override fun findOverallTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {
-        val results = selectArtistList()
-            .where(ARTIST.COUNTRY_NAME.eq(countryName))
-            .orderBy((ARTIST.BASE_RATING + ARTIST.OVERALL_FOLLOWERS_COUNT).desc())
-            .limit(maxQuantity)
-            .offset(0)
-            .fetch()
-            .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
-            .toList()
-        return results
-    }
-
-    override fun findOverallTopInCountryForUser(
-        authUid: String,
-        countryName: String,
-        maxQuantity: Int
-    ): List<ArtistShortDto> {
-        TODO("Not yet implemented")
-    }
-
-    override fun changeBaseRating(id: Long, newBaseRating: Int) {
-        val artistRecord = findByIdWithoutJoins(id)
-        artistRecord.baseRating = newBaseRating
-        artistRecord.update()
-    }
-
-    override fun incrementOverallFollowers(id: Long) {
-        val artistRecord = findByIdWithoutJoins(id)
-        artistRecord.overallFollowersCount = artistRecord.overallFollowersCount?.plus(1) ?: throw TODO()
-        artistRecord.update()
-    }
-
-    override fun decrementOverallFollowers(id: Long) {
-        val artistRecord = findByIdWithoutJoins(id)
-        artistRecord.overallFollowersCount = artistRecord.overallFollowersCount?.minus(1) ?: throw TODO()
-        artistRecord.update()
     }
 
     override fun findAll(): List<ArtistShortDto> {

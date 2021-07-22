@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestPropertySource
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 
 @SpringBootTest

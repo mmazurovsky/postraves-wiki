@@ -5,8 +5,6 @@ CREATE TABLE user_profile
     name                     VARCHAR(40)              UNIQUE NOT NULL,
     image_link               TEXT,
     about                    TEXT,
-    base_rating              INTEGER,
-    overall_followers_count  INTEGER                  NOT NULL,
     city_name                VARCHAR(40)              REFERENCES city(name),
     instagram_link           TEXT,
     telegram_link            TEXT,
