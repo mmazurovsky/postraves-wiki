@@ -35,8 +35,10 @@ class ArtistServiceImpl(
 
     override fun findById(id: Long): ArtistFullDto {
         val user = userService.findMyProfile()
-        val foundArtist = if (user == null) artistRepo.findById(id)
-        else artistRepo.findByIdForUser(securityService.userAuthUid!!, id)
+        val foundArtist = if (user == null)
+            artistRepo.findById(id)
+        else
+            artistRepo.findByIdForUser(securityService.userAuthUid!!, id)
         // todo encaps it
         val weeklyFollowersDelta = if (foundArtist.country != null)
             weeklyFollowersDeltaRepo.getWeeklyFollowersDelta(entityType, foundArtist.country.name, foundArtist.id)
