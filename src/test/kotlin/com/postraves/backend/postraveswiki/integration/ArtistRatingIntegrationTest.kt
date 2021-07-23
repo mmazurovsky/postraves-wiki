@@ -197,6 +197,10 @@ class ArtistRatingIntegrationTest(
         }
     }
 
+    // todo weekly rating test
+
+    // todo weekly best test
+
 
 
 }

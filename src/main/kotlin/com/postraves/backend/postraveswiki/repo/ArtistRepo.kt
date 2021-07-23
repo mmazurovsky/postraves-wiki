@@ -6,6 +6,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.repo.generic.BaseRepo
 import com.postraves.backend.postraveswiki.repo.generic.ByIdRepo
+import com.postraves.backend.postraveswiki.repo.generic.FindByName
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.ARTIST
 import jooq.tables.references.COUNTRY
@@ -13,6 +14,7 @@ import jooq.tables.references.USER_FOLLOWS_ARTIST
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.SelectWhereStep
+import org.jooq.impl.DSL.lower
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
@@ -20,7 +22,8 @@ import java.time.OffsetDateTime
 
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
-    ByIdRepo<ArtistFullDto, ArtistShortDto>
+    ByIdRepo<ArtistFullDto, ArtistShortDto>,
+    FindByName<ArtistShortDto>
 
 @Repository
 class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : ArtistRepo {
@@ -77,7 +80,6 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
     override fun save(dto: ArtistWriteDto): ArtistShortDto {
         val artistToSave = dsl.newRecord(ARTIST)
         dto.transferDataToDbRecord(artistToSave)
-        // TODO separate function for initialization
         artistToSave.createdDateTime = OffsetDateTime.now()
         artistToSave.store()
         val id = artistToSave.id ?: throw TODO()
@@ -108,6 +110,15 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
 
     override fun findAll(): List<ArtistShortDto> {
         val results = selectArtistList()
+            .fetch()
+            .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
+            .toList()
+        return results
+    }
+
+    override fun findByPartOfName(namePart: String): List<ArtistShortDto> {
+        val results = selectArtistList()
+            .where(lower(ARTIST.NAME).contains(namePart.lowercase()))
             .fetch()
             .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
             .toList()

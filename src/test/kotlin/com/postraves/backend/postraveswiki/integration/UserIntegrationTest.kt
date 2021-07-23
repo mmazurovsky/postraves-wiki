@@ -10,7 +10,7 @@ import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.UserService
+import com.postraves.backend.postraveswiki.service.MyUserProfileService
 import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -35,7 +35,7 @@ import kotlin.test.assertNull
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserIntegrationTest(
     @Autowired private val mockMvc: MockMvc,
-    @Autowired private val userService: UserService,
+    @Autowired private val myUserProfileService: MyUserProfileService,
     @Autowired private val artistService: ArtistService,
     @Autowired private val cityService: CityService,
     @Autowired private val countryService: CountryService,
@@ -72,7 +72,7 @@ class UserIntegrationTest(
 
     @AfterEach
     private fun cleanDb() {
-        userService.deleteMyProfile()
+        myUserProfileService.deleteMyProfile()
         artistService.findAll().forEach { artistService.deleteById(it.id) }
     }
 
@@ -86,7 +86,7 @@ class UserIntegrationTest(
     @Test
     fun getUserForAuthUidNotExistingInDb() {
         `when`(securityService.userAuthUid).thenReturn("abc")
-        val result = userService.findMyProfile()
+        val result = myUserProfileService.findMyProfile()
         assertNull(result)
     }
 
@@ -103,9 +103,9 @@ class UserIntegrationTest(
 
         `when`(securityService.userAuthUid).thenReturn("abc")
 
-        userService.save(userToSave)
+        myUserProfileService.save(userToSave)
 
-        val saved = userService.findMyProfile()
+        val saved = myUserProfileService.findMyProfile()
 
         assertEquals(userToSave.name, saved!!.name)
         assertEquals(userToSave.imageLink, saved.imageLink)
@@ -129,7 +129,7 @@ class UserIntegrationTest(
 
         `when`(securityService.userAuthUid).thenReturn("abc")
 
-        userService.save(userToSave)
+        myUserProfileService.save(userToSave)
 
         val artistToSave = ArtistWriteDto(
             id = null,
@@ -148,9 +148,9 @@ class UserIntegrationTest(
         )
         val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
 
-        userService.followArtist(artistId)
+        myUserProfileService.followArtist(artistId)
 
-        val followed = userService.findMyFollowsArtist()
+        val followed = myUserProfileService.findMyFollowsArtist()
 
         assertEquals(1, followed.size)
         assertEquals(artistId, followed[0].id)
@@ -174,7 +174,7 @@ class UserIntegrationTest(
 
         `when`(securityService.userAuthUid).thenReturn("abc")
 
-        userService.save(userToSave)
+        myUserProfileService.save(userToSave)
 
         val artistToSave = ArtistWriteDto(
             id = null,
@@ -203,7 +203,7 @@ class UserIntegrationTest(
         assertEquals(0, artistNotFollowed.overallFollowers)
         assertEquals(0, artistNotFollowed.weeklyFollowers)
 
-        userService.followArtist(artistId)
+        myUserProfileService.followArtist(artistId)
 
         val artistFollowed = artistService.findById(artistId)
 

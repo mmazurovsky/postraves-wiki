@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/country")
-class CountryController
-    (private val countryService: CountryService) : BaseRequests<CountryDto, CountryDto>, ByNameRequests<CountryDto> {
+class CountryController (
+    private val countryService: CountryService
+    ) :
+    BaseRequests<CountryDto, CountryDto>,
+    ByNameRequests<CountryDto>,
+    FindByNameRequests<CountryDto> {
 
     override fun save(dto: CountryDto): CountryDto {
         return countryService.save(dto)
@@ -28,5 +32,9 @@ class CountryController
 
     override fun deleteByName(name: String) {
         countryService.deleteByName(name)
+    }
+
+    override fun findByPartOfName(namePart: String): List<CountryDto> {
+        return countryService.findByPartOfName(namePart)
     }
 }

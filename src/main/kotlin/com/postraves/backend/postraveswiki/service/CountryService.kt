@@ -2,13 +2,12 @@ package com.postraves.backend.postraveswiki.service
 
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.repo.CountryRepo
-import com.postraves.backend.postraveswiki.service.generic.BaseService
-import com.postraves.backend.postraveswiki.service.generic.ServiceByName
 import org.springframework.stereotype.Service
 
 interface CountryService :
     BaseService<CountryDto, CountryDto>,
-    ServiceByName<CountryDto>
+    ServiceByName<CountryDto>,
+    FindByName<CountryDto>
 
 @Service
 class CountryServiceImpl(
@@ -35,5 +34,9 @@ class CountryServiceImpl(
 
     override fun findAll(): List<CountryDto> {
         return countryRepo.findAll()
+    }
+
+    override fun findByPartOfName(namePart: String): List<CountryDto> {
+        return countryRepo.findByPartOfName(namePart)
     }
 }

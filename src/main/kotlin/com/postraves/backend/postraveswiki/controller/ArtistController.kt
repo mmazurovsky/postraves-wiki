@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/artist")
-class ArtistController
-    (
+class ArtistController (
     private val artistService: ArtistService
-)
-    : BaseRequests<ArtistWriteDto, ArtistShortDto>, ByIdRequests<ArtistFullDto>, RatingRequests<ArtistShortDto> {
+    ) :
+    BaseRequests<ArtistWriteDto, ArtistShortDto>,
+    ByIdRequests<ArtistFullDto>,
+    RatingRequests<ArtistShortDto>,
+    FindByNameRequests<ArtistShortDto> {
 
     override fun save(dto: ArtistWriteDto): ArtistShortDto {
         return artistService.save(dto)
@@ -37,5 +39,9 @@ class ArtistController
     override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
         //todo change city to country in service
         return artistService.findOverallRatingForCityByCountry(cityName, maxQuantity)
+    }
+
+    override fun findByPartOfName(namePart: String): List<ArtistShortDto> {
+        return artistService.findByPartOfName(namePart)
     }
 }

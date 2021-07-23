@@ -9,9 +9,6 @@ import com.postraves.backend.postraveswiki.repo.QuickFollowersRepoImpl
 import com.postraves.backend.postraveswiki.repo.WeeklyBestRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.FollowersEnrichment.enrichWithFollowers
-import com.postraves.backend.postraveswiki.service.generic.BaseService
-import com.postraves.backend.postraveswiki.service.generic.ByIdService
-import com.postraves.backend.postraveswiki.service.generic.RatingService
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
@@ -24,7 +21,8 @@ import kotlin.math.min
 interface ArtistService :
     BaseService<ArtistWriteDto, ArtistShortDto>,
     ByIdService<ArtistFullDto, ArtistShortDto>,
-    RatingService<ArtistShortDto> {
+    RatingService<ArtistShortDto>,
+    FindByName<ArtistShortDto> {
     fun enrichFullWithFollowers(artist: ArtistFullDto): ArtistFullDto
     fun enrichShortWithFollowers(artist: ArtistShortDto): ArtistShortDto
 }
@@ -41,10 +39,10 @@ class ArtistServiceImpl(
 ) : ArtistService {
 
     @Autowired
-    private lateinit var userService: UserService
+    private lateinit var myUserProfileService: MyUserProfileService
 
     private fun findByIdDependingOnUser(id: Long): ArtistFullDto {
-        val user = userService.findMyProfile()
+        val user = myUserProfileService.findMyProfile()
         return if (user == null)
             artistRepo.findById(id)
         else
@@ -57,9 +55,6 @@ class ArtistServiceImpl(
 
     override fun enrichFullWithFollowers(artist: ArtistFullDto): ArtistFullDto {
         return enrichWithFollowers(artist, artistOverallFollowersImpl, artistWeeklyFollowersDeltaImpl)
-//        val weeklyFollowers = artistWeeklyFollowersDeltaImpl.getFollowers(artist.id)
-//        val overallFollowers = artistOverallFollowersImpl.getFollowers(artist.id)
-//        return artist.copy(weeklyFollowers = weeklyFollowers, overallFollowers = overallFollowers)
     }
 
     override fun enrichShortWithFollowers(artist: ArtistShortDto): ArtistShortDto {
@@ -109,6 +104,7 @@ class ArtistServiceImpl(
         artistRepo.update(dto)
     }
 
+    // todo abstract method
     override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
         val countryName = cityService.findByName(cityName).country.name
         val artistFromTheCountryIds = artistCountryRepoImpl.getAllIdsByCountry(countryName)
@@ -134,7 +130,7 @@ class ArtistServiceImpl(
         return result
     }
 
-    // todo rewrite with getting from redis
+    // todo abstract method
     override fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
         val countryName = cityService.findByName(cityName).country.name
         val artistFromTheCountryIds = artistCountryRepoImpl.getAllIdsByCountry(countryName)
@@ -168,9 +164,6 @@ class ArtistServiceImpl(
         return bestArtist
     }
 
-//    override fun changeBaseRating(id: Long, socialMediaFollowersCount: Int) {
-//    }
-
     override fun incrementFollowers(id: Long) {
         if (securityService.userAuthUid != null) {
             artistOverallFollowersImpl.incrementFollowers(id)
@@ -187,5 +180,9 @@ class ArtistServiceImpl(
 
     override fun findAll(): List<ArtistShortDto> {
         return artistRepo.findAll()
+    }
+
+    override fun findByPartOfName(namePart: String): List<ArtistShortDto> {
+        return artistRepo.findByPartOfName(namePart)
     }
 }
