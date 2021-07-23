@@ -1,8 +1,7 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
-import com.google.firebase.auth.UserRecord
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
 import jooq.tables.records.UserProfileRecord
@@ -12,7 +11,6 @@ import kotlinx.serialization.Serializable
 data class UserFullDto(
     val name: String,
     val imageLink : String?,
-    val overallFollowersCount: Int,
     val currentCity: CityDto,
     val telegramLink: String?,
     val instagramLink: String?,
@@ -23,7 +21,6 @@ data class UserFullDto(
             return UserFullDto(
                 name = userRecord.name ?: throw TODO(),
                 imageLink = userRecord.imageLink,
-                overallFollowersCount = userRecord.overallFollowersCount ?: throw TODO(),
                 currentCity = CityDto.createOutOfDbRecords(cityRecord, countryRecord),
                 telegramLink = userRecord.telegramLink,
                 instagramLink = userRecord.instagramLink,

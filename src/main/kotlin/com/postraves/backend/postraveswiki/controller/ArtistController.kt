@@ -34,8 +34,8 @@ class ArtistController
         artistService.deleteById(id)
     }
 
-    override fun findOverallRating(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
+    override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
         //todo change city to country in service
-        return artistService.findOverallTopInCountry(cityName, maxQuantity)
+        return artistService.findOverallRatingForCityByCountry(cityName, maxQuantity)
     }
 }

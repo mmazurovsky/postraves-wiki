@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisServer
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -28,15 +30,23 @@ import kotlin.test.assertEquals
 class CountryIntegrationTest(
     @Autowired private val countryService: CountryService,
     @Autowired private val mockMvc: MockMvc,
-) : AbstractPostgresTest() {
+    @Value("\${spring.redis.port}") redisPort: Int,
+    ) : AbstractPostgresTest() {
 
     private val countryEndpoint: String = "/country"
+    private val redisServer = RedisServer(redisPort)
+    init {
+        redisServer.start()
+    }
 
     @AfterEach
     private fun cleanDb() = countryService.findAll().forEach { countryService.deleteByName(it.name) }
 
     @AfterAll
-    private fun cleanUp() = countryService.findAll().forEach { countryService.deleteByName(it.name) }
+    private fun cleanUp() {
+        countryService.findAll().forEach { countryService.deleteByName(it.name) }
+        redisServer.stop()
+    }
 
     @Test
     fun saveCountry() {

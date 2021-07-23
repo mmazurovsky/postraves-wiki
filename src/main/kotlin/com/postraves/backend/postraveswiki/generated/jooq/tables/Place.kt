@@ -7,7 +7,6 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.PLACE_AUTH_UID_KEY
 import jooq.keys.PLACE_NAME_KEY
 import jooq.keys.PLACE_PKEY
 import jooq.keys.PLACE__PLACE_CITY_NAME_FKEY
@@ -20,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row14
+import org.jooq.Row11
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -71,11 +70,6 @@ open class Place(
     val ID: TableField<PlaceRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.place.auth_uid</code>.
-     */
-    val AUTH_UID: TableField<PlaceRecord, String?> = createField(DSL.name("auth_uid"), SQLDataType.VARCHAR(28), this, "")
-
-    /**
      * The column <code>public.place.created_date_time</code>.
      */
     val CREATED_DATE_TIME: TableField<PlaceRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
@@ -94,16 +88,6 @@ open class Place(
      * The column <code>public.place.about</code>.
      */
     val ABOUT: TableField<PlaceRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
-
-    /**
-     * The column <code>public.place.base_rating</code>.
-     */
-    val BASE_RATING: TableField<PlaceRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
-
-    /**
-     * The column <code>public.place.overall_followers_count</code>.
-     */
-    val OVERALL_FOLLOWERS_COUNT: TableField<PlaceRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column <code>public.place.city_name</code>.
@@ -157,7 +141,7 @@ open class Place(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getIdentity(): Identity<PlaceRecord, Long?> = super.getIdentity() as Identity<PlaceRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<PlaceRecord> = PLACE_PKEY
-    override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY, PLACE_AUTH_UID_KEY, PLACE_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY, PLACE_NAME_KEY)
     override fun getReferences(): List<ForeignKey<PlaceRecord, *>> = listOf(PLACE__PLACE_CITY_NAME_FKEY)
 
     private lateinit var _city: City
@@ -181,7 +165,7 @@ open class Place(
     override fun rename(name: Name): Place = Place(name, null)
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row14<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, Double?, Double?, String?, String?> = super.fieldsRow() as Row14<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, Double?, Double?, String?, String?>
+    override fun fieldsRow(): Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?> = super.fieldsRow() as Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?>
 }

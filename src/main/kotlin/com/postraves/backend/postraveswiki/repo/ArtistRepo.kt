@@ -13,6 +13,8 @@ import jooq.tables.references.USER_FOLLOWS_ARTIST
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.SelectWhereStep
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
@@ -23,7 +25,8 @@ interface ArtistRepo :
 @Repository
 class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : ArtistRepo {
 
-    private val dsl: DSLContext by lazy { dslContextConfig.getDSLContext() }
+    @Autowired @Lazy
+    private lateinit var dsl: DSLContext
 
     private fun findByIdWithoutJoins(id: Long): ArtistRecord {
         val record = dsl.fetchOne(ARTIST, ARTIST.ID.eq(id))

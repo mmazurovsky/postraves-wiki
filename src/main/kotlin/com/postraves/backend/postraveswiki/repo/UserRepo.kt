@@ -62,7 +62,6 @@ class UserRepoImpl(
         dto.transferDataToDbRecord(userToSave)
         userToSave.authUid = authUid
         userToSave.createdDateTime = OffsetDateTime.now()
-        userToSave.overallFollowersCount = 0
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
         return UserShortDto.createOutOfDbRecords(record?.into(USER_PROFILE) ?: throw TODO())

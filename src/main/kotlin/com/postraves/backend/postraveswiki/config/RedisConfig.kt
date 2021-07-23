@@ -8,18 +8,18 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Lazy
 
 
-//@Component
 @Configuration
-class RedisConfig(
-) {
+class RedisConfig {
+
     @Value("\${spring.redis.host}")
     val redisHost: String? = null
     @Value("\${spring.redis.port}")
     val redisPort: Int? = null
 
-    @Bean
+    @Lazy @Bean
     fun getRedisClient(): RedisAsyncCommands<String, String> {
         val client: RedisClient = RedisClient.create(RedisURI.Builder.redis(redisHost ?: throw TODO(), redisPort ?: throw TODO()).build())
         val connection = client.connect()

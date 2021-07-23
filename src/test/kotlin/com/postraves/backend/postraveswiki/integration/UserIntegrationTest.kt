@@ -16,14 +16,12 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -141,7 +139,6 @@ class UserIntegrationTest(
             instagramLink = "instagram",
             about = "About Amelie",
             countryName = "BE",
-            soundcloudFollowersCount = 100,
         )
         val artistIdRespJson = Requests.makePostRequest(
             mockMvc,
@@ -160,6 +157,8 @@ class UserIntegrationTest(
         assertEquals(artistToSave.name, followed[0].name)
         assertEquals(artistToSave.imageLink, followed[0].imageLink)
         assertEquals(artistToSave.countryName, followed[0].country!!.name)
+        assertEquals(1, followed[0].overallFollowers)
+        assertEquals(1, followed[0].weeklyFollowers)
     }
 
     @Test
@@ -185,7 +184,6 @@ class UserIntegrationTest(
             instagramLink = "instagram",
             about = "About Amelie",
             countryName = "BE",
-            soundcloudFollowersCount = 100,
         )
         val artistIdRespJson = Requests.makePostRequest(
             mockMvc,
@@ -202,8 +200,8 @@ class UserIntegrationTest(
         assertEquals(artistToSave.imageLink, artistNotFollowed.imageLink)
         assertEquals(artistToSave.countryName, artistNotFollowed.country!!.name)
         assertEquals(false, artistNotFollowed.isFollowed)
-        assertEquals(0, artistNotFollowed.overallFollowersCount)
-        assertEquals(0, artistNotFollowed.weeklyFollowersDelta)
+        assertEquals(0, artistNotFollowed.overallFollowers)
+        assertEquals(0, artistNotFollowed.weeklyFollowers)
 
         userService.followArtist(artistId)
 
@@ -214,7 +212,7 @@ class UserIntegrationTest(
         assertEquals(artistToSave.imageLink, artistFollowed.imageLink)
         assertEquals(artistToSave.countryName, artistFollowed.country!!.name)
         assertEquals(true, artistFollowed.isFollowed)
-        assertEquals(1, artistFollowed.overallFollowersCount)
-        assertEquals(1, artistFollowed.weeklyFollowersDelta)
+        assertEquals(1, artistFollowed.overallFollowers)
+        assertEquals(1, artistFollowed.weeklyFollowers)
     }
 }

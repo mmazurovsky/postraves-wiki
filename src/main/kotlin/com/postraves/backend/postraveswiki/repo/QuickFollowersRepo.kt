@@ -3,6 +3,7 @@ package com.postraves.backend.postraveswiki.repo
 import io.lettuce.core.api.async.RedisAsyncCommands
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import org.springframework.context.annotation.Lazy
 
 sealed interface QuickFollowersRepo {
     fun getFollowers(entityId: Long): Int
@@ -11,21 +12,25 @@ sealed interface QuickFollowersRepo {
     fun decrementFollowers(entityId: Long): Int
     fun findTop(stopValue: Long): Map<Long, Int>
     fun returnAllValuesToInitial()
+    fun removeId(entityId: Long)
 }
 
-@Repository
 sealed class QuickFollowersRepoImpl(
 ) : QuickFollowersRepo {
 //    by lazy { redisConfig.getRedisClient() }
 
-    @Autowired
+    @Autowired @Lazy
     private lateinit var redisClient: RedisAsyncCommands<String, String>
 
     abstract class WeeklyQuickFollowersDeltaRepo : QuickFollowersRepoImpl()
+    @Repository
     class ArtistWeeklyQuickFollowersDeltaRepoImpl : WeeklyQuickFollowersDeltaRepo()
+    @Repository
     class UnityWeeklyQuickFollowersDeltaRepoImpl : WeeklyQuickFollowersDeltaRepo()
     abstract class OverallQuickFollowersRepo : QuickFollowersRepoImpl()
+    @Repository
     class ArtistOverallQuickFollowersRepoImpl: OverallQuickFollowersRepo()
+    @Repository
     class UnityOverallQuickFollowersRepoImpl: OverallQuickFollowersRepo()
 
     private fun resolveFollowersType(): String {
@@ -94,5 +99,12 @@ sealed class QuickFollowersRepoImpl(
         redisClient.multi()
         list.forEach { setInitialFollowers(it.toLong()) }
         redisClient.exec()
+    }
+
+    override fun removeId(entityId: Long) {
+        val entityType = resolveEntityType()
+        val followersType = resolveFollowersType()
+
+        redisClient.zrem("$entityType:$followersType", entityId.toString())
     }
 }

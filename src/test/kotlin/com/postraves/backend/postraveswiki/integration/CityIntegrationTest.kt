@@ -12,6 +12,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisServer
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -29,9 +31,14 @@ class CityIntegrationTest(
     @Autowired private val cityService: CityService,
     @Autowired private val countryService: CountryService,
     @Autowired private val mockMvc: MockMvc,
-) : AbstractPostgresTest() {
+    @Value("\${spring.redis.port}") redisPort: Int,
+    ) : AbstractPostgresTest() {
 
     private val cityEndpoint: String = "/city"
+    private val redisServer = RedisServer(redisPort)
+    init {
+        redisServer.start()
+    }
 
     @BeforeAll
     private fun createCountriesForAssociations() {
@@ -64,6 +71,7 @@ class CityIntegrationTest(
     private fun cleanUp() {
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
+        redisServer.stop()
     }
 
     @Test

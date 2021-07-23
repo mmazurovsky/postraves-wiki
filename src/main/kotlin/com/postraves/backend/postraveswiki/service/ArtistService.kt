@@ -3,22 +3,35 @@ package com.postraves.backend.postraveswiki.service
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.repo.*
+import com.postraves.backend.postraveswiki.repo.ArtistRepo
+import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepoImpl
+import com.postraves.backend.postraveswiki.repo.QuickFollowersRepoImpl
+import com.postraves.backend.postraveswiki.repo.WeeklyBestRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
+import com.postraves.backend.postraveswiki.service.FollowersEnrichment.enrichWithFollowers
 import com.postraves.backend.postraveswiki.service.generic.BaseService
 import com.postraves.backend.postraveswiki.service.generic.ByIdService
 import com.postraves.backend.postraveswiki.service.generic.RatingService
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
+import kotlin.math.min
 
 
 interface ArtistService :
     BaseService<ArtistWriteDto, ArtistShortDto>,
     ByIdService<ArtistFullDto, ArtistShortDto>,
-    RatingService<ArtistShortDto>
+    RatingService<ArtistShortDto> {
+    fun enrichFullWithFollowers(artist: ArtistFullDto): ArtistFullDto
+    fun enrichShortWithFollowers(artist: ArtistShortDto): ArtistShortDto
+}
 
 @Service
 class ArtistServiceImpl(
+    private val cityService: CityService,
     private val artistRepo: ArtistRepo,
     private val securityService: SecurityService,
     private val artistCountryRepoImpl: QuickEntityCountryRepoImpl.ArtistCountryQuickRepoImpl,
@@ -38,71 +51,126 @@ class ArtistServiceImpl(
             artistRepo.findByIdForUser(securityService.userAuthUid!!, id)
     }
 
-    private fun enrichWithFollowers(artist: ArtistFullDto): ArtistFullDto {
-        val weeklyFollowers = artistWeeklyFollowersDeltaImpl.getFollowers(artist.id)
-        val overallFollowers = artistOverallFollowersImpl.getFollowers(artist.id)
-        return artist.copy(weeklyFollowers = weeklyFollowers, overallFollowers = overallFollowers)
-    }
-
     private fun findListByIds(ids: Set<Long>): List<ArtistShortDto> {
         return artistRepo.findListByIds(ids)
     }
 
+    override fun enrichFullWithFollowers(artist: ArtistFullDto): ArtistFullDto {
+        return enrichWithFollowers(artist, artistOverallFollowersImpl, artistWeeklyFollowersDeltaImpl)
+//        val weeklyFollowers = artistWeeklyFollowersDeltaImpl.getFollowers(artist.id)
+//        val overallFollowers = artistOverallFollowersImpl.getFollowers(artist.id)
+//        return artist.copy(weeklyFollowers = weeklyFollowers, overallFollowers = overallFollowers)
+    }
+
+    override fun enrichShortWithFollowers(artist: ArtistShortDto): ArtistShortDto {
+        return enrichWithFollowers(artist, artistOverallFollowersImpl, artistWeeklyFollowersDeltaImpl)
+    }
+
     override fun findById(id: Long): ArtistFullDto {
         val foundArtist = findByIdDependingOnUser(id)
-        return enrichWithFollowers(foundArtist)
+        return enrichFullWithFollowers(foundArtist)
     }
 
     override fun deleteById(id: Long) {
+        // deleting form quick repo country
+        val dtoToDelete = artistRepo.findById(id)
+        val countryOfDtoToDelete = dtoToDelete.country?.name
+        if (countryOfDtoToDelete != null) {
+            artistCountryRepoImpl.removeOneIdFromSet(countryOfDtoToDelete, id)
+        }
+
+        // deleting form quick repos ratings
+        artistOverallFollowersImpl.removeId(id)
+        artistWeeklyFollowersDeltaImpl.removeId(id)
+
         artistRepo.deleteById(id)
     }
 
     override fun save(dto: ArtistWriteDto): ArtistShortDto {
-        return artistRepo.save(dto)
+        val saved = artistRepo.save(dto)
+        if (dto.countryName != null) artistCountryRepoImpl.addOneIdToCountry(dto.countryName, saved.id)
+        artistOverallFollowersImpl.setInitialFollowers(saved.id)
+        artistWeeklyFollowersDeltaImpl.setInitialFollowers(saved.id)
+        return saved
     }
 
     override fun update(dto: ArtistWriteDto) {
+        // check country change and delete+add if necessary
+        val previousCountryName = findByIdDependingOnUser(dto.id ?: throw TODO()).country?.name
+        if (dto.countryName != previousCountryName) {
+            if (dto.countryName != null) {
+                artistCountryRepoImpl.addOneIdToCountry(dto.countryName, dto.id)
+            }
+            if (previousCountryName != null) {
+                artistCountryRepoImpl.removeOneIdFromSet(previousCountryName, dto.id)
+            }
+        }
+
         artistRepo.update(dto)
     }
 
-    override fun findOverallTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {
+    override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
+        val countryName = cityService.findByName(cityName).country.name
         val artistFromTheCountryIds = artistCountryRepoImpl.getAllIdsByCountry(countryName)
         val topArtistIdsAndScores = artistOverallFollowersImpl.findTop(-1)
-        val topArtistFromTheCountryIdsAndScores = topArtistIdsAndScores.filterKeys { artistFromTheCountryIds.contains(it) }.toMap()
+        val topArtistFromTheCountryIdsAndScores =
+            topArtistIdsAndScores.filterKeys { artistFromTheCountryIds.contains(it) }.toMap()
         // todo maybe order gets lost here
         val topArtistFromTheCountryIds = topArtistFromTheCountryIdsAndScores.keys
         val topArtistFromTheCountryDtos = findListByIds(topArtistFromTheCountryIds)
         val topArtistFromTheCountryDtosWithOverallFollowers = topArtistFromTheCountryDtos.map {
-            it.copy(overallFollowers = topArtistFromTheCountryIdsAndScores[it.id] ?: TODO())
+            it.copy(
+                overallFollowers = topArtistFromTheCountryIdsAndScores[it.id] ?: TODO(),
+                weeklyFollowers = artistWeeklyFollowersDeltaImpl.getFollowers(it.id)
+            )
         }.toList()
-//        Collections.sort(topArtistsFromTheCountryDtos, Comparator.comparing { topArtistsFromTheCountryIds.indexOf(it.id) })
-        return topArtistFromTheCountryDtosWithOverallFollowers.subList(0, maxQuantity)
+        Collections.sort(
+            topArtistFromTheCountryDtosWithOverallFollowers,
+            Comparator.comparing { topArtistFromTheCountryIds.indexOf(it.id) })
+        val result = topArtistFromTheCountryDtosWithOverallFollowers.subList(
+            0,
+            min(topArtistFromTheCountryDtosWithOverallFollowers.size, maxQuantity)
+        )
+        return result
     }
 
     // todo rewrite with getting from redis
-    override fun findWeeklyTopInCountry(countryName: String, maxQuantity: Int): List<ArtistShortDto> {
+    override fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
+        val countryName = cityService.findByName(cityName).country.name
         val artistFromTheCountryIds = artistCountryRepoImpl.getAllIdsByCountry(countryName)
         val weeklyTopArtistIdsAndScores = artistWeeklyFollowersDeltaImpl.findTop(-1)
-        val weeklyTopArtistFromTheCountryIdsAndScores = weeklyTopArtistIdsAndScores.filterKeys { artistFromTheCountryIds.contains(it) }.toMap()
+        val weeklyTopArtistFromTheCountryIdsAndScores =
+            weeklyTopArtistIdsAndScores.filterKeys { artistFromTheCountryIds.contains(it) }.toMap()
         // todo maybe order gets lost here
         val weeklyTopArtistFromTheCountryIds = weeklyTopArtistIdsAndScores.keys
         val weeklyTopArtistFromTheCountryDtos = findListByIds(weeklyTopArtistFromTheCountryIds)
         val weeklyTopArtistDtosWithWeeklyFollowers = weeklyTopArtistFromTheCountryDtos.map {
-            it.copy(weeklyFollowers = weeklyTopArtistFromTheCountryIdsAndScores[it.id] ?: TODO())
+            it.copy(
+                weeklyFollowers = weeklyTopArtistFromTheCountryIdsAndScores[it.id] ?: TODO(),
+                overallFollowers = artistOverallFollowersImpl.getFollowers(it.id)
+            )
         }.toList()
-//        Collections.sort(weeklyTopArtistFromTheCountryDtos, Comparator.comparing { weeklyTopArtistFromTheCountryIds.indexOf(it.id) })
-        return weeklyTopArtistDtosWithWeeklyFollowers.subList(0, maxQuantity)
+        Collections.sort(
+            weeklyTopArtistDtosWithWeeklyFollowers,
+            Comparator.comparing { weeklyTopArtistFromTheCountryIds.indexOf(it.id) })
+        val result = weeklyTopArtistDtosWithWeeklyFollowers.subList(
+            0,
+            min(weeklyTopArtistDtosWithWeeklyFollowers.size, maxQuantity)
+        )
+        return result
     }
 
-    override fun findBestOfTheWeekInCountry(countryName: String): ArtistShortDto {
-        TODO()
+    override fun findBestOfTheWeekByCityInCountry(cityName: String): ArtistShortDto {
+        // todo test this
+        val countryName = cityService.findByName(cityName).country.name
+        val bestArtistAsString = Json.encodeToJsonElement(weeklyBestRepo.getWeeklyBestInCountry(countryName))
+        val bestArtist = Json.decodeFromJsonElement<ArtistShortDto>(bestArtistAsString)
+        return bestArtist
     }
 
-    override fun changeBaseRating(id: Long, socialMediaFollowersCount: Int) {
+//    override fun changeBaseRating(id: Long, socialMediaFollowersCount: Int) {
+//    }
 
-    }
-
-    // todo rewrite with redis
     override fun incrementFollowers(id: Long) {
         if (securityService.userAuthUid != null) {
             artistOverallFollowersImpl.incrementFollowers(id)
@@ -110,7 +178,6 @@ class ArtistServiceImpl(
         }
     }
 
-    // todo rewrite with redis
     override fun decrementFollowers(id: Long) {
         if (securityService.userAuthUid != null) {
             artistOverallFollowersImpl.decrementFollowers(id)

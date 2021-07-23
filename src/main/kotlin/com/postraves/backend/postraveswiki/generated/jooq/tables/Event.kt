@@ -19,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row12
+import org.jooq.Row10
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -88,16 +88,6 @@ open class Event(
      * The column <code>public.event.about</code>.
      */
     val ABOUT: TableField<EventRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
-
-    /**
-     * The column <code>public.event.base_rating</code>.
-     */
-    val BASE_RATING: TableField<EventRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
-
-    /**
-     * The column <code>public.event.overall_followers_count</code>.
-     */
-    val OVERALL_FOLLOWERS_COUNT: TableField<EventRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column <code>public.event.status</code>.
@@ -170,7 +160,7 @@ open class Event(
     override fun rename(name: Name): Event = Event(name, null)
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row12<Long?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, OffsetDateTime?, OffsetDateTime?, String?, Long?> = super.fieldsRow() as Row12<Long?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, OffsetDateTime?, OffsetDateTime?, String?, Long?>
+    override fun fieldsRow(): Row10<Long?, OffsetDateTime?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, String?, Long?> = super.fieldsRow() as Row10<Long?, OffsetDateTime?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, String?, Long?>
 }

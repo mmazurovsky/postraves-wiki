@@ -3,20 +3,21 @@ package com.postraves.backend.postraveswiki.repo
 import io.lettuce.core.api.async.RedisAsyncCommands
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import org.springframework.context.annotation.Lazy
 
 interface QuickEntityCountryRepo {
-    fun addOneIdToSet(countryName: String, entityId: Long)
+    fun addOneIdToCountry(countryName: String, entityId: Long)
     fun removeOneIdFromSet(countryName: String, entityId: Long)
     fun getAllIdsByCountry(countryName: String) : Set<Long>
 }
 
-@Repository
 sealed class QuickEntityCountryRepoImpl(
 ) : QuickEntityCountryRepo {
 
-    @Autowired
+    @Autowired @Lazy
     private lateinit var redisClient: RedisAsyncCommands<String, String>
 
+    @Repository
     class ArtistCountryQuickRepoImpl : QuickEntityCountryRepoImpl()
 
     private fun resolveEntityType(): String {
@@ -26,7 +27,7 @@ sealed class QuickEntityCountryRepoImpl(
         }
     }
 
-    override fun addOneIdToSet(countryName: String, entityId: Long) {
+    override fun addOneIdToCountry(countryName: String, entityId: Long) {
         val entityType = resolveEntityType()
         redisClient.sadd("$entityType:${countryName.lowercase()}", entityId.toString())
     }

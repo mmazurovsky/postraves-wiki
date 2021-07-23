@@ -12,5 +12,5 @@ interface RatingRequests<SHORTDTO : BaseShortDto> {
 
     @GetMapping("/public/overallRating")
     @ResponseStatus(HttpStatus.OK)
-    fun findOverallRating(@RequestParam cityName: String, @RequestParam maxQuantity: Int): List<SHORTDTO>
+    fun findOverallRatingForCityByCountry(@RequestParam cityName: String, @RequestParam maxQuantity: Int): List<SHORTDTO>
 }

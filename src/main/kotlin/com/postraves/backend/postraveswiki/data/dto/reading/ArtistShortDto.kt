@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
+import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import jooq.tables.records.ArtistRecord
@@ -8,21 +9,19 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ArtistShortDto(
-    val id: Long,
+    override val id: Long,
     val name: String,
     val imageLink : String?,
-    val baseRating: Int,
     val country: CountryDto?,
     val isFollowed: Boolean = false,
-    val overallFollowers: Int = 0,
-    val weeklyFollowers: Int = 0
-) : BaseShortDto {
+    override val overallFollowers: Int = 0,
+    override val weeklyFollowers: Int = 0,
+    ) : BaseShortDto, BaseRatingDtoWithId<ArtistShortDto> {
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistShortDto {
             return ArtistShortDto(
                 id = artistRecord.id ?: throw TODO(),
                 name = artistRecord.name ?: throw TODO(),
-                baseRating = artistRecord.baseRating ?: throw TODO(),
                 imageLink = artistRecord.imageLink,
                 country =
                 if (countryRecord.name != null) CountryDto(
@@ -32,5 +31,9 @@ data class ArtistShortDto(
                 else null,
             )
         }
+    }
+
+    override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistShortDto {
+        return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
     }
 }
