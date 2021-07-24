@@ -5,8 +5,10 @@ import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepoImpl
-import com.postraves.backend.postraveswiki.repo.QuickFollowersRepoImpl
+import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepo
+import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepoAbstract
+import com.postraves.backend.postraveswiki.repo.QuickFollowersRepo
+import com.postraves.backend.postraveswiki.repo.QuickFollowersRepoAbstract
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
@@ -18,6 +20,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -35,9 +38,12 @@ import kotlin.test.assertNull
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ArtistIntegrationTest(
     @Autowired private val artistService: ArtistService,
-    @Autowired private val artistCountryQuickRepoImpl: QuickEntityCountryRepoImpl.ArtistCountryQuickRepoImpl,
-    @Autowired private val artistOverallQuickFollowersRepoImpl: QuickFollowersRepoImpl.ArtistOverallQuickFollowersRepoImpl,
-    @Autowired private val artistWeeklyQuickFollowersDeltaRepoImpl: QuickFollowersRepoImpl.ArtistWeeklyQuickFollowersDeltaRepoImpl,
+    @Qualifier("artistCountryQuickRepoImpl")
+    private val artistCountryQuickRepoImpl: QuickEntityCountryRepo,
+    @Qualifier("artistOverallQuickFollowersRepoImpl")
+    @Autowired private val artistOverallQuickFollowersRepoImpl: QuickFollowersRepo,
+    @Qualifier("artistWeeklyQuickFollowersRepoImpl")
+    @Autowired private val artistWeeklyQuickFollowersRepoImpl: QuickFollowersRepo,
     @Autowired private val countryService: CountryService,
     @Autowired private val mockMvc: MockMvc,
     @Value("\${spring.redis.port}") redisPort: Int,
@@ -93,7 +99,7 @@ class ArtistIntegrationTest(
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
         val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersDeltaRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
 
         assertNotNull(savedArtist.id)
         assertEquals(artistToSave.name, savedArtist.name)
@@ -138,7 +144,7 @@ class ArtistIntegrationTest(
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
         val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersDeltaRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
 
         assertEquals(artistToUpdate.id, updatedArtist.id)
         assertEquals(artistToUpdate.name, updatedArtist.name)
@@ -172,7 +178,7 @@ class ArtistIntegrationTest(
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
         val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersDeltaRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
 
         assertEquals(0, responseFindArtist.size)
 
@@ -212,7 +218,7 @@ class ArtistIntegrationTest(
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
         val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersDeltaRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
 
         assertEquals(3, responseArtists.size)
         responseArtists.forEach {

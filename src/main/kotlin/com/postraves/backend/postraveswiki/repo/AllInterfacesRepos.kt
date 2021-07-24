@@ -1,8 +1,6 @@
 package com.postraves.backend.postraveswiki.repo.generic
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
-import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
-import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
+import com.postraves.backend.postraveswiki.data.dto.*
 
 interface BaseRepo<WRITEDTO : BaseWriteDto,
         SHORTDTO : BaseShortDto> {
@@ -15,7 +13,7 @@ interface FindByName<SHORTDTO : BaseShortDto> {
     fun findByPartOfName(namePart: String): List<SHORTDTO>
 }
 
-interface ByIdRepo<FULLDTO : BaseFullDto, SHORTDTO: BaseShortDto> {
+interface ByIdRepo<FULLDTO : BaseFullDtoWithId, SHORTDTO: BaseShortDtoWithId> {
     fun findById(id: Long): FULLDTO
     fun findByIdForUser(authUid: String, id: Long): FULLDTO
     fun deleteById(id: Long)

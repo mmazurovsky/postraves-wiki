@@ -1,8 +1,7 @@
 package com.postraves.backend.postraveswiki.service
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
-import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
-import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
+import com.postraves.backend.postraveswiki.data.dto.*
+import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 
 interface BaseService<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto> {
     fun save(dto: WRITEDTO) : SHORTDTO
@@ -14,9 +13,10 @@ interface FindByName<SHORTDTO : BaseShortDto> {
     fun findByPartOfName(namePart: String): List<SHORTDTO>
 }
 
-interface ByIdService<FULLDTO : BaseFullDto, SHORTDTO : BaseShortDto> {
+interface ByIdService<FULLDTO : BaseFullDtoWithId, SHORTDTO : BaseShortDtoWithId> {
     fun findById(id: Long): FULLDTO
     fun deleteById(id: Long)
+    fun findListByIds(ids: Set<Long>): List<SHORTDTO>
 }
 
 interface RatingService<SHORTDTO: BaseShortDto> {
