@@ -10,20 +10,18 @@ import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.UserService
+import com.postraves.backend.postraveswiki.service.MyUserProfileService
 import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -36,12 +34,18 @@ import kotlin.test.assertNull
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserIntegrationTest(
-    @Autowired private val mockMvc: MockMvc,
-    @Autowired private val userService: UserService,
-    @Autowired private val artistService: ArtistService,
-    @Autowired private val cityService: CityService,
-    @Autowired private val countryService: CountryService,
-    @Value("\${spring.redis.port}") redisPort: Int,
+    @Autowired
+    private val mockMvc: MockMvc,
+    @Autowired
+    private val myUserProfileService: MyUserProfileService,
+    @Autowired
+    private val artistService: ArtistService,
+    @Autowired
+    private val cityService: CityService,
+    @Autowired
+    private val countryService: CountryService,
+    @Value("\${spring.redis.port}")
+    private val redisPort: Int,
     ) : AbstractPostgresTest() {
 
     private val redisServer = RedisServer(redisPort)
@@ -74,7 +78,7 @@ class UserIntegrationTest(
 
     @AfterEach
     private fun cleanDb() {
-        userService.deleteMyProfile()
+        myUserProfileService.deleteMyProfile()
         artistService.findAll().forEach { artistService.deleteById(it.id) }
     }
 
@@ -88,7 +92,7 @@ class UserIntegrationTest(
     @Test
     fun getUserForAuthUidNotExistingInDb() {
         `when`(securityService.userAuthUid).thenReturn("abc")
-        val result = userService.findMyProfile()
+        val result = myUserProfileService.findMyProfile()
         assertNull(result)
     }
 
@@ -105,9 +109,9 @@ class UserIntegrationTest(
 
         `when`(securityService.userAuthUid).thenReturn("abc")
 
-        userService.save(userToSave)
+        myUserProfileService.save(userToSave)
 
-        val saved = userService.findMyProfile()
+        val saved = myUserProfileService.findMyProfile()
 
         assertEquals(userToSave.name, saved!!.name)
         assertEquals(userToSave.imageLink, saved.imageLink)
@@ -131,7 +135,7 @@ class UserIntegrationTest(
 
         `when`(securityService.userAuthUid).thenReturn("abc")
 
-        userService.save(userToSave)
+        myUserProfileService.save(userToSave)
 
         val artistToSave = ArtistWriteDto(
             id = null,
@@ -141,7 +145,6 @@ class UserIntegrationTest(
             instagramLink = "instagram",
             about = "About Amelie",
             countryName = "BE",
-            soundcloudFollowersCount = 100,
         )
         val artistIdRespJson = Requests.makePostRequest(
             mockMvc,
@@ -151,15 +154,17 @@ class UserIntegrationTest(
         )
         val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
 
-        userService.followArtist(artistId)
+        myUserProfileService.followArtist(artistId)
 
-        val followed = userService.findMyFollowsArtist()
+        val followed = myUserProfileService.findMyFollowsArtist()
 
         assertEquals(1, followed.size)
         assertEquals(artistId, followed[0].id)
         assertEquals(artistToSave.name, followed[0].name)
         assertEquals(artistToSave.imageLink, followed[0].imageLink)
         assertEquals(artistToSave.countryName, followed[0].country!!.name)
+        assertEquals(1, followed[0].overallFollowers)
+        assertEquals(1, followed[0].weeklyFollowers)
     }
 
     @Test
@@ -175,7 +180,7 @@ class UserIntegrationTest(
 
         `when`(securityService.userAuthUid).thenReturn("abc")
 
-        userService.save(userToSave)
+        myUserProfileService.save(userToSave)
 
         val artistToSave = ArtistWriteDto(
             id = null,
@@ -185,7 +190,6 @@ class UserIntegrationTest(
             instagramLink = "instagram",
             about = "About Amelie",
             countryName = "BE",
-            soundcloudFollowersCount = 100,
         )
         val artistIdRespJson = Requests.makePostRequest(
             mockMvc,
@@ -202,10 +206,10 @@ class UserIntegrationTest(
         assertEquals(artistToSave.imageLink, artistNotFollowed.imageLink)
         assertEquals(artistToSave.countryName, artistNotFollowed.country!!.name)
         assertEquals(false, artistNotFollowed.isFollowed)
-        assertEquals(0, artistNotFollowed.overallFollowersCount)
-        assertEquals(0, artistNotFollowed.weeklyFollowersDelta)
+        assertEquals(0, artistNotFollowed.overallFollowers)
+        assertEquals(0, artistNotFollowed.weeklyFollowers)
 
-        userService.followArtist(artistId)
+        myUserProfileService.followArtist(artistId)
 
         val artistFollowed = artistService.findById(artistId)
 
@@ -214,7 +218,7 @@ class UserIntegrationTest(
         assertEquals(artistToSave.imageLink, artistFollowed.imageLink)
         assertEquals(artistToSave.countryName, artistFollowed.country!!.name)
         assertEquals(true, artistFollowed.isFollowed)
-        assertEquals(1, artistFollowed.overallFollowersCount)
-        assertEquals(1, artistFollowed.weeklyFollowersDelta)
+        assertEquals(1, artistFollowed.overallFollowers)
+        assertEquals(1, artistFollowed.weeklyFollowers)
     }
 }

@@ -4,51 +4,45 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
-import com.postraves.backend.postraveswiki.service.UserService
+import com.postraves.backend.postraveswiki.service.MyUserProfileService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/user")
-class UserController(private val userService: UserService) : BaseRequests<UserWriteDto, UserShortDto> {
+class MyUserProfileController(private val myUserProfileService: MyUserProfileService) {
 
     @GetMapping("/myProfile")
     fun findMyProfile(): UserFullDto? {
-        return userService.findMyProfile()
+        return myUserProfileService.findMyProfile()
     }
 
     @PostMapping("/public/myProfile")
-    override fun save(dto: UserWriteDto):UserShortDto {
-        return userService.save(dto)
+    fun save(dto: UserWriteDto):UserShortDto {
+        return myUserProfileService.save(dto)
     }
 
     @PutMapping("/myProfile")
-    override fun update(dto: UserWriteDto) {
-        userService.update(dto)
+    fun update(dto: UserWriteDto) {
+        myUserProfileService.update(dto)
     }
 
     @DeleteMapping("/myProfile")
     fun deleteMyProfile() {
-        userService.deleteMyProfile()
+        myUserProfileService.deleteMyProfile()
     }
 
     @PostMapping("/myFollows/artist/{id}")
     fun followArtist(@PathVariable id: Long) {
-        userService.followArtist(id)
+        myUserProfileService.followArtist(id)
     }
 
     @DeleteMapping("/myFollows/artist/{id}")
     fun unfollowArtist(@PathVariable id: Long)  {
-        userService.unfollowArtist(id)
+        myUserProfileService.unfollowArtist(id)
     }
 
     @GetMapping("/myFollows/artist")
     fun findMyFollowsArtist() : List<ArtistShortDto> {
-        return userService.findMyFollowsArtist()
+        return myUserProfileService.findMyFollowsArtist()
     }
-
-    // todo certain roles access
-    override fun findAll(): List<UserShortDto> {
-        TODO("Not yet implemented")
-    }
-
 }

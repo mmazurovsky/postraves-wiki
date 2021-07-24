@@ -1,6 +1,5 @@
 package com.postraves.backend.postraveswiki.repo
 
-import com.postraves.backend.postraveswiki.config.JooqDSLContextConfig
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
@@ -9,10 +8,12 @@ import jooq.tables.records.UserProfileRecord
 import jooq.tables.references.*
 import org.jooq.DSLContext
 import org.jooq.Record
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
-interface UserRepo {
+interface MyUserProfileRepo {
     fun findMyProfile(authUid: String): UserFullDto?
     fun save(dto: UserWriteDto, authUid: String): UserShortDto
     fun update(dto: UserWriteDto, authUid: String)
@@ -20,16 +21,16 @@ interface UserRepo {
     fun followArtist(userAuthUid: String, id: Long)
     fun unfollowArtist(userAuthUid: String, id: Long)
     fun findMyFollowsArtist(authUid: String): List<ArtistShortDto>
-    fun checkIsFollowedArtist(userAuthUid: String, id: Long): Boolean
 }
 
 @Repository
-class UserRepoImpl(
-    private val dslContextConfig: JooqDSLContextConfig,
+class MyUserProfileRepoImpl(
     private val artistRepo: ArtistRepo
-) : UserRepo {
+) : MyUserProfileRepo {
 
-    private val dsl: DSLContext by lazy { dslContextConfig.getDSLContext() }
+    @Autowired
+    @Lazy
+    private lateinit var dsl: DSLContext
 
     private fun findByAuthUidWithJoins(authUid: String): Record? {
         val record = dsl
@@ -62,7 +63,6 @@ class UserRepoImpl(
         dto.transferDataToDbRecord(userToSave)
         userToSave.authUid = authUid
         userToSave.createdDateTime = OffsetDateTime.now()
-        userToSave.overallFollowersCount = 0
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
         return UserShortDto.createOutOfDbRecords(record?.into(USER_PROFILE) ?: throw TODO())
@@ -86,7 +86,6 @@ class UserRepoImpl(
         userFollowArtist.artistId = id
         userFollowArtist.userProfileUid = userAuthUid
         userFollowArtist.store()
-//        userFollowArtist.userProfileId = userAuthUid
     }
 
     override fun unfollowArtist(userAuthUid: String, id: Long) {
@@ -102,7 +101,6 @@ class UserRepoImpl(
     }
 
     override fun findMyFollowsArtist(authUid: String): List<ArtistShortDto> {
-        //todo
         return dsl
             .selectFrom(
                 USER_FOLLOWS_ARTIST
@@ -114,18 +112,4 @@ class UserRepoImpl(
             .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
             .toList()
     }
-
-    override fun checkIsFollowedArtist(userAuthUid: String, id: Long): Boolean {
-        val record = dsl
-            .selectFrom(
-                USER_FOLLOWS_ARTIST
-                    .leftOuterJoin(ARTIST).on(USER_FOLLOWS_ARTIST.ARTIST_ID.eq(ARTIST.ID))
-                    .leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
-            )
-            .where(USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(userAuthUid))
-            .fetchOne()
-
-        return if (record == null) false else true
-    }
-
 }

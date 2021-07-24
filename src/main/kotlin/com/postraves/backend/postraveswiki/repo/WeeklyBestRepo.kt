@@ -1,25 +1,31 @@
 package com.postraves.backend.postraveswiki.repo
 
-import com.postraves.backend.postraveswiki.config.RedisConfig
+import com.postraves.backend.postraveswiki.data.enum.EntityType
 import io.lettuce.core.api.async.RedisAsyncCommands
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import org.springframework.context.annotation.Lazy
 
 interface WeeklyBestRepo {
-    fun setWeeklyBest(entityType: String, countryName: String, entity: Map<String, String>)
-    fun getWeeklyBest(entityType: String, countryName: String): Map<String, String>
+    fun setWeeklyBestInCountry(countryName: String, entity: Map<String, String>)
+    fun getWeeklyBestInCountry(countryName: String): Map<String, String>
 }
 
-@Repository
-class WeeklyBestRepoImpl(
-    private val redisConfig: RedisConfig,
+abstract class WeeklyBestRepoAbstract(
+    private val entityType: String
 ) : WeeklyBestRepo {
-    private val redisClient: RedisAsyncCommands<String, String> by lazy { redisConfig.getRedisClient() }
 
-    override fun setWeeklyBest(entityType: String, countryName: String, entity: Map<String, String>) {
+    @Autowired @Lazy
+    private lateinit var redisClient: RedisAsyncCommands<String, String>
+
+    override fun setWeeklyBestInCountry(countryName: String, entity: Map<String, String>) {
         redisClient.hset("$entityType:${countryName.lowercase()}:weeklyBest", entity)
     }
 
-    override fun getWeeklyBest(entityType: String, countryName: String) : Map<String, String> {
+    override fun getWeeklyBestInCountry(countryName: String) : Map<String, String> {
         return redisClient.hgetall("$entityType:${countryName.lowercase()}:weeklyBest").get()
     }
 }
+
+@Repository
+class ArtistWeeklyBestRepoImpl : WeeklyBestRepoAbstract(EntityType.ARTIST.nameString)

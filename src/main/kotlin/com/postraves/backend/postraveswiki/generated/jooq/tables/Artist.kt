@@ -7,7 +7,6 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.ARTIST_AUTH_UID_KEY
 import jooq.keys.ARTIST_NAME_KEY
 import jooq.keys.ARTIST_PKEY
 import jooq.keys.ARTIST__ARTIST_COUNTRY_NAME_FKEY
@@ -20,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row11
+import org.jooq.Row8
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -71,11 +70,6 @@ open class Artist(
     val ID: TableField<ArtistRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.artist.auth_uid</code>.
-     */
-    val AUTH_UID: TableField<ArtistRecord, String?> = createField(DSL.name("auth_uid"), SQLDataType.VARCHAR(28), this, "")
-
-    /**
      * The column <code>public.artist.created_date_time</code>.
      */
     val CREATED_DATE_TIME: TableField<ArtistRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
@@ -94,16 +88,6 @@ open class Artist(
      * The column <code>public.artist.about</code>.
      */
     val ABOUT: TableField<ArtistRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
-
-    /**
-     * The column <code>public.artist.base_rating</code>.
-     */
-    val BASE_RATING: TableField<ArtistRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
-
-    /**
-     * The column <code>public.artist.overall_followers_count</code>.
-     */
-    val OVERALL_FOLLOWERS_COUNT: TableField<ArtistRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
      * The column <code>public.artist.country_name</code>.
@@ -142,7 +126,7 @@ open class Artist(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getIdentity(): Identity<ArtistRecord, Long?> = super.getIdentity() as Identity<ArtistRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<ArtistRecord> = ARTIST_PKEY
-    override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY, ARTIST_AUTH_UID_KEY, ARTIST_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY, ARTIST_NAME_KEY)
     override fun getReferences(): List<ForeignKey<ArtistRecord, *>> = listOf(ARTIST__ARTIST_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country
@@ -166,7 +150,7 @@ open class Artist(
     override fun rename(name: Name): Artist = Artist(name, null)
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?> = super.fieldsRow() as Row11<Long?, String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?>
+    override fun fieldsRow(): Row8<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row8<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?>
 }

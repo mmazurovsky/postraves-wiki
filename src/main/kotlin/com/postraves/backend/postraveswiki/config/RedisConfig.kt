@@ -5,27 +5,24 @@ import io.lettuce.core.RedisURI
 import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.async.RedisAsyncCommands
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Lazy
 
 
-@Component
-class RedisConfig(
+@Configuration
+class RedisConfig {
+
     @Value("\${spring.redis.host}")
-    redisHost: String? = null,
-//    @Value("\${spring.redis.sentinel.master}")
-//    redisMaster: String? = null,
+    val redisHost: String? = null
     @Value("\${spring.redis.port}")
-    redisPort: Int? = null,
-) {
-//    private val redisStandaloneConfig = RedisStandaloneConfiguration(redisHost ?: throw TODO(), redisPort ?: throw TODO())
-//    private val lettuceConnectionFactory = LettuceConnectionFactory(redisStandaloneConfig)
-//    private val redisTemplate = RedisTemplate<String, Int>()
-    private val client: RedisClient = RedisClient
-    .create(RedisURI.Builder.redis(redisHost ?: throw TODO(), redisPort ?: throw TODO()).build())
-    private lateinit var connection: StatefulRedisConnection<String, String>
+    val redisPort: Int? = null
 
+    @Lazy @Bean
     fun getRedisClient(): RedisAsyncCommands<String, String> {
-        if (!::connection.isInitialized) connection = client.connect()
+        val client: RedisClient = RedisClient.create(RedisURI.Builder.redis(redisHost ?: throw TODO(), redisPort ?: throw TODO()).build())
+        val connection = client.connect()
         return connection.async()
     }
 }

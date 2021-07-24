@@ -1,7 +1,5 @@
 package com.postraves.backend.postraveswiki.data.dto
 
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
-import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
 import kotlinx.serialization.*
 

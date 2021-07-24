@@ -5,9 +5,12 @@ import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
+import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepo
+import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepoAbstract
+import com.postraves.backend.postraveswiki.repo.QuickFollowersRepo
+import com.postraves.backend.postraveswiki.repo.QuickFollowersRepoAbstract
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.utils.Requests
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
@@ -16,47 +19,65 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
-import kotlin.test.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultMatcher
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import redis.embedded.RedisServer
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ArtistIntegrationTest (
-    @Autowired private val artistService: ArtistService,
-    @Autowired private val countryService: CountryService,
-    @Autowired private val mockMvc: MockMvc,
-    @Value("\${spring.redis.port}") redisPort: Int,
-    ) : AbstractPostgresTest() {
+class ArtistIntegrationTest(
+    @Value("\${spring.redis.port}")
+    private val redisPort: Int,
+    @Autowired
+    private val mockMvc: MockMvc,
+    @Autowired
+    private val artistService: ArtistService,
+    @Autowired
+    private val countryService: CountryService,
+    @Qualifier("artistCountryQuickRepoImpl")
+    private val artistCountryQuickRepoImpl: QuickEntityCountryRepo,
+    @Qualifier("artistOverallQuickFollowersRepoImpl")
+    private val artistOverallQuickFollowersRepoImpl: QuickFollowersRepo,
+    @Qualifier("artistWeeklyQuickFollowersRepoImpl")
+    private val artistWeeklyQuickFollowersRepoImpl: QuickFollowersRepo,
+) : AbstractPostgresTest() {
 
     private val artistEndpoint: String = "/artist"
-
     private val redisServer = RedisServer(redisPort)
     init {
         redisServer.start()
     }
 
+    val countryTestData = CountryDto(
+        name = "BE",
+        phoneCode = "+7",
+        emojiCode = "EBE"
+    )
+
+    val artistTestData = ArtistWriteDto(
+        id = null,
+        name = "Amelie Lens",
+        imageLink = "image",
+        soundcloudLink = "soundcloud",
+        instagramLink = "instagram",
+        about = "About Amelie",
+        countryName = countryTestData.name,
+    )
+
     @BeforeAll
     private fun createCountryForAssociations() {
-
-        val country = CountryDto(
-            name = "BE",
-            phoneCode = "+7",
-            emojiCode = "EBE"
-        )
-
-        makePostRequest(mockMvc, "/country", Json.encodeToString(country), status().isCreated)
+        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
     }
 
     @AfterEach
@@ -68,56 +89,46 @@ class ArtistIntegrationTest (
         redisServer.stop()
     }
 
-
     @Test
     fun saveArtistWithCountryAssociation() {
 
-        val artistToSave = ArtistWriteDto(
-            id = null,
-            name = "Amelie Lens",
-            imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
-            about = "About Amelie",
-            countryName = "BE",
-            soundcloudFollowersCount = 100,
-        )
+        val artistToSave = artistTestData
 
-        val artistIdRespJson = makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
+        val artistIdRespJson =
+            makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
         val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
 
         val artistRespJson = makeGetRequest(mockMvc, "$artistEndpoint/public/$artistId", status().isOk)
-        val artistDecoded = Json.decodeFromString<ArtistFullDto>(artistRespJson)
+        val savedArtist = Json.decodeFromString<ArtistFullDto>(artistRespJson)
 
-        assertNotNull(artistDecoded.id)
-        assertEquals("Amelie Lens", artistDecoded.name)
-        assertEquals(20, artistDecoded.baseRating)
-        assertEquals(0, artistDecoded.overallFollowersCount)
-        assertEquals("image", artistDecoded.imageLink)
-        assertEquals("soundcloud", artistDecoded.soundcloudLink)
-        assertEquals("instagram", artistDecoded.instagramLink)
-        assertEquals("About Amelie", artistDecoded.about)
-        assertEquals("BE", artistDecoded.country?.name)
-        assertEquals("+7", artistDecoded.country?.phoneCode)
-        assertEquals("EBE", artistDecoded.country?.emojiCode)
+        val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+
+        assertNotNull(savedArtist.id)
+        assertEquals(artistToSave.name, savedArtist.name)
+        assertEquals(0, savedArtist.overallFollowers)
+        assertEquals(0, savedArtist.weeklyFollowers)
+        assertEquals(artistToSave.imageLink, savedArtist.imageLink)
+        assertEquals(artistToSave.soundcloudLink, savedArtist.soundcloudLink)
+        assertEquals(artistToSave.instagramLink, savedArtist.instagramLink)
+        assertEquals(artistToSave.about, savedArtist.about)
+        assertEquals(artistToSave.countryName, savedArtist.country?.name)
+        assertEquals(countryTestData.phoneCode, savedArtist.country?.phoneCode)
+        assertEquals(countryTestData.emojiCode, savedArtist.country?.emojiCode)
+
+        assert(countryArtistsInQuickRepo.contains(savedArtist.id))
+        assert(artistsInOverallRating.contains(savedArtist.id))
+        assert(artistsInWeeklyRating.contains(savedArtist.id))
     }
 
     @Test
     fun updateArtistAndDeleteCountryAssociation() {
 
-        val artistToSave = ArtistWriteDto(
-            id = null,
-            name = "Amelie Lens",
-            imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
-            about = "About Amelie",
-            countryName = "BE",
-            soundcloudFollowersCount = 100,
-        )
+        val artistToSave = artistTestData
 
         val responseSavedArtist =
-        makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
+            makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
         val savedId = Json.decodeFromString<ArtistShortDto>(responseSavedArtist).id
 
         val artistToUpdate = artistToSave.copy(
@@ -128,8 +139,6 @@ class ArtistIntegrationTest (
             instagramLink = "instagram2",
             about = "About Amelie2",
             countryName = null,
-            // this must not impact base rating
-            soundcloudFollowersCount = 100000,
         )
 
         makePutRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToUpdate), status().isOk)
@@ -137,32 +146,33 @@ class ArtistIntegrationTest (
         val updatedJson = makeGetRequest(mockMvc, "$artistEndpoint/public/$savedId", status().isOk)
         val updatedArtist = Json.decodeFromString<ArtistFullDto>(updatedJson)
 
-        assertEquals(savedId, updatedArtist.id)
-        assertEquals("Amelie Lens2", updatedArtist.name)
-        assertEquals(20, updatedArtist.baseRating)
-        assertEquals(0, updatedArtist.overallFollowersCount)
-        assertEquals("image2", updatedArtist.imageLink)
-        assertEquals("soundcloud2", updatedArtist.soundcloudLink)
-        assertEquals("instagram2", updatedArtist.instagramLink)
-        assertEquals("About Amelie2", updatedArtist.about)
+        val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+
+        assertEquals(artistToUpdate.id, updatedArtist.id)
+        assertEquals(artistToUpdate.name, updatedArtist.name)
+        assertEquals(0, updatedArtist.overallFollowers)
+        assertEquals(0, updatedArtist.weeklyFollowers)
+        assertEquals(artistToUpdate.imageLink, updatedArtist.imageLink)
+        assertEquals(artistToUpdate.soundcloudLink, updatedArtist.soundcloudLink)
+        assertEquals(artistToUpdate.instagramLink, updatedArtist.instagramLink)
+        assertEquals(artistToUpdate.about, updatedArtist.about)
         assertNull(updatedArtist.country)
+
+        assert(!countryArtistsInQuickRepo.contains(updatedArtist.id))
+        assert(artistsInOverallRating.contains(updatedArtist.id))
+        assert(artistsInWeeklyRating.contains(updatedArtist.id))
+
     }
 
     @Test
     fun deleteArtistById() {
 
-        val artistToSave = ArtistWriteDto(
-            id = null,
-            name = "Amelie Lens",
-            imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
-            about = "About Amelie",
-            countryName = "BE",
-            soundcloudFollowersCount = 100,
-        )
+        val artistToSave = artistTestData
 
-        val responseSavedArtist = makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
+        val responseSavedArtist =
+            makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
         val savedId = Json.decodeFromString<ArtistShortDto>(responseSavedArtist).id
 
         makeDeleteRequest(mockMvc, "$artistEndpoint/$savedId", status().isOk)
@@ -170,42 +180,37 @@ class ArtistIntegrationTest (
         val responseFindArtistJson = makeGetRequest(mockMvc, artistEndpoint, status().isOk)
         val responseFindArtist = Json.decodeFromString<List<ArtistShortDto>>(responseFindArtistJson)
 
+        val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+
         assertEquals(0, responseFindArtist.size)
+
+        assert(!countryArtistsInQuickRepo.contains(savedId))
+        assert(!artistsInOverallRating.contains(savedId))
+        assert(!artistsInWeeklyRating.contains(savedId))
     }
 
     @Test
-    fun saveMultipleArtistsWithoutCountriesAndFindAll() {
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Artist1",
-            imageLink = "image1",
-            countryName = null,
-            about = "About1",
-            instagramLink = "instagram1",
-            soundcloudLink = "soundcloud1",
-            soundcloudFollowersCount = null
-        )
+    fun saveMultipleArtistsAndFindAll() {
+        val artist1 = artistTestData
 
-        val artist2 = ArtistWriteDto(
-            id = null,
+        val artist2 = artist1.copy(
             name = "Artist2",
             imageLink = "image2",
             countryName = null,
             about = "About2",
             instagramLink = "instagram2",
             soundcloudLink = "soundcloud2",
-            soundcloudFollowersCount = null
         )
 
-        val artist3 = ArtistWriteDto(
-            id = null,
+        val artist3 = artist1.copy(
             name = "Artist3",
             imageLink = "image3",
             countryName = null,
             about = "About3",
             instagramLink = "instagram3",
             soundcloudLink = "soundcloud3",
-            soundcloudFollowersCount = null
         )
 
         makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist1), status().isCreated)
@@ -215,88 +220,68 @@ class ArtistIntegrationTest (
         val responseArtistsJson = makeGetRequest(mockMvc, artistEndpoint, status().isOk)
         val responseArtists = Json.decodeFromString<List<ArtistShortDto>>(responseArtistsJson)
 
+        val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+
         assertEquals(3, responseArtists.size)
+        responseArtists.forEach {
+            assert(it.name == artist1.name || it.name == artist2.name || it.name == artist3.name)
+        }
+        // artist1 has country
+        assertEquals(1, countryArtistsInQuickRepo.size)
+        assertEquals(3, artistsInOverallRating.size)
+        assertEquals(3, artistsInWeeklyRating.size)
     }
 
     @Test
-    fun findOverallRating() {
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Artist1",
-            imageLink = "image1",
-            countryName = "BE",
-            about = "About1",
-            instagramLink = "instagram1",
-            soundcloudLink = "soundcloud1",
-            soundcloudFollowersCount = 1000
-        )
+    fun saveMultipleAndFindByName() {
+        val artist1 = artistTestData
 
-        val artist2 = ArtistWriteDto(
-            id = null,
+        val artist2 = artist1.copy(
             name = "Artist2",
-            imageLink = "image2",
-            countryName = "BE",
-            about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
-            soundcloudFollowersCount = 100
         )
 
-        val artist3 = ArtistWriteDto(
-            id = null,
+        val artist3 = artist1.copy(
             name = "Artist3",
-            imageLink = "image3",
-            countryName = "BE",
-            about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
-            soundcloudFollowersCount = 10
         )
 
-        val artist4 = ArtistWriteDto(
-            id = null,
-            name = "Artist4",
-            imageLink = "image4",
-            countryName = "BE",
-            about = "About4",
-            instagramLink = "instagram4",
-            soundcloudLink = "soundcloud4",
-            soundcloudFollowersCount = null
+        val artist4 = artist1.copy(
+            name = "Tis",
+        )
+
+        val artist5 = artist1.copy(
+            name = "tiS",
+        )
+
+        val artist6 = artist1.copy(
+            name = "ti",
+        )
+
+        val artist7 = artist1.copy(
+            name = "sit",
         )
 
         makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist1), status().isCreated)
         makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist2), status().isCreated)
         makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist3), status().isCreated)
         makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist4), status().isCreated)
+        makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist5), status().isCreated)
+        makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist6), status().isCreated)
+        makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist7), status().isCreated)
 
-        val responseOverallRatingJson =
-            makeGetRequest(mockMvc, "/artist/public/overallRating?cityName=BE&maxQuantity=10", status().isOk)
-        val responseOverallRating = Json.decodeFromString<List<ArtistShortDto>>(responseOverallRatingJson)
+        val searchPhrase = "tis"
+        val searchResults = makeGetRequest(mockMvc, "$artistEndpoint/public/search/$searchPhrase", status().isOk)
+        val searchResultsDecoded = Json.decodeFromString<List<ArtistShortDto>>(searchResults)
 
-        assertEquals(4, responseOverallRating.size)
-        responseOverallRating.forEachIndexed { index, artistShortDto ->
-            when (index) {
-                0 -> {
-                    assertEquals(artist1.name, artistShortDto.name)
-                    assertEquals(200, artistShortDto.baseRating)
-                    assertEquals(0, artistShortDto.overallFollowersCount)
-                }
-                1 -> {
-                    assertEquals(artist2.name, artistShortDto.name)
-                    assertEquals(20, artistShortDto.baseRating)
-                    assertEquals(0, artistShortDto.overallFollowersCount)
-                }
-                2 -> {
-                    assertEquals(artist3.name, artistShortDto.name)
-                    assertEquals(2, artistShortDto.baseRating)
-                    assertEquals(0, artistShortDto.overallFollowersCount)
-                }
-                3 -> {
-                    assertEquals(artist4.name, artistShortDto.name)
-                    assertEquals(0, artistShortDto.baseRating)
-                    assertEquals(0, artistShortDto.overallFollowersCount)
-                }
-            }
+        assertEquals(4, searchResultsDecoded.size)
+        searchResultsDecoded.forEach {
+            assert(it.name == artist2.name ||
+                    it.name == artist3.name ||
+                    it.name == artist4.name ||
+                    it.name == artist5.name)
         }
     }
+
+    // todo check update country to another one in redis repo
 }

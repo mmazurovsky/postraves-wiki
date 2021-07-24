@@ -5,8 +5,6 @@ CREATE TABLE event
     name                     VARCHAR(80)              UNIQUE NOT NULL,
     image_link               TEXT,
     about                    TEXT,
-    base_rating              INTEGER,
-    overall_followers_count  INTEGER                  NOT NULL,
     status                   TEXT                     NOT NULL,
     start_date_time          TIMESTAMP                WITH TIME ZONE NOT NULL,
     end_date_time            TIMESTAMP                WITH TIME ZONE NOT NULL,

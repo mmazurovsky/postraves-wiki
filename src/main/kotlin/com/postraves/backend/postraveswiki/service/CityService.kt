@@ -3,13 +3,12 @@ package com.postraves.backend.postraveswiki.service
 import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.repo.CityRepo
-import com.postraves.backend.postraveswiki.service.generic.BaseService
-import com.postraves.backend.postraveswiki.service.generic.ServiceByName
 import org.springframework.stereotype.Service
 
 interface CityService :
     BaseService<CityWriteDto, CityDto>,
-    ServiceByName<CityDto>
+    ServiceByName<CityDto>,
+    FindByName<CityDto>
 
 @Service
 class CityServiceImpl(
@@ -34,5 +33,9 @@ class CityServiceImpl(
 
     override fun findAll(): List<CityDto> {
         return cityRepo.findAll()
+    }
+
+    override fun findByPartOfName(namePart: String): List<CityDto> {
+        return cityRepo.findByPartOfName(namePart)
     }
 }

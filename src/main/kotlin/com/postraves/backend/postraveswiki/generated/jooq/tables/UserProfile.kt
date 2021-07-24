@@ -18,7 +18,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row10
+import org.jooq.Row8
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -89,16 +89,6 @@ open class UserProfile(
     val ABOUT: TableField<UserProfileRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.user_profile.base_rating</code>.
-     */
-    val BASE_RATING: TableField<UserProfileRecord, Int?> = createField(DSL.name("base_rating"), SQLDataType.INTEGER, this, "")
-
-    /**
-     * The column <code>public.user_profile.overall_followers_count</code>.
-     */
-    val OVERALL_FOLLOWERS_COUNT: TableField<UserProfileRecord, Int?> = createField(DSL.name("overall_followers_count"), SQLDataType.INTEGER.nullable(false), this, "")
-
-    /**
      * The column <code>public.user_profile.city_name</code>.
      */
     val CITY_NAME: TableField<UserProfileRecord, String?> = createField(DSL.name("city_name"), SQLDataType.VARCHAR(40), this, "")
@@ -158,7 +148,7 @@ open class UserProfile(
     override fun rename(name: Name): UserProfile = UserProfile(name, null)
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row10<String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?> = super.fieldsRow() as Row10<String?, OffsetDateTime?, String?, String?, String?, Int?, Int?, String?, String?, String?>
+    override fun fieldsRow(): Row8<String?, OffsetDateTime?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row8<String?, OffsetDateTime?, String?, String?, String?, String?, String?, String?>
 }

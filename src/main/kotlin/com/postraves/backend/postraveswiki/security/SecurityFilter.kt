@@ -2,7 +2,7 @@ package com.postraves.backend.postraveswiki.security
 
 import lombok.extern.slf4j.Slf4j
 import org.springframework.web.filter.OncePerRequestFilter
-import com.postraves.backend.postraveswiki.service.UserService
+import com.postraves.backend.postraveswiki.service.MyUserProfileService
 import kotlin.Throws
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
@@ -27,7 +27,7 @@ class SecurityFilter(
     private val securityService: SecurityService? = null,
     private val cookieUtils: CookieUtils? = null,
     private val securityProps: SecurityProperties? = null,
-    private val userService: UserService
+    private val myUserProfileService: MyUserProfileService
 ) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
@@ -82,6 +82,6 @@ class SecurityFilter(
     }
 
     private fun firebaseTokenToUser(decodedToken: FirebaseToken?): UserFullDto? {
-        return if (decodedToken == null) null else userService.findByAuthUidForSecurityService(decodedToken.uid)
+        return if (decodedToken == null) null else myUserProfileService.findByAuthUidForSecurityService(decodedToken.uid)
     }
 }

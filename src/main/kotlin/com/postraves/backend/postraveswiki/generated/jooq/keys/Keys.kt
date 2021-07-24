@@ -48,7 +48,6 @@ import org.jooq.impl.Internal
 // UNIQUE and PRIMARY KEY definitions
 // -------------------------------------------------------------------------
 
-val ARTIST_AUTH_UID_KEY: UniqueKey<ArtistRecord> = Internal.createUniqueKey(Artist.ARTIST, DSL.name("artist_auth_uid_key"), arrayOf(Artist.ARTIST.AUTH_UID), true)
 val ARTIST_NAME_KEY: UniqueKey<ArtistRecord> = Internal.createUniqueKey(Artist.ARTIST, DSL.name("artist_name_key"), arrayOf(Artist.ARTIST.NAME), true)
 val ARTIST_PKEY: UniqueKey<ArtistRecord> = Internal.createUniqueKey(Artist.ARTIST, DSL.name("artist_pkey"), arrayOf(Artist.ARTIST.ID), true)
 val CITY_PKEY: UniqueKey<CityRecord> = Internal.createUniqueKey(City.CITY, DSL.name("city_pkey"), arrayOf(City.CITY.NAME), true)
@@ -58,14 +57,12 @@ val COUNTRY_PKEY: UniqueKey<CountryRecord> = Internal.createUniqueKey(Country.CO
 val EVENT_NAME_KEY: UniqueKey<EventRecord> = Internal.createUniqueKey(Event.EVENT, DSL.name("event_name_key"), arrayOf(Event.EVENT.NAME), true)
 val EVENT_PKEY: UniqueKey<EventRecord> = Internal.createUniqueKey(Event.EVENT, DSL.name("event_pkey"), arrayOf(Event.EVENT.ID), true)
 val FLYWAY_SCHEMA_HISTORY_PK: UniqueKey<FlywaySchemaHistoryRecord> = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), arrayOf(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK), true)
-val PLACE_AUTH_UID_KEY: UniqueKey<PlaceRecord> = Internal.createUniqueKey(Place.PLACE, DSL.name("place_auth_uid_key"), arrayOf(Place.PLACE.AUTH_UID), true)
 val PLACE_NAME_KEY: UniqueKey<PlaceRecord> = Internal.createUniqueKey(Place.PLACE, DSL.name("place_name_key"), arrayOf(Place.PLACE.NAME), true)
 val PLACE_PKEY: UniqueKey<PlaceRecord> = Internal.createUniqueKey(Place.PLACE, DSL.name("place_pkey"), arrayOf(Place.PLACE.ID), true)
 val SCENE_PKEY: UniqueKey<SceneRecord> = Internal.createUniqueKey(Scene.SCENE, DSL.name("scene_pkey"), arrayOf(Scene.SCENE.ID), true)
 val TICKET_PRICE_PKEY: UniqueKey<TicketPriceRecord> = Internal.createUniqueKey(TicketPrice.TICKET_PRICE, DSL.name("ticket_price_pkey"), arrayOf(TicketPrice.TICKET_PRICE.ID), true)
 val TIMETABLE_ITEM_PKEY: UniqueKey<TimetableItemRecord> = Internal.createUniqueKey(TimetableItem.TIMETABLE_ITEM, DSL.name("timetable_item_pkey"), arrayOf(TimetableItem.TIMETABLE_ITEM.ID), true)
 val TIMETABLE_ITEM_PERFORMING_GROUP_PKEY: UniqueKey<TimetableItemPerformingGroupRecord> = Internal.createUniqueKey(TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP, DSL.name("timetable_item_performing_group_pkey"), arrayOf(TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_ID, TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP.ARTIST_ID), true)
-val UNITY_AUTH_UID_KEY: UniqueKey<UnityRecord> = Internal.createUniqueKey(Unity.UNITY, DSL.name("unity_auth_uid_key"), arrayOf(Unity.UNITY.AUTH_UID), true)
 val UNITY_NAME_KEY: UniqueKey<UnityRecord> = Internal.createUniqueKey(Unity.UNITY, DSL.name("unity_name_key"), arrayOf(Unity.UNITY.NAME), true)
 val UNITY_PKEY: UniqueKey<UnityRecord> = Internal.createUniqueKey(Unity.UNITY, DSL.name("unity_pkey"), arrayOf(Unity.UNITY.ID), true)
 val UNITY_ARTIST_PKEY: UniqueKey<UnityArtistRecord> = Internal.createUniqueKey(UnityArtist.UNITY_ARTIST, DSL.name("unity_artist_pkey"), arrayOf(UnityArtist.UNITY_ARTIST.UNITY_ID, UnityArtist.UNITY_ARTIST.ARTIST_ID), true)

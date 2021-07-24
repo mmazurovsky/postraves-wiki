@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/city")
-class CityController
-    (private val cityService: CityService) : BaseRequests<CityWriteDto, CityDto>, ByNameRequests<CityDto> {
+class CityController(
+    private val cityService: CityService
+    ) :
+    BaseRequests<CityWriteDto, CityDto>,
+    ByNameRequests<CityDto>,
+    FindByNameRequests<CityDto> {
 
     override fun save(dto: CityWriteDto): CityDto {
         return cityService.save(dto)
@@ -28,5 +32,9 @@ class CityController
 
     override fun deleteByName(name: String) {
         cityService.deleteByName(name)
+    }
+
+    override fun findByPartOfName(namePart: String): List<CityDto> {
+        return cityService.findByPartOfName(namePart)
     }
 }
