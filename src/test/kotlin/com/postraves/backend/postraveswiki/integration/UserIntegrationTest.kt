@@ -34,12 +34,18 @@ import kotlin.test.assertNull
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserIntegrationTest(
-    @Autowired private val mockMvc: MockMvc,
-    @Autowired private val myUserProfileService: MyUserProfileService,
-    @Autowired private val artistService: ArtistService,
-    @Autowired private val cityService: CityService,
-    @Autowired private val countryService: CountryService,
-    @Value("\${spring.redis.port}") redisPort: Int,
+    @Autowired
+    private val mockMvc: MockMvc,
+    @Autowired
+    private val myUserProfileService: MyUserProfileService,
+    @Autowired
+    private val artistService: ArtistService,
+    @Autowired
+    private val cityService: CityService,
+    @Autowired
+    private val countryService: CountryService,
+    @Value("\${spring.redis.port}")
+    private val redisPort: Int,
     ) : AbstractPostgresTest() {
 
     private val redisServer = RedisServer(redisPort)

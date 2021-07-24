@@ -37,16 +37,20 @@ import kotlin.test.assertNull
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ArtistIntegrationTest(
-    @Autowired private val artistService: ArtistService,
+    @Value("\${spring.redis.port}")
+    private val redisPort: Int,
+    @Autowired
+    private val mockMvc: MockMvc,
+    @Autowired
+    private val artistService: ArtistService,
+    @Autowired
+    private val countryService: CountryService,
     @Qualifier("artistCountryQuickRepoImpl")
     private val artistCountryQuickRepoImpl: QuickEntityCountryRepo,
     @Qualifier("artistOverallQuickFollowersRepoImpl")
-    @Autowired private val artistOverallQuickFollowersRepoImpl: QuickFollowersRepo,
+    private val artistOverallQuickFollowersRepoImpl: QuickFollowersRepo,
     @Qualifier("artistWeeklyQuickFollowersRepoImpl")
-    @Autowired private val artistWeeklyQuickFollowersRepoImpl: QuickFollowersRepo,
-    @Autowired private val countryService: CountryService,
-    @Autowired private val mockMvc: MockMvc,
-    @Value("\${spring.redis.port}") redisPort: Int,
+    private val artistWeeklyQuickFollowersRepoImpl: QuickFollowersRepo,
 ) : AbstractPostgresTest() {
 
     private val artistEndpoint: String = "/artist"

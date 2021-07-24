@@ -30,10 +30,14 @@ import kotlin.test.assertEquals
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ArtistRatingIntegrationTest(
-    @Autowired private val artistService: ArtistService,
-    @Autowired private val countryService: CountryService,
-    @Autowired private val mockMvc: MockMvc,
-    @Value("\${spring.redis.port}") redisPort: Int,
+    @Autowired
+    private val artistService: ArtistService,
+    @Autowired
+    private val countryService: CountryService,
+    @Autowired
+    private val mockMvc: MockMvc,
+    @Value("\${spring.redis.port}")
+    private val redisPort: Int,
 ) : AbstractPostgresTest() {
 
     @MockBean

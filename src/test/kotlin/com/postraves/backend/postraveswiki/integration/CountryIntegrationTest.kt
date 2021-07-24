@@ -28,9 +28,12 @@ import kotlin.test.assertEquals
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CountryIntegrationTest(
-    @Autowired private val countryService: CountryService,
-    @Autowired private val mockMvc: MockMvc,
-    @Value("\${spring.redis.port}") redisPort: Int,
+    @Autowired
+    private val countryService: CountryService,
+    @Autowired
+    private val mockMvc: MockMvc,
+    @Value("\${spring.redis.port}")
+    private val redisPort: Int,
     ) : AbstractPostgresTest() {
 
     private val countryEndpoint: String = "/country"
