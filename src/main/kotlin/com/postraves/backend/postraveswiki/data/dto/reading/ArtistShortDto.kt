@@ -1,6 +1,5 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
-import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import jooq.tables.records.ArtistRecord
@@ -14,9 +13,9 @@ data class ArtistShortDto(
     val imageLink : String?,
     val country: CountryDto?,
     val isFollowed: Boolean = false,
-    override val overallFollowers: Int = 0,
-    override val weeklyFollowers: Int = 0,
-    ) : BaseShortDtoWithId, BaseRatingDtoWithId<ArtistShortDto> {
+    val overallFollowers: Int = 0,
+    val weeklyFollowers: Int = 0,
+    ) : BaseShortDtoWithId {
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistShortDto {
             return ArtistShortDto(
@@ -33,7 +32,7 @@ data class ArtistShortDto(
         }
     }
 
-    override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistShortDto {
-        return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
-    }
+//    override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistShortDto {
+//        return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
+//    }
 }

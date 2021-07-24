@@ -1,11 +1,6 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
-import com.google.firebase.auth.UserRecord
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
-import jooq.tables.records.CityRecord
-import jooq.tables.records.CountryRecord
 import jooq.tables.records.UserProfileRecord
 import kotlinx.serialization.Serializable
 

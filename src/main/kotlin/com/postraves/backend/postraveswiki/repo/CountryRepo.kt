@@ -1,18 +1,10 @@
 package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
-import com.postraves.backend.postraveswiki.repo.generic.BaseRepo
-import com.postraves.backend.postraveswiki.repo.generic.ByNameRepo
-import com.postraves.backend.postraveswiki.repo.generic.FindByName
-import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
 import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
 import org.jooq.DSLContext
-import org.jooq.Record
-import org.jooq.SelectWhereStep
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -22,7 +14,7 @@ import java.time.OffsetDateTime
 interface CountryRepo :
     BaseRepo<CountryDto, CountryDto>,
     ByNameRepo<CountryDto>,
-    FindByName<CountryDto>
+    FindByNameRepo<CountryDto>
 
 @Repository
 class CountryImplRepo :

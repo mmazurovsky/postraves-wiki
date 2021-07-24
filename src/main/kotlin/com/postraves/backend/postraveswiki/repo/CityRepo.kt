@@ -2,9 +2,6 @@ package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
-import com.postraves.backend.postraveswiki.repo.generic.BaseRepo
-import com.postraves.backend.postraveswiki.repo.generic.ByNameRepo
-import com.postraves.backend.postraveswiki.repo.generic.FindByName
 import jooq.tables.records.CityRecord
 import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
@@ -20,7 +17,7 @@ import java.time.OffsetDateTime
 interface CityRepo :
     BaseRepo<CityWriteDto, CityDto>,
     ByNameRepo<CityDto>,
-    FindByName<CityDto>
+    FindByNameRepo<CityDto>
 
 @Repository
 class CityImplRepo :
