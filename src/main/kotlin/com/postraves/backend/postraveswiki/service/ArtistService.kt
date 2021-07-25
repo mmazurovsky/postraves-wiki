@@ -1,6 +1,5 @@
 package com.postraves.backend.postraveswiki.service
 
-import com.postraves.backend.postraveswiki.data.dto.BaseIdDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
@@ -15,18 +14,17 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
-
 interface ArtistService :
     BaseService<ArtistWriteDto, ArtistShortDto>,
     ByIdService<ArtistFullDto, ArtistShortDto>,
-    RatingService<ArtistShortDto>,
+    RatingService<ArtistFullDto, ArtistShortDto>,
     FindByName<ArtistShortDto>
 
 @Service
 class ArtistServiceImpl(
-    private val cityService: CityService,
+    cityService: CityService,
+    securityService: SecurityService,
     private val artistRepo: ArtistRepo,
-    private val securityService: SecurityService,
     @Qualifier("artistCountryQuickRepoImpl")
     private val artistCountryRepo: QuickEntityCountryRepoAbstract,
     @Qualifier("artistWeeklyBestRepoImpl")
@@ -45,19 +43,6 @@ class ArtistServiceImpl(
         entityOverallFollowersRepo = artistOverallFollowersImplRepo,
         entityWeeklyFollowersRepo = artistWeeklyFollowersDeltaRepo,
     ) {
-//    override fun <T : BaseIdDto> copyFunctionWithFollowersEnrichment(
-//        entity: T,
-//        overallFollowers: Int,
-//        weeklyFollowers: Int
-//    ): T {
-////        return when(entity) {
-////            is ArtistShortDto -> entity.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
-////            is ArtistFullDto -> entity.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
-////            else -> throw TODO()
-////        }
-//    }
-
-
 
     override fun checkCountryAndRemoveFromCountryQuickRepo(dto: ArtistFullDto) {
         val countryOfDtoToDelete = dto.country?.name
@@ -83,8 +68,14 @@ class ArtistServiceImpl(
     }
 
     override fun decodeShortDtoFromJson(encoded: JsonElement): ArtistShortDto {
-        return Json.decodeFromJsonElement<ArtistShortDto>(encoded)
+        return Json.decodeFromJsonElement(encoded)
     }
 
+    override fun enrichWithFollowersCalculationRequired(dto: ArtistShortDto): ArtistShortDto {
+        return super.enrichWithFollowersCalculationRequired(dto)
+    }
 
+    override fun enrichWithFollowersCalculationRequired(dto: ArtistFullDto): ArtistFullDto {
+        return super.enrichWithFollowersCalculationRequired(dto)
+    }
 }

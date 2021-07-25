@@ -48,9 +48,9 @@ class CookieUtils(
         val expiresInSeconds = 0
         val cookie = Cookie(name, null)
         cookie.isHttpOnly = restSecProps!!.cookieProps!!.httpOnly
-        cookie.secure = restSecProps!!.cookieProps!!.secure
-        cookie.path = restSecProps!!.cookieProps!!.path
-        cookie.domain = restSecProps!!.cookieProps!!.domain
+        cookie.secure = restSecProps.cookieProps!!.secure
+        cookie.path = restSecProps.cookieProps!!.path
+        cookie.domain = restSecProps.cookieProps!!.domain
         cookie.maxAge = expiresInSeconds
         httpServletResponse!!.addCookie(cookie)
     }

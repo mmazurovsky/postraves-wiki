@@ -1,8 +1,8 @@
 package com.postraves.backend.postraveswiki.service
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithId
-import com.postraves.backend.postraveswiki.data.dto.BaseIdDto
-import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithId
+import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithIdAndRating
+import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
+import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithIdAndRating
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.repo.*
 import com.postraves.backend.postraveswiki.security.SecurityService
@@ -14,8 +14,8 @@ import java.util.*
 import kotlin.math.min
 
 abstract class AbstractService<WRITEDTO : BaseWriteDto,
-        FULLDTO : BaseFullDtoWithId,
-        SHORTDTO : BaseShortDtoWithId,
+        FULLDTO : BaseFullDtoWithIdAndRating<FULLDTO>,
+        SHORTDTO : BaseShortDtoWithIdAndRating<SHORTDTO>,
         REPO>
     (
     private val cityService: CityService,
@@ -25,11 +25,10 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     private val entityWeeklyFollowersRepo: QuickFollowersRepo,
     private val entityOverallFollowersRepo: QuickFollowersRepo,
     private val entityRepo: REPO,
-) : BaseService<WRITEDTO, SHORTDTO>, FindByName<SHORTDTO>, ByIdService<FULLDTO, SHORTDTO>, RatingService<SHORTDTO>
+) : BaseService<WRITEDTO, SHORTDTO>, FindByName<SHORTDTO>, ByIdService<FULLDTO, SHORTDTO>, RatingService<FULLDTO, SHORTDTO>
         where REPO : BaseRepo<WRITEDTO, SHORTDTO>,
               REPO : ByIdRepo<FULLDTO, SHORTDTO>,
-              REPO : FindByNameRepo<SHORTDTO>
-{
+              REPO : FindByNameRepo<SHORTDTO> {
 
     @Autowired
     private lateinit var myUserProfileService: MyUserProfileService
@@ -48,11 +47,27 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
 
     override fun findById(id: Long): FULLDTO {
         val foundArtist = findByIdDependingOnUser(id)
-        return enrichFullWithFollowers(foundArtist)
+        return enrichWithFollowersCalculationRequired(foundArtist)
     }
 
-    abstract fun enrichFullWithFollowers(dto: FULLDTO, overallFollowers: Int, weeklyFollowers: Int): FULLDTO
-    abstract fun enrichShortWithFollowers(dto: SHORTDTO, overallFollowers: Int, weeklyFollowers: Int): SHORTDTO
+    private fun calculateFollowers(id: Long): Pair<Int, Int> {
+        val overallFollowers = entityOverallFollowersRepo.getFollowers(id)
+        val weeklyFollowers = entityWeeklyFollowersRepo.getFollowers(id)
+        return overallFollowers to weeklyFollowers
+    }
+
+    fun <T : BaseRatingDtoWithId<T>> enrichWithFollowersCalculationRequired(dto: T): T {
+        val followers = calculateFollowers(dto.id)
+        return dto.copyWithFollowersEnriched(followers.first, followers.second)
+    }
+
+    private fun <T : BaseRatingDtoWithId<T>> enrichWithFollowersWithoutCalculation(
+        dto: T,
+        overallFollowers: Int,
+        weeklyFollowers: Int
+    ): T {
+        return dto.copyWithFollowersEnriched(overallFollowers, weeklyFollowers)
+    }
 
     override fun deleteById(id: Long) {
         // deleting form quick repo country
@@ -110,7 +125,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
         val topEntityListWithoutFollowers = resultFromAbstract.first
         val topEntityIdsAndScoresFromTheCountry = resultFromAbstract.second
         val topEntitiesEnrichedWithFollowers = topEntityListWithoutFollowers.map {
-            copyFunctionWithFollowersEnrichment(
+            enrichWithFollowersWithoutCalculation(
                 it,
                 overallFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw TODO(),
                 weeklyFollowers = entityWeeklyFollowersRepo.getFollowers(it.id)
@@ -151,7 +166,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
         val topEntityListWithoutFollowers = resultFromAbstract.first
         val topEntityIdsAndScoresFromTheCountry = resultFromAbstract.second
         val topEntitiesEnrichedWithFollowers = topEntityListWithoutFollowers.map {
-            copyFunctionWithFollowersEnrichment(
+            enrichWithFollowersWithoutCalculation(
                 it,
                 overallFollowers = entityOverallFollowersRepo.getFollowers(it.id),
                 weeklyFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw TODO(),

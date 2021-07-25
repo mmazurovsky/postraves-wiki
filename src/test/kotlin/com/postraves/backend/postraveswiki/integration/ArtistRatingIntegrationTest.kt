@@ -151,7 +151,7 @@ class ArtistRatingIntegrationTest(
         val artist1Id = Json.decodeFromString<ArtistShortDto>(response1).id
         val artist2Id = Json.decodeFromString<ArtistShortDto>(response2).id
         val artist3Id = Json.decodeFromString<ArtistShortDto>(response3).id
-        val artist4Id = Json.decodeFromString<ArtistShortDto>(response4).id
+        Json.decodeFromString<ArtistShortDto>(response4).id
 
 
         Mockito.`when`(securityService.userAuthUid).thenReturn("abc")

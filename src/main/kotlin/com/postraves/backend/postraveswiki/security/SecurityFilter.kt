@@ -57,7 +57,7 @@ class SecurityFilter(
                 session = sessionCookie.value
                 decodedToken = FirebaseAuth.getInstance().verifySessionCookie(
                     session,
-                    securityProps!!.firebaseProps!!.enableCheckSessionRevoked
+                    securityProps.firebaseProps!!.enableCheckSessionRevoked
                 )
                 type = CredentialType.SESSION
             } else if (!strictServerSessionEnabled) {
