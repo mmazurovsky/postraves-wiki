@@ -1,9 +1,8 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithIdAndRating
-import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
 import kotlinx.serialization.Serializable
@@ -24,8 +23,8 @@ data class ArtistFullDto(
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord, isFollowed: Boolean) : ArtistFullDto {
             return ArtistFullDto(
-                id = artistRecord.id ?: throw TODO(),
-                name = artistRecord.name ?: throw TODO(),
+                id = artistRecord.id ?: throw RecordFieldNullException("Artist Id"),
+                name = artistRecord.name ?: throw RecordFieldNullException("Artist Name"),
                 imageLink = artistRecord.imageLink,
                 instagramLink = artistRecord.instagramLink,
                 soundcloudLink = artistRecord.soundcloudLink,

@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.enum.EntityType
+import com.postraves.backend.postraveswiki.exception.DeleteException
 import io.lettuce.core.api.async.RedisAsyncCommands
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
@@ -26,7 +27,7 @@ abstract class QuickEntityCountryRepoAbstract(
     override fun removeOneIdFromSet(countryName: String, entityId: Long) {
         val result = redisClient.srem("$entityType:${countryName.lowercase()}", entityId.toString())
         // todo this is experimental
-        if (result.error != null) throw TODO()
+        if (result.error != null) throw DeleteException("CountryQuickRepo country $countryName", entityType, entityId.toString())
     }
 
     override fun getAllIdsByCountry(countryName: String) : Set<Long> {

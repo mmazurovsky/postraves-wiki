@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
+import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.UserProfileRecord
 import kotlinx.serialization.Serializable
 
@@ -14,7 +15,7 @@ data class UserShortDto(
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(userRecord: UserProfileRecord) : UserShortDto {
             return UserShortDto(
-                name = userRecord.name ?: throw TODO(),
+                name = userRecord.name ?: throw RecordFieldNullException("User Name"),
                 imageLink = userRecord.imageLink,
             )
         }

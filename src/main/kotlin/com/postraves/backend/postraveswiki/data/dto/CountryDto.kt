@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.data.dto
 
+import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.CountryRecord
 import kotlinx.serialization.*
 
@@ -19,9 +20,9 @@ data class CountryDto(
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(countryRecord: CountryRecord) : CountryDto {
             return CountryDto(
-                name = countryRecord.name ?: throw TODO(),
-                phoneCode = countryRecord.phoneCode ?: throw TODO(),
-                emojiCode = countryRecord.emojiCode ?: throw TODO(),
+                name = countryRecord.name ?: throw RecordFieldNullException("Country Name"),
+                phoneCode = countryRecord.phoneCode ?: throw RecordFieldNullException("Country Phone Code"),
+                emojiCode = countryRecord.emojiCode ?: throw RecordFieldNullException("Country Emoji Code"),
             )
         }
     }

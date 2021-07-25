@@ -4,6 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithIdAndRating
 import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithIdAndRating
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
+import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.repo.*
 import com.postraves.backend.postraveswiki.security.SecurityService
 import kotlinx.serialization.json.Json
@@ -113,6 +114,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
             topEntityIdsAndScores.filterKeys { entitiesFromTheCountry.contains(it) }.toMap()
         val topEntityFromTheCountryIds = topEntityIdsAndScoresFromTheCountry.keys
         val topEntityFromTheCountryDtos = findListByIds(topEntityFromTheCountryIds)
+        // todo this is extra sorting
         Collections.sort(
             topEntityFromTheCountryDtos,
             Comparator.comparing { topEntityFromTheCountryIds.indexOf(it.id) })
@@ -127,7 +129,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
         val topEntitiesEnrichedWithFollowers = topEntityListWithoutFollowers.map {
             enrichWithFollowersWithoutCalculation(
                 it,
-                overallFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw TODO(),
+                overallFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw NotFoundException("Overall followers in city $cityName of entity", it.id.toString()),
                 weeklyFollowers = entityWeeklyFollowersRepo.getFollowers(it.id)
             )
         }.toList()
@@ -136,29 +138,6 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
             min(topEntitiesEnrichedWithFollowers.size, maxQuantity)
         )
         return result
-//        val countryName = cityService.findByName(cityName).country.name
-//        val artistFromTheCountryIds = entityCountryRepo.getAllIdsByCountry(countryName)
-//        val topArtistIdsAndScores = entityOverallFollowersRepo.findTop(-1)
-//        val topArtistFromTheCountryIdsAndScores =
-//            topArtistIdsAndScores.filterKeys { artistFromTheCountryIds.contains(it) }.toMap()
-//        // todo maybe order gets lost here
-//        val topArtistFromTheCountryIds = topArtistFromTheCountryIdsAndScores.keys
-//        val topArtistFromTheCountryDtos = findListByIds(topArtistFromTheCountryIds)
-//        val topArtistFromTheCountryDtosWithOverallFollowers = topArtistFromTheCountryDtos.map {
-//            copyFunctionWithFollowersEnrichment(
-//                it,
-//                topArtistFromTheCountryIdsAndScores[it.id] ?: TODO(),
-//                entityWeeklyFollowersRepo.getFollowers(it.id)
-//            )
-//        }.toList()
-//        Collections.sort(
-//            topArtistFromTheCountryDtosWithOverallFollowers,
-//            Comparator.comparing { topArtistFromTheCountryIds.indexOf(it.id) })
-//        val result = topArtistFromTheCountryDtosWithOverallFollowers.subList(
-//            0,
-//            min(topArtistFromTheCountryDtosWithOverallFollowers.size, maxQuantity)
-//        )
-//        return result
     }
 
     override fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO> {
@@ -169,7 +148,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
             enrichWithFollowersWithoutCalculation(
                 it,
                 overallFollowers = entityOverallFollowersRepo.getFollowers(it.id),
-                weeklyFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw TODO(),
+                weeklyFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw NotFoundException("Weekly followers in city $cityName of entity", it.id.toString()),
             )
         }.toList()
         val result = topEntitiesEnrichedWithFollowers.subList(
@@ -177,30 +156,6 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
             min(topEntitiesEnrichedWithFollowers.size, maxQuantity)
         )
         return result
-
-//        val countryName = cityService.findByName(cityName).country.name
-//        val artistFromTheCountryIds = entityCountryRepo.getAllIdsByCountry(countryName)
-//        val weeklyTopArtistIdsAndScores = entityWeeklyFollowersRepo.findTop(-1)
-//        val weeklyTopArtistFromTheCountryIdsAndScores =
-//            weeklyTopArtistIdsAndScores.filterKeys { artistFromTheCountryIds.contains(it) }.toMap()
-//        // todo maybe order gets lost here
-//        val weeklyTopArtistFromTheCountryIds = weeklyTopArtistIdsAndScores.keys
-//        val weeklyTopArtistFromTheCountryDtos = findListByIds(weeklyTopArtistFromTheCountryIds)
-//        val weeklyTopArtistDtosWithWeeklyFollowers = weeklyTopArtistFromTheCountryDtos.map {
-//            copyFunctionWithFollowersEnrichment(
-//                it,
-//                entityOverallFollowersRepo.getFollowers(it.id),
-//                weeklyTopArtistFromTheCountryIdsAndScores[it.id] ?: TODO(),
-//            )
-//        }.toList()
-//        Collections.sort(
-//            weeklyTopArtistDtosWithWeeklyFollowers,
-//            Comparator.comparing { weeklyTopArtistFromTheCountryIds.indexOf(it.id) })
-//        val result = weeklyTopArtistDtosWithWeeklyFollowers.subList(
-//            0,
-//            min(weeklyTopArtistDtosWithWeeklyFollowers.size, maxQuantity)
-//        )
-//        return result
     }
 
     override fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO {

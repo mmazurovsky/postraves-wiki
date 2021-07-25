@@ -2,6 +2,8 @@ package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
+import com.postraves.backend.postraveswiki.exception.NotFoundException
+import com.postraves.backend.postraveswiki.exception.SaveException
 import jooq.tables.records.CityRecord
 import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
@@ -29,7 +31,7 @@ class CityImplRepo :
 
     private fun findByNameWithoutJoins(name: String): CityRecord {
         val record = dsl.fetchOne(CITY, CITY.NAME.eq(name))
-        return record ?: throw TODO()
+        return record ?: throw NotFoundException("City", name)
     }
 
     private fun findByNameWithJoins(name: String): Record {
@@ -37,7 +39,7 @@ class CityImplRepo :
             .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.COUNTRY_NAME.eq(COUNTRY.NAME)))
             .where(CITY.NAME.eq(name))
             .fetchOne()
-        return selectedRecord ?: throw TODO()
+        return selectedRecord ?: throw NotFoundException("City", name)
     }
 
     private fun selectCityList(): SelectWhereStep<Record> {
@@ -60,7 +62,7 @@ class CityImplRepo :
         dto.transferDataToDbRecord(recordToSave)
         recordToSave.createdDateTime = OffsetDateTime.now()
         recordToSave.store()
-        return findByName(recordToSave.name ?: throw TODO())
+        return findByName(recordToSave.name ?: throw SaveException("City", dto.name))
     }
 
     override fun update(dto: CityWriteDto) {

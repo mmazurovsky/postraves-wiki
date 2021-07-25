@@ -3,6 +3,7 @@ package com.postraves.backend.postraveswiki.service
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
+import com.postraves.backend.postraveswiki.exception.UpdateException
 import com.postraves.backend.postraveswiki.repo.ArtistRepo
 import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepoAbstract
 import com.postraves.backend.postraveswiki.repo.QuickFollowersRepo
@@ -56,7 +57,7 @@ class ArtistServiceImpl(
     }
 
     override fun checkCountryAndAddAndRemoveFromCountryQuickRepo(dto: ArtistWriteDto) {
-        val previousCountryName = artistRepo.findById(dto.id ?: throw TODO()).country?.name
+        val previousCountryName = artistRepo.findById(dto.id ?: throw UpdateException("Artist", dto.name)).country?.name
         if (dto.countryName != previousCountryName) {
             if (dto.countryName != null) {
                 artistCountryRepo.addOneIdToCountry(dto.countryName, dto.id)

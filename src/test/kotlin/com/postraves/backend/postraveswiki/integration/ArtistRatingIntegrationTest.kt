@@ -82,7 +82,6 @@ class ArtistRatingIntegrationTest(
 
     @Test
     fun saveArtistsAndIncrementFollowersAndFindOverallRating() {
-        // todo rewrite test testing followers
         val artist1 = ArtistWriteDto(
             id = null,
             name = "Artist1",

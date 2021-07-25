@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.config
 
+import com.postraves.backend.postraveswiki.exception.PostgresInitializationException
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Component
 import java.sql.Connection
 import java.sql.DriverManager
 
@@ -24,7 +24,12 @@ class JooqDSLContextConfig {
 
     @Lazy @Bean
     fun getDSLContext(): DSLContext {
-        val connection: Connection = DriverManager.getConnection(url, username, password)
+        val connection: Connection
+        try {
+            connection = DriverManager.getConnection(url, username, password)
+        } catch (e: Exception) {
+            throw PostgresInitializationException()
+        }
         return DSL.using(connection, dialect)
     }
 }

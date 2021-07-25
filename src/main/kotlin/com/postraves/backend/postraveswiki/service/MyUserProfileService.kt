@@ -4,6 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
+import com.postraves.backend.postraveswiki.exception.NotAuthenticated
 import com.postraves.backend.postraveswiki.repo.MyUserProfileRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import org.springframework.stereotype.Service
@@ -36,18 +37,18 @@ class MyUserProfileServiceImpl(
 
     override fun followArtist(id: Long) {
         // todo check if no association already
-        myUserProfileRepo.followArtist(securityService.userAuthUid ?: throw TODO(), id)
+        myUserProfileRepo.followArtist(securityService.userAuthUid ?: throw NotAuthenticated(), id)
         artistService.incrementFollowers(id)
     }
 
     override fun unfollowArtist(id: Long) {
         // todo check if association exists already
-        myUserProfileRepo.unfollowArtist(securityService.userAuthUid ?: throw TODO(), id)
+        myUserProfileRepo.unfollowArtist(securityService.userAuthUid ?: throw NotAuthenticated(), id)
         artistService.decrementFollowers(id)
     }
 
     override fun findMyFollowsArtist(): List<ArtistShortDto> {
-        val myFollows = myUserProfileRepo.findMyFollowsArtist(securityService.userAuthUid ?: throw TODO())
+        val myFollows = myUserProfileRepo.findMyFollowsArtist(securityService.userAuthUid ?: throw NotAuthenticated())
         return myFollows.map {
             artistService.enrichWithFollowersCalculationRequired(it)
         }.toList()
@@ -58,10 +59,10 @@ class MyUserProfileServiceImpl(
     }
 
     override fun save(dto: UserWriteDto): UserShortDto {
-        return myUserProfileRepo.save(dto, securityService.userAuthUid ?: throw TODO())
+        return myUserProfileRepo.save(dto, securityService.userAuthUid ?: throw NotAuthenticated())
     }
 
     override fun update(dto: UserWriteDto) {
-        myUserProfileRepo.update(dto, securityService.userAuthUid ?: throw TODO())
+        myUserProfileRepo.update(dto, securityService.userAuthUid ?: throw NotAuthenticated())
     }
 }

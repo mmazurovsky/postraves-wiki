@@ -37,7 +37,6 @@ class ArtistController (
     }
 
     override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
-        //todo change city to country in service
         return artistService.findOverallRatingForCityByCountry(cityName, maxQuantity)
     }
 

@@ -1,6 +1,8 @@
 package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.exception.NotFoundException
+import com.postraves.backend.postraveswiki.exception.SaveException
 import jooq.tables.records.CountryRecord
 import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
@@ -26,7 +28,7 @@ class CountryImplRepo :
 
     private fun findByNameWithoutJoins(name: String): CountryRecord {
         val record = dsl.fetchOne(COUNTRY, COUNTRY.NAME.eq(name))
-        return record ?: throw TODO()
+        return record ?: throw NotFoundException("Country", name)
     }
 
     override fun findByName(name: String): CountryDto {
@@ -39,7 +41,7 @@ class CountryImplRepo :
         dto.transferDataToDbRecord(countryToSave)
         countryToSave.createdDateTime = OffsetDateTime.now()
         countryToSave.store()
-        return findByName(countryToSave.name ?: throw TODO())
+        return findByName(countryToSave.name ?: throw SaveException("Country", dto.name))
     }
 
     override fun update(dto: CountryDto) {

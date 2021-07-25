@@ -4,6 +4,9 @@ import com.postraves.backend.postraveswiki.config.JooqDSLContextConfig
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
+import com.postraves.backend.postraveswiki.exception.NotFoundException
+import com.postraves.backend.postraveswiki.exception.SaveException
+import com.postraves.backend.postraveswiki.exception.UpdateException
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.ARTIST
 import jooq.tables.references.COUNTRY
@@ -30,7 +33,7 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
 
     private fun findByIdWithoutJoins(id: Long): ArtistRecord {
         val record = dsl.fetchOne(ARTIST, ARTIST.ID.eq(id))
-        return record ?: throw TODO()
+        return record ?: throw NotFoundException("Artist", id.toString())
     }
 
     private fun findByIdWithJoins(id: Long): Record {
@@ -38,7 +41,7 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
             .selectFrom(ARTIST.leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME)))
             .where(ARTIST.ID.eq(id))
             .fetchOne()
-        return record ?: throw TODO()
+        return record ?: throw NotFoundException("Artist", id.toString())
     }
 
     private fun selectArtistList(): SelectWhereStep<Record> {
@@ -67,7 +70,7 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
                     .on(ARTIST.ID.eq(USER_FOLLOWS_ARTIST.ARTIST_ID), USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
             )
             .where(ARTIST.ID.eq(id))
-            .fetchOne() ?: throw TODO()
+            .fetchOne() ?: throw NotFoundException("Artist", id.toString())
 
         val isFollowed = selectedRecord.into(USER_FOLLOWS_ARTIST).userProfileUid != null
 
@@ -79,17 +82,17 @@ class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : Artis
         dto.transferDataToDbRecord(artistToSave)
         artistToSave.createdDateTime = OffsetDateTime.now()
         artistToSave.store()
-        val id = artistToSave.id ?: throw TODO()
+        val id = artistToSave.id ?: throw SaveException("Artist", dto.name)
         val record = findByIdWithJoins(id)
         return ArtistShortDto.createOutOfDbRecords(record.into(ARTIST), record.into(COUNTRY))
     }
 
     override fun update(dto: ArtistWriteDto) {
-        dto.id ?: throw TODO()
+        dto.id ?: throw NotFoundException("Artist", dto.id.toString())
         val artistToUpdate = findByIdWithoutJoins(dto.id)
         dto.transferDataToDbRecord(artistToUpdate)
         artistToUpdate.update()
-        artistToUpdate.id ?: throw TODO()
+        artistToUpdate.id ?: throw UpdateException("Artist", dto.name)
     }
 
     override fun deleteById(id: Long) {

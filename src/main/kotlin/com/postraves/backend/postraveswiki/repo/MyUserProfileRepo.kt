@@ -4,6 +4,9 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
+import com.postraves.backend.postraveswiki.exception.FollowingException
+import com.postraves.backend.postraveswiki.exception.NotFoundException
+import com.postraves.backend.postraveswiki.exception.SaveException
 import jooq.tables.records.UserProfileRecord
 import jooq.tables.references.*
 import org.jooq.DSLContext
@@ -49,7 +52,7 @@ class MyUserProfileRepoImpl(
             .selectFrom(USER_PROFILE)
             .where(USER_PROFILE.AUTH_UID.eq(authUid))
             .fetchOne()
-        return record ?: throw TODO()
+        return record ?: throw NotFoundException("User", authUid)
     }
 
     override fun findMyProfile(authUid: String): UserFullDto? {
@@ -65,7 +68,7 @@ class MyUserProfileRepoImpl(
         userToSave.createdDateTime = OffsetDateTime.now()
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
-        return UserShortDto.createOutOfDbRecords(record?.into(USER_PROFILE) ?: throw TODO())
+        return UserShortDto.createOutOfDbRecords(record?.into(USER_PROFILE) ?: throw SaveException("User", dto.name))
     }
 
     override fun update(dto: UserWriteDto, authUid: String) {
@@ -85,19 +88,22 @@ class MyUserProfileRepoImpl(
         val userFollowArtist = dsl.newRecord(USER_FOLLOWS_ARTIST)
         userFollowArtist.artistId = id
         userFollowArtist.userProfileUid = userAuthUid
-        userFollowArtist.store()
+        try {
+            userFollowArtist.store()
+        } catch (e: Exception) {
+            throw FollowingException(userId = userAuthUid, entity = "Artist", entityId = id.toString(), message = "can't follow")
+        }
     }
 
     override fun unfollowArtist(userAuthUid: String, id: Long) {
         artistRepo.findById(id)
-        //todo
         if (dsl.fetchOne(
                 USER_FOLLOWS_ARTIST,
                 USER_FOLLOWS_ARTIST.ARTIST_ID.eq(id),
                 USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(userAuthUid)
             )
                 ?.delete() == null
-        ) throw TODO()
+        ) throw FollowingException(userId = userAuthUid, entity = "Artist", entityId = id.toString(), message = "can't unfollow")
     }
 
     override fun findMyFollowsArtist(authUid: String): List<ArtistShortDto> {

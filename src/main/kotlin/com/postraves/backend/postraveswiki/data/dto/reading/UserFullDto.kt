@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
+import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
 import jooq.tables.records.UserProfileRecord
@@ -18,7 +19,7 @@ data class UserFullDto(
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(userRecord: UserProfileRecord, cityRecord: CityRecord, countryRecord: CountryRecord) : UserFullDto {
             return UserFullDto(
-                name = userRecord.name ?: throw TODO(),
+                name = userRecord.name ?: throw RecordFieldNullException("User Name"),
                 imageLink = userRecord.imageLink,
                 currentCity = CityDto.createOutOfDbRecords(cityRecord, countryRecord),
                 telegramLink = userRecord.telegramLink,

@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.*
+import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
 import kotlinx.serialization.Serializable
@@ -18,14 +19,14 @@ data class ArtistShortDto(
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistShortDto {
             return ArtistShortDto(
-                id = artistRecord.id ?: throw TODO(),
-                name = artistRecord.name ?: throw TODO(),
+                id = artistRecord.id ?: throw RecordFieldNullException("Artist Id"),
+                name = artistRecord.name ?: throw RecordFieldNullException("Artist Name"),
                 imageLink = artistRecord.imageLink,
                 country =
                 if (countryRecord.name != null) CountryDto(
-                    name = countryRecord.name ?: throw TODO(),
-                    phoneCode = countryRecord.phoneCode ?: throw TODO(),
-                    emojiCode = countryRecord.emojiCode ?: throw TODO())
+                    name = countryRecord.name ?: throw RecordFieldNullException("Country Name"),
+                    phoneCode = countryRecord.phoneCode ?: throw RecordFieldNullException("Country Phone Code"),
+                    emojiCode = countryRecord.emojiCode ?: throw RecordFieldNullException("Country Emoji Code"))
                 else null,
             )
         }
