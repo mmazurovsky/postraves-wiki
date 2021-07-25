@@ -1,7 +1,6 @@
 package com.postraves.backend.postraveswiki.service
 
 import com.postraves.backend.postraveswiki.data.dto.*
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 
 interface BaseService<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto> {
     fun save(dto: WRITEDTO) : SHORTDTO
@@ -19,12 +18,14 @@ interface ByIdService<FULLDTO : BaseFullDtoWithId, SHORTDTO : BaseShortDtoWithId
     fun findListByIds(ids: Set<Long>): List<SHORTDTO>
 }
 
-interface RatingService<SHORTDTO: BaseShortDto> {
+interface RatingService<FULLDTO: BaseFullDtoWithIdAndRating<FULLDTO>, SHORTDTO: BaseShortDtoWithIdAndRating<SHORTDTO>> {
     fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO>
     fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO>
     fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO
     fun incrementFollowers(id: Long)
     fun decrementFollowers(id: Long)
+    fun enrichWithFollowersCalculationRequired(dto: SHORTDTO): SHORTDTO
+    fun enrichWithFollowersCalculationRequired(dto: FULLDTO): FULLDTO
 }
 
 interface ServiceByName<FULLDTO : BaseFullDto> {

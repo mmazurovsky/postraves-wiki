@@ -1,4 +1,4 @@
-package com.postraves.backend.postraveswiki.repo.generic
+package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.*
 
@@ -9,7 +9,7 @@ interface BaseRepo<WRITEDTO : BaseWriteDto,
     fun findAll(): List<SHORTDTO>
 }
 
-interface FindByName<SHORTDTO : BaseShortDto> {
+interface FindByNameRepo<SHORTDTO : BaseShortDto> {
     fun findByPartOfName(namePart: String): List<SHORTDTO>
 }
 

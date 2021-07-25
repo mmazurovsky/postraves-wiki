@@ -14,8 +14,10 @@ interface BaseRatingDtoWithId<T> : BaseIdDto {
 
 interface BaseShortDto : BaseDto
 interface BaseShortDtoWithId : BaseShortDto, BaseIdDto
+interface BaseShortDtoWithIdAndRating<T> : BaseShortDtoWithId, BaseRatingDtoWithId<T>
 
 interface BaseFullDto : BaseDto
 interface BaseFullDtoWithId : BaseFullDto, BaseIdDto
+interface BaseFullDtoWithIdAndRating<T> : BaseFullDtoWithId, BaseRatingDtoWithId<T>
 
 interface BaseWriteDto : BaseDto

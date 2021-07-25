@@ -1,7 +1,6 @@
 package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
-import com.postraves.backend.postraveswiki.repo.generic.FindByName
 import jooq.tables.references.*
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -9,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 
-interface OtherUserRepo : FindByName<UserShortDto>
+interface OtherUserRepo : FindByNameRepo<UserShortDto>
 
 @Repository
 class OtherUserRepoImpl : OtherUserRepo {

@@ -4,9 +4,6 @@ import com.postraves.backend.postraveswiki.config.JooqDSLContextConfig
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.repo.generic.BaseRepo
-import com.postraves.backend.postraveswiki.repo.generic.ByIdRepo
-import com.postraves.backend.postraveswiki.repo.generic.FindByName
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.ARTIST
 import jooq.tables.references.COUNTRY
@@ -23,7 +20,7 @@ import java.time.OffsetDateTime
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
     ByIdRepo<ArtistFullDto, ArtistShortDto>,
-    FindByName<ArtistShortDto>
+    FindByNameRepo<ArtistShortDto>
 
 @Repository
 class ArtistRepoImpl(private val dslContextConfig: JooqDSLContextConfig) : ArtistRepo {

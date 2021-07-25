@@ -1,8 +1,6 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
-import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
-import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithId
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.*
 import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
 import kotlinx.serialization.Serializable
@@ -16,7 +14,7 @@ data class ArtistShortDto(
     val isFollowed: Boolean = false,
     override val overallFollowers: Int = 0,
     override val weeklyFollowers: Int = 0,
-    ) : BaseShortDtoWithId, BaseRatingDtoWithId<ArtistShortDto> {
+    ) : BaseShortDtoWithIdAndRating<ArtistShortDto> {
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistShortDto {
             return ArtistShortDto(

@@ -1,7 +1,6 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
-import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
 import jooq.tables.records.UserProfileRecord

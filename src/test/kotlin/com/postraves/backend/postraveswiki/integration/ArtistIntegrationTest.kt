@@ -6,9 +6,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepo
-import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepoAbstract
 import com.postraves.backend.postraveswiki.repo.QuickFollowersRepo
-import com.postraves.backend.postraveswiki.repo.QuickFollowersRepoAbstract
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest

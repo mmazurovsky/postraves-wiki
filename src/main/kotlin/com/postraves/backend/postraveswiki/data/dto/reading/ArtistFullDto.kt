@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithId
+import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithIdAndRating
 import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import jooq.tables.records.ArtistRecord
@@ -19,7 +20,7 @@ data class ArtistFullDto(
     val isFollowed: Boolean = false,
     override val overallFollowers: Int = 0,
     override val weeklyFollowers: Int = 0,
-    ) : BaseFullDtoWithId, BaseRatingDtoWithId<ArtistFullDto> {
+    ) : BaseFullDtoWithIdAndRating<ArtistFullDto> {
     companion object FactoryDbRecord {
         fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord, isFollowed: Boolean) : ArtistFullDto {
             return ArtistFullDto(
@@ -41,7 +42,4 @@ data class ArtistFullDto(
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistFullDto {
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
     }
-
-//        return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
-
 }
