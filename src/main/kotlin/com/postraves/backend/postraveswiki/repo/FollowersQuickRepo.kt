@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 import org.springframework.context.annotation.Lazy
 
-sealed interface QuickFollowersRepo {
+sealed interface FollowersQuickRepo {
     fun getFollowers(entityId: Long): Int
     fun setInitialFollowers(entityId: Long)
     fun incrementFollowers(entityId: Long): Int
@@ -17,10 +17,10 @@ sealed interface QuickFollowersRepo {
     fun removeId(entityId: Long)
 }
 
-abstract class QuickFollowersRepoAbstract(
+abstract class FollowersQuickRepoAbstract(
     private val entityType: String,
     private val followersType: String
-) : QuickFollowersRepo {
+) : FollowersQuickRepo {
 
     @Autowired @Lazy
     private lateinit var redisClient: RedisAsyncCommands<String, String>
@@ -66,18 +66,18 @@ abstract class QuickFollowersRepoAbstract(
     }
 }
 
-abstract class WeeklyQuickFollowersRepo(entityType: String) : QuickFollowersRepoAbstract(entityType, FollowersType.WEEKLY.nameString)
-abstract class OverallQuickFollowersRepo(entityType: String) : QuickFollowersRepoAbstract(entityType, FollowersType.OVERALL.nameString)
+abstract class WeeklyFollowersQuickRepo(entityType: String) : FollowersQuickRepoAbstract(entityType, FollowersType.WEEKLY.nameString)
+abstract class OverallFollowersQuickRepo(entityType: String) : FollowersQuickRepoAbstract(entityType, FollowersType.OVERALL.nameString)
 
 @Repository
-class ArtistWeeklyQuickFollowersRepoImpl : WeeklyQuickFollowersRepo(EntityType.ARTIST.nameString)
+class ArtistWeeklyFollowersQuickRepoImpl : WeeklyFollowersQuickRepo(EntityType.ARTIST.nameString)
 
 @Repository
-class UnityWeeklyQuickFollowersRepoImpl : WeeklyQuickFollowersRepo(EntityType.UNITY.nameString)
+class UnityWeeklyFollowersQuickRepoImpl : WeeklyFollowersQuickRepo(EntityType.UNITY.nameString)
 
 @Repository
-class ArtistOverallQuickFollowersRepoImpl: OverallQuickFollowersRepo(EntityType.ARTIST.nameString)
+class ArtistOverallFollowersQuickRepoImpl: OverallFollowersQuickRepo(EntityType.ARTIST.nameString)
 
 @Repository
-class UnityOverallQuickFollowersRepoImpl: OverallQuickFollowersRepo(EntityType.UNITY.nameString)
+class UnityOverallFollowersQuickRepoImpl: OverallFollowersQuickRepo(EntityType.UNITY.nameString)
 

@@ -19,7 +19,7 @@ abstract class WeeklyBestRepoAbstract(
     private lateinit var redisClient: RedisAsyncCommands<String, String>
 
     override fun setWeeklyBestInCountry(countryName: String, entity: Map<String, String>) {
-        redisClient.hset("$entityType:${countryName.lowercase()}:weeklyBest", entity)
+        redisClient.hmset("$entityType:${countryName.lowercase()}:weeklyBest", entity)
     }
 
     override fun getWeeklyBestInCountry(countryName: String) : Map<String, String> {

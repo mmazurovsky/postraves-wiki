@@ -6,7 +6,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepo
-import com.postraves.backend.postraveswiki.repo.QuickFollowersRepo
+import com.postraves.backend.postraveswiki.repo.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
@@ -46,9 +46,9 @@ class ArtistIntegrationTest(
     @Qualifier("artistCountryQuickRepoImpl")
     private val artistCountryQuickRepoImpl: QuickEntityCountryRepo,
     @Qualifier("artistOverallQuickFollowersRepoImpl")
-    private val artistOverallQuickFollowersRepoImpl: QuickFollowersRepo,
+    private val artistOverallFollowersQuickRepoImpl: FollowersQuickRepo,
     @Qualifier("artistWeeklyQuickFollowersRepoImpl")
-    private val artistWeeklyQuickFollowersRepoImpl: QuickFollowersRepo,
+    private val artistWeeklyFollowersQuickRepoImpl: FollowersQuickRepo,
 ) : AbstractPostgresTest() {
 
     private val artistEndpoint: String = "/artist"
@@ -100,8 +100,8 @@ class ArtistIntegrationTest(
         val savedArtist = Json.decodeFromString<ArtistFullDto>(artistRespJson)
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
-        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+        val artistsInOverallRating = artistOverallFollowersQuickRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyFollowersQuickRepoImpl.findTop(-1)
 
         assertNotNull(savedArtist.id)
         assertEquals(artistToSave.name, savedArtist.name)
@@ -145,8 +145,8 @@ class ArtistIntegrationTest(
         val updatedArtist = Json.decodeFromString<ArtistFullDto>(updatedJson)
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
-        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+        val artistsInOverallRating = artistOverallFollowersQuickRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyFollowersQuickRepoImpl.findTop(-1)
 
         assertEquals(artistToUpdate.id, updatedArtist.id)
         assertEquals(artistToUpdate.name, updatedArtist.name)
@@ -179,8 +179,8 @@ class ArtistIntegrationTest(
         val responseFindArtist = Json.decodeFromString<List<ArtistShortDto>>(responseFindArtistJson)
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
-        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+        val artistsInOverallRating = artistOverallFollowersQuickRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyFollowersQuickRepoImpl.findTop(-1)
 
         assertEquals(0, responseFindArtist.size)
 
@@ -219,8 +219,8 @@ class ArtistIntegrationTest(
         val responseArtists = Json.decodeFromString<List<ArtistShortDto>>(responseArtistsJson)
 
         val countryArtistsInQuickRepo = artistCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
-        val artistsInOverallRating = artistOverallQuickFollowersRepoImpl.findTop(-1)
-        val artistsInWeeklyRating = artistWeeklyQuickFollowersRepoImpl.findTop(-1)
+        val artistsInOverallRating = artistOverallFollowersQuickRepoImpl.findTop(-1)
+        val artistsInWeeklyRating = artistWeeklyFollowersQuickRepoImpl.findTop(-1)
 
         assertEquals(3, responseArtists.size)
         responseArtists.forEach {

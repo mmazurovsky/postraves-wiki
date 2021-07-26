@@ -1,5 +1,7 @@
 package com.postraves.backend.postraveswiki.data.dto
 
+import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
+
 interface BaseDto
 
 interface BaseIdDto : BaseDto {
@@ -10,6 +12,7 @@ interface BaseRatingDtoWithId<T> : BaseIdDto {
     val overallFollowers: Int
     val weeklyFollowers: Int
     fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): T
+    fun asMap(): Map<String, String>
 }
 
 interface BaseShortDto : BaseDto

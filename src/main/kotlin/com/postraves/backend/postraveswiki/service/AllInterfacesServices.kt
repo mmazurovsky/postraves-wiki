@@ -26,6 +26,7 @@ interface RatingService<FULLDTO: BaseFullDtoWithIdAndRating<FULLDTO>, SHORTDTO: 
     fun decrementFollowers(id: Long)
     fun enrichWithFollowersCalculationRequired(dto: SHORTDTO): SHORTDTO
     fun enrichWithFollowersCalculationRequired(dto: FULLDTO): FULLDTO
+    fun setBestOfTheWeekForAllCities()
 }
 
 interface ServiceByName<FULLDTO : BaseFullDto> {

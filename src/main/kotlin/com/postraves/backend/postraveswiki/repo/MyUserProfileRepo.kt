@@ -24,6 +24,7 @@ interface MyUserProfileRepo {
     fun followArtist(userAuthUid: String, id: Long)
     fun unfollowArtist(userAuthUid: String, id: Long)
     fun findMyFollowsArtist(authUid: String): List<ArtistShortDto>
+    fun checkArtistIsFollowed(id: Long, authUid: String): Boolean
 }
 
 @Repository
@@ -117,5 +118,16 @@ class MyUserProfileRepoImpl(
             .fetch()
             .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
             .toList()
+    }
+
+    override fun checkArtistIsFollowed(id: Long, authUid: String): Boolean {
+        //todo test
+        val association = dsl.fetchOne(
+            USER_FOLLOWS_ARTIST,
+            USER_FOLLOWS_ARTIST.ARTIST_ID.eq(id),
+            USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid)
+        )
+
+        return association != null
     }
 }

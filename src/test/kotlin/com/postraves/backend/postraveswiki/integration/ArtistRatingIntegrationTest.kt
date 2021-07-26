@@ -9,6 +9,7 @@ import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.ArtistService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -45,6 +46,7 @@ class ArtistRatingIntegrationTest(
 
     private val artistEndpoint: String = "/artist"
     private val redisServer = RedisServer(redisPort)
+
     init {
         redisServer.start()
     }
@@ -203,7 +205,97 @@ class ArtistRatingIntegrationTest(
     // todo weekly rating test
 
     // todo weekly best test
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun saveArtistsAndSetWeeklyBestAndGetWeeklyBest() {
+        val artist1 = ArtistWriteDto(
+            id = null,
+            name = "Artist1",
+            imageLink = "image1",
+            countryName = "BE",
+            about = "About1",
+            instagramLink = "instagram1",
+            soundcloudLink = "soundcloud1",
+        )
+
+        val artist2 = ArtistWriteDto(
+            id = null,
+            name = "Artist2",
+            imageLink = "image2",
+            countryName = "BE",
+            about = "About2",
+            instagramLink = "instagram2",
+            soundcloudLink = "soundcloud2",
+        )
+
+        val artist3 = ArtistWriteDto(
+            id = null,
+            name = "Artist3",
+            imageLink = "image3",
+            countryName = "BE",
+            about = "About3",
+            instagramLink = "instagram3",
+            soundcloudLink = "soundcloud3",
+        )
+
+        val artist4 = ArtistWriteDto(
+            id = null,
+            name = "Artist4",
+            imageLink = "image4",
+            countryName = "BE",
+            about = "About4",
+            instagramLink = "instagram4",
+            soundcloudLink = "soundcloud4",
+        )
+
+        val response1 = Requests.makePostRequest(
+            mockMvc,
+            artistEndpoint,
+            Json.encodeToString(artist1),
+            MockMvcResultMatchers.status().isCreated
+        )
+        val response2 = Requests.makePostRequest(
+            mockMvc,
+            artistEndpoint,
+            Json.encodeToString(artist2),
+            MockMvcResultMatchers.status().isCreated
+        )
+        val response3 = Requests.makePostRequest(
+            mockMvc,
+            artistEndpoint,
+            Json.encodeToString(artist3),
+            MockMvcResultMatchers.status().isCreated
+        )
+        val response4 = Requests.makePostRequest(
+            mockMvc,
+            artistEndpoint,
+            Json.encodeToString(artist4),
+            MockMvcResultMatchers.status().isCreated
+        )
+
+        val artist1Id = Json.decodeFromString<ArtistShortDto>(response1).id
+        val artist2Id = Json.decodeFromString<ArtistShortDto>(response2).id
+        val artist3Id = Json.decodeFromString<ArtistShortDto>(response3).id
+        Json.decodeFromString<ArtistShortDto>(response4).id
 
 
+        Mockito.`when`(securityService.userAuthUid).thenReturn("abc")
 
+        artistService.incrementFollowers(artist1Id)
+        artistService.incrementFollowers(artist1Id)
+        artistService.incrementFollowers(artist1Id)
+
+        artistService.incrementFollowers(artist2Id)
+        artistService.incrementFollowers(artist2Id)
+
+        artistService.incrementFollowers(artist3Id)
+
+        artistService.setBestOfTheWeekForAllCities()
+        Thread.sleep(2_000)
+        val artistOfTheWeek = artistService.findBestOfTheWeekByCityInCountry("Brg")
+
+        assertEquals(artist1Id, artistOfTheWeek.id)
+        assertEquals(artist1.name, artistOfTheWeek.name)
+        assertEquals(artist1.countryName, artistOfTheWeek.country!!.name)
+    }
 }

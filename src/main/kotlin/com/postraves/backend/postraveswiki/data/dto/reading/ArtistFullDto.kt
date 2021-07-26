@@ -5,7 +5,10 @@ import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.properties.Properties
+import kotlinx.serialization.properties.encodeToStringMap
 
 @Serializable
 data class ArtistFullDto(
@@ -41,4 +44,7 @@ data class ArtistFullDto(
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistFullDto {
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
     }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun asMap(): Map<String, String> = Properties.encodeToStringMap(this)
 }

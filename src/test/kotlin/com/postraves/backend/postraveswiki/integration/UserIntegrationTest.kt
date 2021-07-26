@@ -16,7 +16,9 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -221,4 +223,57 @@ class UserIntegrationTest(
         assertEquals(1, artistFollowed.overallFollowers)
         assertEquals(1, artistFollowed.weeklyFollowers)
     }
+
+    @Test
+    fun tryToFollowAndUnfollowSameArtistMultipleTimes() {
+        val userToSave = UserWriteDto(
+            name = "Mika",
+            imageLink = null,
+            about = null,
+            instagramLink = null,
+            telegramLink = null,
+            currentCity = "Brugge"
+        )
+
+        `when`(securityService.userAuthUid).thenReturn("abc")
+
+        myUserProfileService.save(userToSave)
+
+        val artistToSave = ArtistWriteDto(
+            id = null,
+            name = "Amelie Lens",
+            imageLink = "image",
+            soundcloudLink = "soundcloud",
+            instagramLink = "instagram",
+            about = "About Amelie",
+            countryName = "BE",
+        )
+        val artistIdRespJson = Requests.makePostRequest(
+            mockMvc,
+            "/artist",
+            Json.encodeToString(artistToSave),
+            MockMvcResultMatchers.status().isCreated
+        )
+        val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
+
+        val isFollowed1 = myUserProfileService.checkArtistIsFollowed(artistId)
+        myUserProfileService.followArtist(artistId)
+        val isFollowed2 = myUserProfileService.checkArtistIsFollowed(artistId)
+        myUserProfileService.followArtist(artistId)
+        val isFollowed3 = myUserProfileService.checkArtistIsFollowed(artistId)
+        myUserProfileService.unfollowArtist(artistId)
+        val isFollowed4 = myUserProfileService.checkArtistIsFollowed(artistId)
+        myUserProfileService.unfollowArtist(artistId)
+        val isFollowed5 = myUserProfileService.checkArtistIsFollowed(artistId)
+        myUserProfileService.followArtist(artistId)
+        val isFollowed6 = myUserProfileService.checkArtistIsFollowed(artistId)
+
+        assertEquals(false, isFollowed1)
+        assertEquals(true, isFollowed2)
+        assertEquals(true, isFollowed3)
+        assertEquals(false, isFollowed4)
+        assertEquals(false, isFollowed5)
+        assertEquals(true, isFollowed6)
+    }
+
 }

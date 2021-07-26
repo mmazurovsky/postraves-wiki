@@ -35,11 +35,13 @@ dependencies {
     implementation("org.flywaydb:flyway-core:7.1.1")
     implementation("org.springframework:spring-jdbc:5.3.8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.2")
     implementation(kotlin("test"))
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
     testImplementation("com.github.kstyrc:embedded-redis:0.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
     implementation("io.github.microutils:kotlin-logging:1.12.5")
+//    implementation("com.google.code.gson:gson:2.8.7")
 }
 
 tasks.withType<KotlinCompile> {

@@ -5,11 +5,9 @@ import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithIdAndRating
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
+import com.postraves.backend.postraveswiki.exception.WeeklyBestSettingException
 import com.postraves.backend.postraveswiki.repo.*
 import com.postraves.backend.postraveswiki.security.SecurityService
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.encodeToJsonElement
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
 import kotlin.math.min
@@ -23,8 +21,8 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     private val securityService: SecurityService,
     private val entityCountryRepo: QuickEntityCountryRepoAbstract,
     private val weeklyBestRepo: WeeklyBestRepo,
-    private val entityWeeklyFollowersRepo: QuickFollowersRepo,
-    private val entityOverallFollowersRepo: QuickFollowersRepo,
+    private val entityWeeklyFollowersQuickRepo: FollowersQuickRepo,
+    private val entityOverallFollowersQuickRepo: FollowersQuickRepo,
     private val entityRepo: REPO,
 ) : BaseService<WRITEDTO, SHORTDTO>, FindByName<SHORTDTO>, ByIdService<FULLDTO, SHORTDTO>, RatingService<FULLDTO, SHORTDTO>
         where REPO : BaseRepo<WRITEDTO, SHORTDTO>,
@@ -52,8 +50,8 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     }
 
     private fun calculateFollowers(id: Long): Pair<Int, Int> {
-        val overallFollowers = entityOverallFollowersRepo.getFollowers(id)
-        val weeklyFollowers = entityWeeklyFollowersRepo.getFollowers(id)
+        val overallFollowers = entityOverallFollowersQuickRepo.getFollowers(id)
+        val weeklyFollowers = entityWeeklyFollowersQuickRepo.getFollowers(id)
         return overallFollowers to weeklyFollowers
     }
 
@@ -77,8 +75,8 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
         checkCountryAndRemoveFromCountryQuickRepo(dtoToDelete)
 
         // deleting form quick repos ratings
-        entityOverallFollowersRepo.removeId(id)
-        entityWeeklyFollowersRepo.removeId(id)
+        entityOverallFollowersQuickRepo.removeId(id)
+        entityWeeklyFollowersQuickRepo.removeId(id)
 
         entityRepo.deleteById(id)
     }
@@ -88,8 +86,8 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     override fun save(dto: WRITEDTO): SHORTDTO {
         val saved = entityRepo.save(dto)
         checkCountryAndAddToCountryQuickRepo(dto, saved.id)
-        entityOverallFollowersRepo.setInitialFollowers(saved.id)
-        entityWeeklyFollowersRepo.setInitialFollowers(saved.id)
+        entityOverallFollowersQuickRepo.setInitialFollowers(saved.id)
+        entityWeeklyFollowersQuickRepo.setInitialFollowers(saved.id)
         return saved
     }
 
@@ -104,17 +102,23 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     abstract fun checkCountryAndAddAndRemoveFromCountryQuickRepo(dto: WRITEDTO)
 
     private fun findAbstractRatingForCityByCountry(
-        mainFollowersRepo: QuickFollowersRepo,
-        cityName: String
+        mainFollowersQuickRepo: FollowersQuickRepo,
+        cityName: String,
+        maxQuantity: Int,
     ): Pair<List<SHORTDTO>, Map<Long, Int>> {
         val countryName = cityService.findByName(cityName).country.name
         val entitiesFromTheCountry = entityCountryRepo.getAllIdsByCountry(countryName)
-        val topEntityIdsAndScores = mainFollowersRepo.findTop(-1)
+        val topEntityIdsAndScores = mainFollowersQuickRepo.findTop(-1)
         val topEntityIdsAndScoresFromTheCountry =
-            topEntityIdsAndScores.filterKeys { entitiesFromTheCountry.contains(it) }.toMap()
+            topEntityIdsAndScores
+                .filterKeys { entitiesFromTheCountry.contains(it) }
+                .toMap()
         val topEntityFromTheCountryIds = topEntityIdsAndScoresFromTheCountry.keys
-        val topEntityFromTheCountryDtos = findListByIds(topEntityFromTheCountryIds)
-        // todo this is extra sorting
+        val topEntityFromTheCountryIdsCropped = topEntityFromTheCountryIds.toList().subList(
+            0,
+            min(topEntityFromTheCountryIds.size, maxQuantity)
+        ).toSet()
+        val topEntityFromTheCountryDtos = findListByIds(topEntityFromTheCountryIdsCropped)
         Collections.sort(
             topEntityFromTheCountryDtos,
             Comparator.comparing { topEntityFromTheCountryIds.indexOf(it.id) })
@@ -123,62 +127,65 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
 
     override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO> {
 
-        val resultFromAbstract = findAbstractRatingForCityByCountry(entityOverallFollowersRepo, cityName)
+        val resultFromAbstract = findAbstractRatingForCityByCountry(entityOverallFollowersQuickRepo, cityName, maxQuantity)
         val topEntityListWithoutFollowers = resultFromAbstract.first
         val topEntityIdsAndScoresFromTheCountry = resultFromAbstract.second
         val topEntitiesEnrichedWithFollowers = topEntityListWithoutFollowers.map {
             enrichWithFollowersWithoutCalculation(
                 it,
                 overallFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw NotFoundException("Overall followers in city $cityName of entity", it.id.toString()),
-                weeklyFollowers = entityWeeklyFollowersRepo.getFollowers(it.id)
+                weeklyFollowers = entityWeeklyFollowersQuickRepo.getFollowers(it.id)
             )
         }.toList()
-        val result = topEntitiesEnrichedWithFollowers.subList(
-            0,
-            min(topEntitiesEnrichedWithFollowers.size, maxQuantity)
-        )
-        return result
+        return topEntitiesEnrichedWithFollowers
     }
 
     override fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO> {
-        val resultFromAbstract = findAbstractRatingForCityByCountry(entityWeeklyFollowersRepo, cityName)
+        val resultFromAbstract = findAbstractRatingForCityByCountry(entityWeeklyFollowersQuickRepo, cityName, maxQuantity)
         val topEntityListWithoutFollowers = resultFromAbstract.first
         val topEntityIdsAndScoresFromTheCountry = resultFromAbstract.second
         val topEntitiesEnrichedWithFollowers = topEntityListWithoutFollowers.map {
             enrichWithFollowersWithoutCalculation(
                 it,
-                overallFollowers = entityOverallFollowersRepo.getFollowers(it.id),
+                overallFollowers = entityOverallFollowersQuickRepo.getFollowers(it.id),
                 weeklyFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw NotFoundException("Weekly followers in city $cityName of entity", it.id.toString()),
             )
         }.toList()
-        val result = topEntitiesEnrichedWithFollowers.subList(
-            0,
-            min(topEntitiesEnrichedWithFollowers.size, maxQuantity)
-        )
-        return result
+        return topEntitiesEnrichedWithFollowers
     }
 
     override fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO {
         // todo test this
         val countryName = cityService.findByName(cityName).country.name
-        val bestArtistAsString = Json.encodeToJsonElement(weeklyBestRepo.getWeeklyBestInCountry(countryName))
-        val bestArtist = decodeShortDtoFromJson(bestArtistAsString)
-        return bestArtist
+        val bestEntityAsMap = weeklyBestRepo.getWeeklyBestInCountry(countryName)
+        val bestEntity = decodeShortDtoFromMap(bestEntityAsMap)
+        return bestEntity
     }
 
-    abstract fun decodeShortDtoFromJson(encoded: JsonElement): SHORTDTO
+    abstract fun decodeShortDtoFromMap(map: Map<String, String>): SHORTDTO
+
+    override fun setBestOfTheWeekForAllCities() {
+        val allCities = cityService.findAll()
+        allCities.forEach {
+            val topEntityInCountryOfCityList = findWeeklyRatingForCityByCountry(it.name, 1)
+            if (topEntityInCountryOfCityList.size == 1) {
+                val topEntityInCountryOfCity = topEntityInCountryOfCityList[0]
+                weeklyBestRepo.setWeeklyBestInCountry(it.country.name, topEntityInCountryOfCity.asMap())
+            } else throw WeeklyBestSettingException("Can't get top entity to set it as weekly best")
+        }
+    }
 
     override fun incrementFollowers(id: Long) {
         if (securityService.userAuthUid != null) {
-            entityOverallFollowersRepo.incrementFollowers(id)
-            entityWeeklyFollowersRepo.incrementFollowers(id)
+            entityOverallFollowersQuickRepo.incrementFollowers(id)
+            entityWeeklyFollowersQuickRepo.incrementFollowers(id)
         }
     }
 
     override fun decrementFollowers(id: Long) {
         if (securityService.userAuthUid != null) {
-            entityOverallFollowersRepo.decrementFollowers(id)
-            entityWeeklyFollowersRepo.decrementFollowers(id)
+            entityOverallFollowersQuickRepo.decrementFollowers(id)
+            entityWeeklyFollowersQuickRepo.decrementFollowers(id)
         }
     }
 
