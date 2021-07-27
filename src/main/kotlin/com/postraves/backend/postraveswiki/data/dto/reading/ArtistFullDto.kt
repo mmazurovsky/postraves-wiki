@@ -8,9 +8,9 @@ import jooq.tables.records.CountryRecord
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.properties.Properties
+import kotlinx.serialization.properties.decodeFromStringMap
 import kotlinx.serialization.properties.encodeToStringMap
 
-@ExperimentalSerializationApi
 @Serializable
 data class ArtistFullDto(
     override val id: Long,
@@ -40,12 +40,17 @@ data class ArtistFullDto(
                 isFollowed = isFollowed
             )
         }
+
+        @ExperimentalSerializationApi
+        fun fromMap(map: Map<String, String>): ArtistFullDto =
+            Properties.decodeFromStringMap(map)
     }
 
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistFullDto {
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
     }
 
+    @ExperimentalSerializationApi
     override fun toMap(): Map<String, String> {
         return Properties.encodeToStringMap(value = this)
     }

@@ -55,7 +55,7 @@ class ArtistServiceImpl(
     }
 
     override fun checkCountryAndAddAndRemoveFromCountryQuickRepo(dto: ArtistWriteDto) {
-        val previousCountryName = artistRepo.findById(dto.id ?: throw UpdateException("Artist", dto.name)).country?.name
+        val previousCountryName = artistRepo.findById(null, dto.id ?: throw UpdateException("Artist", dto.name)).country?.name
         if (dto.countryName != previousCountryName) {
             if (dto.countryName != null) {
                 artistCountryRepo.addOneIdToCountry(dto.countryName, dto.id)

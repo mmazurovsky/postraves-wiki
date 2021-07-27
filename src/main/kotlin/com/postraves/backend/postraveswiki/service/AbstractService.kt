@@ -24,7 +24,8 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     private val entityWeeklyFollowersQuickRepo: FollowersQuickRepo,
     private val entityOverallFollowersQuickRepo: FollowersQuickRepo,
     private val entityRepo: REPO,
-) : BaseService<WRITEDTO, SHORTDTO>, FindByName<SHORTDTO>, ByIdService<FULLDTO, SHORTDTO>, RatingService<FULLDTO, SHORTDTO>
+) : BaseService<WRITEDTO, SHORTDTO>, FindByName<SHORTDTO>, ByIdService<FULLDTO, SHORTDTO>,
+    RatingService<FULLDTO, SHORTDTO>
         where REPO : BaseRepo<WRITEDTO, SHORTDTO>,
               REPO : ByIdRepo<FULLDTO, SHORTDTO>,
               REPO : FindByNameRepo<SHORTDTO> {
@@ -35,9 +36,9 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     private fun findByIdDependingOnUser(id: Long): FULLDTO {
         val user = myUserProfileService.findMyProfile()
         return if (user == null)
-            entityRepo.findById(id)
+            entityRepo.findById(null, id)
         else
-            entityRepo.findByIdForUser(securityService.userAuthUid!!, id)
+            entityRepo.findById(securityService.userAuthUid, id)
     }
 
     override fun findListByIds(ids: Set<Long>): List<SHORTDTO> {
@@ -70,7 +71,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
 
     override fun deleteById(id: Long) {
         // deleting form quick repo country
-        val dtoToDelete = entityRepo.findById(id)
+        val dtoToDelete = entityRepo.findById(null, id)
 
         checkCountryAndRemoveFromCountryQuickRepo(dtoToDelete)
 
@@ -127,13 +128,15 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
 
     override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO> {
 
-        val resultFromAbstract = findAbstractRatingForCityByCountry(entityOverallFollowersQuickRepo, cityName, maxQuantity)
+        val resultFromAbstract =
+            findAbstractRatingForCityByCountry(entityOverallFollowersQuickRepo, cityName, maxQuantity)
         val topEntityListWithoutFollowers = resultFromAbstract.first
         val topEntityIdsAndScoresFromTheCountry = resultFromAbstract.second
         val topEntitiesEnrichedWithFollowers = topEntityListWithoutFollowers.map {
             enrichWithFollowersWithoutCalculation(
                 it,
-                overallFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw NotFoundException("Overall followers in city $cityName of entity", it.id.toString()),
+                overallFollowers = topEntityIdsAndScoresFromTheCountry[it.id]
+                    ?: throw NotFoundException("Overall followers in city $cityName of entity", it.id.toString()),
                 weeklyFollowers = entityWeeklyFollowersQuickRepo.getFollowers(it.id)
             )
         }.toList()
@@ -141,14 +144,16 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     }
 
     override fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO> {
-        val resultFromAbstract = findAbstractRatingForCityByCountry(entityWeeklyFollowersQuickRepo, cityName, maxQuantity)
+        val resultFromAbstract =
+            findAbstractRatingForCityByCountry(entityWeeklyFollowersQuickRepo, cityName, maxQuantity)
         val topEntityListWithoutFollowers = resultFromAbstract.first
         val topEntityIdsAndScoresFromTheCountry = resultFromAbstract.second
         val topEntitiesEnrichedWithFollowers = topEntityListWithoutFollowers.map {
             enrichWithFollowersWithoutCalculation(
                 it,
                 overallFollowers = entityOverallFollowersQuickRepo.getFollowers(it.id),
-                weeklyFollowers = topEntityIdsAndScoresFromTheCountry[it.id] ?: throw NotFoundException("Weekly followers in city $cityName of entity", it.id.toString()),
+                weeklyFollowers = topEntityIdsAndScoresFromTheCountry[it.id]
+                    ?: throw NotFoundException("Weekly followers in city $cityName of entity", it.id.toString()),
             )
         }.toList()
         return topEntitiesEnrichedWithFollowers

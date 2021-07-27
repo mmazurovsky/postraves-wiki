@@ -3,9 +3,9 @@ package com.postraves.backend.postraveswiki.integration
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.exception.ExMessage
 import com.postraves.backend.postraveswiki.utils.Requests
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.junit.Ignore
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -26,6 +26,7 @@ import kotlin.test.assertEquals
 @ActiveProfiles(value = ["test"])
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Ignore
 class ExceptionsIntegrationTest(
     @Value("\${spring.redis.port}")
     private val redisPort: Int,

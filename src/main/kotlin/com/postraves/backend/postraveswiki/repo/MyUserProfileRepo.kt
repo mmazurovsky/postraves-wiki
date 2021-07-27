@@ -85,7 +85,7 @@ class MyUserProfileRepoImpl(
 
     override fun followArtist(userAuthUid: String, id: Long) {
         // checking that artist exists
-        artistRepo.findById(id)
+        artistRepo.findById(userAuthUid, id)
         val userFollowArtist = dsl.newRecord(USER_FOLLOWS_ARTIST)
         userFollowArtist.artistId = id
         userFollowArtist.userProfileUid = userAuthUid
@@ -97,7 +97,7 @@ class MyUserProfileRepoImpl(
     }
 
     override fun unfollowArtist(userAuthUid: String, id: Long) {
-        artistRepo.findById(id)
+        artistRepo.findById(userAuthUid, id)
         if (dsl.fetchOne(
                 USER_FOLLOWS_ARTIST,
                 USER_FOLLOWS_ARTIST.ARTIST_ID.eq(id),
