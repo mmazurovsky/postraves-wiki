@@ -36,7 +36,7 @@ class SecurityConfig(
     @Bean
     fun restAuthenticationEntryPoint(): AuthenticationEntryPoint {
         return AuthenticationEntryPoint { _: HttpServletRequest?, httpServletResponse: HttpServletResponse, e: AuthenticationException? ->
-            // todo if there is exception on the server side and it is not connected with authentication,
+            // if there is exception on the server side and it is not connected with authentication,
             //  it also returns the error described below
             val errorObject: MutableMap<String, Any> = HashMap()
             val errorCode = 401

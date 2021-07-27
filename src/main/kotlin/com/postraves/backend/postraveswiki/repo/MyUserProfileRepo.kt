@@ -121,7 +121,6 @@ class MyUserProfileRepoImpl(
     }
 
     override fun checkArtistIsFollowed(id: Long, authUid: String): Boolean {
-        //todo test
         val association = dsl.fetchOne(
             USER_FOLLOWS_ARTIST,
             USER_FOLLOWS_ARTIST.ARTIST_ID.eq(id),

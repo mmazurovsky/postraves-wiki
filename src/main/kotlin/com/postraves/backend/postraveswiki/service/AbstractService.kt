@@ -155,7 +155,6 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     }
 
     override fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO {
-        // todo test this
         val countryName = cityService.findByName(cityName).country.name
         val bestEntityAsMap = weeklyBestRepo.getWeeklyBestInCountry(countryName)
         val bestEntity = decodeShortDtoFromMap(bestEntityAsMap)
@@ -170,7 +169,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
             val topEntityInCountryOfCityList = findWeeklyRatingForCityByCountry(it.name, 1)
             if (topEntityInCountryOfCityList.size == 1) {
                 val topEntityInCountryOfCity = topEntityInCountryOfCityList[0]
-                weeklyBestRepo.setWeeklyBestInCountry(it.country.name, topEntityInCountryOfCity.asMap())
+                weeklyBestRepo.setWeeklyBestInCountry(it.country.name, topEntityInCountryOfCity.toMap())
             } else throw WeeklyBestSettingException("Can't get top entity to set it as weekly best")
         }
     }

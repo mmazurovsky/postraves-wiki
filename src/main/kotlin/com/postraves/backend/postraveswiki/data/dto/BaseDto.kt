@@ -12,7 +12,7 @@ interface BaseRatingDtoWithId<T> : BaseIdDto {
     val overallFollowers: Int
     val weeklyFollowers: Int
     fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): T
-    fun asMap(): Map<String, String>
+    fun toMap(): Map<String, String>
 }
 
 interface BaseShortDto : BaseDto

@@ -204,8 +204,6 @@ class ArtistRatingIntegrationTest(
 
     // todo weekly rating test
 
-    // todo weekly best test
-    @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun saveArtistsAndSetWeeklyBestAndGetWeeklyBest() {
         val artist1 = ArtistWriteDto(

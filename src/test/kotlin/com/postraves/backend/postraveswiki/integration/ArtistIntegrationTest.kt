@@ -45,9 +45,9 @@ class ArtistIntegrationTest(
     private val countryService: CountryService,
     @Qualifier("artistCountryQuickRepoImpl")
     private val artistCountryQuickRepoImpl: QuickEntityCountryRepo,
-    @Qualifier("artistOverallQuickFollowersRepoImpl")
+    @Qualifier("artistOverallFollowersQuickRepoImpl")
     private val artistOverallFollowersQuickRepoImpl: FollowersQuickRepo,
-    @Qualifier("artistWeeklyQuickFollowersRepoImpl")
+    @Qualifier("artistWeeklyFollowersQuickRepoImpl")
     private val artistWeeklyFollowersQuickRepoImpl: FollowersQuickRepo,
 ) : AbstractPostgresTest() {
 

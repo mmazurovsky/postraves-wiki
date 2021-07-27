@@ -65,7 +65,7 @@ class WeeklyBestQuickRepoTest(
             overallFollowers = 200
         )
 
-        weeklyBestQuickRepoTest.setWeeklyBestInCountry(countryToSave.name, artistTestData.asMap())
+        weeklyBestQuickRepoTest.setWeeklyBestInCountry(countryToSave.name, artistTestData.toMap())
         val persistedMap = weeklyBestQuickRepoTest.getWeeklyBestInCountry(countryToSave.name)
 
         val persistedArtist = ArtistShortDto.fromMap(persistedMap)

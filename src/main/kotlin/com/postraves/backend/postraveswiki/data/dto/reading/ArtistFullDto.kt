@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.encodeToStringMap
 
+@ExperimentalSerializationApi
 @Serializable
 data class ArtistFullDto(
     override val id: Long,
@@ -45,6 +46,7 @@ data class ArtistFullDto(
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    override fun asMap(): Map<String, String> = Properties.encodeToStringMap(this)
+    override fun toMap(): Map<String, String> {
+        return Properties.encodeToStringMap(value = this)
+    }
 }

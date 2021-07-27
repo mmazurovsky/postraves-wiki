@@ -6,11 +6,12 @@ import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.properties.*
-import kotlinx.serialization.properties.Properties.Default.decodeFromStringMap
+import kotlinx.serialization.properties.Properties
+import kotlinx.serialization.properties.decodeFromStringMap
+import kotlinx.serialization.properties.encodeToStringMap
 
-@Serializable
 @ExperimentalSerializationApi
+@Serializable
 data class ArtistShortDto(
     override val id: Long,
     val name: String,
@@ -39,7 +40,7 @@ data class ArtistShortDto(
             Properties.decodeFromStringMap(map)
     }
 
-    override fun asMap(): Map<String, String> = Properties.encodeToStringMap(this)
+    override fun toMap(): Map<String, String> = Properties.encodeToStringMap(value = this)
 
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistShortDto {
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
