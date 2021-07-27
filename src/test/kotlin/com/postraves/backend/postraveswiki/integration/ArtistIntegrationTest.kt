@@ -225,6 +225,13 @@ class ArtistIntegrationTest(
         assertEquals(3, responseArtists.size)
         responseArtists.forEach {
             assert(it.name == artist1.name || it.name == artist2.name || it.name == artist3.name)
+            if (it.name == artist1.name) {
+                assertEquals(artist1.imageLink, it.imageLink)
+                assertEquals(artist1.countryName, it.country!!.name)
+            } else if (it.name == artist2.name) {
+                assertEquals(artist2.imageLink, it.imageLink)
+                assertNull(it.country)
+            }
         }
         // artist1 has country
         assertEquals(1, countryArtistsInQuickRepo.size)

@@ -10,7 +10,6 @@ import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.decodeFromStringMap
 import kotlinx.serialization.properties.encodeToStringMap
 
-@ExperimentalSerializationApi
 @Serializable
 data class ArtistShortDto(
     override val id: Long,
@@ -28,18 +27,19 @@ data class ArtistShortDto(
                 name = artistRecord.name ?: throw RecordFieldNullException("Artist Name"),
                 imageLink = artistRecord.imageLink,
                 country =
-                if (countryRecord.name != null) CountryDto(
-                    name = countryRecord.name ?: throw RecordFieldNullException("Country Name"),
-                    phoneCode = countryRecord.phoneCode ?: throw RecordFieldNullException("Country Phone Code"),
-                    emojiCode = countryRecord.emojiCode ?: throw RecordFieldNullException("Country Emoji Code"))
+                if (countryRecord.name != null)
+                    CountryDto.createOutOfDbRecords(countryRecord)
                 else null,
+//                isFollowed = isFollowed
             )
         }
 
+        @ExperimentalSerializationApi
         fun fromMap(map: Map<String, String>): ArtistShortDto =
             Properties.decodeFromStringMap(map)
     }
 
+    @ExperimentalSerializationApi
     override fun toMap(): Map<String, String> = Properties.encodeToStringMap(value = this)
 
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistShortDto {

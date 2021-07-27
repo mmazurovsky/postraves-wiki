@@ -14,8 +14,7 @@ interface FindByNameRepo<SHORTDTO : BaseShortDto> {
 }
 
 interface ByIdRepo<FULLDTO : BaseFullDtoWithId, SHORTDTO: BaseShortDtoWithId> {
-    fun findById(id: Long): FULLDTO
-    fun findByIdForUser(authUid: String, id: Long): FULLDTO
+    fun findById(authUid: String?, id: Long): FULLDTO
     fun deleteById(id: Long)
     fun findListByIds(ids: Set<Long>): List<SHORTDTO>
 }
