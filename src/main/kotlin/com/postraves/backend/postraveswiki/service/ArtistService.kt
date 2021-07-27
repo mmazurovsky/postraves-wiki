@@ -29,9 +29,9 @@ class ArtistServiceImpl(
     @Qualifier("artistWeeklyBestRepoImpl")
     private val weeklyBestRepo: WeeklyBestRepo,
     @Qualifier("artistWeeklyFollowersQuickRepoImpl")
-    private val artistWeeklyFollowersDeltaQuickRepo: FollowersQuickRepo,
+    private val artistWeeklyFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("artistOverallFollowersQuickRepoImpl")
-    private val artistOverallFollowersImplQuickRepo: FollowersQuickRepo,
+    private val artistOverallFollowersQuickRepo: FollowersQuickRepo,
 ) : ArtistService,
     AbstractService<ArtistWriteDto, ArtistFullDto, ArtistShortDto, ArtistRepo>(
         cityService = cityService,
@@ -39,8 +39,8 @@ class ArtistServiceImpl(
         entityRepo = artistRepo,
         entityCountryRepo = artistCountryRepo,
         weeklyBestRepo = weeklyBestRepo,
-        entityOverallFollowersQuickRepo = artistOverallFollowersImplQuickRepo,
-        entityWeeklyFollowersQuickRepo = artistWeeklyFollowersDeltaQuickRepo,
+        entityOverallFollowersQuickRepo = artistOverallFollowersQuickRepo,
+        entityWeeklyFollowersQuickRepo = artistWeeklyFollowersQuickRepo,
     ) {
 
     override fun checkCountryAndRemoveFromCountryQuickRepo(dto: ArtistFullDto) {
