@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 
-interface OtherUserRepo : FindByNameRepo<UserShortDto>
+interface OtherUserRepo : FollowableRepo<UserShortDto>
 
 @Repository
 class OtherUserRepoImpl : OtherUserRepo {
@@ -17,7 +17,7 @@ class OtherUserRepoImpl : OtherUserRepo {
     @Lazy
     private lateinit var dsl: DSLContext
 
-    override fun findByPartOfName(namePart: String): List<UserShortDto> {
+    override fun findFollowableByPartOfName(authUid: String?, namePart: String): List<UserShortDto> {
         val results = dsl
             .selectFrom(USER_PROFILE)
             .where(DSL.lower(USER_PROFILE.NAME).contains(namePart.lowercase()))
@@ -26,5 +26,4 @@ class OtherUserRepoImpl : OtherUserRepo {
             .toList()
         return results
     }
-
 }

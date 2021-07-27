@@ -28,21 +28,25 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     RatingService<FULLDTO, SHORTDTO>
         where REPO : BaseRepo<WRITEDTO, SHORTDTO>,
               REPO : ByIdRepo<FULLDTO, SHORTDTO>,
-              REPO : FindByNameRepo<SHORTDTO> {
+              REPO : FollowableRepo<SHORTDTO> {
 
     @Autowired
     private lateinit var myUserProfileService: MyUserProfileService
 
     private fun findByIdDependingOnUser(id: Long): FULLDTO {
         val user = myUserProfileService.findMyProfile()
-        return if (user == null)
+        return if (user.first == null)
             entityRepo.findById(null, id)
         else
-            entityRepo.findById(securityService.userAuthUid, id)
+            entityRepo.findById(user.second, id)
     }
 
     override fun findListByIds(ids: Set<Long>): List<SHORTDTO> {
-        return entityRepo.findListByIds(ids)
+        val user = myUserProfileService.findMyProfile()
+        return if (user.first == null)
+            entityRepo.findListByIds(null, ids)
+        else
+            entityRepo.findListByIds(user.second, ids)
     }
 
     override fun findById(id: Long): FULLDTO {
@@ -164,6 +168,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
         val bestEntityAsMap = weeklyBestRepo.getWeeklyBestInCountry(countryName)
         val bestEntity = decodeShortDtoFromMap(bestEntityAsMap)
         return bestEntity
+        // todo returns isFollow that was set initially, not possible new value
     }
 
     abstract fun decodeShortDtoFromMap(map: Map<String, String>): SHORTDTO
@@ -198,6 +203,10 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     }
 
     override fun findByPartOfName(namePart: String): List<SHORTDTO> {
-        return entityRepo.findByPartOfName(namePart)
+        val user = myUserProfileService.findMyProfile()
+        return if (user.first == null)
+            entityRepo.findFollowableByPartOfName(null, namePart)
+        else
+            entityRepo.findFollowableByPartOfName(user.second, namePart)
     }
 }

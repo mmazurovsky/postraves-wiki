@@ -15,8 +15,7 @@ import java.time.OffsetDateTime
 
 interface CountryRepo :
     BaseRepo<CountryDto, CountryDto>,
-    ByNameRepo<CountryDto>,
-    FindByNameRepo<CountryDto>
+    ByNameRepo<CountryDto>
 
 @Repository
 class CountryImplRepo :

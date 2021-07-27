@@ -11,7 +11,7 @@ import com.postraves.backend.postraveswiki.security.SecurityService
 import org.springframework.stereotype.Service
 
 interface MyUserProfileService {
-    fun findMyProfile(): UserFullDto?
+    fun findMyProfile(): Pair<UserFullDto?, String?>
     fun save(dto: UserWriteDto): UserShortDto
     fun update(dto: UserWriteDto)
     fun deleteMyProfile()
@@ -29,12 +29,12 @@ class MyUserProfileServiceImpl(
     private val artistService: ArtistService,
 ) : MyUserProfileService {
 
-    override fun findMyProfile(): UserFullDto? {
-        return myUserProfileRepo.findMyProfile(securityService.userAuthUid ?: return null)
+    override fun findMyProfile(): Pair<UserFullDto?, String?> {
+        return myUserProfileRepo.findMyProfile(securityService.userAuthUid ?: return null to null)
     }
 
     override fun deleteMyProfile() {
-        if (findMyProfile() != null)
+        if (findMyProfile().first != null)
             myUserProfileRepo.deleteMyProfile(securityService.userAuthUid ?: return)
     }
 
@@ -43,7 +43,7 @@ class MyUserProfileServiceImpl(
     }
 
     override fun followArtist(id: Long) {
-        if (findMyProfile() != null)
+        if (findMyProfile().first != null)
             if (!checkArtistIsFollowed(id)) {
                 myUserProfileRepo.followArtist(securityService.userAuthUid ?: throw NotAuthenticated(), id)
                 artistService.incrementFollowers(id)
@@ -53,7 +53,7 @@ class MyUserProfileServiceImpl(
     }
 
     override fun unfollowArtist(id: Long) {
-        if (findMyProfile() != null)
+        if (findMyProfile().first != null)
             if (checkArtistIsFollowed(id)) {
                 myUserProfileRepo.unfollowArtist(securityService.userAuthUid ?: throw NotAuthenticated(), id)
                 artistService.decrementFollowers(id)
@@ -63,7 +63,7 @@ class MyUserProfileServiceImpl(
     }
 
     override fun findMyFollowsArtist(): List<ArtistShortDto> {
-        return if (findMyProfile() != null) {
+        return if (findMyProfile().first != null) {
             val myFollows =
                 myUserProfileRepo.findMyFollowsArtist(securityService.userAuthUid ?: throw NotAuthenticated())
             myFollows.map {
@@ -73,7 +73,7 @@ class MyUserProfileServiceImpl(
     }
 
     override fun findByAuthUidForSecurityService(authUid: String): UserFullDto? {
-        return myUserProfileRepo.findMyProfile(authUid)
+        return myUserProfileRepo.findMyProfile(authUid).first
     }
 
     override fun save(dto: UserWriteDto): UserShortDto {
@@ -81,7 +81,7 @@ class MyUserProfileServiceImpl(
     }
 
     override fun update(dto: UserWriteDto) {
-        if (findMyProfile() != null)
+        if (findMyProfile().first != null)
             myUserProfileRepo.update(dto, securityService.userAuthUid ?: throw NotAuthenticated())
     }
 }

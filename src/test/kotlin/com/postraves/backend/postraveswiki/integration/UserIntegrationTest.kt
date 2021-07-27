@@ -94,7 +94,7 @@ class UserIntegrationTest(
     @Test
     fun getUserForAuthUidNotExistingInDb() {
         `when`(securityService.userAuthUid).thenReturn("abc")
-        val result = myUserProfileService.findMyProfile()
+        val result = myUserProfileService.findMyProfile().first
         assertNull(result)
     }
 
@@ -113,7 +113,7 @@ class UserIntegrationTest(
 
         myUserProfileService.save(userToSave)
 
-        val saved = myUserProfileService.findMyProfile()
+        val saved = myUserProfileService.findMyProfile().first
 
         assertEquals(userToSave.name, saved!!.name)
         assertEquals(userToSave.imageLink, saved.imageLink)
@@ -202,6 +202,7 @@ class UserIntegrationTest(
         val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
 
         val artistNotFollowed = artistService.findById(artistId)
+        val artistNotFollowedFromList = artistService.findListByIds(setOf(artistId)).filter { it.id == artistId }[0]
 
         assertEquals(artistId, artistNotFollowed.id)
         assertEquals(artistToSave.name, artistNotFollowed.name)
@@ -211,9 +212,13 @@ class UserIntegrationTest(
         assertEquals(0, artistNotFollowed.overallFollowers)
         assertEquals(0, artistNotFollowed.weeklyFollowers)
 
+        assertEquals(artistId, artistNotFollowedFromList.id)
+        assertEquals(false, artistNotFollowedFromList.isFollowed)
+
         myUserProfileService.followArtist(artistId)
 
         val artistFollowed = artistService.findById(artistId)
+        val artistFollowedFromList = artistService.findListByIds(setOf(artistId)).filter { it.id == artistId }[0]
 
         assertEquals(artistId, artistFollowed.id)
         assertEquals(artistToSave.name, artistFollowed.name)
@@ -222,6 +227,9 @@ class UserIntegrationTest(
         assertEquals(true, artistFollowed.isFollowed)
         assertEquals(1, artistFollowed.overallFollowers)
         assertEquals(1, artistFollowed.weeklyFollowers)
+
+        assertEquals(artistId, artistFollowedFromList.id)
+        assertEquals(true, artistFollowedFromList.isFollowed)
     }
 
     @Test

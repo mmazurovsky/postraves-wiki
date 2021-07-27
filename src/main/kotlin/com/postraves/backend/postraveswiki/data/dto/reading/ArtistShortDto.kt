@@ -21,7 +21,7 @@ data class ArtistShortDto(
     override val weeklyFollowers: Int = 0,
     ) : BaseShortDtoWithIdAndRating<ArtistShortDto> {
     companion object {
-        fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord) : ArtistShortDto {
+        fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord, isFollowed: Boolean) : ArtistShortDto {
             return ArtistShortDto(
                 id = artistRecord.id ?: throw RecordFieldNullException("Artist Id"),
                 name = artistRecord.name ?: throw RecordFieldNullException("Artist Name"),
@@ -30,7 +30,7 @@ data class ArtistShortDto(
                 if (countryRecord.name != null)
                     CountryDto.createOutOfDbRecords(countryRecord)
                 else null,
-//                isFollowed = isFollowed
+                isFollowed = isFollowed
             )
         }
 

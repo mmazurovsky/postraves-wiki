@@ -12,8 +12,6 @@ import jooq.tables.references.COUNTRY
 import jooq.tables.references.USER_FOLLOWS_ARTIST
 import org.jooq.*
 import org.jooq.impl.DSL.lower
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
@@ -21,7 +19,7 @@ import java.time.OffsetDateTime
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
     ByIdRepo<ArtistFullDto, ArtistShortDto>,
-    FindByNameRepo<ArtistShortDto>
+    FollowableRepo<ArtistShortDto>
 
 @Repository
 class ArtistRepoImpl
@@ -31,10 +29,6 @@ class ArtistRepoImpl
         table = ARTIST,
         entityType = EntityType.ARTIST.nameString
     ) {
-
-    @Autowired
-    @Lazy
-    private lateinit var dsl: DSLContext
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
@@ -50,7 +44,8 @@ class ArtistRepoImpl
     }
 
     override fun convertToShortDto(record: Record): ArtistShortDto {
-        return ArtistShortDto.createOutOfDbRecords(record.into(ARTIST), record.into(COUNTRY))
+        val isFollowed = record.into(USER_FOLLOWS_ARTIST).userProfileUid != null
+        return ArtistShortDto.createOutOfDbRecords(record.into(ARTIST), record.into(COUNTRY), isFollowed)
     }
 
     override fun convertToFullDto(record: Record): ArtistFullDto {

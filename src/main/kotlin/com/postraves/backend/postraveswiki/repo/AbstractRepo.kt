@@ -4,7 +4,6 @@ import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
-import com.postraves.backend.postraveswiki.exception.UpdateException
 import org.jooq.*
 import org.jooq.impl.TableImpl
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,12 +14,24 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
     val entityType: String,
 ) : BaseRepo<WRITEDTO, SHORTDTO>,
     ByIdRepo<FULLDTO, SHORTDTO>,
-    FindByNameRepo<SHORTDTO>
+    FollowableRepo<SHORTDTO>
         where R : Record,
               R : UpdatableRecord<R> {
     @Autowired
     @Lazy
     private lateinit var dsl: DSLContext
+
+    protected abstract fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record>
+    protected abstract fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record>
+    protected abstract fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record>
+    protected abstract fun convertToShortDto(record: Record): SHORTDTO
+    protected abstract fun convertToFullDto(record: Record): FULLDTO
+    abstract fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record>
+    abstract fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record>
+    abstract fun prepareRecordBeforeSaving(record: R, dto: WRITEDTO)
+    abstract fun postSaveGetId(record: R): Long
+    abstract fun preUpdateGetId(dto: WRITEDTO): Long
+    abstract fun prepareRecordBeforeUpdating(record: R, dto: WRITEDTO)
 
     private fun selectFromEntity(): SelectJoinStep<Record> {
         return dsl
@@ -28,17 +39,11 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
             .from(table)
     }
 
-    protected abstract fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record>
-
-    protected abstract fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record>
-
-    protected abstract fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record>
-
     private fun Select<Record>.fetchOneEntity(): R? {
         return this.fetchOneInto(table)
     }
 
-    protected fun findByIdWithoutJoins(id: Long): R {
+    private fun findByIdWithoutJoins(id: Long): R {
         val record =
             selectFromEntity()
                 .whereMatchingId(id)
@@ -46,31 +51,18 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
         return record ?: throw NotFoundException(entityType, id.toString())
     }
 
-    protected abstract fun convertToShortDto(record: Record): SHORTDTO
-
-    protected abstract fun convertToFullDto(record: Record): FULLDTO
-
-    protected fun findByIdWithJoins(id: Long): Record {
+    private fun findByIdWithJoins(authUid: String?, id: Long): Record {
         val record =
             selectFromEntity()
                 .joinLocation()
+                .apply {if (authUid != null) joinUserFollow(authUid)}
                 .whereMatchingId(id)
                 .fetchOne()
         return record ?: throw NotFoundException(entityType, id.toString())
     }
 
-    private fun findByIdWithJoinsForUser(authUid: String, id: Long): Record {
-        val record =
-            selectFromEntity()
-                .joinLocation()
-                .joinUserFollow(authUid)
-                .whereMatchingId(id)
-                .fetchOne()
-        return record ?: throw NotFoundException("Artist", id.toString())
-    }
-
     override fun findById(authUid: String?, id: Long): FULLDTO {
-        val selectedRecord = if (authUid == null) findByIdWithJoins(id) else findByIdWithJoinsForUser(authUid, id)
+        val selectedRecord = findByIdWithJoins(authUid, id)
         return convertToFullDto(selectedRecord)
     }
 
@@ -78,16 +70,14 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
         findByIdWithoutJoins(id).delete()
     }
 
-    abstract fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record>
-
-    override fun findListByIds(ids: Set<Long>): List<SHORTDTO> {
-        val results = selectFromEntity()
+    override fun findListByIds(authUid: String?, ids: Set<Long>): List<SHORTDTO> {
+        return selectFromEntity()
             .joinLocation()
+            .apply {if (authUid != null) joinUserFollow(authUid)}
             .whereIdIsInIds(ids)
             .fetch()
             .map { convertToShortDto(it) }
             .toList()
-        return results
     }
 
     override fun findAll(): List<SHORTDTO> {
@@ -100,19 +90,15 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
             .toList()
     }
 
-    abstract fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record>
-
-    override fun findByPartOfName(namePart: String): List<SHORTDTO> {
+    override fun findFollowableByPartOfName(authUid: String?, namePart: String): List<SHORTDTO> {
         return selectFromEntity()
             .joinLocation()
+            .apply {if (authUid != null) joinUserFollow(authUid)}
             .whereNameIsLike(namePart)
             .fetch()
             .map { convertToShortDto(it) }
             .toList()
     }
-
-    abstract fun prepareRecordBeforeSaving(record: R, dto: WRITEDTO)
-    abstract fun postSaveGetId(record: R): Long
 
     override fun save(dto: WRITEDTO): SHORTDTO {
         val entityToSave = dsl.newRecord(table)
@@ -120,12 +106,9 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
 
         entityToSave.store()
         val savedId = postSaveGetId(entityToSave)
-        val record = findByIdWithJoins(savedId)
+        val record = findByIdWithJoins(null, savedId)
         return convertToShortDto(record)
     }
-
-    abstract fun preUpdateGetId(dto: WRITEDTO): Long
-    abstract fun prepareRecordBeforeUpdating(record: R, dto: WRITEDTO)
 
     override fun update(dto: WRITEDTO) {
         val id = preUpdateGetId(dto)

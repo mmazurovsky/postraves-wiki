@@ -13,7 +13,7 @@ class MyUserProfileController(private val myUserProfileService: MyUserProfileSer
 
     @GetMapping("/myProfile")
     fun findMyProfile(): UserFullDto? {
-        return myUserProfileService.findMyProfile()
+        return myUserProfileService.findMyProfile().first
     }
 
     @PostMapping("/public/myProfile")

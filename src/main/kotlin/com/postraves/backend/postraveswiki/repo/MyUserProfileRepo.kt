@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
 interface MyUserProfileRepo {
-    fun findMyProfile(authUid: String): UserFullDto?
+    fun findMyProfile(authUid: String): Pair<UserFullDto?, String>
     fun save(dto: UserWriteDto, authUid: String): UserShortDto
     fun update(dto: UserWriteDto, authUid: String)
     fun deleteMyProfile(authUid: String)
@@ -56,10 +56,10 @@ class MyUserProfileRepoImpl(
         return record ?: throw NotFoundException("User", authUid)
     }
 
-    override fun findMyProfile(authUid: String): UserFullDto? {
+    override fun findMyProfile(authUid: String): Pair<UserFullDto?, String> {
         val user = findByAuthUidWithJoins(authUid)
-        return if (user == null) null
-        else UserFullDto.createOutOfDbRecords(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY))
+        return if (user == null) null to authUid
+        else UserFullDto.createOutOfDbRecords(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY)) to authUid
     }
 
     override fun save(dto: UserWriteDto, authUid: String): UserShortDto {
@@ -116,7 +116,7 @@ class MyUserProfileRepoImpl(
             )
             .where(USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
             .fetch()
-            .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY)) }
+            .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY), true) }
             .toList()
     }
 

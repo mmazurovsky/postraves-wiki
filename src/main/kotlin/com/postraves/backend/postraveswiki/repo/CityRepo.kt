@@ -18,8 +18,7 @@ import java.time.OffsetDateTime
 
 interface CityRepo :
     BaseRepo<CityWriteDto, CityDto>,
-    ByNameRepo<CityDto>,
-    FindByNameRepo<CityDto>
+    ByNameRepo<CityDto>
 
 @Repository
 class CityImplRepo :

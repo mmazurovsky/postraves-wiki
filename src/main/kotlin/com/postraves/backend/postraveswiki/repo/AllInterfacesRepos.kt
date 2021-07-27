@@ -9,19 +9,20 @@ interface BaseRepo<WRITEDTO : BaseWriteDto,
     fun findAll(): List<SHORTDTO>
 }
 
-interface FindByNameRepo<SHORTDTO : BaseShortDto> {
-    fun findByPartOfName(namePart: String): List<SHORTDTO>
+interface FollowableRepo<SHORTDTO : BaseShortDto> {
+    fun findFollowableByPartOfName(authUid: String?, namePart: String): List<SHORTDTO>
 }
 
 interface ByIdRepo<FULLDTO : BaseFullDtoWithId, SHORTDTO: BaseShortDtoWithId> {
     fun findById(authUid: String?, id: Long): FULLDTO
     fun deleteById(id: Long)
-    fun findListByIds(ids: Set<Long>): List<SHORTDTO>
+    fun findListByIds(authUid: String?, ids: Set<Long>): List<SHORTDTO>
 }
 
 interface ByNameRepo<FULLDTO : BaseFullDto> {
     fun findByName(name: String): FULLDTO
     fun deleteByName(name: String)
+    fun findByPartOfName(namePart: String): List<FULLDTO>
 }
 
 
