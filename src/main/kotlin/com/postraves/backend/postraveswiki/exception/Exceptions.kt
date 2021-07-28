@@ -13,6 +13,7 @@ object ExMessage{
 abstract class ServerInternalException(customMessage: String): Exception(customMessage)
 class RedisInitializationException: ServerInternalException("${ExMessage.initFailed} Redis")
 class PostgresInitializationException: ServerInternalException("${ExMessage.initFailed} Postgres")
+class FirebaseMessagingInitializationException: ServerInternalException("${ExMessage.initFailed} Firebase Messaging")
 class RecordFieldNullException(fieldName: String): ServerInternalException("${ExMessage.canNotBeNull} $fieldName")
 
 abstract class BadRequestException(customMessage: String): Exception(customMessage)

@@ -9,6 +9,7 @@ import com.postraves.backend.postraveswiki.exception.WeeklyBestSettingException
 import com.postraves.backend.postraveswiki.repo.*
 import com.postraves.backend.postraveswiki.security.SecurityService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import java.util.*
 import kotlin.math.min
 
@@ -30,7 +31,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
               REPO : ByIdRepo<FULLDTO, SHORTDTO>,
               REPO : FollowableRepo<SHORTDTO> {
 
-    @Autowired
+    @Autowired @Lazy
     private lateinit var myUserProfileService: MyUserProfileService
 
     private fun findByIdDependingOnUser(id: Long): FULLDTO {
