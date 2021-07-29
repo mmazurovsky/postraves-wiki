@@ -1,7 +1,7 @@
 package com.postraves.backend.postraveswiki.unit
 
-import com.postraves.backend.postraveswiki.repo.QuickRepoCleaning
-import com.postraves.backend.postraveswiki.repo.WeeklyFollowersQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.WeeklyFollowersQuickRepo
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -12,16 +12,18 @@ import org.springframework.test.context.TestPropertySource
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
 
-
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(properties = ["spring.flyway.enabled=false"])
 class WeeklyFollowersQuickRepoTest(
-    @Value("\${spring.redis.port}") redisPort: Int,
-    @Autowired private val quickRepoCleaning: QuickRepoCleaning,
-    @Autowired @Qualifier("artistWeeklyFollowersQuickRepoImpl") private val weeklyFollowersQuickRepo: WeeklyFollowersQuickRepo,
+    @Value("\${spring.redis.port}")
+    redisPort: Int,
+    @Autowired
+    private val quickRepoCleaning: CleaningQuickRepo,
+    @Autowired @Qualifier("artistWeeklyFollowersQuickRepoImpl")
+    private val weeklyFollowersQuickRepo: WeeklyFollowersQuickRepo,
 ) {
 
     private val redisServer = RedisServer(redisPort)
@@ -30,8 +32,6 @@ class WeeklyFollowersQuickRepoTest(
     }
 
     companion object {
-        private const val entityType = "artist"
-        private const val countryName = "be"
         private const val defaultEntityId: Long = 1
     }
 

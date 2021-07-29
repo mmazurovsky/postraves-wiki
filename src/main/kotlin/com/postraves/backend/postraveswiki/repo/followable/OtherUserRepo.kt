@@ -1,6 +1,7 @@
-package com.postraves.backend.postraveswiki.repo
+package com.postraves.backend.postraveswiki.repo.followable
 
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
+import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import jooq.tables.references.*
 import org.jooq.DSLContext
 import org.jooq.impl.DSL

@@ -2,7 +2,7 @@ package com.postraves.backend.postraveswiki.security
 
 import lombok.extern.slf4j.Slf4j
 import org.springframework.web.filter.OncePerRequestFilter
-import com.postraves.backend.postraveswiki.service.MyUserProfileService
+import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import kotlin.Throws
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest

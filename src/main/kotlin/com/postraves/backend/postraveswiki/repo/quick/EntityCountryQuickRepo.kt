@@ -1,4 +1,4 @@
-package com.postraves.backend.postraveswiki.repo
+package com.postraves.backend.postraveswiki.repo.quick
 
 import com.postraves.backend.postraveswiki.data.enum.EntityType
 import com.postraves.backend.postraveswiki.exception.DeleteException
@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 import org.springframework.context.annotation.Lazy
 
-interface QuickEntityCountryRepo {
+interface EntityCountryQuickRepo {
     fun addOneIdToCountry(countryName: String, entityId: Long)
     fun removeOneIdFromSet(countryName: String, entityId: Long)
     fun getAllIdsByCountry(countryName: String) : Set<Long>
 }
 
-abstract class QuickEntityCountryRepoAbstract(
+abstract class EntityCountryQuickRepoAbstract(
     private val entityType: String
-) : QuickEntityCountryRepo {
+) : EntityCountryQuickRepo {
 
     @Autowired @Lazy
     private lateinit var redisClient: RedisAsyncCommands<String, String>
@@ -38,8 +38,8 @@ abstract class QuickEntityCountryRepoAbstract(
 }
 
 @Repository
-class ArtistCountryQuickRepoImpl : QuickEntityCountryRepoAbstract(EntityType.ARTIST.nameString)
+class ArtistCountryQuickRepoImpl : EntityCountryQuickRepoAbstract(EntityType.ARTIST.nameString)
 
 @Repository
-class PlaceCountryQuickRepoImpl : QuickEntityCountryRepoAbstract(EntityType.PLACE.nameString)
+class PlaceCountryQuickRepoImpl : EntityCountryQuickRepoAbstract(EntityType.PLACE.nameString)
 

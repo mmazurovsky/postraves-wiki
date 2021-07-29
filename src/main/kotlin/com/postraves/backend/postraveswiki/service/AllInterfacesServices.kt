@@ -21,7 +21,7 @@ interface ByIdService<FULLDTO : BaseFullDtoWithId, SHORTDTO : BaseShortDtoWithId
 interface RatingService<FULLDTO: BaseFullDtoWithIdAndRating<FULLDTO>, SHORTDTO: BaseShortDtoWithIdAndRating<SHORTDTO>> {
     fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO>
     fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<SHORTDTO>
-    fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO
+    fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO?
     fun incrementFollowers(id: Long)
     fun decrementFollowers(id: Long)
     fun enrichWithFollowersCalculationRequired(dto: SHORTDTO): SHORTDTO

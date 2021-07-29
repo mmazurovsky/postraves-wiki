@@ -8,10 +8,10 @@ import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.PlaceWriteDto
-import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepo
-import com.postraves.backend.postraveswiki.repo.FollowersQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.CityService
-import com.postraves.backend.postraveswiki.service.PlaceService
+import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
@@ -49,7 +49,7 @@ class PlaceIntegrationTest(
     @Autowired
     private val cityService: CityService,
     @Qualifier("placeCountryQuickRepoImpl")
-    private val placeCountryQuickRepoImpl: QuickEntityCountryRepo,
+    private val placeCountryQuickRepoImpl: EntityCountryQuickRepo,
     @Qualifier("placeOverallFollowersQuickRepoImpl")
     private val placeOverallFollowersQuickRepoImpl: FollowersQuickRepo,
     @Qualifier("placeWeeklyFollowersQuickRepoImpl")
@@ -451,7 +451,6 @@ class PlaceIntegrationTest(
         assertEquals(0, scenesPreserved.size)
     }
 
-    //todo
     @Test
     fun savePlaceAndAddScenesToItAndUpdateScenesAndGetScenes() {
         val placeToSave = placeTest
@@ -464,21 +463,57 @@ class PlaceIntegrationTest(
         val scene2ForPlace = sceneTest.copy(
             name = "Scene2",
             imageLink = "sceneImage2",
-            priority = 0
+            priority = 2
+        )
+        val scene3ForPlace = sceneTest.copy(
+            name = "Scene3",
+            imageLink = "sceneImage3",
+            priority = 3
+        )
+        val scene4ForPlace = sceneTest.copy(
+            name = "Scene4",
+            imageLink = "sceneImage4",
+            priority = 4
         )
 
-        makePutRequest(mockMvc, "$placeEndpoint/$placeId/scenes", Json.encodeToString(listOf(scene1ForPlace, scene2ForPlace)), status().isOk)
+        makePutRequest(mockMvc, "$placeEndpoint/$placeId/scenes", Json.encodeToString(listOf(scene1ForPlace, scene2ForPlace, scene3ForPlace, scene4ForPlace)), status().isOk)
         val savedScenesOfPlaceJson = makeGetRequest(mockMvc, "$placeEndpoint/$placeId/scenes", status().isOk)
         val savedScenesOfPlace = Json.decodeFromString<List<SceneDto>>(savedScenesOfPlaceJson)
 
-        assertEquals(2, savedScenesOfPlace.size)
+        val scenes1And2 = savedScenesOfPlace.filter { it.name == scene1ForPlace.name || it.name == scene2ForPlace.name }
 
-        assertEquals(scene1ForPlace.name, savedScenesOfPlace[0].name)
-        assertEquals(scene1ForPlace.imageLink, savedScenesOfPlace[0].imageLink)
-        assertEquals(scene1ForPlace.priority, savedScenesOfPlace[0].priority)
+        assertEquals(4, savedScenesOfPlace.size)
 
-        assertEquals(scene2ForPlace.name, savedScenesOfPlace[1].name)
-        assertEquals(scene2ForPlace.imageLink, savedScenesOfPlace[1].imageLink)
-        assertEquals(scene2ForPlace.priority, savedScenesOfPlace[1].priority)
+        val scene1ForPlaceUpdated = sceneTest
+            .copy(
+                id = scenes1And2[1].id,
+                priority = 100
+            )
+        val scene2ForPlaceUpdated = sceneTest
+            .copy(
+                id = scenes1And2[0].id,
+                name = "Scene2Updated",
+                imageLink = "sceneImage2Updated",
+                priority = -1
+        )
+
+        makePutRequest(mockMvc, "$placeEndpoint/$placeId/scenes", Json.encodeToString(listOf(scene1ForPlaceUpdated, scene2ForPlaceUpdated)), status().isOk)
+        val updatedScenesOfPlaceJson = makeGetRequest(mockMvc, "$placeEndpoint/$placeId/scenes", status().isOk)
+        val updatedScenesOfPlace = Json.decodeFromString<List<SceneDto>>(updatedScenesOfPlaceJson)
+
+        val allScenesPreserverAfterUpdate = placeService.getAllScenes()
+
+        assertEquals(2, allScenesPreserverAfterUpdate.size)
+        assertEquals(2, updatedScenesOfPlace.size)
+
+        assertEquals(scene1ForPlaceUpdated.id, updatedScenesOfPlace[0].id)
+        assertEquals(scene1ForPlaceUpdated.name, updatedScenesOfPlace[0].name)
+        assertEquals(scene1ForPlaceUpdated.imageLink, updatedScenesOfPlace[0].imageLink)
+        assertEquals(scene1ForPlaceUpdated.priority, updatedScenesOfPlace[0].priority)
+
+        assertEquals(scene2ForPlaceUpdated.id, updatedScenesOfPlace[1].id)
+        assertEquals(scene2ForPlaceUpdated.name, updatedScenesOfPlace[1].name)
+        assertEquals(scene2ForPlaceUpdated.imageLink, updatedScenesOfPlace[1].imageLink)
+        assertEquals(scene2ForPlaceUpdated.priority, updatedScenesOfPlace[1].priority)
     }
 }

@@ -1,5 +1,6 @@
-package com.postraves.backend.postraveswiki.service
+package com.postraves.backend.postraveswiki.service.followable
 
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithIdAndRating
 import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithIdAndRating
@@ -7,7 +8,11 @@ import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.WeeklyBestSettingException
 import com.postraves.backend.postraveswiki.repo.*
+import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepoAbstract
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
+import com.postraves.backend.postraveswiki.service.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import java.util.*
@@ -20,8 +25,8 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     (
     private val cityService: CityService,
     private val securityService: SecurityService,
-    private val entityCountryRepo: QuickEntityCountryRepoAbstract,
-    private val weeklyBestRepo: WeeklyBestRepo,
+    private val entityCountryRepo: EntityCountryQuickRepoAbstract,
+    private val weeklyBestRepo: WeeklyBestQuickRepo,
     private val entityWeeklyFollowersQuickRepo: FollowersQuickRepo,
     private val entityOverallFollowersQuickRepo: FollowersQuickRepo,
     private val entityRepo: REPO,
@@ -164,12 +169,11 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
         return topEntitiesEnrichedWithFollowers
     }
 
-    override fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO {
+    override fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO? {
         val countryName = cityService.findByName(cityName).country.name
         val bestEntityAsMap = weeklyBestRepo.getWeeklyBestInCountry(countryName)
-        val bestEntity = decodeShortDtoFromMap(bestEntityAsMap)
-        return bestEntity
-        // todo returns isFollow that was set initially, not possible new value
+        return if (bestEntityAsMap != null) decodeShortDtoFromMap(bestEntityAsMap) else null
+        // todo returns isFollow that was set initially, not possible new value:(((((
     }
 
     abstract fun decodeShortDtoFromMap(map: Map<String, String>): SHORTDTO
@@ -181,7 +185,11 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
             if (topEntityInCountryOfCityList.size == 1) {
                 val topEntityInCountryOfCity = topEntityInCountryOfCityList[0]
                 weeklyBestRepo.setWeeklyBestInCountry(it.country.name, topEntityInCountryOfCity.toMap())
-            } else throw WeeklyBestSettingException("Can't get top entity to set it as weekly best")
+            } else {
+                // todo i don't know what to set, maybe nothing
+                logger.debug("Can't get top entity to set it as weekly best")
+//                throw WeeklyBestSettingException("Can't get top entity to set it as weekly best")
+            }
         }
     }
 

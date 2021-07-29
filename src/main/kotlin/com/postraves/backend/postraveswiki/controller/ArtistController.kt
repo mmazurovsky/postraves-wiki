@@ -3,7 +3,7 @@ package com.postraves.backend.postraveswiki.controller
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.service.ArtistService
+import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -38,6 +38,10 @@ class ArtistController (
 
     override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
         return artistService.findOverallRatingForCityByCountry(cityName, maxQuantity)
+    }
+
+    override fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
+        return artistService.findWeeklyRatingForCityByCountry(cityName, maxQuantity)
     }
 
     override fun findByPartOfName(namePart: String): List<ArtistShortDto> {

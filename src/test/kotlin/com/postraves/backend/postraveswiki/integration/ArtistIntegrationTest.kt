@@ -5,9 +5,9 @@ import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepo
-import com.postraves.backend.postraveswiki.repo.FollowersQuickRepo
-import com.postraves.backend.postraveswiki.service.ArtistService
+import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
+import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
@@ -44,7 +44,7 @@ class ArtistIntegrationTest(
     @Autowired
     private val countryService: CountryService,
     @Qualifier("artistCountryQuickRepoImpl")
-    private val artistCountryQuickRepoImpl: QuickEntityCountryRepo,
+    private val artistCountryQuickRepoImpl: EntityCountryQuickRepo,
     @Qualifier("artistOverallFollowersQuickRepoImpl")
     private val artistOverallFollowersQuickRepoImpl: FollowersQuickRepo,
     @Qualifier("artistWeeklyFollowersQuickRepoImpl")

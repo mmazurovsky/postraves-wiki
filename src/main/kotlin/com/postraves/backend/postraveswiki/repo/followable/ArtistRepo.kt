@@ -1,4 +1,4 @@
-package com.postraves.backend.postraveswiki.repo
+package com.postraves.backend.postraveswiki.repo.followable
 
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
@@ -6,6 +6,9 @@ import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.enum.EntityType
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
+import com.postraves.backend.postraveswiki.repo.BaseRepo
+import com.postraves.backend.postraveswiki.repo.ByIdRepo
+import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.ARTIST
 import jooq.tables.references.COUNTRY

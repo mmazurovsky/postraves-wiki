@@ -1,4 +1,4 @@
-package com.postraves.backend.postraveswiki.repo
+package com.postraves.backend.postraveswiki.repo.followable
 
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
@@ -7,6 +7,9 @@ import com.postraves.backend.postraveswiki.data.dto.writing.PlaceWriteDto
 import com.postraves.backend.postraveswiki.data.enum.EntityType
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
+import com.postraves.backend.postraveswiki.repo.BaseRepo
+import com.postraves.backend.postraveswiki.repo.ByIdRepo
+import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import jooq.tables.records.PlaceRecord
 import jooq.tables.references.*
 import org.jooq.*
@@ -143,8 +146,9 @@ class PlaceRepoImpl
     override fun removeScenes(scenes: Set<SceneDto>) {
         scenes.forEach {
             dsl
-                .deleteFrom(SCENE)
+                .delete(SCENE)
                 .where(SCENE.ID.eq(it.id))
+                .execute()
         }
     }
 }

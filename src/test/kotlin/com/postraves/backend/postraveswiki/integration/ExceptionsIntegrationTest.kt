@@ -22,10 +22,10 @@ import org.testcontainers.containers.PostgreSQLContainer
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
 
-@SpringBootTest
-@ActiveProfiles(value = ["test"])
-@AutoConfigureMockMvc(addFilters = false)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@SpringBootTest
+//@ActiveProfiles(value = ["test"])
+//@AutoConfigureMockMvc(addFilters = false)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Ignore
 class ExceptionsIntegrationTest(
     @Value("\${spring.redis.port}")
@@ -60,6 +60,7 @@ class ExceptionsIntegrationTest(
     }
 
     @Test
+    @Ignore
     fun saveCountryWithoutActivePostgres() {
 
         postgreSQLContainer.stop()

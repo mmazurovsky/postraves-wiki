@@ -2,8 +2,8 @@ package com.postraves.backend.postraveswiki.unit
 
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.repo.QuickRepoCleaning
-import com.postraves.backend.postraveswiki.repo.WeeklyBestRepo
+import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -14,16 +14,18 @@ import org.springframework.test.context.TestPropertySource
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
 
-
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(properties = ["spring.flyway.enabled=false"])
 class WeeklyBestQuickRepoTest(
-    @Value("\${spring.redis.port}") redisPort: Int,
-    @Autowired private val quickRepoCleaning: QuickRepoCleaning,
-    @Autowired @Qualifier("artistWeeklyBestRepoImpl") private val weeklyBestQuickRepoTest: WeeklyBestRepo,
+    @Value("\${spring.redis.port}")
+    redisPort: Int,
+    @Autowired
+    private val quickRepoCleaning: CleaningQuickRepo,
+    @Autowired @Qualifier("artistWeeklyBestQuickRepoImpl")
+    private val weeklyBestQuickRepoTest: WeeklyBestQuickRepo,
 ) {
 
     private val redisServer = RedisServer(redisPort)
@@ -68,7 +70,7 @@ class WeeklyBestQuickRepoTest(
         weeklyBestQuickRepoTest.setWeeklyBestInCountry(countryToSave.name, artistTestData.toMap())
         val persistedMap = weeklyBestQuickRepoTest.getWeeklyBestInCountry(countryToSave.name)
 
-        val persistedArtist = ArtistShortDto.fromMap(persistedMap)
+        val persistedArtist = ArtistShortDto.fromMap(persistedMap!!)
 
         assertEquals(artistTestData, persistedArtist)
     }

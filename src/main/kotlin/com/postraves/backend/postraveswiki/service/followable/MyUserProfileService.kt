@@ -1,4 +1,4 @@
-package com.postraves.backend.postraveswiki.service
+package com.postraves.backend.postraveswiki.service.followable
 
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
@@ -6,7 +6,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.exception.NotAuthenticated
-import com.postraves.backend.postraveswiki.repo.MyUserProfileRepo
+import com.postraves.backend.postraveswiki.repo.followable.MyUserProfileRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import org.springframework.stereotype.Service
 

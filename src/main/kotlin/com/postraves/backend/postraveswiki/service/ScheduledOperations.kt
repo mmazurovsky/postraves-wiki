@@ -1,15 +1,16 @@
 package com.postraves.backend.postraveswiki.service
 
-import com.postraves.backend.postraveswiki.repo.FollowersQuickRepo
-import com.postraves.backend.postraveswiki.repo.WeeklyBestRepo
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
+import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 @Service
 class ScheduledOperations(
-    @Qualifier("artistWeeklyBestRepoImpl")
-    private val artistWeeklyBestRepo: WeeklyBestRepo,
+    @Qualifier("artistWeeklyBestQuickRepoImpl")
+    private val artistWeeklyBestRepo: WeeklyBestQuickRepo,
     @Qualifier("artistWeeklyFollowersQuickRepoImpl")
     private val artistWeeklyFollowersQuickRepo: FollowersQuickRepo,
     private val artistService: PlaceService,

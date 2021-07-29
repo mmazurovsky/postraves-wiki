@@ -1,4 +1,4 @@
-package com.postraves.backend.postraveswiki.repo
+package com.postraves.backend.postraveswiki.repo.quick
 
 import com.postraves.backend.postraveswiki.data.enum.EntityType
 import com.postraves.backend.postraveswiki.data.enum.FollowersType

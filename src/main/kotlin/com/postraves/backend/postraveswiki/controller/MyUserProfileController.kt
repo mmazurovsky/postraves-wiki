@@ -4,7 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
-import com.postraves.backend.postraveswiki.service.MyUserProfileService
+import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import org.springframework.web.bind.annotation.*
 
 @RestController

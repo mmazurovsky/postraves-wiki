@@ -4,7 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.PlaceWriteDto
-import com.postraves.backend.postraveswiki.service.PlaceService
+import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
@@ -40,6 +40,10 @@ class PlaceController (
 
     override fun findOverallRatingForCityByCountry(cityName: String, maxQuantity: Int): List<PlaceShortDto> {
         return placeService.findOverallRatingForCityByCountry(cityName, maxQuantity)
+    }
+
+    override fun findWeeklyRatingForCityByCountry(cityName: String, maxQuantity: Int): List<PlaceShortDto> {
+        return placeService.findWeeklyRatingForCityByCountry(cityName, maxQuantity)
     }
 
     override fun findByPartOfName(namePart: String): List<PlaceShortDto> {

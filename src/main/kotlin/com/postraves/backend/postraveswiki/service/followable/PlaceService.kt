@@ -1,15 +1,16 @@
-package com.postraves.backend.postraveswiki.service
+package com.postraves.backend.postraveswiki.service.followable
 
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.PlaceWriteDto
 import com.postraves.backend.postraveswiki.exception.UpdateException
-import com.postraves.backend.postraveswiki.repo.PlaceRepo
-import com.postraves.backend.postraveswiki.repo.QuickEntityCountryRepoAbstract
-import com.postraves.backend.postraveswiki.repo.FollowersQuickRepo
-import com.postraves.backend.postraveswiki.repo.WeeklyBestRepo
+import com.postraves.backend.postraveswiki.repo.followable.PlaceRepo
+import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepoAbstract
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
+import com.postraves.backend.postraveswiki.service.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
@@ -30,9 +31,9 @@ class PlaceServiceImpl(
     securityService: SecurityService,
     private val placeRepo: PlaceRepo,
     @Qualifier("placeCountryQuickRepoImpl")
-    private val placeCountryRepo: QuickEntityCountryRepoAbstract,
-    @Qualifier("placeWeeklyBestRepoImpl")
-    private val weeklyBestRepo: WeeklyBestRepo,
+    private val placeCountryRepo: EntityCountryQuickRepoAbstract,
+    @Qualifier("placeWeeklyBestQuickRepoImpl")
+    private val weeklyBestRepo: WeeklyBestQuickRepo,
     @Qualifier("placeWeeklyFollowersQuickRepoImpl")
     private val placeWeeklyFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("placeOverallFollowersQuickRepoImpl")

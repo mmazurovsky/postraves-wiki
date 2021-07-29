@@ -1,9 +1,12 @@
-package com.postraves.backend.postraveswiki.repo
+package com.postraves.backend.postraveswiki.repo.followable
 
 import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
+import com.postraves.backend.postraveswiki.repo.BaseRepo
+import com.postraves.backend.postraveswiki.repo.ByIdRepo
+import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import org.jooq.*
 import org.jooq.impl.TableImpl
 import org.springframework.beans.factory.annotation.Autowired
@@ -103,7 +106,6 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
     override fun save(dto: WRITEDTO): SHORTDTO {
         val entityToSave = dsl.newRecord(table)
         prepareRecordBeforeSaving(entityToSave, dto)
-
         entityToSave.store()
         val savedId = postSaveGetId(entityToSave)
         val record = findByIdWithJoins(null, savedId)

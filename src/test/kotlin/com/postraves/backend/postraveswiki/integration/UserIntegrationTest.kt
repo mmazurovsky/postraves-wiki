@@ -8,6 +8,8 @@ import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.*
+import com.postraves.backend.postraveswiki.service.followable.ArtistService
+import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
