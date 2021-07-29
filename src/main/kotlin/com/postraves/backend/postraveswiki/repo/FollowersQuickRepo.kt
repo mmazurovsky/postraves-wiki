@@ -73,6 +73,9 @@ abstract class OverallFollowersQuickRepo(entityType: String) : FollowersQuickRep
 class ArtistWeeklyFollowersQuickRepoImpl : WeeklyFollowersQuickRepo(EntityType.ARTIST.nameString)
 
 @Repository
+class PlaceWeeklyFollowersQuickRepoImpl : WeeklyFollowersQuickRepo(EntityType.PLACE.nameString)
+
+@Repository
 class UnityWeeklyFollowersQuickRepoImpl : WeeklyFollowersQuickRepo(EntityType.UNITY.nameString)
 
 @Repository
@@ -81,3 +84,5 @@ class ArtistOverallFollowersQuickRepoImpl: OverallFollowersQuickRepo(EntityType.
 @Repository
 class UnityOverallFollowersQuickRepoImpl: OverallFollowersQuickRepo(EntityType.UNITY.nameString)
 
+@Repository
+class PlaceOverallFollowersQuickRepoImpl: OverallFollowersQuickRepo(EntityType.PLACE.nameString)

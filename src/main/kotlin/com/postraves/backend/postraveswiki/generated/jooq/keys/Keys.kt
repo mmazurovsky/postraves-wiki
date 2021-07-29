@@ -19,6 +19,8 @@ import jooq.tables.UnityArtist
 import jooq.tables.UnityEvent
 import jooq.tables.UserFollowsArtist
 import jooq.tables.UserFollowsEvent
+import jooq.tables.UserFollowsPlace
+import jooq.tables.UserFollowsUnity
 import jooq.tables.UserProfile
 import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CityRecord
@@ -35,6 +37,8 @@ import jooq.tables.records.UnityEventRecord
 import jooq.tables.records.UnityRecord
 import jooq.tables.records.UserFollowsArtistRecord
 import jooq.tables.records.UserFollowsEventRecord
+import jooq.tables.records.UserFollowsPlaceRecord
+import jooq.tables.records.UserFollowsUnityRecord
 import jooq.tables.records.UserProfileRecord
 
 import org.jooq.ForeignKey
@@ -69,6 +73,8 @@ val UNITY_ARTIST_PKEY: UniqueKey<UnityArtistRecord> = Internal.createUniqueKey(U
 val UNITY_EVENT_PKEY: UniqueKey<UnityEventRecord> = Internal.createUniqueKey(UnityEvent.UNITY_EVENT, DSL.name("unity_event_pkey"), arrayOf(UnityEvent.UNITY_EVENT.UNITY_ID, UnityEvent.UNITY_EVENT.EVENT_ID), true)
 val USER_FOLLOWS_ARTIST_PKEY: UniqueKey<UserFollowsArtistRecord> = Internal.createUniqueKey(UserFollowsArtist.USER_FOLLOWS_ARTIST, DSL.name("user_follows_artist_pkey"), arrayOf(UserFollowsArtist.USER_FOLLOWS_ARTIST.USER_PROFILE_UID, UserFollowsArtist.USER_FOLLOWS_ARTIST.ARTIST_ID), true)
 val USER_FOLLOWS_EVENT_PKEY: UniqueKey<UserFollowsEventRecord> = Internal.createUniqueKey(UserFollowsEvent.USER_FOLLOWS_EVENT, DSL.name("user_follows_event_pkey"), arrayOf(UserFollowsEvent.USER_FOLLOWS_EVENT.USER_PROFILE_UID, UserFollowsEvent.USER_FOLLOWS_EVENT.EVENT_ID), true)
+val USER_FOLLOWS_PLACE_PKEY: UniqueKey<UserFollowsPlaceRecord> = Internal.createUniqueKey(UserFollowsPlace.USER_FOLLOWS_PLACE, DSL.name("user_follows_place_pkey"), arrayOf(UserFollowsPlace.USER_FOLLOWS_PLACE.USER_PROFILE_UID, UserFollowsPlace.USER_FOLLOWS_PLACE.PLACE_ID), true)
+val USER_FOLLOWS_UNITY_PKEY: UniqueKey<UserFollowsUnityRecord> = Internal.createUniqueKey(UserFollowsUnity.USER_FOLLOWS_UNITY, DSL.name("user_follows_unity_pkey"), arrayOf(UserFollowsUnity.USER_FOLLOWS_UNITY.USER_PROFILE_UID, UserFollowsUnity.USER_FOLLOWS_UNITY.UNITY_ID), true)
 val USER_PROFILE_NAME_KEY: UniqueKey<UserProfileRecord> = Internal.createUniqueKey(UserProfile.USER_PROFILE, DSL.name("user_profile_name_key"), arrayOf(UserProfile.USER_PROFILE.NAME), true)
 val USER_PROFILE_PKEY: UniqueKey<UserProfileRecord> = Internal.createUniqueKey(UserProfile.USER_PROFILE, DSL.name("user_profile_pkey"), arrayOf(UserProfile.USER_PROFILE.AUTH_UID), true)
 
@@ -95,4 +101,8 @@ val USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_ARTIST_ID_FKEY: ForeignKey<UserFoll
 val USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_PROFILE_UID_FKEY: ForeignKey<UserFollowsArtistRecord, UserProfileRecord> = Internal.createForeignKey(UserFollowsArtist.USER_FOLLOWS_ARTIST, DSL.name("user_follows_artist_user_profile_uid_fkey"), arrayOf(UserFollowsArtist.USER_FOLLOWS_ARTIST.USER_PROFILE_UID), jooq.keys.USER_PROFILE_PKEY, arrayOf(UserProfile.USER_PROFILE.AUTH_UID), true)
 val USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_EVENT_ID_FKEY: ForeignKey<UserFollowsEventRecord, EventRecord> = Internal.createForeignKey(UserFollowsEvent.USER_FOLLOWS_EVENT, DSL.name("user_follows_event_event_id_fkey"), arrayOf(UserFollowsEvent.USER_FOLLOWS_EVENT.EVENT_ID), jooq.keys.EVENT_PKEY, arrayOf(Event.EVENT.ID), true)
 val USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_PROFILE_UID_FKEY: ForeignKey<UserFollowsEventRecord, UserProfileRecord> = Internal.createForeignKey(UserFollowsEvent.USER_FOLLOWS_EVENT, DSL.name("user_follows_event_user_profile_uid_fkey"), arrayOf(UserFollowsEvent.USER_FOLLOWS_EVENT.USER_PROFILE_UID), jooq.keys.USER_PROFILE_PKEY, arrayOf(UserProfile.USER_PROFILE.AUTH_UID), true)
+val USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_PLACE_ID_FKEY: ForeignKey<UserFollowsPlaceRecord, PlaceRecord> = Internal.createForeignKey(UserFollowsPlace.USER_FOLLOWS_PLACE, DSL.name("user_follows_place_place_id_fkey"), arrayOf(UserFollowsPlace.USER_FOLLOWS_PLACE.PLACE_ID), jooq.keys.PLACE_PKEY, arrayOf(Place.PLACE.ID), true)
+val USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_PROFILE_UID_FKEY: ForeignKey<UserFollowsPlaceRecord, UserProfileRecord> = Internal.createForeignKey(UserFollowsPlace.USER_FOLLOWS_PLACE, DSL.name("user_follows_place_user_profile_uid_fkey"), arrayOf(UserFollowsPlace.USER_FOLLOWS_PLACE.USER_PROFILE_UID), jooq.keys.USER_PROFILE_PKEY, arrayOf(UserProfile.USER_PROFILE.AUTH_UID), true)
+val USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_UNITY_ID_FKEY: ForeignKey<UserFollowsUnityRecord, UnityRecord> = Internal.createForeignKey(UserFollowsUnity.USER_FOLLOWS_UNITY, DSL.name("user_follows_unity_unity_id_fkey"), arrayOf(UserFollowsUnity.USER_FOLLOWS_UNITY.UNITY_ID), jooq.keys.UNITY_PKEY, arrayOf(Unity.UNITY.ID), true)
+val USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_PROFILE_UID_FKEY: ForeignKey<UserFollowsUnityRecord, UserProfileRecord> = Internal.createForeignKey(UserFollowsUnity.USER_FOLLOWS_UNITY, DSL.name("user_follows_unity_user_profile_uid_fkey"), arrayOf(UserFollowsUnity.USER_FOLLOWS_UNITY.USER_PROFILE_UID), jooq.keys.USER_PROFILE_PKEY, arrayOf(UserProfile.USER_PROFILE.AUTH_UID), true)
 val USER_PROFILE__USER_PROFILE_CITY_NAME_FKEY: ForeignKey<UserProfileRecord, CityRecord> = Internal.createForeignKey(UserProfile.USER_PROFILE, DSL.name("user_profile_city_name_fkey"), arrayOf(UserProfile.USER_PROFILE.CITY_NAME), jooq.keys.CITY_PKEY, arrayOf(City.CITY.NAME), true)

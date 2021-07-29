@@ -82,7 +82,7 @@ class CityIntegrationTest(
     fun saveCityWithCountryAssociation() {
 
         val city = CityWriteDto(
-            name = "Brugge",
+            name = "Bruges",
             countryName = "BE",
             timeOffset = -3
         )
@@ -91,7 +91,7 @@ class CityIntegrationTest(
 
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isCreated)
 
-        val response = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/Brugge", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/Bruges", status().isOk)
         val responseDecoded = Json.decodeFromString<CityDto>(response)
 
         assertEquals(city.name, responseDecoded.name)
@@ -102,7 +102,7 @@ class CityIntegrationTest(
     fun updateCityWithNewCountryAssociation() {
 
         val city = CityWriteDto(
-            name = "Brugge",
+            name = "Bruges",
             countryName = "BE",
             timeOffset = -3
         )
@@ -114,7 +114,7 @@ class CityIntegrationTest(
         val cityUpdJson = Json.encodeToString(cityUpdated)
         Requests.makePutRequest(mockMvc, "/city", cityUpdJson, status().isOk)
 
-        val cityFinal = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/Brugge", status().isOk)
+        val cityFinal = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/Bruges", status().isOk)
         val cityFinalDecoded = Json.decodeFromString<CityDto>(cityFinal)
 
         assertEquals(cityUpdated.name, cityFinalDecoded.name)
@@ -126,7 +126,7 @@ class CityIntegrationTest(
     fun saveCityAndDeleteByName() {
 
         val city = CityWriteDto(
-            name = "Brugge",
+            name = "Bruges",
             countryName = "BE",
             timeOffset = -3
         )
@@ -134,7 +134,7 @@ class CityIntegrationTest(
         val cityJson = Json.encodeToString(city)
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isCreated)
 
-        Requests.makeDeleteRequest(mockMvc, "$cityEndpoint/Brugge", status().isOk)
+        Requests.makeDeleteRequest(mockMvc, "$cityEndpoint/Bruges", status().isOk)
 
         val cityListJson = Requests.makeGetRequest(mockMvc, cityEndpoint, status().isOk)
         val cityListDecoded = Json.decodeFromString<List<CityDto>>(cityListJson)
@@ -146,7 +146,7 @@ class CityIntegrationTest(
     fun saveMultipleAndFindAll() {
 
         val city1 = CityWriteDto(
-            name = "Brugge",
+            name = "Bruges",
             countryName = "BE",
             timeOffset = -3
         )
@@ -181,7 +181,7 @@ class CityIntegrationTest(
     fun tryToSaveCityWithoutCountryRefShouldBeBadRequest() {
 
         val city = mapOf(
-            "name" to "Brugge",
+            "name" to "Bruges",
             "timeOffset" to "-1"
         )
 

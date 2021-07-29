@@ -25,7 +25,7 @@ data class PlaceFullDto(
     val isFollowed: Boolean = false,
     override val overallFollowers: Int = 0,
     override val weeklyFollowers: Int = 0,
-    ) : BaseShortDtoWithIdAndRating<PlaceFullDto> {
+    ) : BaseFullDtoWithIdAndRating<PlaceFullDto> {
     companion object {
         fun createOutOfDbRecords(placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : PlaceFullDto {
             return PlaceFullDto(

@@ -26,6 +26,8 @@ import jooq.tables.UnityArtist
 import jooq.tables.UnityEvent
 import jooq.tables.UserFollowsArtist
 import jooq.tables.UserFollowsEvent
+import jooq.tables.UserFollowsPlace
+import jooq.tables.UserFollowsUnity
 import jooq.tables.UserProfile
 
 import kotlin.collections.List
@@ -125,6 +127,16 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     val USER_FOLLOWS_EVENT get() = UserFollowsEvent.USER_FOLLOWS_EVENT
 
     /**
+     * The table <code>public.user_follows_place</code>.
+     */
+    val USER_FOLLOWS_PLACE get() = UserFollowsPlace.USER_FOLLOWS_PLACE
+
+    /**
+     * The table <code>public.user_follows_unity</code>.
+     */
+    val USER_FOLLOWS_UNITY get() = UserFollowsUnity.USER_FOLLOWS_UNITY
+
+    /**
      * The table <code>public.user_profile</code>.
      */
     val USER_PROFILE get() = UserProfile.USER_PROFILE
@@ -157,6 +169,8 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
         UnityEvent.UNITY_EVENT,
         UserFollowsArtist.USER_FOLLOWS_ARTIST,
         UserFollowsEvent.USER_FOLLOWS_EVENT,
+        UserFollowsPlace.USER_FOLLOWS_PLACE,
+        UserFollowsUnity.USER_FOLLOWS_UNITY,
         UserProfile.USER_PROFILE
     )
 }

@@ -57,13 +57,13 @@ class ArtistIntegrationTest(
         redisServer.start()
     }
 
-    val countryTestData = CountryDto(
+    private val countryTestData = CountryDto(
         name = "BE",
         phoneCode = "+7",
         emojiCode = "EBE"
     )
 
-    val artistTestData = ArtistWriteDto(
+    private val artistTestData = ArtistWriteDto(
         id = null,
         name = "Amelie Lens",
         imageLink = "image",

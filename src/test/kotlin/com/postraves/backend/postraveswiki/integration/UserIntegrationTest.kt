@@ -7,18 +7,13 @@ import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.security.SecurityService
-import com.postraves.backend.postraveswiki.service.ArtistService
-import com.postraves.backend.postraveswiki.service.CityService
-import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.MyUserProfileService
+import com.postraves.backend.postraveswiki.service.*
 import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -70,7 +65,7 @@ class UserIntegrationTest(
         Requests.makePostRequest(mockMvc, "/country", countryJson1, MockMvcResultMatchers.status().isCreated)
 
         val city = CityWriteDto(
-            name = "Brugge",
+            name = "Bruges",
             countryName = "BE",
             timeOffset = -3
         )
@@ -106,7 +101,7 @@ class UserIntegrationTest(
             about = null,
             instagramLink = null,
             telegramLink = null,
-            currentCity = "Brugge"
+            currentCity = "Bruges"
         )
 
         `when`(securityService.userAuthUid).thenReturn("abc")
@@ -132,7 +127,7 @@ class UserIntegrationTest(
             about = null,
             instagramLink = null,
             telegramLink = null,
-            currentCity = "Brugge"
+            currentCity = "Bruges"
         )
 
         `when`(securityService.userAuthUid).thenReturn("abc")
@@ -177,7 +172,7 @@ class UserIntegrationTest(
             about = null,
             instagramLink = null,
             telegramLink = null,
-            currentCity = "Brugge"
+            currentCity = "Bruges"
         )
 
         `when`(securityService.userAuthUid).thenReturn("abc")
@@ -240,7 +235,7 @@ class UserIntegrationTest(
             about = null,
             instagramLink = null,
             telegramLink = null,
-            currentCity = "Brugge"
+            currentCity = "Bruges"
         )
 
         `when`(securityService.userAuthUid).thenReturn("abc")

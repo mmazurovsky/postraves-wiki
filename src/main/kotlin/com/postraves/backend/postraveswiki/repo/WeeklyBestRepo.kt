@@ -29,3 +29,7 @@ abstract class WeeklyBestRepoAbstract(
 
 @Repository
 class ArtistWeeklyBestRepoImpl : WeeklyBestRepoAbstract(EntityType.ARTIST.nameString)
+
+@Repository
+class PlaceWeeklyBestRepoImpl : WeeklyBestRepoAbstract(EntityType.PLACE.nameString)
+

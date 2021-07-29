@@ -19,6 +19,8 @@ import jooq.tables.UnityArtist
 import jooq.tables.UnityEvent
 import jooq.tables.UserFollowsArtist
 import jooq.tables.UserFollowsEvent
+import jooq.tables.UserFollowsPlace
+import jooq.tables.UserFollowsUnity
 import jooq.tables.UserProfile
 
 
@@ -97,6 +99,16 @@ val USER_FOLLOWS_ARTIST = UserFollowsArtist.USER_FOLLOWS_ARTIST
  * The table <code>public.user_follows_event</code>.
  */
 val USER_FOLLOWS_EVENT = UserFollowsEvent.USER_FOLLOWS_EVENT
+
+/**
+ * The table <code>public.user_follows_place</code>.
+ */
+val USER_FOLLOWS_PLACE = UserFollowsPlace.USER_FOLLOWS_PLACE
+
+/**
+ * The table <code>public.user_follows_unity</code>.
+ */
+val USER_FOLLOWS_UNITY = UserFollowsUnity.USER_FOLLOWS_UNITY
 
 /**
  * The table <code>public.user_profile</code>.

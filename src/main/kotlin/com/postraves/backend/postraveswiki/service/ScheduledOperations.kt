@@ -12,7 +12,7 @@ class ScheduledOperations(
     private val artistWeeklyBestRepo: WeeklyBestRepo,
     @Qualifier("artistWeeklyFollowersQuickRepoImpl")
     private val artistWeeklyFollowersQuickRepo: FollowersQuickRepo,
-    private val artistService: ArtistService,
+    private val artistService: PlaceService,
 ) {
 
     @Scheduled(cron = "0 0 0 * * MON")

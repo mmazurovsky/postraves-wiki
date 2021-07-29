@@ -40,3 +40,6 @@ abstract class QuickEntityCountryRepoAbstract(
 @Repository
 class ArtistCountryQuickRepoImpl : QuickEntityCountryRepoAbstract(EntityType.ARTIST.nameString)
 
+@Repository
+class PlaceCountryQuickRepoImpl : QuickEntityCountryRepoAbstract(EntityType.PLACE.nameString)
+
