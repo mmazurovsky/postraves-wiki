@@ -27,7 +27,7 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId
     protected abstract fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record>
     protected abstract fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record>
     protected abstract fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record>
-    protected abstract fun convertToShortDto(record: Record): SHORTDTO
+    abstract override fun convertToShortDto(record: Record): SHORTDTO
     protected abstract fun convertToFullDto(record: Record): FULLDTO
     abstract fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record>
     abstract fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record>

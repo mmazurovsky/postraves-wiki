@@ -35,3 +35,6 @@ class ArtistWeeklyBestQuickRepoImpl : WeeklyBestQuickRepoAbstract(EntityType.ART
 @Repository
 class PlaceWeeklyBestQuickRepoImpl : WeeklyBestQuickRepoAbstract(EntityType.PLACE.nameString)
 
+@Repository
+class UnityWeeklyBestQuickRepoImpl : WeeklyBestQuickRepoAbstract(EntityType.UNITY.nameString)
+

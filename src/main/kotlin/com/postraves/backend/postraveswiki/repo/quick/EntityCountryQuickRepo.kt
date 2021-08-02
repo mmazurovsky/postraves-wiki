@@ -43,3 +43,5 @@ class ArtistCountryQuickRepoImpl : EntityCountryQuickRepoAbstract(EntityType.ART
 @Repository
 class PlaceCountryQuickRepoImpl : EntityCountryQuickRepoAbstract(EntityType.PLACE.nameString)
 
+@Repository
+class UnityCountryQuickRepoImpl : EntityCountryQuickRepoAbstract(EntityType.UNITY.nameString)

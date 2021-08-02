@@ -18,7 +18,6 @@ import org.jooq.impl.DSL.lower
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
-
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
     ByIdRepo<ArtistFullDto, ArtistShortDto>,

@@ -1,6 +1,9 @@
 package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.dto.*
+import org.jooq.Record
+import org.jooq.SelectJoinStep
+import org.jooq.SelectOnConditionStep
 
 interface BaseRepo<WRITEDTO : BaseWriteDto,
         SHORTDTO : BaseShortDto> {
@@ -11,6 +14,7 @@ interface BaseRepo<WRITEDTO : BaseWriteDto,
 
 interface FollowableRepo<SHORTDTO : BaseShortDto> {
     fun findFollowableByPartOfName(authUid: String?, namePart: String): List<SHORTDTO>
+    fun convertToShortDto(record: Record): SHORTDTO
 }
 
 interface ByIdRepo<FULLDTO : BaseFullDtoWithId, SHORTDTO: BaseShortDtoWithId> {
