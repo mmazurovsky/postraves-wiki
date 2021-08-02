@@ -1,10 +1,15 @@
-package com.postraves.backend.postraveswiki.controller
+package com.postraves.backend.postraveswiki.controller.followable
 
+import com.postraves.backend.postraveswiki.controller.BaseRequests
+import com.postraves.backend.postraveswiki.controller.ByIdRequests
+import com.postraves.backend.postraveswiki.controller.FindByNameRequests
+import com.postraves.backend.postraveswiki.controller.RatingRequests
+import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UnityWriteDto
-import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -47,5 +52,17 @@ class UnityController (
 
     override fun findByPartOfName(namePart: String): List<UnityShortDto> {
         return thisService.findByPartOfName(namePart)
+    }
+
+    @PutMapping("/{id}/artists")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateArtistsOfUnity(@PathVariable id: Long, @RequestBody artists: Set<Long>) {
+        return thisService.updateArtistsOfUnity(id, artists)
+    }
+
+    @GetMapping("/{id}/artists")
+    @ResponseStatus(HttpStatus.OK)
+    fun getArtistsOfUnity(@PathVariable id: Long): List<ArtistShortDto> {
+        return thisService.getArtistsOfUnity(id)
     }
 }

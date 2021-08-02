@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.service.followable
 
+import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UnityWriteDto
@@ -19,7 +20,10 @@ interface UnityService :
     BaseService<UnityWriteDto, UnityShortDto>,
     ByIdService<UnityFullDto, UnityShortDto>,
     RatingService<UnityFullDto, UnityShortDto>,
-    FindByName<UnityShortDto>
+    FindByName<UnityShortDto> {
+    fun getArtistsOfUnity(id: Long): List<ArtistShortDto>
+    fun updateArtistsOfUnity(id: Long, artists: Set<Long>)
+}
 
 @Service
 class UnityServiceImpl(
@@ -59,7 +63,8 @@ class UnityServiceImpl(
     }
 
     override fun checkCountryAndAddAndRemoveFromCountryQuickRepo(dto: UnityWriteDto) {
-        val previousCountryName = thisRepo.findById(null, dto.id ?: throw UpdateException(thisString, dto.name)).country?.name
+        val previousCountryName =
+            thisRepo.findById(null, dto.id ?: throw UpdateException(thisString, dto.name)).country?.name
         if (dto.countryName != previousCountryName) {
             if (dto.countryName != null) {
                 thisCountryRepo.addOneIdToCountry(dto.countryName, dto.id)
@@ -73,6 +78,28 @@ class UnityServiceImpl(
     @OptIn(ExperimentalSerializationApi::class)
     override fun decodeShortDtoFromMap(map: Map<String, String>): UnityShortDto {
         return UnityShortDto.fromMap(map)
+    }
+
+    override fun getArtistsOfUnity(id: Long): List<ArtistShortDto> {
+        // todo abstract somehow
+        val user = myUserProfileService.findMyProfile()
+        return if (user.first == null)
+            thisRepo.getArtistsOfUnity(null, id)
+        else
+            thisRepo.getArtistsOfUnity(user.second, id)
+    }
+
+    override fun updateArtistsOfUnity(id: Long, artists: Set<Long>) {
+        val persistedArtistsIds =
+            thisRepo.getArtistsOfUnity(null, id)
+                .map { it.id }
+                .toSet()
+
+        val artistsToRemoveFromUnity = persistedArtistsIds subtract artists
+        val artistsToAddToUnity = artists subtract persistedArtistsIds
+
+        thisRepo.removeArtistsFromUnity(id, artistsToRemoveFromUnity)
+        thisRepo.addArtistsToUnity(id, artistsToAddToUnity)
     }
 
     override fun enrichWithFollowersCalculationRequired(dto: UnityShortDto): UnityShortDto {

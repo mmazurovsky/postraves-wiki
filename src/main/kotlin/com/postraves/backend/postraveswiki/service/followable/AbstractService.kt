@@ -212,6 +212,7 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
     }
 
     override fun findByPartOfName(namePart: String): List<SHORTDTO> {
+        // todo abstract somehow
         val user = myUserProfileService.findMyProfile()
         return if (user.first == null)
             entityRepo.findFollowableByPartOfName(null, namePart)

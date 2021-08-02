@@ -53,7 +53,7 @@ class UnityRepoImpl(val artistRepo: ArtistRepo) :
             .on(thisTable.ID.eq(userFollowsTable.UNITY_ID), userFollowsTable.USER_PROFILE_UID.eq(authUid))
     }
 
-    fun SelectJoinStep<Record>.joinUserFollowArtist(authUid: String): SelectOnConditionStep<Record> {
+    private fun SelectJoinStep<Record>.joinUserFollowArtist(authUid: String): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(USER_FOLLOWS_ARTIST)
             .on(ARTIST.ID.eq(USER_FOLLOWS_ARTIST.ARTIST_ID), USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
     }

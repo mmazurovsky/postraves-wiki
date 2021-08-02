@@ -1,5 +1,9 @@
-package com.postraves.backend.postraveswiki.controller
+package com.postraves.backend.postraveswiki.controller.followable
 
+import com.postraves.backend.postraveswiki.controller.BaseRequests
+import com.postraves.backend.postraveswiki.controller.ByIdRequests
+import com.postraves.backend.postraveswiki.controller.FindByNameRequests
+import com.postraves.backend.postraveswiki.controller.RatingRequests
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
