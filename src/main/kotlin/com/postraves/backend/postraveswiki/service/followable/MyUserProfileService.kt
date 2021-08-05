@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 
 interface MyUserProfileService {
     fun findMyProfile(): Pair<UserFullDto?, String?>
+    fun getMyAuthUidOnlyIfUserProfileExists(): String?
     fun save(dto: UserWriteDto): UserShortDto
     fun update(dto: UserWriteDto)
     fun deleteMyProfile()
@@ -33,43 +34,54 @@ class MyUserProfileServiceImpl(
         return myUserProfileRepo.findMyProfile(securityService.userAuthUid ?: return null to null)
     }
 
+    override fun getMyAuthUidOnlyIfUserProfileExists(): String? {
+        val myProfile = findMyProfile()
+        return if (myProfile.first == null) null
+        else myProfile.second
+    }
+
     override fun deleteMyProfile() {
-        if (findMyProfile().first != null)
-            myUserProfileRepo.deleteMyProfile(securityService.userAuthUid ?: return)
+        val authUid = getMyAuthUidOnlyIfUserProfileExists()
+        if (authUid != null)
+            myUserProfileRepo.deleteMyProfile(authUid)
     }
 
     override fun checkArtistIsFollowed(id: Long): Boolean {
-        return myUserProfileRepo.checkArtistIsFollowed(id, securityService.userAuthUid ?: throw NotAuthenticated())
+        val authUid = getMyAuthUidOnlyIfUserProfileExists()
+        return myUserProfileRepo.checkArtistIsFollowed(id, authUid ?: throw NotAuthenticated())
     }
 
     override fun followArtist(id: Long) {
-        if (findMyProfile().first != null)
+        val authUid = getMyAuthUidOnlyIfUserProfileExists()
+        if (authUid != null)
             if (!checkArtistIsFollowed(id)) {
-                myUserProfileRepo.followArtist(securityService.userAuthUid ?: throw NotAuthenticated(), id)
+                myUserProfileRepo.followArtist(authUid, id)
                 artistService.incrementFollowers(id)
             } else {
-                logger.info("Trying to follow one same artist multiple times user: ${securityService.userAuthUid}, artist: $id")
+                logger.info("Trying to follow one same artist multiple times user: $authUid, artist: $id")
             }
     }
 
     override fun unfollowArtist(id: Long) {
-        if (findMyProfile().first != null)
+        val authUid = getMyAuthUidOnlyIfUserProfileExists()
+        if (authUid != null)
             if (checkArtistIsFollowed(id)) {
-                myUserProfileRepo.unfollowArtist(securityService.userAuthUid ?: throw NotAuthenticated(), id)
+                myUserProfileRepo.unfollowArtist(authUid, id)
                 artistService.decrementFollowers(id)
             } else {
-                logger.info("Trying to unfollow one same artist multiple times user: ${securityService.userAuthUid}, artist: $id")
+                logger.info("Trying to unfollow one same artist multiple times user: $authUid, artist: $id")
             }
     }
 
     override fun findMyFollowsArtist(): List<ArtistShortDto> {
-        return if (findMyProfile().first != null) {
+        val authUid = getMyAuthUidOnlyIfUserProfileExists()
+        return if (authUid != null) {
             val myFollows =
-                myUserProfileRepo.findMyFollowsArtist(securityService.userAuthUid ?: throw NotAuthenticated())
+                myUserProfileRepo.findMyFollowsArtist(authUid)
             myFollows.map {
                 artistService.enrichWithFollowersCalculationRequired(it)
             }.toList()
-        } else emptyList()
+        } else throw NotAuthenticated()
     }
 
     override fun findByAuthUidForSecurityService(authUid: String): UserFullDto? {
@@ -81,7 +93,8 @@ class MyUserProfileServiceImpl(
     }
 
     override fun update(dto: UserWriteDto) {
+        val authUid = getMyAuthUidOnlyIfUserProfileExists() ?: throw NotAuthenticated()
         if (findMyProfile().first != null)
-            myUserProfileRepo.update(dto, securityService.userAuthUid ?: throw NotAuthenticated())
+            myUserProfileRepo.update(dto, authUid)
     }
 }

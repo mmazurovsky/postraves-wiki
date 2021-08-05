@@ -6,8 +6,9 @@ import com.postraves.backend.postraveswiki.data.dto.BaseRatingDtoWithId
 import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithIdAndRating
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
-import com.postraves.backend.postraveswiki.exception.WeeklyBestSettingException
-import com.postraves.backend.postraveswiki.repo.*
+import com.postraves.backend.postraveswiki.repo.BaseRepo
+import com.postraves.backend.postraveswiki.repo.ByIdRepo
+import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepoAbstract
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
@@ -36,23 +37,18 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
               REPO : ByIdRepo<FULLDTO, SHORTDTO>,
               REPO : FollowableRepo<SHORTDTO> {
 
-    @Autowired @Lazy
+    @Autowired
+    @Lazy
     private lateinit var myUserProfileService: MyUserProfileService
 
     private fun findByIdDependingOnUser(id: Long): FULLDTO {
-        val user = myUserProfileService.findMyProfile()
-        return if (user.first == null)
-            entityRepo.findById(null, id)
-        else
-            entityRepo.findById(user.second, id)
+        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        return entityRepo.findById(authUid, id)
     }
 
     override fun findListByIds(ids: Set<Long>): List<SHORTDTO> {
-        val user = myUserProfileService.findMyProfile()
-        return if (user.first == null)
-            entityRepo.findListByIds(null, ids)
-        else
-            entityRepo.findListByIds(user.second, ids)
+        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        return entityRepo.findListByIds(authUid, ids)
     }
 
     override fun findById(id: Long): FULLDTO {
@@ -211,12 +207,9 @@ abstract class AbstractService<WRITEDTO : BaseWriteDto,
         return entityRepo.findAll()
     }
 
+    // todo not enriched with rating
     override fun findByPartOfName(namePart: String): List<SHORTDTO> {
-        // todo abstract somehow
-        val user = myUserProfileService.findMyProfile()
-        return if (user.first == null)
-            entityRepo.findFollowableByPartOfName(null, namePart)
-        else
-            entityRepo.findFollowableByPartOfName(user.second, namePart)
+        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        return entityRepo.findFollowableByPartOfName(authUid, namePart)
     }
 }

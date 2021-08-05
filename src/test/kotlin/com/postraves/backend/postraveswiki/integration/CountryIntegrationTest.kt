@@ -36,6 +36,7 @@ class CountryIntegrationTest(
 
     private val countryEndpoint: String = "/country"
     private val redisServer = RedisServer(redisPort)
+
     init {
         redisServer.start()
     }

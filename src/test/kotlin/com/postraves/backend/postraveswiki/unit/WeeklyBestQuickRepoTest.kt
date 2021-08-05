@@ -29,6 +29,7 @@ class WeeklyBestQuickRepoTest(
 ) {
 
     private val redisServer = RedisServer(redisPort)
+
     init {
         redisServer.start()
     }
@@ -45,7 +46,7 @@ class WeeklyBestQuickRepoTest(
     }
 
     @AfterAll
-    private fun stopRedis() {
+    private fun afterAll() {
         quickRepoCleaning.clearAllData()
         redisServer.stop()
     }

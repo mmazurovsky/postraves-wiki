@@ -13,7 +13,9 @@ import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.*
 import kotlinx.serialization.ExperimentalSerializationApi
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
 interface UnityService :
@@ -29,6 +31,7 @@ interface UnityService :
 class UnityServiceImpl(
     cityService: CityService,
     securityService: SecurityService,
+    private val artistService: ArtistService,
     private val thisRepo: UnityRepo,
     @Qualifier("unityCountryQuickRepoImpl")
     private val thisCountryRepo: EntityCountryQuickRepoAbstract,
@@ -48,6 +51,10 @@ class UnityServiceImpl(
         entityOverallFollowersQuickRepo = thisOverallFollowersQuickRepo,
         entityWeeklyFollowersQuickRepo = thisWeeklyFollowersQuickRepo,
     ) {
+
+    @Autowired
+    @Lazy
+    private lateinit var myUserProfileService: MyUserProfileService
 
     val thisString = EntityType.UNITY.nameString
 
@@ -81,12 +88,12 @@ class UnityServiceImpl(
     }
 
     override fun getArtistsOfUnity(id: Long): List<ArtistShortDto> {
-        // todo abstract somehow
-        val user = myUserProfileService.findMyProfile()
-        return if (user.first == null)
-            thisRepo.getArtistsOfUnity(null, id)
-        else
-            thisRepo.getArtistsOfUnity(user.second, id)
+        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val artistsOfUnityWithoutFollowers = thisRepo.getArtistsOfUnity(authUid, id)
+        return artistsOfUnityWithoutFollowers
+            .map { artistService.enrichWithFollowersCalculationRequired(it) }
+            .sortedByDescending { it.overallFollowers }
+            .toList()
     }
 
     override fun updateArtistsOfUnity(id: Long, artists: Set<Long>) {

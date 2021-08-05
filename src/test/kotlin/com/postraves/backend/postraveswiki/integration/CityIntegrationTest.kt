@@ -38,6 +38,7 @@ class CityIntegrationTest(
 
     private val cityEndpoint: String = "/city"
     private val redisServer = RedisServer(redisPort)
+
     init {
         redisServer.start()
     }

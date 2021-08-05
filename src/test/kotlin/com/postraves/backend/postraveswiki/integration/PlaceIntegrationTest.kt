@@ -58,6 +58,7 @@ class PlaceIntegrationTest(
 
     private val placeEndpoint: String = "/place"
     private val redisServer = RedisServer(redisPort)
+
     init {
         redisServer.start()
     }

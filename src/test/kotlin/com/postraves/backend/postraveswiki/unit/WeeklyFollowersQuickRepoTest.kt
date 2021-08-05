@@ -27,6 +27,7 @@ class WeeklyFollowersQuickRepoTest(
 ) {
 
     private val redisServer = RedisServer(redisPort)
+
     init {
         redisServer.start()
     }
@@ -41,7 +42,7 @@ class WeeklyFollowersQuickRepoTest(
     }
 
     @AfterAll
-    private fun stopRedis() {
+    private fun clearAll() {
         quickRepoCleaning.clearAllData()
         redisServer.stop()
     }

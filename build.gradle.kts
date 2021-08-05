@@ -31,7 +31,12 @@ dependencies {
     runtimeOnly ("org.postgresql:postgresql:42.2.18")
     implementation("org.flywaydb:flyway-core:7.1.1")
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
-    testImplementation("com.github.kstyrc:embedded-redis:0.6")
+    testImplementation("it.ozimov:embedded-redis:0.7.3") {
+        exclude(group = "org.slf4j", module = "slf4j-simple")
+//        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+//        exclude(group = "ch.qos.logback", module = "logback-classic")
+//        exclude(group = "org.apache.logging.log4j", module = "log4j-to-slf4j")
+    }
     testImplementation("org.testcontainers:postgresql:1.15.3")
     testImplementation("org.testcontainers:junit-jupiter:1.15.3")
     implementation(kotlin("test"))
@@ -42,6 +47,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
     implementation("io.github.microutils:kotlin-logging:1.12.5")
 }
+
+//configurations {
+//    all
+//}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {

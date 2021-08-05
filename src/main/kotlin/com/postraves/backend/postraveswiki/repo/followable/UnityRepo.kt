@@ -77,7 +77,7 @@ class UnityRepoImpl(val artistRepo: ArtistRepo) :
     }
 
     override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
-        return this.where(lower(ARTIST.NAME).contains(namePart.lowercase()))
+        return this.where(lower(thisTable.NAME).contains(namePart.lowercase()))
     }
 
     override fun prepareRecordBeforeSaving(record: UnityRecord, dto: UnityWriteDto) {

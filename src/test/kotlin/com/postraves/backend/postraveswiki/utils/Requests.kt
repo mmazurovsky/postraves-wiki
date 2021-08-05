@@ -9,12 +9,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 
 object Requests {
 
-    fun makePostRequest(mockMvc: MockMvc, endpoint: String, bodyJson: String, expectedStatus: ResultMatcher): String {
+    fun makePostRequest(mockMvc: MockMvc, endpoint: String, bodyJson: String?, expectedStatus: ResultMatcher): String {
         val mvcResult: MvcResult = mockMvc.perform(
             MockMvcRequestBuilders.post(endpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(bodyJson)
+                .apply { if (bodyJson != null) content(bodyJson) }
         )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(expectedStatus)
@@ -22,12 +22,12 @@ object Requests {
         return mvcResult.response.contentAsString
     }
 
-    fun makePutRequest(mockMvc: MockMvc, endpoint: String, bodyJson: String, expectedStatus: ResultMatcher): String {
+    fun makePutRequest(mockMvc: MockMvc, endpoint: String, bodyJson: String?, expectedStatus: ResultMatcher): String {
         val mvcResult: MvcResult = mockMvc.perform(
             MockMvcRequestBuilders.put(endpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(bodyJson)
+                .apply { if (bodyJson != null) content(bodyJson) }
         )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(expectedStatus)

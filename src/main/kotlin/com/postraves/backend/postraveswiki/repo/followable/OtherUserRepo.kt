@@ -4,6 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import jooq.tables.references.*
 import org.jooq.DSLContext
+import org.jooq.Record
 import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -23,8 +24,12 @@ class OtherUserRepoImpl : OtherUserRepo {
             .selectFrom(USER_PROFILE)
             .where(DSL.lower(USER_PROFILE.NAME).contains(namePart.lowercase()))
             .fetch()
-            .map { UserShortDto.createOutOfDbRecords(it.into(USER_PROFILE)) }
+            .map { convertToShortDto(it) }
             .toList()
         return results
+    }
+
+    override fun convertToShortDto(record: Record): UserShortDto {
+        return UserShortDto.createOutOfDbRecords(record.into(USER_PROFILE))
     }
 }
