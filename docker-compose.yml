@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./app
     volumes:
-      - ../postraves-wiki/src/main/resources/secret:/app/src/main/resources/secret
+      - ./src/main/resources/secret:/src/main/resources/secret
     environment:
       - REDIS_HOST=redis
       - POSTGRES_HOST=postgres
