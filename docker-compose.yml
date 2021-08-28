@@ -1,0 +1,52 @@
+version: '2.1'
+services:
+  flyway:
+    image: 'flyway/flyway:latest'
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    command: -url=jdbc:postgresql://postgres:5432/postraves -schemas=public -user=${POSTGRES_USERNAME} -password=${POSTGRES_PASSWORD} migrate
+    volumes:
+      - ./app/src/main/resources/db/migration/postgres:/flyway/sql
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_DB=postraves
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-U", "${POSTGRES_USERNAME}", "-d", "postraves" ]
+      interval: 5s
+      timeout: 1s
+      retries: 2
+  redis:
+    image: 'redis:latest'
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '3050:443'
+    depends_on:
+      - api
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./app
+    volumes:
+      - ../postraves-wiki/src/main/resources/secret:/app/src/main/resources/secret
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy

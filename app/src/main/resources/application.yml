@@ -1,0 +1,99 @@
+#debug: true
+security:
+  firebase-props:
+    enable-strict-server-session: false
+    enable-check-session-revoked: false
+    enable-logout-everywhere: false
+    session-expiry-in-days: 5
+    cookie-props:
+      max-age-in-minutes: 7200
+      http-only: true
+      secure: true
+      domain: ${DOMAIN}
+      path: /
+    allow-credentials: true
+    allowed-origins:
+      - https://${DOMAIN}
+      - http://localhost:3000
+    allowed-headers:
+      - Authorization
+      - Origin
+      - Content-Type
+      - Accept
+      - Accept-Encoding
+      - Accept-Language
+      - Access-Control-Allow-Origin
+      - Access-Control-Allow-Headers
+      - Access-Control-Request-Method
+      - X-Requested-With
+      - X-Auth-Token
+      - X-Xsrf-Token
+      - Cache-Control
+      - Id-Token
+    exposed-headers:
+      - X-Xsrf-Token
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/postraves
+#    jdbc:postgresql://localhost:5432/postraves
+    username: ${POSTGRES_USERNAME}
+#    mmazurovsky
+  flyway:
+    locations: classpath:/db/migration/postgres
+  redis:
+    host: ${REDIS_HOST}
+#    localhost
+    port: 6379
+#    6379
+#    sentinel:
+#      master: mymaster
+  logging:
+    level:
+      org:
+        jooq:
+          tools:
+            LoggerListener: DEBUG
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-alias: baeldung
+    key-store: classpath:keystore/baeldung.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/postraves
+    username: mmazurovsky
+  flyway:
+    locations: classpath:/db/migration/postgres
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
+    schemas: public
+    baseline-on-migrate: true
+  redis:
+    host: localhost
+    port: 6379
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  logging:
+    level:
+      org:
+        flywaydb: debug
+        springframework: debug
+---

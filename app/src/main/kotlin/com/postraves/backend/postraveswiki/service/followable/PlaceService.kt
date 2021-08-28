@@ -1,0 +1,121 @@
+package com.postraves.backend.postraveswiki.service.followable
+
+import com.postraves.backend.postraveswiki.data.dto.reading.*
+import com.postraves.backend.postraveswiki.data.dto.writing.PlaceWriteDto
+import com.postraves.backend.postraveswiki.exception.UpdateException
+import com.postraves.backend.postraveswiki.repo.followable.PlaceRepo
+import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepoAbstract
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
+import com.postraves.backend.postraveswiki.service.*
+import com.postraves.backend.postraveswiki.service.RatingsService
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Service
+
+interface PlaceService :
+    BaseService<PlaceWriteDto, PlaceShortDto>,
+    ByIdService<PlaceFullDto, PlaceShortDto>,
+    FollowableService<PlaceFullDto, PlaceShortDto>,
+    RatingsService<PlaceFullDto, PlaceShortDto>,
+    FindByName<PlaceShortDto> {
+        fun getAllScenes(): List<SceneDto>
+        fun getScenesOfPlace(id: Long): List<SceneDto>
+        fun updateScenesOfPlace(id: Long, incomingScenes: List<SceneDto>)
+    }
+
+@Service
+class PlaceServiceImpl(
+    val cityService: CityService,
+    private val placeRepo: PlaceRepo,
+    @Qualifier("placeCountryQuickRepoImpl")
+    private val placeCountryRepo: EntityCountryQuickRepoAbstract,
+    @Qualifier("placeWeeklyFollowersQuickRepoImpl")
+    private val placeWeeklyFollowersQuickRepo: FollowersQuickRepo,
+    @Qualifier("placeOverallFollowersQuickRepoImpl")
+    private val placeOverallFollowersQuickRepo: FollowersQuickRepo,
+    @Qualifier("placeRatingsServiceImpl")
+    private val ratingsService: RatingsService<PlaceFullDto, PlaceShortDto>
+) : PlaceService,
+    AbstractFollowableService<PlaceWriteDto, PlaceFullDto, PlaceShortDto, PlaceRepo>(
+        entityRepo = placeRepo,
+        entityOverallFollowersQuickRepo = placeOverallFollowersQuickRepo,
+        entityWeeklyFollowersQuickRepo = placeWeeklyFollowersQuickRepo,
+    ) {
+
+    override fun checkLocationsAndRemoveFromLocationsQuickRepos(dto: PlaceFullDto) {
+        val countryOfDtoToDelete = dto.city.country.name
+            placeCountryRepo.removeOneIdFromSet(countryOfDtoToDelete, dto.id)
+    }
+
+    override fun checkLocationsAndAddToLocationsQuickRepos(dto: PlaceWriteDto, id: Long) {
+        val cityDto = cityService.findByName(dto.cityName)
+        placeCountryRepo.addOneIdToCountry(cityDto.country.name, id)
+    }
+
+    override fun checkLocationsAndAddAndRemoveFromLocationsQuickRepos(dto: PlaceWriteDto) {
+        val newCountryName = cityService.findByName(dto.cityName).country.name
+        val previousCountryName = placeRepo.findById(null, dto.id ?: throw UpdateException("Place", dto.name)).city.country.name
+        if (newCountryName != previousCountryName) {
+                placeCountryRepo.addOneIdToCountry(newCountryName, dto.id)
+                placeCountryRepo.removeOneIdFromSet(previousCountryName, dto.id)
+        }
+    }
+
+    override fun getAllScenes(): List<SceneDto> {
+        return placeRepo.getAllScenes()
+    }
+
+    override fun getScenesOfPlace(id: Long): List<SceneDto> {
+        return placeRepo.getScenesOfPlace(id)
+    }
+
+    override fun updateScenesOfPlace(id: Long, incomingScenes: List<SceneDto>) {
+        val placePersistedScenes = placeRepo.getScenesOfPlace(id).toSet()
+        val scenesToAddToPlace = mutableSetOf<SceneDto>()
+        val scenesToUpdate = mutableSetOf<SceneDto>()
+        val sceneIdsInIncoming = mutableSetOf<Long>()
+        incomingScenes.forEach {
+            if (it.id == null) {
+                scenesToAddToPlace.add(it)
+            } else {
+                sceneIdsInIncoming.add(it.id)
+                if (!placePersistedScenes.contains(it)) {
+                    scenesToUpdate.add(it)
+                }
+            }
+        }
+        val scenesToRemoveFromPlace = placePersistedScenes.filter {
+            !sceneIdsInIncoming.contains(it.id)
+        }.toSet()
+        placeRepo.removeScenes(scenesToRemoveFromPlace)
+        placeRepo.addScenesToPlace(id, scenesToAddToPlace)
+        placeRepo.updateScenes(scenesToUpdate)
+    }
+
+    override fun enrichWithFollowersCalculationRequired(dto: PlaceShortDto): PlaceShortDto {
+        return super.enrichWithFollowersCalculationRequired(dto)
+    }
+
+    override fun enrichWithFollowersCalculationRequired(dto: PlaceFullDto): PlaceFullDto {
+        return super.enrichWithFollowersCalculationRequired(dto)
+    }
+
+//    override fun findListByIds(ids: Set<Long>): List<PlaceShortDto> {
+//        return ratingsService.findListByIds(ids)
+//    }
+
+    override fun findOverallRatingInCountryForCity(cityName: String, maxQuantity: Int): List<PlaceShortDto> {
+        return ratingsService.findOverallRatingInCountryForCity(cityName, maxQuantity)
+    }
+
+    override fun findWeeklyRatingInCountryForCity(cityName: String, maxQuantity: Int): List<PlaceShortDto> {
+        return ratingsService.findWeeklyRatingInCountryForCity(cityName, maxQuantity)
+    }
+
+    override fun findBestOfTheWeekByCityInCountry(cityName: String): PlaceShortDto? {
+        return ratingsService.findBestOfTheWeekByCityInCountry(cityName)
+    }
+
+    override fun setBestOfTheWeekForAllCities() {
+        ratingsService.setBestOfTheWeekForAllCities()
+    }
+}
