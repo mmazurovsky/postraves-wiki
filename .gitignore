@@ -38,3 +38,5 @@ out/
 
 ### My
 **/src/main/**/secret/
+/app/src/main/resources/secret/
+/terraform/
