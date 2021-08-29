@@ -33,15 +33,13 @@ services:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - '3050:443'
+      - '3050:80'
     depends_on:
       - api
   api:
     build:
       dockerfile: Dockerfile.dev
       context: ./app
-    volumes:
-      - ./src/main/resources/secret:/src/main/resources/secret
     environment:
       - REDIS_HOST=redis
       - POSTGRES_HOST=postgres

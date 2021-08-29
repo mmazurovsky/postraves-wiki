@@ -60,7 +60,7 @@ spring:
           tools:
             LoggerListener: DEBUG
 server:
-  port: 8443
+  port: 8080
   ssl:
     enabled: true
     key-alias: baeldung
