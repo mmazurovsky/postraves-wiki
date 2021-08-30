@@ -18,7 +18,7 @@ abstract class AbstractPostgresTest {
         @DynamicPropertySource
         @JvmStatic
         fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
-            // this is dirty a little bit
+            // this is dirty
             postgreSQLContainer.start()
 
             registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl)

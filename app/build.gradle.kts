@@ -23,11 +23,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    implementation("org.springframework:spring-jdbc:5.3.8")
+    implementation("org.springframework:spring-jdbc:5.3.9")
     implementation("org.projectlombok:lombok:1.18.18")
     implementation ("com.google.firebase:firebase-admin:7.1.0")
-    implementation("org.jooq:jooq:3.14.13")
-    jooqGenerator("org.postgresql:postgresql:42.2.14")
+    implementation("org.jooq:jooq:3.14.14")
+//    jooqGenerator("org.jooq:jooq-meta-extensions:3.14.14")
+    jooqGenerator("org.postgresql:postgresql:42.2.18")
     runtimeOnly ("org.postgresql:postgresql:42.2.18")
     implementation("org.flywaydb:flyway-core:7.1.1")
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
@@ -71,12 +72,13 @@ flyway {
 }
 
 jooq {
-    version.set("3.14.13")
+    version.set("3.14.14")
     edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
 
     configurations {
         create("main") {  // name of the jOOQ configuration
-            generateSchemaSourceOnCompilation.set(true)
+            // to generate files on each project build or not
+            generateSchemaSourceOnCompilation.set(false)
 
             jooqConfiguration.apply {
                 logging = org.jooq.meta.jaxb.Logging.WARN
@@ -91,6 +93,9 @@ jooq {
                 generator.apply {
                     name = "org.jooq.codegen.KotlinGenerator"
                     database.apply {
+//                        name = "org.jooq.meta.extensions.ddl.DDLDatabase"
+//                        properties.add(org.jooq.meta.jaxb.Property().withKey("scripts").withValue("/src/main/resources/db/migration/postgres"))
+//                        properties.add(org.jooq.meta.jaxb.Property().withKey("unqualifiedSchema").withValue("public"))
                         name = "org.jooq.meta.postgres.PostgresDatabase"
                         inputSchema = "public"
 //                        forcedTypes.addAll(arrayOf(
@@ -122,13 +127,13 @@ jooq {
     }
 }
 
-tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
-    // make jOOQ task participate in incremental builds (which is also a prerequisite for participating in build caching)
-    allInputsDeclared.set(true)
-
-    // make jOOQ task participate in build caching
-    outputs.cacheIf { true }
-}
+//tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
+//    // make jOOQ task participate in incremental builds (which is also a prerequisite for participating in build caching)
+//    allInputsDeclared.set(true)
+//
+//    // make jOOQ task participate in build caching
+//    outputs.cacheIf { true }
+//}
 
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {

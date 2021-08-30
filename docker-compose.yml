@@ -37,6 +37,8 @@ services:
     depends_on:
       - api
   api:
+    container_name:
+      api_container
     build:
       dockerfile: Dockerfile.dev
       context: ./app

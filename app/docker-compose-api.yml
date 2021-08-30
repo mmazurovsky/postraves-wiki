@@ -1,0 +1,15 @@
+version: '3.1'
+services:
+  api:
+    container_name:
+      solo_api_container
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+      - firebase_admin_creds
+secrets:
+  firebase_admin_creds:
+    file: ${GOOGLE_APPLICATION_CREDENTIALS}
