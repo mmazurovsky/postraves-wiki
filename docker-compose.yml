@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.4'
 services:
   flyway:
     image: 'flyway/flyway:latest'
@@ -10,8 +10,7 @@ services:
     volumes:
       - ./app/src/main/resources/db/migration/postgres:/flyway/sql
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
   postgres:
     image: 'postgres:latest'
     environment:
@@ -27,26 +26,37 @@ services:
       retries: 2
   redis:
     image: 'redis:latest'
+    ports:
+      - '6379:6379'
   nginx:
     restart: always
     build:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - '3050:80'
+      - '80:80'
     depends_on:
       - api
   api:
     container_name:
       api_container
     build:
-      dockerfile: Dockerfile.dev
       context: ./app
+      dockerfile: Dockerfile
+      target: final
     environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/firebase_admin_creds
       - REDIS_HOST=redis
       - POSTGRES_HOST=postgres
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+      - firebase_admin_creds
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
+      - redis
+secrets:
+  firebase_admin_creds:
+    file: ${GOOGLE_APPLICATION_CREDENTIALS}
