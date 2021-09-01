@@ -25,7 +25,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework:spring-jdbc:5.3.9")
     implementation("org.projectlombok:lombok:1.18.18")
-    implementation ("com.google.firebase:firebase-admin:7.1.0")
+    implementation ("com.google.firebase:firebase-admin:8.0.1")
     implementation("org.jooq:jooq:3.14.14")
 //    jooqGenerator("org.jooq:jooq-meta-extensions:3.14.14")
     jooqGenerator("org.postgresql:postgresql:42.2.18")

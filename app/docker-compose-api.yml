@@ -7,16 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: final
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/run/secrets/firebase_admin_creds
-      - REDIS_HOST=${REDIS_HOST}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - ../.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    secrets:
-      - firebase_admin_creds
-secrets:
-  firebase_admin_creds:
-    file: ${GOOGLE_APPLICATION_CREDENTIALS}
