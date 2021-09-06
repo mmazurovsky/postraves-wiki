@@ -76,8 +76,8 @@ class FirebaseConfig {
                 )
                 .build()
             FirebaseApp.initializeApp(options)
-        } else
-            FirebaseApp.getInstance()
+        }
+        else FirebaseApp.getInstance()
     }
 
     @Bean
