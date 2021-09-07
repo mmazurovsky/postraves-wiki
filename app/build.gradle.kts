@@ -58,7 +58,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-val POSTGRES_USERNAME = System.getenv("POSTGRES_USERNAME")
+val POSTGRES_USER = System.getenv("POSTGRES_USER")
 val POSTGRES_PASSWORD = System.getenv("POSTGRES_PASSWORD")
 val POSTGRES_HOST = System.getenv("POSTGRES_HOST")
 val POSTGRES_URL = "jdbc:postgresql://${POSTGRES_HOST}:5432/postraves"
@@ -66,7 +66,7 @@ val POSTGRES_URL = "jdbc:postgresql://${POSTGRES_HOST}:5432/postraves"
 
 flyway {
     url = POSTGRES_URL
-    user = POSTGRES_USERNAME
+    user = POSTGRES_USER
     password = POSTGRES_PASSWORD
     schemas = arrayOf("public")
 }
@@ -85,7 +85,7 @@ jooq {
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
                     url = POSTGRES_URL
-                    user = POSTGRES_USERNAME
+                    user = POSTGRES_USER
                     password = POSTGRES_PASSWORD
                     // TODO I changed ssl value to false manually
                     properties.add(org.jooq.meta.jaxb.Property().withKey("ssl").withValue("false"))

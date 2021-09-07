@@ -40,7 +40,7 @@ spring:
     driverClassName: org.postgresql.Driver
     password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://${POSTGRES_HOST}:5432/postraves
-    username: ${POSTGRES_USERNAME}
+    username: ${POSTGRES_USER}
   flyway:
     locations: classpath:/db/migration/postgres
   redis:
