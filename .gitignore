@@ -41,6 +41,7 @@ out/
 /app/src/main/resources/secret/
 /app/src/main/resources/keystore/
 /terraform/
+/.env
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
