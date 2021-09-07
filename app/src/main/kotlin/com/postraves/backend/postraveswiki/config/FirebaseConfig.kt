@@ -56,8 +56,6 @@ class FirebaseConfig {
         return if (FirebaseApp.getApps().isEmpty()) {
 
             val credentialsAsMap: MutableMap<String, String> = mutableMapOf()
-            logger.info("key id = $firebasePrivateKeyId")
-            logger.info("key = $firebasePrivateKey")
             credentialsAsMap["type"] = firebaseType!!
             credentialsAsMap["project_id"] = firebaseProjectId!!
             credentialsAsMap["private_key_id"] = firebasePrivateKeyId!!
