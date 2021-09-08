@@ -70,6 +70,7 @@ class SecurityConfig(
             .authorizeRequests()
 //            .anyRequest().permitAll()
             .antMatchers("/**/public/**").permitAll()
+            .antMatchers("/**/actuator/**").permitAll()
             .antMatchers("/**").authenticated()
             .and()
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
