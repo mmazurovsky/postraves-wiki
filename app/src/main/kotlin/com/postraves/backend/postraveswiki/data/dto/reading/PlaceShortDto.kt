@@ -6,6 +6,7 @@ import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
 import jooq.tables.records.PlaceRecord
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.decodeFromStringMap
@@ -19,8 +20,11 @@ data class PlaceShortDto(
     val city: CityDto,
     val streetAddress: String,
     val coordinate: CoordinateDto,
+    @Required
     val isFollowed: Boolean = false,
+    @Required
     override val overallFollowers: Int = 0,
+    @Required
     override val weeklyFollowers: Int = 0,
     ) : FollowableShortDto<PlaceShortDto>, ConvertableToMap {
 

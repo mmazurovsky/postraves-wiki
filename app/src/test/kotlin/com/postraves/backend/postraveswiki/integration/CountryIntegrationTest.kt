@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests
@@ -49,6 +50,7 @@ class CountryIntegrationTest(
     )
 
     init {
+        logger.info("Country Integration Test started")
         redisServer.start()
     }
 
@@ -59,6 +61,7 @@ class CountryIntegrationTest(
     private fun cleanUp() {
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
+        logger.info("Country Integration Test ended")
     }
 
     @Test

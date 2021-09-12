@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
@@ -37,7 +38,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import redis.embedded.RedisServer
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import java.time.ZoneOffset.UTC
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -103,7 +103,7 @@ class EventIntegrationTest(
         nameDe = "NameDe",
         nameFr = "NameFr",
         countryName = "BE",
-        timeOffset = -3
+        timeOffset = 3
     )
 
     private val cityTest2 = cityTest1.copy(
@@ -151,8 +151,8 @@ class EventIntegrationTest(
         imageLink = "image1",
         about = "About Event1",
         ticketsLink = "link1",
-        startDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.UTC),
-        endDateTime = OffsetDateTime.of(2021, 8, 19, 6, 0, 0, 0, ZoneOffset.UTC),
+        startDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
+        endDateTime = OffsetDateTime.of(2021, 8, 19, 6, 0, 0, 0, ZoneOffset.ofHours(3)),
         ticketPrices = emptyList(),
         // place id must be changed to real one of persisted place
         placeId = 1,
@@ -161,6 +161,7 @@ class EventIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
+        logger.info("Event Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData2), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
@@ -186,6 +187,7 @@ class EventIntegrationTest(
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         placeService.findAll().forEach { placeService.deleteById(it.id) }
         redisServer.stop()
+        logger.info("Event Integration Test ended")
     }
 
     @Test
@@ -312,8 +314,8 @@ class EventIntegrationTest(
             name = "Event2",
             imageLink = "image2",
             about = "About2",
-            startDateTime = OffsetDateTime.of(2021, 8, 20, 0, 0, 0, 0, ZoneOffset.UTC),
-            endDateTime = OffsetDateTime.of(2021, 8, 20, 6, 0, 0, 0, ZoneOffset.UTC),
+            startDateTime = OffsetDateTime.of(2021, 8, 20, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endDateTime = OffsetDateTime.of(2021, 8, 20, 6, 0, 0, 0, ZoneOffset.ofHours(3)),
             placeId = persistedPlace2Id
         )
 
@@ -321,8 +323,8 @@ class EventIntegrationTest(
             name = "Event3",
             imageLink = "image3",
             about = "About3",
-            startDateTime = OffsetDateTime.of(2021, 8, 21, 0, 0, 0, 0, ZoneOffset.UTC),
-            endDateTime = OffsetDateTime.of(2021, 8, 21, 6, 0, 0, 0, ZoneOffset.UTC),
+            startDateTime = OffsetDateTime.of(2021, 8, 21, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endDateTime = OffsetDateTime.of(2021, 8, 21, 6, 0, 0, 0, ZoneOffset.ofHours(3)),
             placeId = persistedPlace2Id
         )
 
@@ -799,8 +801,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene1Id,
             typeOfPerformance = "back 2 back",
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.UTC),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.UTC),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
         )
 
         val timetablePerformance2 = TimetablePerformanceWriteDto(
@@ -810,8 +812,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene1Id,
             typeOfPerformance = "dj set",
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.UTC),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.UTC),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.ofHours(3)),
         )
 
         val timetablePerformance3 = TimetablePerformanceWriteDto(
@@ -821,8 +823,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene2Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.UTC),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 45, 0, 0, ZoneOffset.UTC),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 45, 0, 0, ZoneOffset.ofHours(3)),
         )
 
         val timetablePerformance4 = TimetablePerformanceWriteDto(
@@ -832,8 +834,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.UTC),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.UTC),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.ofHours(3)),
         )
 
         val timetablePerformance5 = TimetablePerformanceWriteDto(
@@ -843,8 +845,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.UTC),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.UTC),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
         )
 
         val timetablePerformance6 = TimetablePerformanceWriteDto(
@@ -854,8 +856,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.UTC),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.UTC),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.ofHours(3)),
         )
 
         val timetablePerformance7 = TimetablePerformanceWriteDto(
@@ -865,8 +867,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.UTC),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.UTC),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.ofHours(3)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.ofHours(3)),
         )
 
         makePutRequest(
@@ -945,7 +947,7 @@ class EventIntegrationTest(
 
     @Test
     fun getRelevantEventsByDate() {
-        val now = OffsetDateTime.now(UTC).withHour(0)
+        val now = OffsetDateTime.now(ZoneOffset.ofHours(3)).withHour(0)
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
         val event1 = eventTestData.copy(placeId = persistedPlace1Id)
@@ -1075,7 +1077,7 @@ class EventIntegrationTest(
 
     @Test
     fun getRelevantEventsOfArtist() {
-        val now = OffsetDateTime.now(UTC).withHour(0)
+        val now = OffsetDateTime.now(ZoneOffset.ofHours(3)).withHour(0)
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
         val event1 = eventTestData.copy(placeId = persistedPlace1Id)

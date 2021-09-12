@@ -23,9 +23,11 @@ class CountryServiceImpl(
     }
 
     override fun saveBatch(list: List<CountryDto>): List<CountryDto> {
-        return list.map {
+        val saved = list.map {
             countryRepo.save(it)
         }.toList()
+
+        return saved
     }
 
     override fun update(dto: CountryDto) {

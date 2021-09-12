@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
@@ -80,6 +81,7 @@ class ArtistIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
+        logger.info("Artist Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
     }
 
@@ -90,6 +92,7 @@ class ArtistIntegrationTest(
     private fun cleanUp() {
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
+        logger.info("Artist Integration Test ended")
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.CountryRecord
 import jooq.tables.records.UnityRecord
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.decodeFromStringMap
@@ -16,8 +17,11 @@ data class UnityShortDto(
     val name: String,
     val imageLink : String?,
     val country: CountryDto?,
+    @Required
     val isFollowed: Boolean = false,
+    @Required
     override val overallFollowers: Int = 0,
+    @Required
     override val weeklyFollowers: Int = 0,
     ) : FollowableShortDto<UnityShortDto>, ConvertableToMap {
 

@@ -8,6 +8,7 @@ import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.ArtistRecord
 import jooq.tables.records.CountryRecord
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.decodeFromStringMap
@@ -22,8 +23,11 @@ data class ArtistFullDto(
     val soundcloudLink: String?,
     val instagramLink: String?,
     val about: String?,
+    @Required
     val isFollowed: Boolean = false,
+    @Required
     override val overallFollowers: Int = 0,
+    @Required
     override val weeklyFollowers: Int = 0,
     ) : FollowableFullDto<ArtistFullDto>, ConvertableToMap {
 

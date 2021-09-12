@@ -3,13 +3,13 @@ package com.postraves.backend.postraveswiki.data.converters
 import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.EventFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.EventShortDto
-import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.enum.EventStatus
 import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.records.*
 import org.springframework.stereotype.Service
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 interface EventConverters {
@@ -24,31 +24,47 @@ class EventConvertersImpl(
     ) : EventConverters {
 
     override fun createShortDtoFromRecords(eventRecord: EventRecord, ticketPrices: List<TicketPriceRecord>, placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isPlaceFollowed: Boolean, isEventFollowed: Boolean) : EventShortDto {
+
+        val placeOfEvent = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed)
+        val offsetFromUtcForThePlace = cityRecord.timeOffset ?: throw RecordFieldNullException("City time offset")
+        val startDateTimeWithTimeZone = eventRecord.startDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Event start date time")
+        val eventStatus = resolveEventStatus(eventRecord)
+        val ticketPricesDtos = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList()
+
         return EventShortDto(
             id = eventRecord.id ?: throw RecordFieldNullException("Event Id"),
             name = eventRecord.name ?: throw RecordFieldNullException("Event Name"),
             imageLink = eventRecord.imageLink,
-            ticketPrices = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList(),
-            place = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed),
-            startDateTime = eventRecord.startDateTime ?: throw RecordFieldNullException("Event start date time"),
+            ticketPrices = ticketPricesDtos,
+            place = placeOfEvent,
+            startDateTime = startDateTimeWithTimeZone,
             isFollowed = isEventFollowed,
-            status = resolveEventStatus(eventRecord)
+            status = eventStatus
         )
     }
 
     override fun createFullDtoFromRecords(eventRecord: EventRecord, ticketPrices: List<TicketPriceRecord>, placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isPlaceFollowed: Boolean, isEventFollowed: Boolean) : EventFullDto {
+
+        val placeOfEvent = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed)
+        val offsetFromUtcForThePlace = cityRecord.timeOffset ?: throw RecordFieldNullException("City time offset")
+        val startDateTimeWithTimeZone = eventRecord.startDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Event start date time")
+        val endDateTimeWithTimeZone = eventRecord.endDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Event end date time")
+        val eventStatus = resolveEventStatus(eventRecord)
+        val ticketPricesDtos = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList()
+
+
         return EventFullDto(
             id = eventRecord.id ?: throw RecordFieldNullException("Event Id"),
             name = eventRecord.name ?: throw RecordFieldNullException("Event Name"),
             imageLink = eventRecord.imageLink,
             about = eventRecord.about,
             ticketsLink = eventRecord.ticketsLink,
-            ticketPrices = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList(),
-            place = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed),
-            startDateTime = eventRecord.startDateTime ?: throw RecordFieldNullException("Event start date time"),
-            endDateTime = eventRecord.endDateTime,
+            ticketPrices = ticketPricesDtos,
+            place = placeOfEvent,
+            startDateTime = startDateTimeWithTimeZone,
+            endDateTime = endDateTimeWithTimeZone,
             isFollowed = isEventFollowed,
-            status = resolveEventStatus(eventRecord)
+            status = eventStatus,
         )
     }
 

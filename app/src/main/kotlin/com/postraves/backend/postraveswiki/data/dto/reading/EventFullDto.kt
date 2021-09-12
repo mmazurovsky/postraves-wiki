@@ -6,6 +6,7 @@ import com.postraves.backend.postraveswiki.data.enum.EventStatus
 import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import com.postraves.backend.postraveswiki.util.KOffsetDateTimeSerializer
 import jooq.tables.records.*
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 
@@ -21,10 +22,14 @@ data class EventFullDto(
     @Serializable(KOffsetDateTimeSerializer::class)
     val startDateTime: OffsetDateTime,
     @Serializable(KOffsetDateTimeSerializer::class)
-    val endDateTime: OffsetDateTime?,
+    val endDateTime: OffsetDateTime,
+    @Required
     val status: EventStatus? = null,
+    @Required
     val isFollowed: Boolean = false,
+    @Required
     override val overallFollowers: Int = 0,
+    @Required
     override val weeklyFollowers: Int = 0,
     ) : FollowableFullDto<EventFullDto> {
 

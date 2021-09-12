@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
@@ -56,6 +57,8 @@ class CityIntegrationTest(
     @BeforeAll
     private fun createCountriesForAssociations() {
 
+        logger.info("City Integration Test started")
+
         val country1 = CountryDto(
             name = "BE",
             nameRu = "NameRu",
@@ -93,6 +96,7 @@ class CityIntegrationTest(
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
+        logger.info("City Integration Test ended")
     }
 
     @Test

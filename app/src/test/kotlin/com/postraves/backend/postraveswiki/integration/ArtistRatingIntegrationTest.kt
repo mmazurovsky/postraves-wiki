@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
@@ -59,6 +60,8 @@ class ArtistRatingIntegrationTest(
 
     @BeforeAll
     private fun createCountryAndCityForAssociations() {
+
+        logger.info("Artist Rating Integration Test started")
 
         val country1 = CountryDto(
             name = "BE",
@@ -142,6 +145,7 @@ class ArtistRatingIntegrationTest(
     private fun cleanUp() {
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
+        logger.info("Artist Rating Integration Test ended")
     }
 
     @Test

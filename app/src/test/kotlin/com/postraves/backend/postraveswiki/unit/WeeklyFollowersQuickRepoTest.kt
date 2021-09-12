@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.unit
 
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.WeeklyFollowersQuickRepo
 import org.junit.jupiter.api.*
@@ -38,6 +39,7 @@ class WeeklyFollowersQuickRepoTest(
 
     @BeforeAll
     private fun clearAllData() {
+        logger.info("Weekly Followers Unit Test started")
         quickRepoCleaning.clearAllData()
     }
 
@@ -45,6 +47,7 @@ class WeeklyFollowersQuickRepoTest(
     private fun clearAll() {
         quickRepoCleaning.clearAllData()
         redisServer.stop()
+        logger.info("Weekly Followers Unit Test ended")
     }
 
     private fun doInWhileLoop(

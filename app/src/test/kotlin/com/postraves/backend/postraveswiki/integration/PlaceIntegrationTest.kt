@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
@@ -126,6 +127,7 @@ class PlaceIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
+        logger.info("Place Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTest1), status().isCreated)
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTest2), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
@@ -141,6 +143,7 @@ class PlaceIntegrationTest(
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         redisServer.stop()
+        logger.info("Place Integration Test ended")
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
@@ -142,6 +143,7 @@ class FollowingIntegrationTest(
 
     @BeforeAll
     private fun prepare() {
+        logger.info("Following Integration Test started")
         `when`(securityService.userAuthUid).thenReturn("abc")
         doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
@@ -162,6 +164,7 @@ class FollowingIntegrationTest(
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         redisServer.stop()
+        logger.info("Following Integration Test ended")
     }
 
     @Test

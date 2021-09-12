@@ -1,13 +1,13 @@
 package com.postraves.backend.postraveswiki.unit
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,13 +15,11 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.TestPropertySource
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 //@TestPropertySource(properties = ["spring.flyway.enabled=false"])
 class WeeklyBestQuickRepoTest(
@@ -35,8 +33,6 @@ class WeeklyBestQuickRepoTest(
     private val artistConverters: ArtistConverters,
     @Autowired
     private val countryService: CountryService,
-    @Autowired
-    private val artistService: ArtistService,
 ) : AbstractPostgresTest() {
 
     private val redisServer = RedisServer(redisPort)
@@ -53,14 +49,16 @@ class WeeklyBestQuickRepoTest(
 
     @BeforeAll
     private fun clearAllData() {
+        logger.info("Weekly Best Unit Test started")
         quickRepoCleaning.clearAllData()
     }
 
     @AfterAll
     private fun afterAll() {
-        quickRepoCleaning.clearAllData()
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
+        quickRepoCleaning.clearAllData()
         redisServer.stop()
+        logger.info("Weekly Best Unit Test ended")
     }
 
     @ExperimentalSerializationApi

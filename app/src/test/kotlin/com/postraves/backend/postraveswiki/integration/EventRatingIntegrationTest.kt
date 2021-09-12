@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
@@ -30,9 +31,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.transaction.annotation.Transactional
 import redis.embedded.RedisServer
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -161,6 +164,7 @@ class EventRatingIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
+        logger.info("Event Rating Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData2), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
@@ -186,6 +190,7 @@ class EventRatingIntegrationTest(
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         placeService.findAll().forEach { placeService.deleteById(it.id) }
         redisServer.stop()
+        logger.info("Event Rating Integration Test ended")
     }
 
     @Test

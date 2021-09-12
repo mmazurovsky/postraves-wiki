@@ -9,16 +9,19 @@ import jooq.tables.records.CountryRecord
 import jooq.tables.records.SceneRecord
 import jooq.tables.records.TimetableItemRecord
 import org.springframework.stereotype.Service
+import java.time.ZoneOffset
 
 interface TimetableConverters {
     fun createTimetableForSceneDto(
         sceneRecord: SceneRecord,
-        timetablePerformances: List<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>
+        timetablePerformances: List<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>,
+        offsetFromUtcForThePlace: Int,
     ): TimetableForSceneDto
 
     fun createTimetablePerformanceDto(
         timetableItemRecord: TimetableItemRecord,
-        artistsWithCountryAndIsFollowed: List<Triple<ArtistRecord, CountryRecord, Boolean>>
+        artistsWithCountryAndIsFollowed: List<Triple<ArtistRecord, CountryRecord, Boolean>>,
+        offsetFromUtcForThePlace: Int,
     ): TimetablePerformanceDto
 
     fun createTimetablePerformanceWriteDto(
@@ -36,27 +39,32 @@ class TimetableConvertersImpl(
 ) : TimetableConverters {
     override fun createTimetableForSceneDto(
         sceneRecord: SceneRecord,
-        timetablePerformances: List<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>
+        timetablePerformances: List<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>,
+        offsetFromUtcForThePlace: Int,
     ): TimetableForSceneDto {
         return TimetableForSceneDto(
             scene = sceneConverters.createDtoFromRecord(sceneRecord),
             performances = timetablePerformances
                 .map {
-                    createTimetablePerformanceDto(it.first, it.second)
+                    createTimetablePerformanceDto(it.first, it.second, offsetFromUtcForThePlace)
                 }.toList()
         )
     }
 
     override fun createTimetablePerformanceDto(
         timetableItemRecord: TimetableItemRecord,
-        artistsWithCountryAndIsFollowed: List<Triple<ArtistRecord, CountryRecord, Boolean>>
+        artistsWithCountryAndIsFollowed: List<Triple<ArtistRecord, CountryRecord, Boolean>>,
+        offsetFromUtcForThePlace: Int,
     ): TimetablePerformanceDto {
+
+        val startDateTimeWithTimeZone = timetableItemRecord.startingDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Timetable Performance starting datetime")
+        val endDateTimeWithTimeZone = timetableItemRecord.endingDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Timetable Performance ending datetime")
+
         return TimetablePerformanceDto(
             id = timetableItemRecord.id ?: throw RecordFieldNullException("Timetable Performance Id"),
             typeOfPerformance = timetableItemRecord.typeOfPerformance,
-            startingDateTime = timetableItemRecord.startingDateTime
-                ?: throw RecordFieldNullException("Timetable Performance starting datetime"),
-            endingDateTime = timetableItemRecord.endingDateTime,
+            startingDateTime = startDateTimeWithTimeZone,
+            endingDateTime = endDateTimeWithTimeZone,
             artists = artistsWithCountryAndIsFollowed
                 .map {
                     artistConverters.createShortDtoFromRecord(it.first, it.second, it.third)

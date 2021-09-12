@@ -8,6 +8,7 @@ import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.CountryRecord
 import jooq.tables.records.UnityRecord
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.decodeFromStringMap
@@ -23,8 +24,11 @@ data class UnityFullDto(
     val instagramLink: String?,
     val bandcampLink: String?,
     val about: String?,
+    @Required
     val isFollowed: Boolean = false,
+    @Required
     override val overallFollowers: Int = 0,
+    @Required
     override val weeklyFollowers: Int = 0,
     ) : FollowableFullDto<UnityFullDto>, ConvertableToMap {
 

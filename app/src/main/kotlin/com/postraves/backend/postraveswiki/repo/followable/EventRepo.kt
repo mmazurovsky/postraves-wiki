@@ -326,6 +326,17 @@ class EventRepoImpl(
     }
 
     override fun getTimetableForEvent(authUid: String?, id: Long): List<TimetableForSceneDto> {
+
+        val cityOfEvent = dsl
+            .select()
+            .from(EVENT)
+            .leftOuterJoin(PLACE).on(PLACE.ID.eq(EVENT.PLACE_ID))
+            .leftOuterJoin(CITY).on(CITY.NAME.eq(PLACE.CITY_NAME))
+            .where(EVENT.ID.eq(id))
+            .fetchInto(CITY)
+
+        val timeOffsetOfCity = cityOfEvent[0].timeOffset ?: TODO()
+
         val timetableItems = dsl
             .select()
             .from(TIMETABLE_ITEM)
@@ -384,7 +395,7 @@ class EventRepoImpl(
         }
 
         return mapOfScenePerformances.map {
-            timetableConverters.createTimetableForSceneDto(it.key, it.value)
+            timetableConverters.createTimetableForSceneDto(it.key, it.value, timeOffsetOfCity)
         }.toList()
     }
 

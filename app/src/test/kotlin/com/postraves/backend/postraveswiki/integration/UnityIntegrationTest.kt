@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityFullDto
@@ -88,6 +89,7 @@ class UnityIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
+        logger.info("Unity Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
     }
 
@@ -101,6 +103,7 @@ class UnityIntegrationTest(
     private fun cleanUp() {
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
+        logger.info("Unity Integration Test ended")
     }
 
     @Test

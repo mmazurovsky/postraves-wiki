@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.dev
 
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
@@ -13,7 +14,11 @@ import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Component
 
+@Component
 class DevReferenceData(
     private val countryService: CountryService,
     private val cityService: CityService,
@@ -158,7 +163,7 @@ class DevReferenceData(
         id = null,
         name = "Main",
         imageLink = "https://www.restoclub.ru/uploads/place_thumbnail_big/7/a/4/c/7a4ccc935aa721cc69fce4d716c5a544.jpg",
-        priority = 1,
+        priority = 3,
     )
 
     val sceneMutaborMedium = SceneDto(
@@ -172,7 +177,7 @@ class DevReferenceData(
         id = null,
         name = "Garden",
         imageLink = "",
-        priority = 3,
+        priority = 1,
     )
 
     val unitySystem = UnityWriteDto(
@@ -272,7 +277,7 @@ class DevReferenceData(
 
     val artistAllien = ArtistWriteDto(
         id = null,
-        name = "Sofia Rodina",
+        name = "Ellen Allien",
         imageLink = "https://geo-static.traxsource.com/files/artists/5349.jpg",
         countryName = "DE",
         about = null,
@@ -390,6 +395,19 @@ class DevReferenceData(
         soundcloudLink = null,
     )
 
+//    @EventListener(ApplicationReadyEvent::class)
+    // todo activate this only on dev
+    fun manageData() {
+        countryService.findAll().forEach { countryService.deleteByName(it.name) }
+        cityService.findAll().forEach { cityService.deleteByName(it.name) }
+        placeService.findAll().forEach { placeService.deleteById(it.id) }
+        unityService.findAll().forEach { unityService.deleteById(it.id) }
+        artistService.findAll().forEach { artistService.deleteById(it.id) }
+        eventService.findAll().forEach { eventService.deleteById(it.id) }
+
+        writeReferenceData()
+    }
+
     fun writeReferenceData() {
         val savedCountries = countryService.saveBatch(
             listOf(
@@ -408,17 +426,13 @@ class DevReferenceData(
             )
         )
 
-        val savedPlaces = placeService.saveBatch(
-            listOf(
-                placeMutabor,
-                placeGazgolder,
-                placePowerhouse,
-                placeSlezy,
-            )
-        )
+        val placeMutaborSaved = placeService.save(placeMutabor)
+        val placeGazgoldeSaved = placeService.save(placeGazgolder)
+        val placePowerhouseSaved = placeService.save(placePowerhouse)
+        val placeSlezySaved = placeService.save(placeSlezy)
 
-        val savedScenesMutabor = placeService.updateScenesOfPlace(
-            savedPlaces[0].id,
+        placeService.updateScenesOfPlace(
+            placeMutaborSaved.id,
             listOf(
                 sceneMutaborMain,
                 sceneMutaborMedium,
@@ -426,51 +440,45 @@ class DevReferenceData(
             )
         )
 
-        val savedUnities = unityService.saveBatch(
-            listOf(
-                unitySystem,
-                unityArma,
-                unityMonasterio,
-                unityRabitsa,
-                unityNii,
-            )
-        )
+        val scenesMutaborSaved = placeService.getAllScenes()
 
-        val savedArtists = artistService.saveBatch(
-            listOf(
-                artistAbelle,
-                artistAllien,
-                artistBejenec,
-                artistCuve,
-                artistChronic,
-                artistFarrago,
-                artistGorbachev,
-                artistKolosova,
-                artistLens,
-                artistMashkov,
-                artistModels,
-                artistMujuice,
-                artistParfait,
-                artistRodina,
-                artistVillalobos,
-                artistZots
+        val unitySystemSaved = unityService.save(unitySystem)
+        val unityArmaSaved = unityService.save(unityArma)
+        val unityMonasterioSaved = unityService.save(unityMonasterio)
+        val unityRabitsaSaved = unityService.save(unityRabitsa)
+        val unityNiiSaved = unityService.save(unityNii)
+
+        val artistAbelleSaved = artistService.save(artistAbelle)
+        val artistAllienSaved = artistService.save(artistAllien)
+        val artistBejenecSaved = artistService.save(artistBejenec)
+        val artistCuveSaved = artistService.save(artistCuve)
+        val artistChronicSaved = artistService.save(artistChronic)
+        val artistFarragoSaved = artistService.save(artistFarrago)
+        val artistGorbachevSaved = artistService.save(artistGorbachev)
+        val artistKolosovaSaved = artistService.save(artistKolosova)
+        val artistLensSaved = artistService.save(artistLens)
+        val artistMashkovSaved = artistService.save(artistMashkov)
+        val artistModelsSaved = artistService.save(artistModels)
+        val artistMujuiceSaved = artistService.save(artistMujuice)
+        val artistParfaitSaved = artistService.save(artistParfait)
+        val artistRodinaSaved = artistService.save(artistRodina)
+        val artistVillalobosSaved = artistService.save(artistVillalobos)
+        val artistZotsSaved = artistService.save(artistZots)
+
+        unityService.updateArtistsOfUnity(
+            unitySystemSaved.id, setOf(
+                artistMashkovSaved.id,
+                artistGorbachevSaved.id,
+                artistKolosovaSaved.id,
+                artistBejenecSaved.id,
+                artistChronicSaved.id,
             )
         )
 
         unityService.updateArtistsOfUnity(
-            savedUnities[0].id, setOf(
-                savedArtists[2].id,
-                savedArtists[4].id,
-                savedArtists[6].id,
-                savedArtists[7].id,
-                savedArtists[9].id,
-            )
-        )
-        
-        unityService.updateArtistsOfUnity(
-            savedUnities[1].id, setOf(
-                savedArtists[0].id,
-                savedArtists[15].id,
+            unityArmaSaved.id, setOf(
+                artistAbelleSaved.id,
+                artistZotsSaved.id,
             )
         )
 
@@ -489,9 +497,9 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 )
             ),
-            placeId = savedPlaces[0].id,
+            placeId = placeMutaborSaved.id,
             organizers = setOf(
-                savedUnities[0].id
+                unitySystemSaved.id
             )
         )
 
@@ -510,9 +518,9 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 )
             ),
-            placeId = savedPlaces[0].id,
+            placeId = placeMutaborSaved.id,
             organizers = setOf(
-                savedUnities[1].id
+                unityArmaSaved.id
             )
         )
 
@@ -536,12 +544,12 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[3].id,
+            placeId = placeSlezySaved.id,
             organizers = setOf(
-                savedUnities[0].id,
-                savedUnities[1].id,
-                savedUnities[2].id,
-                savedUnities[3].id,
+                unityMonasterioSaved.id,
+                unityNiiSaved.id,
+                unityRabitsaSaved.id,
+                unityArmaSaved.id,
             )
         )
 
@@ -560,7 +568,7 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[2].id,
+            placeId = placePowerhouseSaved.id,
             organizers = setOf(
             )
         )
@@ -590,7 +598,7 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[1].id,
+            placeId = placeGazgoldeSaved.id,
             organizers = setOf(
             )
         )
@@ -620,7 +628,7 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[1].id,
+            placeId = placeGazgoldeSaved.id,
             organizers = setOf(
             )
         )
@@ -645,7 +653,7 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[0].id,
+            placeId = placeMutaborSaved.id,
             organizers = setOf(
             )
         )
@@ -675,10 +683,10 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[0].id,
+            placeId = placeMutaborSaved.id,
             organizers = setOf(
-                savedUnities[3].id,
-                savedUnities[4].id,
+                unityNiiSaved.id,
+                unityRabitsaSaved.id,
             )
         )
 
@@ -707,7 +715,7 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[0].id,
+            placeId = placeMutaborSaved.id,
             organizers = setOf(
             )
         )
@@ -737,9 +745,9 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[0].id,
+            placeId = placeMutaborSaved.id,
             organizers = setOf(
-                savedUnities[2].id
+                unityMonasterioSaved.id
             )
         )
 
@@ -763,26 +771,99 @@ class DevReferenceData(
                     currency = MoneyCurrency.RUB
                 ),
             ),
-            placeId = savedPlaces[0].id,
+            placeId = placeMutaborSaved.id,
             organizers = setOf(
-                savedUnities[0].id
+                unitySystemSaved.id
             )
         )
 
-        eventService.saveBatch(
-            listOf(
-                eventSystem,
-                eventRadost,
-                eventSanchez,
-                eventSynchron,
-                eventCombo,
-                eventApplique,
-                eventHyperboloid,
-                eventRabitsa,
-                eventPax,
-                eventVillalobos,
-                eventMonasterio,
+        val eventSystemSaved = eventService.save(eventSystem)
+        val eventRadostSaved = eventService.save(eventRadost)
+        val eventSanchezSaved = eventService.save(eventSanchez)
+        val eventSynchronSaved = eventService.save(eventSynchron)
+        val eventComboSaved = eventService.save(eventCombo)
+        val eventAppliqueSaved = eventService.save(eventApplique)
+        val eventHyperboloidSaved = eventService.save(eventHyperboloid)
+        val eventRabitsaSaved = eventService.save(eventRabitsa)
+        val eventPaxSaved = eventService.save(eventPax)
+        val eventVillalobosSaved = eventService.save(eventVillalobos)
+        val eventMonasterioSaved = eventService.save(eventMonasterio)
+
+        val performance1 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = null,
+            artistIds = setOf(artistZotsSaved.id),
+            typeOfPerformance = null,
+            startingDateTime = null,
+            endingDateTime = null
+        )
+
+        val performance2 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[0].id,
+            artistIds = setOf(artistBejenecSaved.id),
+            typeOfPerformance = "DJ SET",
+            startingDateTime = dateTimeProvider.getNow().minusHours(1),
+            endingDateTime = dateTimeProvider.getNow().plusHours(6)
+        )
+
+        val performance3 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[0].id,
+            artistIds = setOf(artistAbelleSaved.id, artistAllienSaved.id, artistCuveSaved.id),
+            typeOfPerformance = null,
+            startingDateTime = dateTimeProvider.getNow().minusHours(6),
+            endingDateTime = dateTimeProvider.getNow().plusHours(8)
+        )
+
+        val performance4 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[0].id,
+            artistIds = setOf(artistAbelleSaved.id, artistChronicSaved.id),
+            typeOfPerformance = null,
+            startingDateTime = dateTimeProvider.getNow().minusHours(8),
+            endingDateTime = dateTimeProvider.getNow().plusHours(9)
+        )
+
+        val performance5 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[0].id,
+            artistIds = setOf(artistGorbachevSaved.id),
+            typeOfPerformance = null,
+            startingDateTime = dateTimeProvider.getNow().minusHours(9),
+            endingDateTime = dateTimeProvider.getNow().plusHours(9).plusMinutes(1)
+        )
+
+        val performance6 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[1].id,
+            artistIds = setOf(artistGorbachevSaved.id),
+            typeOfPerformance = null,
+            startingDateTime = dateTimeProvider.getNow().minusHours(9),
+            endingDateTime = dateTimeProvider.getNow().minusHours(1)
+        )
+
+        val performance7 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[1].id,
+            artistIds = setOf(artistMashkovSaved.id),
+            typeOfPerformance = "Trance music",
+            startingDateTime = dateTimeProvider.getNow().plusHours(1),
+            endingDateTime = dateTimeProvider.getNow().plusHours(6)
+        )
+
+        eventService.updateTimetableForEvent(
+            eventSystemSaved.id, setOf(
+                performance1,
+                performance2,
+                performance3,
+                performance4,
+                performance5,
+                performance6,
+                performance7,
             )
         )
+
+        logger.info("Reference data is written")
     }
 }
