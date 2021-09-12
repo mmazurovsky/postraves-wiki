@@ -14,12 +14,13 @@ data class EventWriteDto(
     val imageLink : String?,
     val about: String?,
     val ticketsLink: String?,
-    val ticketPrices: List<TicketPriceDto>,
+    val ticketPrices: Collection<TicketPriceDto>,
     @Serializable(KOffsetDateTimeSerializer::class)
     val startDateTime: OffsetDateTime,
     @Serializable(KOffsetDateTimeSerializer::class)
     val endDateTime: OffsetDateTime?,
     val placeId: Long,
+    val organizers: Set<Long>,
 ) : BaseWriteDto {
 
     fun transferDataToDbRecord(record: EventRecord) {

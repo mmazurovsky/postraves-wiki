@@ -11,16 +11,9 @@ import kotlinx.serialization.*
 @Serializable
 data class CityDto(
     val name: String,
+    val nameRu: String,
+    val nameUk: String,
+    val nameDe: String,
+    val nameFr: String,
     val country: CountryDto,
-) : BaseShortDto, BaseFullDto {
-    
-    companion object FactoryDbRecord {
-        fun createOutOfDbRecords(cityRecord: CityRecord, countryRecord: CountryRecord) : CityDto {
-            return CityDto(
-                name = cityRecord.name ?: throw RecordFieldNullException("City Name"),
-                country = CountryDto.createOutOfDbRecords(countryRecord)
-            )
-        }
-    }
-    }
-
+) : BaseShortDto, BaseFullDto

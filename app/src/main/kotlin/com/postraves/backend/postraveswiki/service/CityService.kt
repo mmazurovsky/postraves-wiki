@@ -13,14 +13,20 @@ interface CityService :
 @Service
 class CityServiceImpl(
     private val cityRepo: CityRepo,
-    ) : CityService {
+) : CityService {
 
     override fun findByName(name: String): CityDto {
         return cityRepo.findByName(name)
     }
 
-    override fun save(dto: CityWriteDto):CityDto {
+    override fun save(dto: CityWriteDto): CityDto {
         return cityRepo.save(dto)
+    }
+
+    override fun saveBatch(list: List<CityWriteDto>): List<CityDto> {
+        return list.map {
+            cityRepo.save(it)
+        }.toList()
     }
 
     override fun update(dto: CityWriteDto) {

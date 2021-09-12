@@ -25,3 +25,4 @@ interface BaseFullDtoWithId : BaseFullDto, BaseIdDto
 interface FollowableFullDto<T> : BaseFullDtoWithId, FollowableDto<T>
 
 interface BaseWriteDto : BaseDto
+interface BaseIdWriteDto : BaseIdDto

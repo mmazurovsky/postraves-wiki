@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.repo
 
+import com.postraves.backend.postraveswiki.data.converters.CountryConverters
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
@@ -20,6 +21,7 @@ interface CountryRepo :
 
 @Repository
 class CountryImplRepo(
+    private val countryConverters: CountryConverters,
     private val dateTimeProvider: DateTimeProvider,
     ) : CountryRepo {
 
@@ -34,12 +36,12 @@ class CountryImplRepo(
 
     override fun findByName(name: String): CountryDto {
         val found = findByNameWithoutJoins(name)
-        return CountryDto.createOutOfDbRecords(found.into(COUNTRY))
+        return countryConverters.createDtoFromRecord(found.into(COUNTRY))
     }
 
     override fun save(dto: CountryDto): CountryDto {
         val countryToSave = dsl.newRecord(COUNTRY)
-        dto.transferDataToDbRecord(countryToSave)
+        countryConverters.transferDataFromDtoToRecord(dto, countryToSave)
         countryToSave.createdDateTime = dateTimeProvider.getNow()
         countryToSave.store()
         return findByName(countryToSave.name ?: throw SaveException("Country", dto.name))
@@ -47,7 +49,7 @@ class CountryImplRepo(
 
     override fun update(dto: CountryDto) {
         val countryToUpdate = findByNameWithoutJoins(dto.name)
-        dto.transferDataToDbRecord(countryToUpdate)
+        countryConverters.transferDataFromDtoToRecord(dto, countryToUpdate)
         countryToUpdate.update()
     }
 
@@ -59,7 +61,9 @@ class CountryImplRepo(
         val results = dsl
             .selectFrom(COUNTRY)
             .fetch()
-            .map { CountryDto.createOutOfDbRecords(it.into(COUNTRY)) }
+            .map {
+                countryConverters.createDtoFromRecord(it.into(COUNTRY))
+            }
             .toList()
         return results
     }
@@ -69,7 +73,9 @@ class CountryImplRepo(
             .selectFrom(COUNTRY)
             .where(DSL.lower(CITY.NAME).contains(namePart.lowercase()))
             .fetch()
-            .map { CountryDto.createOutOfDbRecords(it.into(COUNTRY)) }
+            .map {
+                countryConverters.createDtoFromRecord(it.into(COUNTRY))
+            }
             .toList()
         return results
     }

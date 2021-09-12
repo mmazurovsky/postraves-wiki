@@ -18,7 +18,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row4
+import org.jooq.Row8
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -67,6 +67,26 @@ open class Country(
      * The column <code>public.country.name</code>.
      */
     val NAME: TableField<CountryRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(3).nullable(false), this, "")
+
+    /**
+     * The column <code>public.country.name_ru</code>.
+     */
+    val NAME_RU: TableField<CountryRecord, String?> = createField(DSL.name("name_ru"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+
+    /**
+     * The column <code>public.country.name_uk</code>.
+     */
+    val NAME_UK: TableField<CountryRecord, String?> = createField(DSL.name("name_uk"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+
+    /**
+     * The column <code>public.country.name_de</code>.
+     */
+    val NAME_DE: TableField<CountryRecord, String?> = createField(DSL.name("name_de"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+
+    /**
+     * The column <code>public.country.name_fr</code>.
+     */
+    val NAME_FR: TableField<CountryRecord, String?> = createField(DSL.name("name_fr"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
      * The column <code>public.country.created_date_time</code>.
@@ -119,7 +139,7 @@ open class Country(
     override fun rename(name: Name): Country = Country(name, null)
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row4<String?, OffsetDateTime?, String?, String?> = super.fieldsRow() as Row4<String?, OffsetDateTime?, String?, String?>
+    override fun fieldsRow(): Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?> = super.fieldsRow() as Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?>
 }

@@ -13,14 +13,4 @@ data class ArtistWriteDto(
     val soundcloudLink: String?,
     val instagramLink: String?,
     val about: String?,
-) : BaseWriteDto {
-
-    fun transferDataToDbRecord(record: ArtistRecord) {
-        record.name = name
-        record.imageLink = imageLink
-        record.countryName = countryName
-        record.soundcloudLink = soundcloudLink
-        record.instagramLink = instagramLink
-        record.about = about
-    }
-}
+) : BaseWriteDto

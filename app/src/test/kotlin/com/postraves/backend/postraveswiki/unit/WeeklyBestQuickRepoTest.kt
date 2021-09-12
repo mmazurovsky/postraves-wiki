@@ -1,9 +1,13 @@
 package com.postraves.backend.postraveswiki.unit
 
+import com.postraves.backend.postraveswiki.AbstractPostgresTest
+import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
+import com.postraves.backend.postraveswiki.service.CountryService
+import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +23,7 @@ import kotlin.test.assertEquals
 @ActiveProfiles(value = ["test"])
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource(properties = ["spring.flyway.enabled=false"])
+//@TestPropertySource(properties = ["spring.flyway.enabled=false"])
 class WeeklyBestQuickRepoTest(
     @Value("\${spring.redis.port}")
     redisPort: Int,
@@ -27,7 +31,13 @@ class WeeklyBestQuickRepoTest(
     private val quickRepoCleaning: CleaningQuickRepo,
     @Autowired @Qualifier("artistWeeklyBestQuickRepoImpl")
     private val weeklyBestQuickRepoTest: WeeklyBestQuickRepo,
-) {
+    @Autowired
+    private val artistConverters: ArtistConverters,
+    @Autowired
+    private val countryService: CountryService,
+    @Autowired
+    private val artistService: ArtistService,
+) : AbstractPostgresTest() {
 
     private val redisServer = RedisServer(redisPort)
 
@@ -49,6 +59,7 @@ class WeeklyBestQuickRepoTest(
     @AfterAll
     private fun afterAll() {
         quickRepoCleaning.clearAllData()
+        countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
     }
 
@@ -57,15 +68,21 @@ class WeeklyBestQuickRepoTest(
     fun setBestAndGet() {
         val countryToSave = CountryDto(
             name = "BE",
+            nameRu = "NameRu",
+            nameUk = "NameUk",
+            nameDe = "NameDe",
+            nameFr = "NameFr",
             phoneCode = "+7",
-            emojiCode = "EBE"
+            emojiCode = null
         )
+
+        val savedCountry = countryService.save(countryToSave)
 
         val artistTestData = ArtistShortDto(
             id = 1,
             name = "Amelie Lens",
             imageLink = "image",
-            country = countryToSave,
+            country = savedCountry,
             weeklyFollowers = 11,
             overallFollowers = 200
         )
@@ -73,7 +90,7 @@ class WeeklyBestQuickRepoTest(
         weeklyBestQuickRepoTest.setWeeklyBestInCountry(countryToSave.name, artistTestData.toMap())
         val persistedMap = weeklyBestQuickRepoTest.getWeeklyBestInCountry(countryToSave.name)
 
-        val persistedArtist = ArtistShortDto.fromMap(persistedMap!!)
+        val persistedArtist = artistConverters.createShortDtoFromMap(persistedMap!!)
 
         assertEquals(artistTestData, persistedArtist)
     }

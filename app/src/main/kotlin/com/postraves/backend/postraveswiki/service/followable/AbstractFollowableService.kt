@@ -1,9 +1,6 @@
 package com.postraves.backend.postraveswiki.service.followable
 
-import com.postraves.backend.postraveswiki.data.dto.FollowableShortDto
-import com.postraves.backend.postraveswiki.data.dto.FollowableDto
-import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
-import com.postraves.backend.postraveswiki.data.dto.FollowableFullDto
+import com.postraves.backend.postraveswiki.data.dto.*
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
@@ -67,11 +64,20 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
     abstract fun checkLocationsAndRemoveFromLocationsQuickRepos(dto: FULLDTO)
 
     override fun save(dto: WRITEDTO): SHORTDTO {
+        preProcessBeforeSaving(dto)
         val saved = entityRepo.save(dto)
         checkLocationsAndAddToLocationsQuickRepos(dto, saved.id)
         entityOverallFollowersQuickRepo.setInitialFollowers(saved.id)
         entityWeeklyFollowersQuickRepo.setInitialFollowers(saved.id)
         return saved
+    }
+
+    open fun preProcessBeforeSaving(dto: WRITEDTO) {}
+
+    override fun saveBatch(list: List<WRITEDTO>): List<SHORTDTO> {
+        return list.map {
+            entityRepo.save(it)
+        }.toList()
     }
 
     abstract fun checkLocationsAndAddToLocationsQuickRepos(dto: WRITEDTO, id: Long)

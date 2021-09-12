@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
@@ -37,6 +38,16 @@ class CountryIntegrationTest(
     private val countryEndpoint: String = "/country"
     private val redisServer = RedisServer(redisPort)
 
+    private val countryTestData = CountryDto(
+        name = "BE",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
+        phoneCode = "+7",
+        emojiCode = null
+    )
+
     init {
         redisServer.start()
     }
@@ -53,11 +64,7 @@ class CountryIntegrationTest(
     @Test
     fun saveCountry() {
 
-        val countryToSave = CountryDto(
-            name = "BE",
-            phoneCode = "+7",
-            emojiCode = "EBE"
-        )
+        val countryToSave = countryTestData
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
@@ -67,22 +74,18 @@ class CountryIntegrationTest(
 
         assertEquals(countryToSave.name, responseCountry.name)
         assertEquals(countryToSave.phoneCode, responseCountry.phoneCode)
-        assertEquals(countryToSave.emojiCode, responseCountry.emojiCode)
+        assertNotNull(responseCountry.emojiCode)
     }
 
     @Test
     fun saveAndUpdateCountry() {
 
-        val countryToSave = CountryDto(
-            name = "BE",
-            phoneCode = "+7",
-            emojiCode = "EBE"
-        )
+        val countryToSave = countryTestData
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        val countryToUpdate = countryToSave.copy(phoneCode = "+8", emojiCode = "BEBE")
+        val countryToUpdate = countryToSave.copy(phoneCode = "+8", emojiCode = null)
         val countryUpdateJson = Json.encodeToString(countryToUpdate)
         Requests.makePutRequest(mockMvc, countryEndpoint, countryUpdateJson, status().isOk)
 
@@ -91,17 +94,13 @@ class CountryIntegrationTest(
 
         assertEquals(countryToUpdate.name, responseCountry.name)
         assertEquals(countryToUpdate.phoneCode, responseCountry.phoneCode)
-        assertEquals(countryToUpdate.emojiCode, responseCountry.emojiCode)
+        assertNotNull(responseCountry.emojiCode)
     }
 
     @Test
     fun saveAndFindByName() {
 
-        val countryToSave = CountryDto(
-            name = "BE",
-            phoneCode = "+7",
-            emojiCode = "EBE"
-        )
+        val countryToSave = countryTestData
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
@@ -111,17 +110,13 @@ class CountryIntegrationTest(
 
         assertEquals(countryToSave.name, responseCountry.name)
         assertEquals(countryToSave.phoneCode, responseCountry.phoneCode)
-        assertEquals(countryToSave.emojiCode, responseCountry.emojiCode)
+        assertNotNull(responseCountry.emojiCode)
     }
 
     @Test
     fun saveAndDeleteByName() {
 
-        val countryToSave = CountryDto(
-            name = "BE",
-            phoneCode = "+7",
-            emojiCode = "EBE"
-        )
+        val countryToSave = countryTestData
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
@@ -135,22 +130,18 @@ class CountryIntegrationTest(
     @Test
     fun saveMultipleAndFindAll() {
 
-        val countryToSave1 = CountryDto(
-            name = "BE",
-            phoneCode = "+7",
-            emojiCode = "EBE"
-        )
+        val countryToSave1 = countryTestData
 
-        val countryToSave2 = CountryDto(
+        val countryToSave2 = countryToSave1.copy(
             name = "NI",
             phoneCode = "+8",
-            emojiCode = "NIL"
+            emojiCode = null
         )
 
-        val countryToSave3 = CountryDto(
+        val countryToSave3 = countryToSave1.copy(
             name = "LUX",
             phoneCode = "+9",
-            emojiCode = "LUXE"
+            emojiCode = null
         )
 
         val countryJson1 = Json.encodeToString(countryToSave1)

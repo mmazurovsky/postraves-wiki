@@ -19,6 +19,7 @@ interface EventConverters {
 
 @Service
 class EventConvertersImpl(
+    private val placeConverters: PlaceConverters,
     private val dateTimeProvider: DateTimeProvider,
     ) : EventConverters {
 
@@ -28,7 +29,7 @@ class EventConvertersImpl(
             name = eventRecord.name ?: throw RecordFieldNullException("Event Name"),
             imageLink = eventRecord.imageLink,
             ticketPrices = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList(),
-            place = PlaceShortDto.createOutOfDbRecords(placeRecord, cityRecord, countryRecord, isPlaceFollowed),
+            place = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed),
             startDateTime = eventRecord.startDateTime ?: throw RecordFieldNullException("Event start date time"),
             isFollowed = isEventFollowed,
             status = resolveEventStatus(eventRecord)
@@ -43,7 +44,7 @@ class EventConvertersImpl(
             about = eventRecord.about,
             ticketsLink = eventRecord.ticketsLink,
             ticketPrices = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList(),
-            place = PlaceShortDto.createOutOfDbRecords(placeRecord, cityRecord, countryRecord, isPlaceFollowed),
+            place = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed),
             startDateTime = eventRecord.startDateTime ?: throw RecordFieldNullException("Event start date time"),
             endDateTime = eventRecord.endDateTime,
             isFollowed = isEventFollowed,

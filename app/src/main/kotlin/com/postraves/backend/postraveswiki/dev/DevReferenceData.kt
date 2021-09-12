@@ -1,0 +1,788 @@
+package com.postraves.backend.postraveswiki.dev
+
+import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
+import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
+import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
+import com.postraves.backend.postraveswiki.data.dto.writing.*
+import com.postraves.backend.postraveswiki.data.enum.MoneyCurrency
+import com.postraves.backend.postraveswiki.service.CityService
+import com.postraves.backend.postraveswiki.service.CountryService
+import com.postraves.backend.postraveswiki.service.followable.ArtistService
+import com.postraves.backend.postraveswiki.service.followable.EventService
+import com.postraves.backend.postraveswiki.service.followable.PlaceService
+import com.postraves.backend.postraveswiki.service.followable.UnityService
+import com.postraves.backend.postraveswiki.util.DateTimeProvider
+
+class DevReferenceData(
+    private val countryService: CountryService,
+    private val cityService: CityService,
+    private val placeService: PlaceService,
+    private val unityService: UnityService,
+    private val artistService: ArtistService,
+    private val eventService: EventService,
+    private val dateTimeProvider: DateTimeProvider,
+) {
+
+    val countryRu = CountryDto(
+        name = "RU",
+        nameRu = "Россия",
+        nameUk = "Russia",
+        nameDe = "Russia2",
+        nameFr = "Russia3",
+        phoneCode = "+7",
+        emojiCode = null
+    )
+
+    val countryUa = CountryDto(
+        name = "UA",
+        nameRu = "Украина",
+        nameUk = "Ukraine",
+        nameDe = "Ukraine2",
+        nameFr = "Ukraine3",
+        phoneCode = "+380",
+        emojiCode = null
+    )
+
+    val countryBe = CountryDto(
+        name = "BE",
+        nameRu = "Бельгия",
+        nameUk = "Belgium",
+        nameDe = "Belgium2",
+        nameFr = "Belgium3",
+        phoneCode = "+32",
+        emojiCode = null
+    )
+
+    val countryDe = CountryDto(
+        name = "DE",
+        nameRu = "Германия",
+        nameUk = "Germany",
+        nameDe = "Germany2",
+        nameFr = "Germany3",
+        phoneCode = "+49",
+        emojiCode = null
+    )
+
+    val countryFr = CountryDto(
+        name = "FR",
+        nameRu = "Франция",
+        nameUk = "France",
+        nameDe = "France2",
+        nameFr = "France3",
+        phoneCode = "+33",
+        emojiCode = null
+    )
+
+    val cityMoscow = CityWriteDto(
+        name = "RU_Moscow",
+        countryName = "RU",
+        nameRu = "Москва",
+        nameUk = "Moscow",
+        nameDe = "Moscow2",
+        nameFr = "Moscow3",
+        timeOffset = 3
+    )
+
+    val cityPetersburg = CityWriteDto(
+        name = "RU_Petersburg",
+        countryName = "RU",
+        nameRu = "Санкт-Петербург",
+        nameUk = "Saint-Petersburg",
+        nameDe = "Saint-Petersburg2",
+        nameFr = "Saint-Petersburg3",
+        timeOffset = 3
+    )
+
+    val placeMutabor = PlaceWriteDto(
+        id = null,
+        name = "Mutabor",
+        cityName = cityMoscow.name,
+        imageLink = "https://mutabor.club/img/mutabor.jpg",
+        streetAddress = "Sharikopodshipnikovskaya Ulitsa, 13, с32",
+        coordinate = CoordinateDto(
+            latitude = 55.719591,
+            longitude = 37.686350,
+        ),
+        soundcloudLink = "sc link",
+        instagramLink = "insta link",
+        about = "about Mutabor",
+    )
+
+    val placeSlezy = PlaceWriteDto(
+        id = null,
+        name = "Слёзы",
+        cityName = cityMoscow.name,
+        imageLink = "https://gotoparty.ru/public/img/upload/page/4819/a4cf318f0783514426f29cb0d2e0650c_200x200.jpg",
+        streetAddress = "Костомаровский пер., 3",
+        coordinate = CoordinateDto(
+            latitude = 55.719591,
+            longitude = 37.686350,
+        ),
+        soundcloudLink = "sc link",
+        instagramLink = "insta link",
+        about = "about Slezy",
+    )
+
+    val placePowerhouse = PlaceWriteDto(
+        id = null,
+        name = "Powerhouse",
+        cityName = cityMoscow.name,
+        imageLink = "",
+        streetAddress = "Гончарная, 7/4",
+        coordinate = CoordinateDto(
+            latitude = 55.719591,
+            longitude = 37.686350,
+        ),
+        soundcloudLink = "sc link",
+        instagramLink = "insta link",
+        about = "about Powerhouse",
+    )
+
+    val placeGazgolder = PlaceWriteDto(
+        id = null,
+        name = "Gazgolder",
+        cityName = cityMoscow.name,
+        imageLink = "",
+        streetAddress = "Нижний Сусальный пер. 5, стр. 26 ГазгольдербайБастаэнд хис паверфул френдс ГазгольдербайБастаэнд хис паверфул френдс",
+        coordinate = CoordinateDto(
+            latitude = 55.719591,
+            longitude = 37.686350,
+        ),
+        soundcloudLink = "sc link",
+        instagramLink = "insta link",
+        about = "about Gazgolder",
+    )
+
+    val sceneMutaborMain = SceneDto(
+        id = null,
+        name = "Main",
+        imageLink = "https://www.restoclub.ru/uploads/place_thumbnail_big/7/a/4/c/7a4ccc935aa721cc69fce4d716c5a544.jpg",
+        priority = 1,
+    )
+
+    val sceneMutaborMedium = SceneDto(
+        id = null,
+        name = "Medium",
+        imageLink = "https://ra.co/images/features/2020/mutabor-scenes05.jpg",
+        priority = 2,
+    )
+
+    val sceneMutaborGarden = SceneDto(
+        id = null,
+        name = "Garden",
+        imageLink = "",
+        priority = 3,
+    )
+
+    val unitySystem = UnityWriteDto(
+        id = null,
+        name = "System 108",
+        imageLink = "https://www.residentadvisor.net/images/labels/system108.jpg",
+        countryName = "RU",
+        soundcloudLink = "sc",
+        instagramLink = "ins",
+        bandcampLink = "band",
+        about = "about System",
+    )
+
+    val unityArma = UnityWriteDto(
+        id = null,
+        name = "ARMA",
+        imageLink = "",
+        countryName = "RU",
+        soundcloudLink = "https://soundcloud.com/arma17",
+        instagramLink = "https://www.instagram.com/arma17ru/",
+        bandcampLink = "https://armarecords.bandcamp.com/",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    val unityMonasterio = UnityWriteDto(
+        id = null,
+        name = "Monasterio",
+        imageLink = "",
+        countryName = "RU",
+        soundcloudLink = "https://soundcloud.com/arma17",
+        instagramLink = "https://www.instagram.com/arma17ru/",
+        bandcampLink = "https://armarecords.bandcamp.com/",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    val unityRabitsa = UnityWriteDto(
+        id = null,
+        name = "Рабица",
+        imageLink = "",
+        countryName = "RU",
+        soundcloudLink = "https://soundcloud.com/arma17",
+        instagramLink = "https://www.instagram.com/arma17ru/",
+        bandcampLink = "https://armarecords.bandcamp.com/",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    val unityNii = UnityWriteDto(
+        id = null,
+        name = "НИИ",
+        imageLink = "",
+        countryName = "RU",
+        soundcloudLink = "https://soundcloud.com/arma17",
+        instagramLink = "https://www.instagram.com/arma17ru/",
+        bandcampLink = "https://armarecords.bandcamp.com/",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    val artistAbelle = ArtistWriteDto(
+        id = null,
+        name = "Abelle",
+        imageLink = "https://i1.sndcdn.com/avatars-000006616275-8t6obr-t500x500.jpg",
+        countryName = "RU",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistMashkov = ArtistWriteDto(
+        id = null,
+        name = "Mashkov",
+        imageLink = "https://photos.bandsintown.com/thumb/8065761.jpeg",
+        countryName = "RU",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistMujuice = ArtistWriteDto(
+        id = null,
+        name = "Mujuice",
+        imageLink = "https://i1.sndcdn.com/avatars-zubprYWZWJCMUPe7-Nlui4Q-t500x500.jpg",
+        countryName = "RU",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistRodina = ArtistWriteDto(
+        id = null,
+        name = "Sofia Rodina",
+        imageLink = "https://i1.sndcdn.com/avatars-000114541978-sixgd1-t500x500.jpg",
+        countryName = "RU",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistAllien = ArtistWriteDto(
+        id = null,
+        name = "Sofia Rodina",
+        imageLink = "https://geo-static.traxsource.com/files/artists/5349.jpg",
+        countryName = "DE",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistCuve = ArtistWriteDto(
+        id = null,
+        name = "Clara Cuvé",
+        imageLink = "https://geo-media.beatport.com/image_size/500x500/10a6d60c-098d-4497-b710-85fee4ec1d9c.jpg",
+        countryName = "FR",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistModels = ArtistWriteDto(
+        id = null,
+        name = "I HATE MODELS",
+        imageLink = "https://ravemovement.com/wp-content/uploads/2020/01/i-hate-models-rave-movement.jpg",
+        countryName = "FR",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistParfait = ArtistWriteDto(
+        id = null,
+        name = "Parfait",
+        imageLink = "https://i1.sndcdn.com/artworks-000105255737-c3bl9u-t500x500.jpg",
+        countryName = "FR",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistLens = ArtistWriteDto(
+        id = null,
+        name = "Amelie Lens",
+        imageLink = "https://www.amsterdam-dance-event.nl/uploads/images/artists-speakers/_AUTOxAUTO_crop_center-center_none/13717210_1809902755895840_9030645021916190431_o_77261.jpg",
+        countryName = "BE",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistFarrago = ArtistWriteDto(
+        id = null,
+        name = "Farrago",
+        imageLink = "https://i1.sndcdn.com/avatars-000650903115-zk4q63-t500x500.jpg",
+        countryName = "BE",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistBejenec = ArtistWriteDto(
+        id = null,
+        name = "BEJENEC",
+        imageLink = "https://f4.bcbits.com/img/a3619367416_2.jpg",
+        countryName = "UA",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistKolosova = ArtistWriteDto(
+        id = null,
+        name = "Daria Kolosova",
+        imageLink = "https://i1.sndcdn.com/avatars-kvYrVE26X0kvpKQ2-qty6jA-t500x500.jpg",
+        countryName = "UA",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistVillalobos = ArtistWriteDto(
+        id = null,
+        name = "Ricardo Villalobos",
+        imageLink = "https://mixmag.asia/assets/uploads/images/_full/Ricardo-Villalobos-sq.jpg",
+        countryName = "DE",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistGorbachev = ArtistWriteDto(
+        id = null,
+        name = "Philipp Gorbachev",
+        imageLink = "http://orchid-am.com/wp-content/uploads/2020/02/Philipp-Gorbachev-2019-%C2%A9-Camille-Blake-1-900x900.jpg",
+        countryName = "RU",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistZots = ArtistWriteDto(
+        id = null,
+        name = "Andrey Zots",
+        imageLink = "https://img.discogs.com/tsUcfpy11hvkPWZqoAbAZi2mFoU=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/A-995736-1597376234-9390.jpeg.jpg",
+        countryName = "RU",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    val artistChronic = ArtistWriteDto(
+        id = null,
+        name = "Chronic Preview",
+        imageLink = "https://i1.sndcdn.com/avatars-fzyLziCt2hJ6BqZs-AKsy9g-t500x500.jpg",
+        countryName = "RU",
+        about = null,
+        instagramLink = null,
+        soundcloudLink = null,
+    )
+
+    fun writeReferenceData() {
+        val savedCountries = countryService.saveBatch(
+            listOf(
+                countryRu,
+                countryUa,
+                countryBe,
+                countryDe,
+                countryFr
+            )
+        )
+
+        val savedCities = cityService.saveBatch(
+            listOf(
+                cityMoscow,
+                cityPetersburg
+            )
+        )
+
+        val savedPlaces = placeService.saveBatch(
+            listOf(
+                placeMutabor,
+                placeGazgolder,
+                placePowerhouse,
+                placeSlezy,
+            )
+        )
+
+        val savedScenesMutabor = placeService.updateScenesOfPlace(
+            savedPlaces[0].id,
+            listOf(
+                sceneMutaborMain,
+                sceneMutaborMedium,
+                sceneMutaborGarden
+            )
+        )
+
+        val savedUnities = unityService.saveBatch(
+            listOf(
+                unitySystem,
+                unityArma,
+                unityMonasterio,
+                unityRabitsa,
+                unityNii,
+            )
+        )
+
+        val savedArtists = artistService.saveBatch(
+            listOf(
+                artistAbelle,
+                artistAllien,
+                artistBejenec,
+                artistCuve,
+                artistChronic,
+                artistFarrago,
+                artistGorbachev,
+                artistKolosova,
+                artistLens,
+                artistMashkov,
+                artistModels,
+                artistMujuice,
+                artistParfait,
+                artistRodina,
+                artistVillalobos,
+                artistZots
+            )
+        )
+
+        unityService.updateArtistsOfUnity(
+            savedUnities[0].id, setOf(
+                savedArtists[2].id,
+                savedArtists[4].id,
+                savedArtists[6].id,
+                savedArtists[7].id,
+                savedArtists[9].id,
+            )
+        )
+        
+        unityService.updateArtistsOfUnity(
+            savedUnities[1].id, setOf(
+                savedArtists[0].id,
+                savedArtists[15].id,
+            )
+        )
+
+        val eventSystem = EventWriteDto(
+            id = null,
+            name = "System One Hundred Eight",
+            imageLink = "https://sun9-32.userapi.com/impf/6iUkR2dK_tKA_XrtK_uDC1S84Wi6A798V9F1sQ/5_vyoPxQnKI.jpg?size=807x422&quality=96&sign=d9392037eda29e1270fbce125735c89d&type=album",
+            about = "После длительного воздержания, лесных приключений и сайд-вечеринок, команда System 108 возвращается в стены любимого завода на Дубровке. В субботнюю ночь лайнап события составят резиденты объединения, а также их друзья с лайвами и сетами. В программе ивента четыре живых выступления, которые исполнят Kovyazin D, Mujuice, Pavel Afanasyev и Philipp Gorbachev. Помимо громких лайвов, ожидаем оскароносные сеты от Chronic Preview, Egor Holkin, Errortica, Fanick, Mashkov, Nastya Zimens, Odopt, Orange и Séxstasy.",
+            ticketsLink = null,
+            startDateTime = dateTimeProvider.getNow().plusHours(1),
+            endDateTime = dateTimeProvider.getNow().plusHours(12),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "One",
+                    price = 1000.0,
+                    currency = MoneyCurrency.RUB
+                )
+            ),
+            placeId = savedPlaces[0].id,
+            organizers = setOf(
+                savedUnities[0].id
+            )
+        )
+
+        val eventRadost = EventWriteDto(
+            id = null,
+            name = "Радость осени",
+            imageLink = "https://sun9-3.userapi.com/impf/6fhybramftz3iKZyjnMYWEkuOWwGGbRlNyWjAA/YbeX05dtrnI.jpg?size=807x422&quality=96&sign=334eeab97e92f0957467dc2d6ae0bee3&type=album",
+            about = "Дневная вечеринка в «Мутаборе», в рамках которой, помимо музыки, пройдут перформансы, маркет локальных дизайнеров, выставка картин и тату-сеансы. За электронное сопровождение ответят диджеи Schulz b2b Ginger, Sofia Rodina, Roman Ptashenko, Adil и GLS, а с лайвами предстанут Rat’s Eyes, Dubrovsky и Fathers sins.",
+            ticketsLink = null,
+            startDateTime = dateTimeProvider.getNow().minusDays(1),
+            endDateTime = dateTimeProvider.getNow().minusDays(1).plusHours(5),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "One",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                )
+            ),
+            placeId = savedPlaces[0].id,
+            organizers = setOf(
+                savedUnities[1].id
+            )
+        )
+
+        val eventCombo = EventWriteDto(
+            id = null,
+            name = "Комбо",
+            imageLink = "https://sun9-44.userapi.com/impf/DKGPcayeA1sy1mQZS1HSudF0qBAkNLRiPuMGAA/nnkC0XLby-0.jpg?size=807x436&quality=96&sign=259845352f55d8d9cb02caebb8126d0f&type=album",
+            about = "Субботняя тусовка в баре «Слёзы» ознаменуется ломовейшим локальным лайнапом. Отмечать наступление осени на одной из самых популярных веранд города будем под музыкальное сопровождение от Poima, Act x Protosoniq, Low808, Hipushit, Karolina BNV и Sofia Rodina.",
+            ticketsLink = null,
+            startDateTime = dateTimeProvider.getNow().minusDays(1).plusHours(5),
+            endDateTime = dateTimeProvider.getNow().minusHours(5),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "После 20:00", // todo sort prices by value on GET
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "До 20:00",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[3].id,
+            organizers = setOf(
+                savedUnities[0].id,
+                savedUnities[1].id,
+                savedUnities[2].id,
+                savedUnities[3].id,
+            )
+        )
+
+        val eventHyperboloid = EventWriteDto(
+            id = null,
+            name = "Hyperboloid Night One Two Three Four Five Six Seven Eight Nine Ten",
+            imageLink = null,
+            about = "Фирменная вечеринка лейбла Hyperboloid в клубе Powerhouse. Лайнап мероприятия составили резиденты и уже знакомые многим имена локальных артистов, некоторые из которых не раз выступали на событиях импринта: Bad Zu, BOGUE x Василий Яковлев, Clear Cast, data drain, Fisky, KRBSS и zarya.",
+            ticketsLink = null,
+            startDateTime = dateTimeProvider.getNow(),
+            endDateTime = dateTimeProvider.getNow().plusHours(8),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "Free",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[2].id,
+            organizers = setOf(
+            )
+        )
+
+        val eventSanchez = EventWriteDto(
+            id = null,
+            name = "Sanchez Thursdays",
+            imageLink = "https://sun9-70.userapi.com/impf/HcGo_gSFS9emEUabJI130FcFGgDWxS5Sv-N5wQ/FojhJi2t3_4.jpg?size=807x424&quality=96&sign=4cc06a1cbe7a106e6a0b1bcdb7fb2da1&type=album",
+            about = "Традиционные четверги Санчеза в «Пропаганде».В лайнапе: Sergey Sanchez, D.A.L.I. и Sapurra.",
+            ticketsLink = "google.com", // todo check it opens in app
+            startDateTime = dateTimeProvider.getNow(),
+            endDateTime = dateTimeProvider.getNow().plusHours(8),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "Free",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 1000.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 6:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[1].id,
+            organizers = setOf(
+            )
+        )
+
+        val eventApplique = EventWriteDto(
+            id = null,
+            name = "Applique: Golden Hits",
+            imageLink = "https://sun9-6.userapi.com/impf/GTw48P6DtpHtoHwsfj4jIuLtrhvuqH7FskfsJw/QBjtlCNata0.jpg?size=807x423&quality=96&sign=b7f6613d28ffed9c8e80682f47d77f6b&type=album",
+            about = "Весельчаки из команды Applique возвращаются с новой тусовкой Golden Hits. Название события говорящее — там будут звучать все хаус-гимны будущего и настоящего, а также полюбившиеся шлягеры прошлых вечеринок объединения. Золотую коллекцию на тусовке будут ставить 12 диджеев, выступления многих из которых стали традиционными для ивентов от Applique. Лайнап: дуэт «Ай-нэ-нэ!», Timur Omar, Kovyazin D, Hipushit, Adamov, Kirill Shapovalov, D.A.L.I., Mark S, Levandowskiy, Розовый человек, Natali F и LDR",
+            ticketsLink = "google.com", // todo check it opens in app
+            startDateTime = dateTimeProvider.getNow(),
+            endDateTime = dateTimeProvider.getNow().plusHours(8),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "До 00:00",
+                    price = 10000.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 12000.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 6:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[1].id,
+            organizers = setOf(
+            )
+        )
+
+        val eventSynchron = EventWriteDto(
+            id = null,
+            name = "Synchron",
+            imageLink = "https://sun9-63.userapi.com/impf/1YN0U_HwapP6kQviE95Jg85obf41TdXsOFgPqQ/CKAql91bu94.jpg?size=807x422&quality=96&sign=ce58f9016e4f5a3fda579ad1834c995c&type=album",
+            about = "Молодая столичная промокоманда Synchron покоряет новые вершины. На этот раз она объявляет вечеринку на трёх танцполах «Мутабора», где свои лайвы и сеты отыграют необычные локальные артисты из числа резидентов и друзей объединения. Лайнап мероприятия: SNS, DRIADA, Medhi Tourneur, Miroliubov & Glushkov, DBaldokhin, Salibatr Brastislavovich, Lidvall, Xandr.vasiliev, Vishnevskiy, Ratigar, Quiet Light, CPSL и многие другие имена",
+            ticketsLink = "google.com", // todo check it opens in app
+            startDateTime = dateTimeProvider.getNow().plusDays(7),
+            endDateTime = dateTimeProvider.getNow().plusDays(7).plusHours(5),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "До 00:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 800.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[0].id,
+            organizers = setOf(
+            )
+        )
+
+        val eventRabitsa = EventWriteDto(
+            id = null,
+            name = "Рабица х НИИ",
+            imageLink = "https://sun9-17.userapi.com/impf/JfHbAwbSVcc_dvkeW9fQHfGrzlTfWmlHcIAslw/XNs0T_F2AHw.jpg?size=807x367&quality=96&sign=e305c479e13c39574d10472b2af61ad0&type=album",
+            about = "В последнюю субботу сентября в «Мутаборе» объединятся одни из ключевых команд на тусовочной карте города — рабы «Рабицы» и научные сотрудники из почившего клуба «НИИ». Их совместная вечеринка пройдёт на трёх танцполах клуба, где в полном составе выступят резиденты обоих уважаемых объединений. Лайнап вечеринки-коллаборации: ADIL, Burago, Buttechno, Caspian, Sergey Golikov, HMOT, Humanoid Lyubovnik, John Rock, Khamn, Low 808, MILF, Nikita Bugaev, Ranishe Niyaak, Sariim, Vtgnike и другие артисты",
+            ticketsLink = "google.com", // todo check it opens in app
+            startDateTime = dateTimeProvider.getNow().plusDays(8),
+            endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(5),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "До 00:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 800.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 08:00",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[0].id,
+            organizers = setOf(
+                savedUnities[3].id,
+                savedUnities[4].id,
+            )
+        )
+
+        val eventVillalobos = EventWriteDto(
+            id = null,
+            name = "Ricardo Villalobos Mutabor",
+            imageLink = "https://gotoparty.ru/public/img/upload/tmp/9053175909c4903cfa21a902b876620e.jpg",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            ticketsLink = "google.com", // todo check it opens in app
+            startDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(1),
+            endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(9),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "До 00:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 1800.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 08:00",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[0].id,
+            organizers = setOf(
+            )
+        )
+
+        val eventMonasterio = EventWriteDto(
+            id = null,
+            name = "Monasterio Factory 2021",
+            imageLink = "https://cdn.stayhappening.com/events5/banners/e01d1aecbc7639d37e3039cc073e6dc827de50c8f688a281e1faf9fbfec57603-rimg-w526-h296-gmir?v=1622124795",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            ticketsLink = "google.com", // todo check it opens in app
+            startDateTime = dateTimeProvider.getNow().plusDays(10).plusHours(1),
+            endDateTime = dateTimeProvider.getNow().plusDays(10).plusHours(9),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "До 00:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 1800.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 08:00",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[0].id,
+            organizers = setOf(
+                savedUnities[2].id
+            )
+        )
+
+        val eventPax = EventWriteDto(
+            id = null,
+            name = "PAX II w/ Amelie Lens",
+            imageLink = "https://i.ibb.co/VVwZrK5/195177326-4190550444338857-1452351166020055900-n.jpg",
+            about = null,
+            ticketsLink = "https://system108.com/pax", // todo check it opens in app
+            startDateTime = dateTimeProvider.getNow().minusHours(2),
+            endDateTime = dateTimeProvider.getNow().plusHours(10),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "До 00:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 1800.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
+            placeId = savedPlaces[0].id,
+            organizers = setOf(
+                savedUnities[0].id
+            )
+        )
+
+        eventService.saveBatch(
+            listOf(
+                eventSystem,
+                eventRadost,
+                eventSanchez,
+                eventSynchron,
+                eventCombo,
+                eventApplique,
+                eventHyperboloid,
+                eventRabitsa,
+                eventPax,
+                eventVillalobos,
+                eventMonasterio,
+            )
+        )
+    }
+}

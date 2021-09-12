@@ -26,29 +26,6 @@ data class PlaceFullDto(
     override val overallFollowers: Int = 0,
     override val weeklyFollowers: Int = 0,
     ) : FollowableFullDto<PlaceFullDto>, ConvertableToMap {
-    companion object {
-        fun createOutOfDbRecords(placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : PlaceFullDto {
-            return PlaceFullDto(
-                id = placeRecord.id ?: throw RecordFieldNullException("Place Id"),
-                name = placeRecord.name ?: throw RecordFieldNullException("Place Name"),
-                imageLink = placeRecord.imageLink,
-                streetAddress = placeRecord.streetAddress ?: throw RecordFieldNullException("Place Street Address"),
-                coordinate = CoordinateDto(
-                    latitude = placeRecord.latitude ?: throw RecordFieldNullException("Place Latitude"),
-                    longitude = placeRecord.longitude ?: throw RecordFieldNullException("Place Longitude")
-                ),
-                city = CityDto.createOutOfDbRecords(cityRecord, countryRecord),
-                soundcloudLink = placeRecord.soundcloudLink,
-                instagramLink = placeRecord.instagramLink,
-                about = placeRecord.about,
-                isFollowed = isFollowed,
-            )
-        }
-
-        @ExperimentalSerializationApi
-        fun fromMap(map: Map<String, String>): PlaceFullDto =
-            Properties.decodeFromStringMap(map)
-    }
 
     @ExperimentalSerializationApi
     override fun toMap(): Map<String, String> = Properties.encodeToStringMap(value = this)

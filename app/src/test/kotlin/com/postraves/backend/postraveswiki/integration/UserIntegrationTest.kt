@@ -63,14 +63,22 @@ class UserIntegrationTest(
 
         val country1 = CountryDto(
             name = "BE",
+            nameRu = "NameRu",
+            nameUk = "NameUk",
+            nameDe = "NameDe",
+            nameFr = "NameFr",
             phoneCode = "+7",
-            emojiCode = "EBE"
+            emojiCode = null
         )
         val countryJson1 = Json.encodeToString(country1)
         Requests.makePostRequest(mockMvc, "/country", countryJson1, MockMvcResultMatchers.status().isCreated)
 
         val city = CityWriteDto(
             name = "Bruges",
+            nameRu = "NameRu",
+            nameUk = "NameUk",
+            nameDe = "NameDe",
+            nameFr = "NameFr",
             countryName = "BE",
             timeOffset = -3
         )

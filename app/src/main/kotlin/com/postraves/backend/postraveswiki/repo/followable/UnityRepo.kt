@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
+import com.postraves.backend.postraveswiki.data.converters.UnityConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
@@ -31,6 +32,7 @@ interface UnityRepo :
 
 @Repository
 class UnityRepoImpl(
+    private val unityConverters: UnityConverters,
     private val dateTimeProvider: DateTimeProvider,
     private val artistRepo: ArtistRepo
     ) :
@@ -72,12 +74,12 @@ class UnityRepoImpl(
 
     override fun convertToShortDto(record: Record): UnityShortDto {
         val isFollowed = record.into(userFollowsTable).userProfileUid != null
-        return UnityShortDto.createOutOfDbRecords(record.into(thisTable), record.into(COUNTRY), isFollowed)
+        return unityConverters.createShortDtoFromRecord(record.into(thisTable), record.into(COUNTRY), isFollowed)
     }
 
     override fun convertToFullDto(record: Record): UnityFullDto {
         val isFollowed = record.into(userFollowsTable).userProfileUid != null
-        return UnityFullDto.createOutOfDbRecords(record.into(thisTable), record.into(COUNTRY), isFollowed)
+        return unityConverters.createFullDtoFromRecord(record.into(thisTable), record.into(COUNTRY), isFollowed)
     }
 
     override fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record> {
@@ -89,7 +91,7 @@ class UnityRepoImpl(
     }
 
     override fun prepareRecordBeforeSaving(record: UnityRecord, dto: UnityWriteDto) {
-        dto.transferDataToDbRecord(record)
+        unityConverters.transferDataFromDtoToRecord(dto, record)
         record.createdDateTime = dateTimeProvider.getNow()
     }
 
@@ -102,7 +104,7 @@ class UnityRepoImpl(
     }
 
     override fun prepareRecordBeforeUpdating(record: UnityRecord, dto: UnityWriteDto) {
-        dto.transferDataToDbRecord(record)
+        unityConverters.transferDataFromDtoToRecord(dto, record)
     }
 
     override fun getArtistsOfUnity(authUid: String?, id: Long): List<ArtistShortDto> {

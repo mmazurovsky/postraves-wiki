@@ -30,7 +30,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
 @AutoConfigureMockMvc(addFilters = false)
@@ -61,8 +60,12 @@ class ArtistIntegrationTest(
 
     private val countryTestData = CountryDto(
         name = "BE",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         phoneCode = "+7",
-        emojiCode = "EBE"
+        emojiCode = null,
     )
 
     private val artistTestData = ArtistWriteDto(
@@ -115,7 +118,7 @@ class ArtistIntegrationTest(
         assertEquals(artistToSave.about, savedArtist.about)
         assertEquals(artistToSave.countryName, savedArtist.country?.name)
         assertEquals(countryTestData.phoneCode, savedArtist.country?.phoneCode)
-        assertEquals(countryTestData.emojiCode, savedArtist.country?.emojiCode)
+        assertNotNull(savedArtist.country?.emojiCode)
 
         assert(countryArtistsInQuickRepo.contains(savedArtist.id))
         assert(artistsInOverallRating.contains(savedArtist.id))

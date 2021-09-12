@@ -57,4 +57,8 @@ class ArtistController (
     override fun getRelevantEvents(id: Long): List<EventShortDto> {
         return eventService.getRelevantEventsForArtist(id)
     }
+
+    override fun saveBatch(list: List<ArtistWriteDto>): List<ArtistShortDto> {
+        return artistService.saveBatch(list)
+    }
 }

@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
+import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
@@ -25,6 +26,7 @@ interface ArtistRepo :
 
 @Repository
 class ArtistRepoImpl(
+    private val artistConverters: ArtistConverters,
     private val dateTimeProvider: DateTimeProvider,
     ) :
     ArtistRepo,
@@ -52,12 +54,12 @@ class ArtistRepoImpl(
 
     override fun convertToShortDto(record: Record): ArtistShortDto {
         val isFollowed = record.into(USER_FOLLOWS_ARTIST).userProfileUid != null
-        return ArtistShortDto.createOutOfDbRecords(record.into(ARTIST), record.into(COUNTRY), isFollowed)
+        return artistConverters.createShortDtoFromRecord(record.into(ARTIST), record.into(COUNTRY), isFollowed)
     }
 
     override fun convertToFullDto(record: Record): ArtistFullDto {
         val isFollowed = record.into(USER_FOLLOWS_ARTIST).userProfileUid != null
-        return ArtistFullDto.createOutOfDbRecords(record.into(ARTIST), record.into(COUNTRY), isFollowed)
+        return artistConverters.createFullDtoFromRecord(record.into(ARTIST), record.into(COUNTRY), isFollowed)
     }
 
     override fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record> {
@@ -69,7 +71,7 @@ class ArtistRepoImpl(
     }
 
     override fun prepareRecordBeforeSaving(record: ArtistRecord, dto: ArtistWriteDto) {
-        dto.transferDataToDbRecord(record)
+        artistConverters.transferDataFromDtoToRecord(dto, record)
         record.createdDateTime = dateTimeProvider.getNow()
     }
 
@@ -82,6 +84,6 @@ class ArtistRepoImpl(
     }
 
     override fun prepareRecordBeforeUpdating(record: ArtistRecord, dto: ArtistWriteDto) {
-        dto.transferDataToDbRecord(record)
+        artistConverters.transferDataFromDtoToRecord(dto, record)
     }
 }

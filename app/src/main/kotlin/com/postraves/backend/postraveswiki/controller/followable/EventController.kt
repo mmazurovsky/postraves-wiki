@@ -85,4 +85,8 @@ class EventController (
     fun getTimetable(@PathVariable id: Long): List<TimetableForSceneDto> {
         return eventService.getTimetableForEvent(id)
     }
+
+    override fun saveBatch(list: List<EventWriteDto>): List<EventShortDto> {
+        return eventService.saveBatch(list)
+    }
 }

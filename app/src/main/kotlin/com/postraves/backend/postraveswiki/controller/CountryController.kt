@@ -37,4 +37,8 @@ class CountryController (
     override fun findByPartOfName(namePart: String): List<CountryDto> {
         return countryService.findByPartOfName(namePart)
     }
+
+    override fun saveBatch(list: List<CountryDto>): List<CountryDto> {
+        return countryService.saveBatch(list)
+    }
 }

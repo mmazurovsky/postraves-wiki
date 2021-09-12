@@ -67,8 +67,12 @@ class UnityIntegrationTest(
 
     private val countryTestData = CountryDto(
         name = "BE",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         phoneCode = "+7",
-        emojiCode = "EBE"
+        emojiCode = null
     )
 
     private val unityTestData = UnityWriteDto(
@@ -126,7 +130,7 @@ class UnityIntegrationTest(
         assertEquals(unityToSave.about, savedUnity.about)
         assertEquals(unityToSave.countryName, savedUnity.country?.name)
         assertEquals(countryTestData.phoneCode, savedUnity.country?.phoneCode)
-        assertEquals(countryTestData.emojiCode, savedUnity.country?.emojiCode)
+        assertNotNull(savedUnity.country?.emojiCode)
 
         assert(countryUnitysInQuickRepo.contains(savedUnity.id))
         assert(unitysInOverallRating.contains(savedUnity.id))

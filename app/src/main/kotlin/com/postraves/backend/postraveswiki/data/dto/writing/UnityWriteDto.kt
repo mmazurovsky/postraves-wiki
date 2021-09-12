@@ -14,15 +14,4 @@ data class UnityWriteDto(
     val instagramLink: String?,
     val bandcampLink: String?,
     val about: String?,
-) : BaseWriteDto {
-
-    fun transferDataToDbRecord(record: UnityRecord) {
-        record.name = name
-        record.imageLink = imageLink
-        record.countryName = countryName
-        record.soundcloudLink = soundcloudLink
-        record.instagramLink = instagramLink
-        record.bandcampLink = bandcampLink
-        record.about = about
-    }
-}
+) : BaseWriteDto

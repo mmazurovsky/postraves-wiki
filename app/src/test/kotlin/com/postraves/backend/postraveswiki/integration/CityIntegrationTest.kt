@@ -43,19 +43,37 @@ class CityIntegrationTest(
         redisServer.start()
     }
 
+    private val cityTestData = CityWriteDto(
+        name = "Bruges",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
+        countryName = "BE",
+        timeOffset = -3
+    )
+
     @BeforeAll
     private fun createCountriesForAssociations() {
 
         val country1 = CountryDto(
             name = "BE",
+            nameRu = "NameRu",
+            nameUk = "NameUk",
+            nameDe = "NameDe",
+            nameFr = "NameFr",
             phoneCode = "+7",
-            emojiCode = "EBE"
+            emojiCode = null
         )
 
         val country2 = CountryDto(
             name = "CHE",
+            nameRu = "NameRu",
+            nameUk = "NameUk",
+            nameDe = "NameDe",
+            nameFr = "NameFr",
             phoneCode = "+9",
-            emojiCode = "CHECHE"
+            emojiCode = null
         )
 
         val countryJson1 = Json.encodeToString(country1)
@@ -80,11 +98,7 @@ class CityIntegrationTest(
     @Test
     fun saveCityWithCountryAssociation() {
 
-        val city = CityWriteDto(
-            name = "Bruges",
-            countryName = "BE",
-            timeOffset = -3
-        )
+        val city = cityTestData
 
         val cityJson = Json.encodeToString(city)
 
@@ -100,11 +114,7 @@ class CityIntegrationTest(
     @Test
     fun updateCityWithNewCountryAssociation() {
 
-        val city = CityWriteDto(
-            name = "Bruges",
-            countryName = "BE",
-            timeOffset = -3
-        )
+        val city = cityTestData
 
         val cityJson = Json.encodeToString(city)
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isCreated)
@@ -124,11 +134,7 @@ class CityIntegrationTest(
     @Test
     fun saveCityAndDeleteByName() {
 
-        val city = CityWriteDto(
-            name = "Bruges",
-            countryName = "BE",
-            timeOffset = -3
-        )
+        val city = cityTestData
 
         val cityJson = Json.encodeToString(city)
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isCreated)
@@ -144,19 +150,15 @@ class CityIntegrationTest(
     @Test
     fun saveMultipleAndFindAll() {
 
-        val city1 = CityWriteDto(
-            name = "Bruges",
-            countryName = "BE",
-            timeOffset = -3
-        )
+        val city1 = cityTestData
 
-        val city2 = CityWriteDto(
+        val city2 = city1.copy(
             name = "Ant",
             countryName = "CHE",
             timeOffset = -1
         )
 
-        val city3 = CityWriteDto(
+        val city3 = city1.copy(
             name = "Amst",
             countryName = "CHE",
             timeOffset = -1

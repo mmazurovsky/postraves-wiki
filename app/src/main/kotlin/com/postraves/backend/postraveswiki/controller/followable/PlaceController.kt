@@ -70,4 +70,8 @@ class PlaceController (
     fun getScenesOfPlace(@PathVariable id: Long): List<SceneDto> {
         return placeService.getScenesOfPlace(id)
     }
+
+    override fun saveBatch(list: List<PlaceWriteDto>): List<PlaceShortDto> {
+        return placeService.saveBatch(list)
+    }
 }

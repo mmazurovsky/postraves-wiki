@@ -12,14 +12,4 @@ data class UserWriteDto(
     val telegramLink: String?,
     val instagramLink: String?,
     val about: String?,
-) : BaseWriteDto {
-
-    fun transferDataToDbRecord(record: UserProfileRecord) {
-        record.name = name
-        record.imageLink = imageLink
-        record.cityName = currentCity
-        record.telegramLink = telegramLink
-        record.instagramLink = instagramLink
-        record.about = about
-    }
-}
+) : BaseWriteDto

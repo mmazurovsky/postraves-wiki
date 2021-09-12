@@ -26,27 +26,6 @@ data class ArtistFullDto(
     override val overallFollowers: Int = 0,
     override val weeklyFollowers: Int = 0,
     ) : FollowableFullDto<ArtistFullDto>, ConvertableToMap {
-    companion object FactoryDbRecord {
-        fun createOutOfDbRecords(artistRecord: ArtistRecord, countryRecord: CountryRecord, isFollowed: Boolean) : ArtistFullDto {
-            return ArtistFullDto(
-                id = artistRecord.id ?: throw RecordFieldNullException("Artist Id"),
-                name = artistRecord.name ?: throw RecordFieldNullException("Artist Name"),
-                imageLink = artistRecord.imageLink,
-                instagramLink = artistRecord.instagramLink,
-                soundcloudLink = artistRecord.soundcloudLink,
-                about = artistRecord.about,
-                country =
-                if (countryRecord.name != null)
-                    CountryDto.createOutOfDbRecords(countryRecord)
-                else null,
-                isFollowed = isFollowed
-            )
-        }
-
-        @ExperimentalSerializationApi
-        fun fromMap(map: Map<String, String>): ArtistFullDto =
-            Properties.decodeFromStringMap(map)
-    }
 
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): ArtistFullDto {
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)

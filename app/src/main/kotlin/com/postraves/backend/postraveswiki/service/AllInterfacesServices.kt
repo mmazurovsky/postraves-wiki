@@ -4,7 +4,8 @@ import com.postraves.backend.postraveswiki.data.dto.*
 import com.postraves.backend.postraveswiki.data.dto.reading.EventShortDto
 
 interface BaseService<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto> {
-    fun save(dto: WRITEDTO) : SHORTDTO
+    fun save(dto: WRITEDTO): SHORTDTO
+    fun saveBatch(list: List<WRITEDTO>): List<SHORTDTO>
     fun update(dto: WRITEDTO)
     fun findAll(): List<SHORTDTO>
 }

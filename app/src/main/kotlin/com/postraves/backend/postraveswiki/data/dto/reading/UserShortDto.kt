@@ -11,13 +11,4 @@ data class UserShortDto(
     val imageLink : String?,
     val overallFollowers: Int = 0,
     val weeklyFollowers: Int = 0,
-) : BaseShortDto {
-    companion object FactoryDbRecord {
-        fun createOutOfDbRecords(userRecord: UserProfileRecord) : UserShortDto {
-            return UserShortDto(
-                name = userRecord.name ?: throw RecordFieldNullException("User Name"),
-                imageLink = userRecord.imageLink,
-            )
-        }
-    }
-}
+) : BaseShortDto

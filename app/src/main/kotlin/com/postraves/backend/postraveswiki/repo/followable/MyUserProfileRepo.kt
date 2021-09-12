@@ -1,5 +1,7 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
+import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
+import com.postraves.backend.postraveswiki.data.converters.UserConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
@@ -31,7 +33,9 @@ interface MyUserProfileRepo {
 @Repository
 class MyUserProfileRepoImpl(
     private val dateTimeProvider: DateTimeProvider,
-    private val artistRepo: ArtistRepo
+    private val artistRepo: ArtistRepo,
+    private val artistConverters: ArtistConverters,
+    private val userConverters: UserConverters,
 ) : MyUserProfileRepo {
 
     @Autowired
@@ -61,22 +65,22 @@ class MyUserProfileRepoImpl(
     override fun findMyProfile(authUid: String): Pair<UserFullDto?, String> {
         val user = findByAuthUidWithJoins(authUid)
         return if (user == null) null to authUid
-        else UserFullDto.createOutOfDbRecords(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY)) to authUid
+        else userConverters.createFullDtoFromRecord(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY)) to authUid
     }
 
     override fun save(dto: UserWriteDto, authUid: String): UserShortDto {
         val userToSave = dsl.newRecord(USER_PROFILE)
-        dto.transferDataToDbRecord(userToSave)
+        userConverters.transferDataFromDtoToRecord(dto, userToSave)
         userToSave.authUid = authUid
         userToSave.createdDateTime = dateTimeProvider.getNow()
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
-        return UserShortDto.createOutOfDbRecords(record?.into(USER_PROFILE) ?: throw SaveException("User", dto.name))
+        return userConverters.createShortDtoFromRecord(record?.into(USER_PROFILE) ?: throw SaveException("User", dto.name))
     }
 
     override fun update(dto: UserWriteDto, authUid: String) {
         val userToUpdate = findByAuthUidWithoutJoins(authUid)
-        dto.transferDataToDbRecord(userToUpdate)
+        userConverters.transferDataFromDtoToRecord(dto, userToUpdate)
         userToUpdate.update()
     }
 
@@ -118,7 +122,9 @@ class MyUserProfileRepoImpl(
             )
             .where(USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
             .fetch()
-            .map { ArtistShortDto.createOutOfDbRecords(it.into(ARTIST), it.into(COUNTRY), true) }
+            .map {
+                artistConverters.createShortDtoFromRecord(it.into(ARTIST), it.into(COUNTRY), true)
+            }
             .toList()
     }
 

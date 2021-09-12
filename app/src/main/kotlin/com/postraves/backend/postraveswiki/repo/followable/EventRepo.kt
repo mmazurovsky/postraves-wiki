@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
 import com.postraves.backend.postraveswiki.data.converters.EventConverters
+import com.postraves.backend.postraveswiki.data.converters.TimetableConverters
 import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.EventWriteDto
@@ -42,6 +43,7 @@ interface EventRepo :
 
 @Repository
 class EventRepoImpl(
+    private val timetableConverters: TimetableConverters,
     private val eventConverters: EventConverters,
     private val dateTimeProvider: DateTimeProvider,
     private val artistRepo: ArtistRepo,
@@ -89,7 +91,7 @@ class EventRepoImpl(
         return this.where(thisTable.ID.eq(id))
     }
 
-    private fun saveTicketPrices(id: Long, ticketPrices: List<TicketPriceDto>) {
+    private fun saveTicketPrices(id: Long, ticketPrices: Collection<TicketPriceDto>) {
         ticketPrices.forEach {
             val ticketPriceRecord = dsl.newRecord(TICKET_PRICE)
             ticketPriceRecord.apply {
@@ -184,6 +186,7 @@ class EventRepoImpl(
 
     override fun postSaveProcessing(id: Long, dto: EventWriteDto) {
         if (dto.ticketPrices.isNotEmpty()) saveTicketPrices(id, dto.ticketPrices)
+        if (dto.organizers.isNotEmpty()) addOrganizers(id, dto.organizers)
     }
 
     override fun postUpdateProcessing(dto: EventWriteDto) {
@@ -381,7 +384,7 @@ class EventRepoImpl(
         }
 
         return mapOfScenePerformances.map {
-            TimetableForSceneDto.createOutOfDbRecords(it.key, it.value)
+            timetableConverters.createTimetableForSceneDto(it.key, it.value)
         }.toList()
     }
 
@@ -404,7 +407,7 @@ class EventRepoImpl(
                             .artistId
                     }
                     .toSet()
-                TimetablePerformanceWriteDto.createOutOfDbRecords(timetableItem, artistIds)
+                timetableConverters.createTimetablePerformanceWriteDto(timetableItem, artistIds)
             }
             .toSet()
     }
@@ -415,7 +418,7 @@ class EventRepoImpl(
                 .newRecord(TIMETABLE_ITEM)
             timetableItem
                 .apply {
-                    performance.transferDataToDbRecord(this)
+                    timetableConverters.transferDataFromDtoToRecord(performance, this)
                     this.eventId = id
                     this.createdDateTime = dateTimeProvider.getNow()
                 }
@@ -441,7 +444,7 @@ class EventRepoImpl(
                 .fetchOne() ?: throw TODO()
             timetableItem
                 .apply {
-                    performance.transferDataToDbRecord(this)
+                    timetableConverters.transferDataFromDtoToRecord(performance, this)
                 }
                 .update()
         }

@@ -1,5 +1,7 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
+import com.postraves.backend.postraveswiki.data.converters.PlaceConverters
+import com.postraves.backend.postraveswiki.data.converters.SceneConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
@@ -34,6 +36,8 @@ interface PlaceRepo :
 
 @Repository
 class PlaceRepoImpl(
+    private val placeConverters: PlaceConverters,
+    private val sceneConverters: SceneConverters,
     private val dateTimeProvider: DateTimeProvider,
     ) :
     PlaceRepo,
@@ -67,7 +71,7 @@ class PlaceRepoImpl(
 
     override fun convertToShortDto(record: Record): PlaceShortDto {
         val isFollowed = record.into(USER_FOLLOWS_PLACE).userProfileUid != null
-        return PlaceShortDto.createOutOfDbRecords(
+        return placeConverters.createShortDtoFromRecord(
             record.into(PLACE),
             record.into(CITY),
             record.into(COUNTRY),
@@ -77,7 +81,7 @@ class PlaceRepoImpl(
 
     override fun convertToFullDto(record: Record): PlaceFullDto {
         val isFollowed = record.into(USER_FOLLOWS_PLACE).userProfileUid != null
-        return PlaceFullDto.createOutOfDbRecords(
+        return placeConverters.createFullDtoFromRecord(
             record.into(PLACE),
             record.into(CITY),
             record.into(COUNTRY),
@@ -94,7 +98,7 @@ class PlaceRepoImpl(
     }
 
     override fun prepareRecordBeforeSaving(record: PlaceRecord, dto: PlaceWriteDto) {
-        dto.transferDataToDbRecord(record)
+        placeConverters.transferDataFromDtoToRecord(dto, record)
         record.createdDateTime = dateTimeProvider.getNow()
     }
 
@@ -107,7 +111,7 @@ class PlaceRepoImpl(
     }
 
     override fun prepareRecordBeforeUpdating(record: PlaceRecord, dto: PlaceWriteDto) {
-        dto.transferDataToDbRecord(record)
+        placeConverters.transferDataFromDtoToRecord(dto, record)
     }
 
     override fun getAllScenes(): List<SceneDto> {
@@ -115,7 +119,7 @@ class PlaceRepoImpl(
             .selectFrom(SCENE)
             .orderBy(SCENE.PRIORITY.desc())
             .fetch()
-            .map { SceneDto.createOutOfDbRecords(it) }
+            .map { sceneConverters.createDtoFromRecord(it) }
             .toList()
         return scenes
     }
@@ -126,7 +130,7 @@ class PlaceRepoImpl(
             .where(SCENE.PLACE_ID.eq(id))
             .orderBy(SCENE.PRIORITY.desc())
             .fetch()
-            .map { SceneDto.createOutOfDbRecords(it) }
+            .map { sceneConverters.createDtoFromRecord(it) }
             .toList()
         return scenes
     }
@@ -134,7 +138,7 @@ class PlaceRepoImpl(
     override fun addScenesToPlace(id: Long, scenes: Set<SceneDto>) {
         scenes.forEach {
             val newSceneRecord = dsl.newRecord(SCENE)
-            it.transferDataToDbRecord(newSceneRecord)
+            sceneConverters.transferDataFromDtoToRecord(it, newSceneRecord)
             newSceneRecord.createdDateTime = dateTimeProvider.getNow()
             newSceneRecord.placeId = id
             newSceneRecord.store()
@@ -144,7 +148,7 @@ class PlaceRepoImpl(
     override fun updateScenes(scenes: Set<SceneDto>) {
         scenes.forEach {
             val recordToUpdate = dsl.fetchOne(SCENE, SCENE.ID.eq(it.id))!!
-            it.transferDataToDbRecord(recordToUpdate)
+            sceneConverters.transferDataFromDtoToRecord(it, recordToUpdate)
             recordToUpdate.update()
         }
     }

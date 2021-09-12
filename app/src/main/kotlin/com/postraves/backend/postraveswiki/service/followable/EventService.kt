@@ -56,6 +56,10 @@ class EventServiceImpl(
     @Lazy
     private lateinit var myUserProfileService: MyUserProfileService
 
+    override fun preProcessBeforeSaving(dto: EventWriteDto) {
+        if (dto.id != null) throw TODO()
+    }
+
     override fun checkLocationsAndRemoveFromLocationsQuickRepos(dto: EventFullDto) {
         val countryOfDtoToDelete = dto.place.city.country.name
         eventCountryRepo.removeOneIdFromSet(countryOfDtoToDelete, dto.id)

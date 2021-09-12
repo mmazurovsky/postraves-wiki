@@ -92,12 +92,20 @@ class FollowingIntegrationTest(
 
     private val countryTestData = CountryDto(
         name = "BE",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         phoneCode = "+7",
-        emojiCode = "EBE"
+        emojiCode = null
     )
 
     private val city = CityWriteDto(
         name = "Bruges",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         countryName = "BE",
         timeOffset = -3
     )

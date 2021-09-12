@@ -12,16 +12,20 @@ interface CountryService :
 @Service
 class CountryServiceImpl(
     private val countryRepo: CountryRepo,
-    )
-    : CountryService
-{
+) : CountryService {
 
     override fun findByName(name: String): CountryDto {
         return countryRepo.findByName(name)
     }
 
-    override fun save(dto: CountryDto):CountryDto {
+    override fun save(dto: CountryDto): CountryDto {
         return countryRepo.save(dto)
+    }
+
+    override fun saveBatch(list: List<CountryDto>): List<CountryDto> {
+        return list.map {
+            countryRepo.save(it)
+        }.toList()
     }
 
     override fun update(dto: CountryDto) {

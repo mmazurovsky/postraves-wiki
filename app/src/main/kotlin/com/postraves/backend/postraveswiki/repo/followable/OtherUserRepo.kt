@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
+import com.postraves.backend.postraveswiki.data.converters.UserConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import jooq.tables.references.*
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Repository
 interface OtherUserRepo : FollowableRepo<UserShortDto>
 
 @Repository
-class OtherUserRepoImpl : OtherUserRepo {
+class OtherUserRepoImpl(
+    private val userConverters: UserConverters,
+) : OtherUserRepo {
 
     @Autowired
     @Lazy
@@ -30,6 +33,6 @@ class OtherUserRepoImpl : OtherUserRepo {
     }
 
     override fun convertToShortDto(record: Record): UserShortDto {
-        return UserShortDto.createOutOfDbRecords(record.into(USER_PROFILE))
+        return userConverters.createShortDtoFromRecord(record.into(USER_PROFILE))
     }
 }

@@ -7,14 +7,11 @@ import kotlinx.serialization.*
 @Serializable
 data class CityWriteDto(
     val name: String,
+    val nameRu: String,
+    val nameUk: String,
+    val nameDe: String,
+    val nameFr: String,
     val countryName: String,
     val timeOffset: Int
-) : BaseWriteDto {
-
-    fun transferDataToDbRecord(record: CityRecord) {
-        record.name = name
-        record.countryName = countryName
-        record.timeOffset = timeOffset
-    }
-}
+) : BaseWriteDto
 

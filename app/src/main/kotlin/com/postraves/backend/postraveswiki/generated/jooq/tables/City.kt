@@ -17,7 +17,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row4
+import org.jooq.Row8
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -66,6 +66,26 @@ open class City(
      * The column <code>public.city.name</code>.
      */
     val NAME: TableField<CityRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+
+    /**
+     * The column <code>public.city.name_ru</code>.
+     */
+    val NAME_RU: TableField<CityRecord, String?> = createField(DSL.name("name_ru"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+
+    /**
+     * The column <code>public.city.name_uk</code>.
+     */
+    val NAME_UK: TableField<CityRecord, String?> = createField(DSL.name("name_uk"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+
+    /**
+     * The column <code>public.city.name_de</code>.
+     */
+    val NAME_DE: TableField<CityRecord, String?> = createField(DSL.name("name_de"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+
+    /**
+     * The column <code>public.city.name_fr</code>.
+     */
+    val NAME_FR: TableField<CityRecord, String?> = createField(DSL.name("name_fr"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
      * The column <code>public.city.created_date_time</code>.
@@ -127,7 +147,7 @@ open class City(
     override fun rename(name: Name): City = City(name, null)
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row4<String?, OffsetDateTime?, Int?, String?> = super.fieldsRow() as Row4<String?, OffsetDateTime?, Int?, String?>
+    override fun fieldsRow(): Row8<String?, String?, String?, String?, String?, OffsetDateTime?, Int?, String?> = super.fieldsRow() as Row8<String?, String?, String?, String?, String?, OffsetDateTime?, Int?, String?>
 }

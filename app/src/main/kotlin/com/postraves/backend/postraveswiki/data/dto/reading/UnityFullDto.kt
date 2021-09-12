@@ -27,28 +27,6 @@ data class UnityFullDto(
     override val overallFollowers: Int = 0,
     override val weeklyFollowers: Int = 0,
     ) : FollowableFullDto<UnityFullDto>, ConvertableToMap {
-    companion object FactoryDbRecord {
-        fun createOutOfDbRecords(unityRecord: UnityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : UnityFullDto {
-            return UnityFullDto(
-                id = unityRecord.id ?: throw RecordFieldNullException("Unity Id"),
-                name = unityRecord.name ?: throw RecordFieldNullException("Unity Name"),
-                imageLink = unityRecord.imageLink,
-                instagramLink = unityRecord.instagramLink,
-                soundcloudLink = unityRecord.soundcloudLink,
-                bandcampLink = unityRecord.bandcampLink,
-                about = unityRecord.about,
-                country =
-                if (countryRecord.name != null)
-                    CountryDto.createOutOfDbRecords(countryRecord)
-                else null,
-                isFollowed = isFollowed
-            )
-        }
-
-        @ExperimentalSerializationApi
-        fun fromMap(map: Map<String, String>): UnityFullDto =
-            Properties.decodeFromStringMap(map)
-    }
 
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): UnityFullDto {
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)

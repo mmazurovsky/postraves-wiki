@@ -14,6 +14,10 @@ interface BaseRequests<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto> {
     @ResponseStatus(HttpStatus.CREATED)
     fun save(@RequestBody dto: WRITEDTO): SHORTDTO
 
+    @PostMapping("batchSave")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun saveBatch(@RequestBody list: List<WRITEDTO>): List<SHORTDTO>
+
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     fun update(@RequestBody dto: WRITEDTO)

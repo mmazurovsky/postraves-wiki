@@ -66,11 +66,15 @@ class PlaceIntegrationTest(
 
     private val countryTest1 = CountryDto(
         name = "BE",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         phoneCode = "+7",
         emojiCode = null,
     )
 
-    private val countryTest2 = CountryDto(
+    private val countryTest2 = countryTest1.copy(
         name = "RU",
         phoneCode = "+9",
         emojiCode = null,
@@ -78,17 +82,21 @@ class PlaceIntegrationTest(
 
     private val cityTest1 = CityWriteDto(
         name = "Bruges",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         countryName = "BE",
         timeOffset = -3
     )
 
-    private val cityTest2 = CityWriteDto(
+    private val cityTest2 = cityTest1.copy(
         name = "Antwerp",
         countryName = "BE",
         timeOffset = -3
     )
 
-    private val cityTest3 = CityWriteDto(
+    private val cityTest3 = cityTest1.copy(
         name = "Moscow",
         countryName = "RU",
         timeOffset = 3

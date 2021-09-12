@@ -1,6 +1,9 @@
 package com.postraves.backend.postraveswiki.service.followable
 
 import com.postraves.backend.postraveswiki.config.logger
+import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
+import com.postraves.backend.postraveswiki.data.converters.PlaceConverters
+import com.postraves.backend.postraveswiki.data.converters.UnityConverters
 import com.postraves.backend.postraveswiki.data.dto.ConvertableToMap
 import com.postraves.backend.postraveswiki.data.dto.FollowableDto
 import com.postraves.backend.postraveswiki.data.dto.FollowableFullDto
@@ -148,6 +151,7 @@ class ArtistRatingsServiceImpl(
     artistOverallFollowersQuickRepo: FollowersQuickRepo,
     artistRepo: ArtistRepo,
     cityService: CityService,
+    artistConverters: ArtistConverters,
 ) : RatingsServiceAbstractImpl<ArtistFullDto, ArtistShortDto, ArtistRepo>(
     entityCountryRepo = artistCountryRepo,
     weeklyBestRepo = weeklyBestRepo,
@@ -155,7 +159,7 @@ class ArtistRatingsServiceImpl(
     entityOverallFollowersQuickRepo = artistOverallFollowersQuickRepo,
     entityRepo = artistRepo,
     cityService = cityService,
-    decodeShortDtoFromMap = { map: Map<String, String> -> ArtistShortDto.fromMap(map) }
+    decodeShortDtoFromMap = { map: Map<String, String> -> artistConverters.createShortDtoFromMap(map) }
 )
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -171,6 +175,7 @@ class PlaceRatingsServiceImpl(
     placeOverallFollowersQuickRepo: FollowersQuickRepo,
     placeRepo: PlaceRepo,
     cityService: CityService,
+    placeConverters: PlaceConverters,
 ) : RatingsServiceAbstractImpl<PlaceFullDto, PlaceShortDto, PlaceRepo>(
     entityCountryRepo = placeCountryRepo,
     weeklyBestRepo = weeklyBestRepo,
@@ -178,7 +183,7 @@ class PlaceRatingsServiceImpl(
     entityOverallFollowersQuickRepo = placeOverallFollowersQuickRepo,
     entityRepo = placeRepo,
     cityService = cityService,
-    decodeShortDtoFromMap = { map: Map<String, String> -> PlaceShortDto.fromMap(map) }
+    decodeShortDtoFromMap = { map: Map<String, String> -> placeConverters.createShortDtoFromMap(map) }
 )
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -194,6 +199,7 @@ class UnityRatingsServiceImpl(
     unityOverallFollowersQuickRepo: FollowersQuickRepo,
     unityRepo: UnityRepo,
     cityService: CityService,
+    unityConverters: UnityConverters,
 ) : RatingsServiceAbstractImpl<UnityFullDto, UnityShortDto, UnityRepo>(
     entityCountryRepo = unityCountryRepo,
     weeklyBestRepo = weeklyBestRepo,
@@ -201,5 +207,5 @@ class UnityRatingsServiceImpl(
     entityOverallFollowersQuickRepo = unityOverallFollowersQuickRepo,
     entityRepo = unityRepo,
     cityService = cityService,
-    decodeShortDtoFromMap = { map: Map<String, String> -> UnityShortDto.fromMap(map) }
+    decodeShortDtoFromMap = { map: Map<String, String> -> unityConverters.createShortDtoFromMap(map) }
 )

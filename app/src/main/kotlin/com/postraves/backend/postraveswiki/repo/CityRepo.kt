@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.repo
 
+import com.postraves.backend.postraveswiki.data.converters.CityConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
@@ -22,8 +23,9 @@ interface CityRepo :
 
 @Repository
 class CityImplRepo(
+    private val cityConverters: CityConverters,
     private val dateTimeProvider: DateTimeProvider,
-    ) : CityRepo {
+) : CityRepo {
 
     @Autowired
     @Lazy
@@ -54,12 +56,12 @@ class CityImplRepo(
 
     override fun findByName(name: String): CityDto {
         val selectedRecord = findByNameWithJoins(name)
-        return CityDto.createOutOfDbRecords(selectedRecord.into(CITY), selectedRecord.into(COUNTRY))
+        return cityConverters.createDtoFromRecord(selectedRecord.into(CITY), selectedRecord.into(COUNTRY))
     }
 
     override fun save(dto: CityWriteDto): CityDto {
         val recordToSave = dsl.newRecord(CITY)
-        dto.transferDataToDbRecord(recordToSave)
+        cityConverters.transferDataFromDtoToRecord(dto, recordToSave)
         recordToSave.createdDateTime = dateTimeProvider.getNow()
         recordToSave.store()
         return findByName(recordToSave.name ?: throw SaveException("City", dto.name))
@@ -67,7 +69,7 @@ class CityImplRepo(
 
     override fun update(dto: CityWriteDto) {
         val recordToUpdate = findByNameWithoutJoins(dto.name)
-        dto.transferDataToDbRecord(recordToUpdate)
+        cityConverters.transferDataFromDtoToRecord(dto, recordToUpdate)
         recordToUpdate.update()
     }
 
@@ -79,7 +81,9 @@ class CityImplRepo(
         val results = dsl
             .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.COUNTRY_NAME.eq(COUNTRY.NAME)))
             .fetch()
-            .map { CityDto.createOutOfDbRecords(it.into(CITY), it.into(COUNTRY)) }
+            .map {
+                cityConverters.createDtoFromRecord(it.into(CITY), it.into(COUNTRY))
+            }
             .toList()
         return results
     }
@@ -88,7 +92,9 @@ class CityImplRepo(
         val results = selectCityList()
             .where(DSL.lower(CITY.NAME).contains(namePart.lowercase()))
             .fetch()
-            .map { CityDto.createOutOfDbRecords(it.into(CITY), it.into(COUNTRY)) }
+            .map {
+                cityConverters.createDtoFromRecord(it.into(CITY), it.into(COUNTRY))
+            }
             .toList()
         return results
     }

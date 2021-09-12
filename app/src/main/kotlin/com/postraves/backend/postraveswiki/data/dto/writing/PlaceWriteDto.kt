@@ -16,17 +16,4 @@ data class PlaceWriteDto(
     val soundcloudLink: String?,
     val instagramLink: String?,
     val about: String?,
-) : BaseWriteDto {
-
-    fun transferDataToDbRecord(record: PlaceRecord) {
-        record.name = name
-        record.imageLink = imageLink
-        record.cityName = cityName
-        record.soundcloudLink = soundcloudLink
-        record.instagramLink = instagramLink
-        record.about = about
-        record.latitude = coordinate.latitude
-        record.longitude = coordinate.longitude
-        record.streetAddress = streetAddress
-    }
-}
+) : BaseWriteDto

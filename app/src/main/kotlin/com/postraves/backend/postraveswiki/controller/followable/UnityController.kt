@@ -70,4 +70,8 @@ class UnityController (
     fun getArtistsOfUnity(@PathVariable id: Long): List<ArtistShortDto> {
         return thisService.getArtistsOfUnity(id)
     }
+
+    override fun saveBatch(list: List<UnityWriteDto>): List<UnityShortDto> {
+        return thisService.saveBatch(list)
+    }
 }

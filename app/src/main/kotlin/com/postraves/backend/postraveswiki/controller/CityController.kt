@@ -37,4 +37,8 @@ class CityController(
     override fun findByPartOfName(namePart: String): List<CityDto> {
         return cityService.findByPartOfName(namePart)
     }
+
+    override fun saveBatch(list: List<CityWriteDto>): List<CityDto> {
+        return cityService.saveBatch(list)
+    }
 }

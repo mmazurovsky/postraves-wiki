@@ -83,23 +83,30 @@ class EventRatingIntegrationTest(
 
     private val countryTestData = CountryDto(
         name = "BE",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         phoneCode = "+7",
         emojiCode = null
     )
 
-    private val countryTestData2 = CountryDto(
+    private val countryTestData2 = countryTestData.copy(
         name = "RU",
         phoneCode = "+8",
-        emojiCode = null
     )
 
     private val cityTest1 = CityWriteDto(
         name = "Bruges",
+        nameRu = "NameRu",
+        nameUk = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
         countryName = "BE",
         timeOffset = -3
     )
 
-    private val cityTest2 = CityWriteDto(
+    private val cityTest2 = cityTest1.copy(
         name = "Moscow",
         countryName = "RU",
         timeOffset = 3
@@ -148,7 +155,8 @@ class EventRatingIntegrationTest(
         endDateTime = OffsetDateTime.of(2021, 8, 19, 6, 0, 0, 0, ZoneOffset.UTC),
         ticketPrices = emptyList(),
         // place id must be changed to real one of persisted place
-        placeId = 1
+        placeId = 1,
+        organizers = emptySet(),
     )
 
     @BeforeAll

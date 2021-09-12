@@ -20,24 +20,6 @@ data class UnityShortDto(
     override val overallFollowers: Int = 0,
     override val weeklyFollowers: Int = 0,
     ) : FollowableShortDto<UnityShortDto>, ConvertableToMap {
-    companion object {
-        fun createOutOfDbRecords(unityRecord: UnityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : UnityShortDto {
-            return UnityShortDto(
-                id = unityRecord.id ?: throw RecordFieldNullException("Unity Id"),
-                name = unityRecord.name ?: throw RecordFieldNullException("Unity Name"),
-                imageLink = unityRecord.imageLink,
-                country =
-                if (countryRecord.name != null)
-                    CountryDto.createOutOfDbRecords(countryRecord)
-                else null,
-                isFollowed = isFollowed
-            )
-        }
-
-        @ExperimentalSerializationApi
-        fun fromMap(map: Map<String, String>): UnityShortDto =
-            Properties.decodeFromStringMap(map)
-    }
 
     @ExperimentalSerializationApi
     override fun toMap(): Map<String, String> = Properties.encodeToStringMap(value = this)
