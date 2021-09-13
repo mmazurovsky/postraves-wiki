@@ -7,6 +7,8 @@ import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.data.enum.MoneyCurrency
+import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepoImpl
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
@@ -18,6 +20,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
+import java.lang.ref.Cleaner
 
 @Component
 @Profile("dev")
@@ -29,6 +32,7 @@ class DevReferenceData(
     private val artistService: ArtistService,
     private val eventService: EventService,
     private val dateTimeProvider: DateTimeProvider,
+    private val quickRepoCleaner: CleaningQuickRepo,
 ) {
 
     val countryRu = CountryDto(
@@ -399,6 +403,7 @@ class DevReferenceData(
 
     @EventListener(ApplicationReadyEvent::class)
     fun manageData() {
+        quickRepoCleaner.clearAllData()
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         placeService.findAll().forEach { placeService.deleteById(it.id) }
