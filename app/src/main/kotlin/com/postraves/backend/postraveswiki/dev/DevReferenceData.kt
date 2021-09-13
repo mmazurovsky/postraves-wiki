@@ -15,10 +15,12 @@ import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
 @Component
+@Profile("dev")
 class DevReferenceData(
     private val countryService: CountryService,
     private val cityService: CityService,
@@ -395,8 +397,7 @@ class DevReferenceData(
         soundcloudLink = null,
     )
 
-//    @EventListener(ApplicationReadyEvent::class)
-    // todo activate this only on dev
+    @EventListener(ApplicationReadyEvent::class)
     fun manageData() {
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
