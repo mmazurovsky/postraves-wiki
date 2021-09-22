@@ -145,7 +145,7 @@ class CityIntegrationTest(
 
         Requests.makeDeleteRequest(mockMvc, "$cityEndpoint/Bruges", status().isOk)
 
-        val cityListJson = Requests.makeGetRequest(mockMvc, cityEndpoint, status().isOk)
+        val cityListJson = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/all", status().isOk)
         val cityListDecoded = Json.decodeFromString<List<CityDto>>(cityListJson)
 
         assertEquals(0, cityListDecoded.size)
@@ -175,11 +175,11 @@ class CityIntegrationTest(
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson2, status().isCreated)
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson3, status().isCreated)
 
-        val cityListJson = Requests.makeGetRequest(mockMvc, cityEndpoint, status().isOk)
+        val cityListPublicEndpointJson = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/all", status().isOk)
 
-        val cityListDecoded = Json.decodeFromString<List<CityDto>>(cityListJson)
+        val cityListPublicEndpointDecoded = Json.decodeFromString<List<CityDto>>(cityListPublicEndpointJson)
 
-        assertEquals(3, cityListDecoded.size)
+        assertEquals(3, cityListPublicEndpointDecoded.size)
     }
 
     @Test

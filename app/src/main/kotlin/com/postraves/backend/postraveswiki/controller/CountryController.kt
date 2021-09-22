@@ -2,6 +2,7 @@ package com.postraves.backend.postraveswiki.controller
 
 import com.postraves.backend.postraveswiki.data.dto.CountryDto
 import com.postraves.backend.postraveswiki.service.CountryService
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -26,6 +27,7 @@ class CountryController (
         return countryService.findByName(name)
     }
 
+    @GetMapping("/public/all")
     override fun findAll(): List<CountryDto> {
         return countryService.findAll()
     }

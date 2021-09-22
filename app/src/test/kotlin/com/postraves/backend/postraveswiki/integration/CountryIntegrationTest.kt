@@ -125,7 +125,7 @@ class CountryIntegrationTest(
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
         Requests.makeDeleteRequest(mockMvc, "$countryEndpoint/BE", status().isOk)
-        val response = Requests.makeGetRequest(mockMvc, countryEndpoint, status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/all", status().isOk)
         val responseDecoded = Json.decodeFromString<List<CountryDto>>(response)
         assertEquals(0, responseDecoded.size)
     }
@@ -154,7 +154,7 @@ class CountryIntegrationTest(
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson2, status().isCreated)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson3, status().isCreated)
 
-        val response = Requests.makeGetRequest(mockMvc, countryEndpoint, status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/all", status().isOk)
         val responseCountryList = Json.decodeFromString<List<CountryDto>>(response)
 
         assertEquals(3, responseCountryList.size)

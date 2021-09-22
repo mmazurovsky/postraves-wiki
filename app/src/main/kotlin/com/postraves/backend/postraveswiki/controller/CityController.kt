@@ -26,6 +26,7 @@ class CityController(
         return cityService.findByName(name)
     }
 
+    @GetMapping("/public/all")
     override fun findAll(): List<CityDto> {
         return cityService.findAll()
     }

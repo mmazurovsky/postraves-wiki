@@ -3,7 +3,6 @@ package com.postraves.backend.postraveswiki.controller.followable
 import com.postraves.backend.postraveswiki.controller.BaseRequests
 import com.postraves.backend.postraveswiki.controller.ByIdRequests
 import com.postraves.backend.postraveswiki.controller.FindByNameRequests
-import com.postraves.backend.postraveswiki.controller.RatingRequests
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.EventWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.TimetablePerformanceWriteDto
