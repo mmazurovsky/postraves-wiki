@@ -4,6 +4,7 @@ import com.postraves.backend.postraveswiki.controller.*
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.EventShortDto
+import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.EventService
@@ -60,5 +61,11 @@ class ArtistController (
 
     override fun saveBatch(list: List<ArtistWriteDto>): List<ArtistShortDto> {
         return artistService.saveBatch(list)
+    }
+
+    @GetMapping("/public/{id}/unities")
+    @ResponseStatus(HttpStatus.OK)
+    fun getUnitiesOfArtist(@PathVariable id: Long): List<UnityShortDto> {
+        return artistService.getUnitiesOfArtist(id)
     }
 }

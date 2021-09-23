@@ -3,6 +3,7 @@ package com.postraves.backend.postraveswiki.repo.followable
 import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
+import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.enum.EntityType
 import com.postraves.backend.postraveswiki.exception.NotFoundException
@@ -12,28 +13,36 @@ import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.records.ArtistRecord
-import jooq.tables.references.ARTIST
-import jooq.tables.references.COUNTRY
-import jooq.tables.references.USER_FOLLOWS_ARTIST
+import jooq.tables.references.*
 import org.jooq.*
 import org.jooq.impl.DSL.lower
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
     ByIdRepo<ArtistFullDto, ArtistShortDto>,
-    FollowableRepo<ArtistShortDto>
+    FollowableRepo<ArtistShortDto> {
+    fun getUnitiesOfArtist(authUid: String?, id: Long): List<UnityShortDto>
+    }
 
 @Repository
 class ArtistRepoImpl(
     private val artistConverters: ArtistConverters,
     private val dateTimeProvider: DateTimeProvider,
+    @Lazy
+    private val unityRepo: UnityRepo,
     ) :
     ArtistRepo,
     AbstractRepo<ArtistWriteDto, ArtistFullDto, ArtistShortDto, ArtistRecord>(
         table = ARTIST,
         entityType = EntityType.ARTIST.nameString
     ) {
+
+    @Autowired
+    @Lazy
+    private lateinit var dsl: DSLContext
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
@@ -50,6 +59,24 @@ class ArtistRepoImpl(
 
     override fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record> {
         return this.where(ARTIST.ID.eq(id))
+    }
+
+    private fun SelectJoinStep<Record>.joinUserFollowUnity(authUid: String): SelectOnConditionStep<Record> {
+        return this.leftOuterJoin(USER_FOLLOWS_UNITY)
+            .on(UNITY.ID.eq(USER_FOLLOWS_UNITY.UNITY_ID), USER_FOLLOWS_UNITY.USER_PROFILE_UID.eq(authUid))
+    }
+
+    override fun getUnitiesOfArtist(authUid: String?, id: Long): List<UnityShortDto> {
+        return dsl
+            .select()
+            .from(UNITY_ARTIST)
+            .leftOuterJoin(UNITY).on(UNITY.ID.eq(UNITY_ARTIST.UNITY_ID))
+            .leftOuterJoin(COUNTRY).on(COUNTRY.NAME.eq(UNITY.COUNTRY_NAME))
+            .apply { if (authUid != null) joinUserFollowUnity(authUid) }
+            .where(UNITY_ARTIST.ARTIST_ID.eq(id))
+            .fetch()
+            .map { unityRepo.convertToShortDto(it) }
+            .toList()
     }
 
     override fun convertToShortDto(record: Record): ArtistShortDto {

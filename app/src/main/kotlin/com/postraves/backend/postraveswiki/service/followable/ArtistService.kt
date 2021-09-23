@@ -2,15 +2,16 @@ package com.postraves.backend.postraveswiki.service.followable
 
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.data.dto.reading.EventShortDto
+import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.exception.UpdateException
 import com.postraves.backend.postraveswiki.repo.followable.ArtistRepo
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepoAbstract
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.*
-import com.postraves.backend.postraveswiki.service.RatingsService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 
 interface ArtistService :
@@ -18,11 +19,15 @@ interface ArtistService :
     ByIdService<ArtistFullDto, ArtistShortDto>,
     FollowableService<ArtistFullDto, ArtistShortDto>,
     RatingsService<ArtistFullDto, ArtistShortDto>,
-    FindByName<ArtistShortDto>
+    FindByName<ArtistShortDto> {
+    fun getUnitiesOfArtist(id: Long): List<UnityShortDto>
+}
 
 @Service
 class ArtistServiceImpl(
-    private val artistRepo: ArtistRepo,
+    @Lazy
+    private val unityService: UnityService,
+    private val thisRepo: ArtistRepo,
     @Qualifier("artistCountryQuickRepoImpl")
     private val artistCountryRepo: EntityCountryQuickRepoAbstract,
     @Qualifier("artistWeeklyFollowersQuickRepoImpl")
@@ -33,10 +38,15 @@ class ArtistServiceImpl(
     private val ratingsService: RatingsService<ArtistFullDto, ArtistShortDto>
 ) : ArtistService,
     AbstractFollowableService<ArtistWriteDto, ArtistFullDto, ArtistShortDto, ArtistRepo>(
-        entityRepo = artistRepo,
+        entityRepo = thisRepo,
         entityOverallFollowersQuickRepo = artistOverallFollowersQuickRepo,
         entityWeeklyFollowersQuickRepo = artistWeeklyFollowersQuickRepo,
     ) {
+
+    @Autowired
+    @Lazy
+    private lateinit var myUserProfileService: MyUserProfileService
+
 
     override fun checkLocationsAndRemoveFromLocationsQuickRepos(dto: ArtistFullDto) {
         val countryOfDtoToDelete = dto.country?.name
@@ -50,7 +60,8 @@ class ArtistServiceImpl(
     }
 
     override fun checkLocationsAndAddAndRemoveFromLocationsQuickRepos(dto: ArtistWriteDto) {
-        val previousCountryName = artistRepo.findById(null, dto.id ?: throw UpdateException("Artist", dto.name)).country?.name
+        val previousCountryName =
+            thisRepo.findById(null, dto.id ?: throw UpdateException("Artist", dto.name)).country?.name
         if (dto.countryName != previousCountryName) {
             if (dto.countryName != null) {
                 artistCountryRepo.addOneIdToCountry(dto.countryName, dto.id)
@@ -61,6 +72,15 @@ class ArtistServiceImpl(
         }
     }
 
+    override fun getUnitiesOfArtist(id: Long): List<UnityShortDto> {
+        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val unitiesOfArtistWithoutFollowers = thisRepo.getUnitiesOfArtist(authUid, id)
+        return unitiesOfArtistWithoutFollowers
+            .map { unityService.enrichWithFollowersCalculationRequired(it) }
+            .sortedByDescending { it.overallFollowers }
+            .toList()
+    }
+
     override fun enrichWithFollowersCalculationRequired(dto: ArtistShortDto): ArtistShortDto {
         return super.enrichWithFollowersCalculationRequired(dto)
     }
@@ -68,10 +88,6 @@ class ArtistServiceImpl(
     override fun enrichWithFollowersCalculationRequired(dto: ArtistFullDto): ArtistFullDto {
         return super.enrichWithFollowersCalculationRequired(dto)
     }
-
-//    override fun findListByIds(ids: Set<Long>): List<ArtistShortDto> {
-//        return ratingsService.findListByIds(ids)
-//    }
 
     override fun findOverallRatingInCountryForCity(cityName: String, maxQuantity: Int): List<ArtistShortDto> {
         return ratingsService.findOverallRatingInCountryForCity(cityName, maxQuantity)
