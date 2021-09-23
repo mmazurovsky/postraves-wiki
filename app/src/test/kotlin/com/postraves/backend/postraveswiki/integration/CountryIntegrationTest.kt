@@ -82,14 +82,6 @@ class CountryIntegrationTest(
     }
 
     @Test
-    fun saveCountryAndCheckLocalizedName() {
-        val countryToSave = countryTestData
-
-        val countryJson = Json.encodeToString(countryToSave)
-        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
-    }
-
-    @Test
     fun saveAndUpdateCountry() {
 
         val countryToSave = countryTestData
