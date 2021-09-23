@@ -2,13 +2,12 @@ package com.postraves.backend.postraveswiki.dev
 
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.data.enum.MoneyCurrency
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
-import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepoImpl
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
@@ -20,7 +19,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
-import java.lang.ref.Cleaner
 
 @Component
 @Profile("dev")
@@ -35,54 +33,49 @@ class DevReferenceData(
     private val quickRepoCleaner: CleaningQuickRepo,
 ) {
 
-    val countryRu = CountryDto(
+    val countryRu = CountryWriteDto(
         name = "RU",
         nameRu = "Россия",
         nameUk = "Russia",
         nameDe = "Russia2",
         nameFr = "Russia3",
         phoneCode = "+7",
-        emojiCode = null
     )
 
-    val countryUa = CountryDto(
+    val countryUa = CountryWriteDto(
         name = "UA",
         nameRu = "Украина",
         nameUk = "Ukraine",
         nameDe = "Ukraine2",
         nameFr = "Ukraine3",
         phoneCode = "+380",
-        emojiCode = null
     )
 
-    val countryBe = CountryDto(
+    val countryBe = CountryWriteDto(
         name = "BE",
         nameRu = "Бельгия",
         nameUk = "Belgium",
         nameDe = "Belgium2",
         nameFr = "Belgium3",
         phoneCode = "+32",
-        emojiCode = null
     )
 
-    val countryDe = CountryDto(
+    val countryDe = CountryWriteDto(
         name = "DE",
         nameRu = "Германия",
         nameUk = "Germany",
         nameDe = "Germany2",
         nameFr = "Germany3",
         phoneCode = "+49",
-        emojiCode = null
     )
 
-    val countryFr = CountryDto(
+    val countryFr = CountryWriteDto(
         name = "FR",
         nameRu = "Франция",
         nameUk = "France",
         nameDe = "France2",
         nameFr = "France3",
         phoneCode = "+33",
-        emojiCode = null
     )
 
     val cityMoscow = CityWriteDto(

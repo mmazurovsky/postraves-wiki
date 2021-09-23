@@ -1,25 +1,30 @@
 package com.postraves.backend.postraveswiki.controller
 
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.service.CountryService
+import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
 
 @RestController
 @RequestMapping("/country")
 class CountryController (
     private val countryService: CountryService
     ) :
-    BaseRequests<CountryDto, CountryDto>,
+    BaseRequests<CountryWriteDto, CountryDto>,
     ByNameRequests<CountryDto>,
     FindByNameRequests<CountryDto> {
 
-    override fun save(dto: CountryDto): CountryDto {
+    override fun save(dto: CountryWriteDto): CountryDto {
         return countryService.save(dto)
     }
 
-    override fun update(dto: CountryDto) {
+    override fun update(dto: CountryWriteDto) {
         countryService.update(dto)
     }
 
@@ -40,7 +45,7 @@ class CountryController (
         return countryService.findByPartOfName(namePart)
     }
 
-    override fun saveBatch(list: List<CountryDto>): List<CountryDto> {
+    override fun saveBatch(list: List<CountryWriteDto>): List<CountryDto> {
         return countryService.saveBatch(list)
     }
 }

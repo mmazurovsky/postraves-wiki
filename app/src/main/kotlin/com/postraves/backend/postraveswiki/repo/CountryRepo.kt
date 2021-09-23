@@ -1,7 +1,8 @@
 package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.converters.CountryConverters
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
@@ -13,10 +14,9 @@ import org.jooq.impl.DSL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
-import java.time.OffsetDateTime
 
 interface CountryRepo :
-    BaseRepo<CountryDto, CountryDto>,
+    BaseRepo<CountryWriteDto, CountryDto>,
     ByNameRepo<CountryDto>
 
 @Repository
@@ -39,7 +39,7 @@ class CountryImplRepo(
         return countryConverters.createDtoFromRecord(found.into(COUNTRY))
     }
 
-    override fun save(dto: CountryDto): CountryDto {
+    override fun save(dto: CountryWriteDto): CountryDto {
         val countryToSave = dsl.newRecord(COUNTRY)
         countryConverters.transferDataFromDtoToRecord(dto, countryToSave)
         countryToSave.createdDateTime = dateTimeProvider.getNow()
@@ -47,7 +47,7 @@ class CountryImplRepo(
         return findByName(countryToSave.name ?: throw SaveException("Country", dto.name))
     }
 
-    override fun update(dto: CountryDto) {
+    override fun update(dto: CountryWriteDto) {
         val countryToUpdate = findByNameWithoutJoins(dto.name)
         countryConverters.transferDataFromDtoToRecord(dto, countryToUpdate)
         countryToUpdate.update()

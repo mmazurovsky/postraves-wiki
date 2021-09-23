@@ -3,7 +3,7 @@ package com.postraves.backend.postraveswiki.integration
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
@@ -59,24 +59,24 @@ class CityIntegrationTest(
 
         logger.info("City Integration Test started")
 
-        val country1 = CountryDto(
+        val country1 = CountryWriteDto(
             name = "BE",
             nameRu = "NameRu",
             nameUk = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+7",
-            emojiCode = null
+            
         )
 
-        val country2 = CountryDto(
+        val country2 = CountryWriteDto(
             name = "CHE",
             nameRu = "NameRu",
             nameUk = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+9",
-            emojiCode = null
+            
         )
 
         val countryJson1 = Json.encodeToString(country1)

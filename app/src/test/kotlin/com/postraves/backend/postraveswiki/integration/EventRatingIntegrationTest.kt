@@ -3,10 +3,9 @@ package com.postraves.backend.postraveswiki.integration
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.*
-import com.postraves.backend.postraveswiki.data.enum.EventStatus
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
@@ -31,11 +30,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
-import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.transaction.annotation.Transactional
 import redis.embedded.RedisServer
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -84,14 +81,14 @@ class EventRatingIntegrationTest(
         redisServer.start()
     }
 
-    private val countryTestData = CountryDto(
+    private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
         nameUk = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
-        emojiCode = null
+        
     )
 
     private val countryTestData2 = countryTestData.copy(

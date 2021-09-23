@@ -3,7 +3,7 @@ package com.postraves.backend.postraveswiki.integration
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
@@ -65,20 +65,20 @@ class PlaceIntegrationTest(
         redisServer.start()
     }
 
-    private val countryTest1 = CountryDto(
+    private val countryTest1 = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
         nameUk = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
-        emojiCode = null,
+        
     )
 
     private val countryTest2 = countryTest1.copy(
         name = "RU",
         phoneCode = "+9",
-        emojiCode = null,
+        
     )
 
     private val cityTest1 = CityWriteDto(

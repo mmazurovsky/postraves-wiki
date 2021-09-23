@@ -2,7 +2,8 @@ package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
@@ -39,14 +40,14 @@ class CountryIntegrationTest(
     private val countryEndpoint: String = "/country"
     private val redisServer = RedisServer(redisPort)
 
-    private val countryTestData = CountryDto(
+    private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameUk = "NameEn",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
-        emojiCode = null
+        
     )
 
     init {
@@ -81,6 +82,14 @@ class CountryIntegrationTest(
     }
 
     @Test
+    fun saveCountryAndCheckLocalizedName() {
+        val countryToSave = countryTestData
+
+        val countryJson = Json.encodeToString(countryToSave)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
+    }
+
+    @Test
     fun saveAndUpdateCountry() {
 
         val countryToSave = countryTestData
@@ -88,7 +97,7 @@ class CountryIntegrationTest(
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        val countryToUpdate = countryToSave.copy(phoneCode = "+8", emojiCode = null)
+        val countryToUpdate = countryToSave.copy(phoneCode = "+8", )
         val countryUpdateJson = Json.encodeToString(countryToUpdate)
         Requests.makePutRequest(mockMvc, countryEndpoint, countryUpdateJson, status().isOk)
 
@@ -138,13 +147,13 @@ class CountryIntegrationTest(
         val countryToSave2 = countryToSave1.copy(
             name = "NI",
             phoneCode = "+8",
-            emojiCode = null
+            
         )
 
         val countryToSave3 = countryToSave1.copy(
             name = "LUX",
             phoneCode = "+9",
-            emojiCode = null
+            
         )
 
         val countryJson1 = Json.encodeToString(countryToSave1)

@@ -2,7 +2,7 @@ package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
@@ -91,14 +91,14 @@ class FollowingIntegrationTest(
         redisServer.start()
     }
 
-    private val countryTestData = CountryDto(
+    private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
         nameUk = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
-        emojiCode = null
+        
     )
 
     private val city = CityWriteDto(

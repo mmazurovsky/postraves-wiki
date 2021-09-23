@@ -2,7 +2,7 @@ package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
@@ -26,8 +26,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import redis.embedded.RedisServer
-import javax.annotation.PostConstruct
-import javax.annotation.PreDestroy
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -64,14 +62,14 @@ class UserIntegrationTest(
 
         logger.info("User Integration Test started")
 
-        val country1 = CountryDto(
+        val country1 = CountryWriteDto(
             name = "BE",
             nameRu = "NameRu",
             nameUk = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+7",
-            emojiCode = null
+            
         )
         val countryJson1 = Json.encodeToString(country1)
         Requests.makePostRequest(mockMvc, "/country", countryJson1, MockMvcResultMatchers.status().isCreated)

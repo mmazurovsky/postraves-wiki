@@ -3,7 +3,7 @@ package com.postraves.backend.postraveswiki.unit
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
@@ -64,14 +64,13 @@ class WeeklyBestQuickRepoTest(
     @ExperimentalSerializationApi
     @Test
     fun setBestAndGet() {
-        val countryToSave = CountryDto(
+        val countryToSave = CountryWriteDto(
             name = "BE",
             nameRu = "NameRu",
             nameUk = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+7",
-            emojiCode = null
         )
 
         val savedCountry = countryService.save(countryToSave)

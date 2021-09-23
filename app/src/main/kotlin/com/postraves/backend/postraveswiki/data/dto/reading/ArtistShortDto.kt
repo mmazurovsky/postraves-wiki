@@ -1,14 +1,11 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.*
-import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
-import jooq.tables.records.ArtistRecord
-import jooq.tables.records.CountryRecord
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.properties.Properties
-import kotlinx.serialization.properties.decodeFromStringMap
 import kotlinx.serialization.properties.encodeToStringMap
 
 @Serializable

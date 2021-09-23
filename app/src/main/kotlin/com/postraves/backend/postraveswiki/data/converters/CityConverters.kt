@@ -5,7 +5,9 @@ import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
+import java.util.*
 
 interface CityConverters {
     fun createDtoFromRecord(cityRecord: CityRecord, countryRecord: CountryRecord): CityDto
@@ -17,13 +19,23 @@ class CityConvertersImpl(
     private val countryConverters: CountryConverters,
 ) : CityConverters {
 
+    private fun resolveLocalizedName(cityRecord: CityRecord): String? {
+        val userLocale = LocaleContextHolder.getLocale()
+        return if (userLocale.language.equals(Locale("ru").language)) {
+            cityRecord.nameRu
+        } else if (userLocale.language.equals(Locale("de").language)) {
+            cityRecord.nameDe
+        } else if (userLocale.language.equals(Locale("fr").language)) {
+            cityRecord.nameFr
+        } else {
+            cityRecord.nameUk
+        }
+    }
+
     override fun createDtoFromRecord(cityRecord: CityRecord, countryRecord: CountryRecord): CityDto {
         return CityDto(
             name = cityRecord.name ?: throw RecordFieldNullException("City Name"),
-            nameRu = cityRecord.nameRu ?: throw RecordFieldNullException("City Name Ru"),
-            nameUk = cityRecord.nameUk ?: throw RecordFieldNullException("City Name Uk"),
-            nameDe = cityRecord.nameDe ?: throw RecordFieldNullException("City Name De"),
-            nameFr = cityRecord.nameFr ?: throw RecordFieldNullException("City Name Fr"),
+            localizedName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Name"),
             country = countryConverters.createDtoFromRecord(countryRecord)
         )
     }

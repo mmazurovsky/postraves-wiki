@@ -1,11 +1,12 @@
 package com.postraves.backend.postraveswiki.service
 
-import com.postraves.backend.postraveswiki.data.dto.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.repo.CountryRepo
 import org.springframework.stereotype.Service
 
 interface CountryService :
-    BaseService<CountryDto, CountryDto>,
+    BaseService<CountryWriteDto, CountryDto>,
     ServiceByName<CountryDto>,
     FindByName<CountryDto>
 
@@ -18,11 +19,11 @@ class CountryServiceImpl(
         return countryRepo.findByName(name)
     }
 
-    override fun save(dto: CountryDto): CountryDto {
+    override fun save(dto: CountryWriteDto): CountryDto {
         return countryRepo.save(dto)
     }
 
-    override fun saveBatch(list: List<CountryDto>): List<CountryDto> {
+    override fun saveBatch(list: List<CountryWriteDto>): List<CountryDto> {
         val saved = list.map {
             countryRepo.save(it)
         }.toList()
@@ -30,7 +31,7 @@ class CountryServiceImpl(
         return saved
     }
 
-    override fun update(dto: CountryDto) {
+    override fun update(dto: CountryWriteDto) {
         countryRepo.update(dto)
     }
 
