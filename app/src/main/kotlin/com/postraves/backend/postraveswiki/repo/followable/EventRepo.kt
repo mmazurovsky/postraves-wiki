@@ -311,6 +311,7 @@ class EventRepoImpl(
     override fun getLineup(authUid: String?, id: Long): List<ArtistShortDto> {
         return dsl
             .select()
+            .distinctOn(ARTIST.ID)
             .from(TIMETABLE_ITEM)
             .leftOuterJoin(TIMETABLE_ITEM_PERFORMING_GROUP).on(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_ID.eq(TIMETABLE_ITEM.ID))
             .leftOuterJoin(ARTIST).on(ARTIST.ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.ARTIST_ID))
