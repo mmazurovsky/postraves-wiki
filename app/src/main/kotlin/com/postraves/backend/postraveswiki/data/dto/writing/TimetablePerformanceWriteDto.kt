@@ -1,5 +1,6 @@
 package com.postraves.backend.postraveswiki.data.dto.writing
 
+import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import com.postraves.backend.postraveswiki.util.KOffsetDateTimeSerializer
 import jooq.tables.records.*
@@ -17,4 +18,4 @@ data class TimetablePerformanceWriteDto(
     val startingDateTime: OffsetDateTime?,
     @Serializable(KOffsetDateTimeSerializer::class)
     val endingDateTime: OffsetDateTime?,
-)
+) : BaseWriteDto

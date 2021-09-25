@@ -6,8 +6,8 @@ package jooq.tables
 
 import jooq.Public
 import jooq.keys.TIMETABLE_ITEM_PERFORMING_GROUP_PKEY
-import jooq.keys.TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID_FKEY
-import jooq.keys.TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID_FKEY
+import jooq.keys.TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GRO_TIMETABLE_ITEM_PERFORMING_GR_FKEY
+import jooq.keys.TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GR_TIMETABLE_ITEM_PERFORMING_GR_FKEY1
 import jooq.tables.records.TimetableItemPerformingGroupRecord
 
 import kotlin.collections.List
@@ -62,14 +62,14 @@ open class TimetableItemPerformingGroup(
     override fun getRecordType(): Class<TimetableItemPerformingGroupRecord> = TimetableItemPerformingGroupRecord::class.java
 
     /**
-     * The column <code>public.timetable_item_performing_group.timetable_item_id</code>.
+     * The column <code>public.timetable_item_performing_group.timetable_item_performing_group_timetable_item_id</code>.
      */
-    val TIMETABLE_ITEM_ID: TableField<TimetableItemPerformingGroupRecord, Long?> = createField(DSL.name("timetable_item_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID: TableField<TimetableItemPerformingGroupRecord, Long?> = createField(DSL.name("timetable_item_performing_group_timetable_item_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
-     * The column <code>public.timetable_item_performing_group.artist_id</code>.
+     * The column <code>public.timetable_item_performing_group.timetable_item_performing_group_artist_id</code>.
      */
-    val ARTIST_ID: TableField<TimetableItemPerformingGroupRecord, Long?> = createField(DSL.name("artist_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID: TableField<TimetableItemPerformingGroupRecord, Long?> = createField(DSL.name("timetable_item_performing_group_artist_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<TimetableItemPerformingGroupRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<TimetableItemPerformingGroupRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -93,19 +93,19 @@ open class TimetableItemPerformingGroup(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<TimetableItemPerformingGroupRecord> = TIMETABLE_ITEM_PERFORMING_GROUP_PKEY
     override fun getKeys(): List<UniqueKey<TimetableItemPerformingGroupRecord>> = listOf(TIMETABLE_ITEM_PERFORMING_GROUP_PKEY)
-    override fun getReferences(): List<ForeignKey<TimetableItemPerformingGroupRecord, *>> = listOf(TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID_FKEY, TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<TimetableItemPerformingGroupRecord, *>> = listOf(TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GRO_TIMETABLE_ITEM_PERFORMING_GR_FKEY, TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GR_TIMETABLE_ITEM_PERFORMING_GR_FKEY1)
 
     private lateinit var _timetableItem: TimetableItem
     private lateinit var _artist: Artist
     fun timetableItem(): TimetableItem {
         if (!this::_timetableItem.isInitialized)
-            _timetableItem = TimetableItem(this, TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID_FKEY)
+            _timetableItem = TimetableItem(this, TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GRO_TIMETABLE_ITEM_PERFORMING_GR_FKEY)
 
         return _timetableItem;
     }
     fun artist(): Artist {
         if (!this::_artist.isInitialized)
-            _artist = Artist(this, TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID_FKEY)
+            _artist = Artist(this, TIMETABLE_ITEM_PERFORMING_GROUP__TIMETABLE_ITEM_PERFORMING_GR_TIMETABLE_ITEM_PERFORMING_GR_FKEY1)
 
         return _artist;
     }

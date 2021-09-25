@@ -7,9 +7,9 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.EVENT_NAME_KEY
+import jooq.keys.EVENT_EVENT_NAME_KEY
 import jooq.keys.EVENT_PKEY
-import jooq.keys.EVENT__EVENT_PLACE_ID_FKEY
+import jooq.keys.EVENT__EVENT_EVENT_PLACE_ID_FKEY
 import jooq.tables.records.EventRecord
 
 import kotlin.collections.List
@@ -65,54 +65,54 @@ open class Event(
     override fun getRecordType(): Class<EventRecord> = EventRecord::class.java
 
     /**
-     * The column <code>public.event.id</code>.
+     * The column <code>public.event.event_id</code>.
      */
-    val ID: TableField<EventRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val EVENT_ID: TableField<EventRecord, Long?> = createField(DSL.name("event_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.event.created_date_time</code>.
+     * The column <code>public.event.event_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val EVENT_CREATED_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("event_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.event.name</code>.
+     * The column <code>public.event.event_name</code>.
      */
-    val NAME: TableField<EventRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(80).nullable(false), this, "")
+    val EVENT_NAME: TableField<EventRecord, String?> = createField(DSL.name("event_name"), SQLDataType.VARCHAR(80).nullable(false), this, "")
 
     /**
-     * The column <code>public.event.image_link</code>.
+     * The column <code>public.event.event_image_link</code>.
      */
-    val IMAGE_LINK: TableField<EventRecord, String?> = createField(DSL.name("image_link"), SQLDataType.CLOB, this, "")
+    val EVENT_IMAGE_LINK: TableField<EventRecord, String?> = createField(DSL.name("event_image_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.event.about</code>.
+     * The column <code>public.event.event_about</code>.
      */
-    val ABOUT: TableField<EventRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
+    val EVENT_ABOUT: TableField<EventRecord, String?> = createField(DSL.name("event_about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.event.is_cancelled</code>.
+     * The column <code>public.event.event_is_cancelled</code>.
      */
-    val IS_CANCELLED: TableField<EventRecord, Boolean?> = createField(DSL.name("is_cancelled"), SQLDataType.BOOLEAN.nullable(false), this, "")
+    val EVENT_IS_CANCELLED: TableField<EventRecord, Boolean?> = createField(DSL.name("event_is_cancelled"), SQLDataType.BOOLEAN.nullable(false), this, "")
 
     /**
-     * The column <code>public.event.start_date_time</code>.
+     * The column <code>public.event.event_start_date_time</code>.
      */
-    val START_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("start_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val EVENT_START_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("event_start_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.event.end_date_time</code>.
+     * The column <code>public.event.event_end_date_time</code>.
      */
-    val END_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("end_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val EVENT_END_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("event_end_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.event.tickets_link</code>.
+     * The column <code>public.event.event_tickets_link</code>.
      */
-    val TICKETS_LINK: TableField<EventRecord, String?> = createField(DSL.name("tickets_link"), SQLDataType.CLOB, this, "")
+    val EVENT_TICKETS_LINK: TableField<EventRecord, String?> = createField(DSL.name("event_tickets_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.event.place_id</code>.
+     * The column <code>public.event.event_place_id</code>.
      */
-    val PLACE_ID: TableField<EventRecord, Long?> = createField(DSL.name("place_id"), SQLDataType.BIGINT, this, "")
+    val EVENT_PLACE_ID: TableField<EventRecord, Long?> = createField(DSL.name("event_place_id"), SQLDataType.BIGINT, this, "")
 
     private constructor(alias: Name, aliased: Table<EventRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<EventRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -136,13 +136,13 @@ open class Event(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getIdentity(): Identity<EventRecord, Long?> = super.getIdentity() as Identity<EventRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<EventRecord> = EVENT_PKEY
-    override fun getKeys(): List<UniqueKey<EventRecord>> = listOf(EVENT_PKEY, EVENT_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<EventRecord, *>> = listOf(EVENT__EVENT_PLACE_ID_FKEY)
+    override fun getKeys(): List<UniqueKey<EventRecord>> = listOf(EVENT_PKEY, EVENT_EVENT_NAME_KEY)
+    override fun getReferences(): List<ForeignKey<EventRecord, *>> = listOf(EVENT__EVENT_EVENT_PLACE_ID_FKEY)
 
     private lateinit var _place: Place
     fun place(): Place {
         if (!this::_place.isInitialized)
-            _place = Place(this, EVENT__EVENT_PLACE_ID_FKEY)
+            _place = Place(this, EVENT__EVENT_EVENT_PLACE_ID_FKEY)
 
         return _place;
     }

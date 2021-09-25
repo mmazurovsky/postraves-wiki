@@ -21,27 +21,27 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class TicketPriceRecord() : UpdatableRecordImpl<TicketPriceRecord>(TicketPrice.TICKET_PRICE), Record6<Long?, OffsetDateTime?, String?, Double?, String?, Long?> {
 
-    var id: Long?
+    var ticketPriceId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var createdDateTime: OffsetDateTime?
+    var ticketPriceCreatedDateTime: OffsetDateTime?
         set(value) = set(1, value)
         get() = get(1) as OffsetDateTime?
 
-    var name: String?
+    var ticketPriceName: String?
         set(value) = set(2, value)
         get() = get(2) as String?
 
-    var price: Double?
+    var ticketPricePrice: Double?
         set(value) = set(3, value)
         get() = get(3) as Double?
 
-    var currency: String?
+    var ticketPriceCurrency: String?
         set(value) = set(4, value)
         get() = get(4) as String?
 
-    var eventId: Long?
+    var ticketPriceEventId: Long?
         set(value) = set(5, value)
         get() = get(5) as Long?
 
@@ -57,52 +57,52 @@ open class TicketPriceRecord() : UpdatableRecordImpl<TicketPriceRecord>(TicketPr
 
     override fun fieldsRow(): Row6<Long?, OffsetDateTime?, String?, Double?, String?, Long?> = super.fieldsRow() as Row6<Long?, OffsetDateTime?, String?, Double?, String?, Long?>
     override fun valuesRow(): Row6<Long?, OffsetDateTime?, String?, Double?, String?, Long?> = super.valuesRow() as Row6<Long?, OffsetDateTime?, String?, Double?, String?, Long?>
-    override fun field1(): Field<Long?> = TicketPrice.TICKET_PRICE.ID
-    override fun field2(): Field<OffsetDateTime?> = TicketPrice.TICKET_PRICE.CREATED_DATE_TIME
-    override fun field3(): Field<String?> = TicketPrice.TICKET_PRICE.NAME
-    override fun field4(): Field<Double?> = TicketPrice.TICKET_PRICE.PRICE
-    override fun field5(): Field<String?> = TicketPrice.TICKET_PRICE.CURRENCY
-    override fun field6(): Field<Long?> = TicketPrice.TICKET_PRICE.EVENT_ID
-    override fun component1(): Long? = id
-    override fun component2(): OffsetDateTime? = createdDateTime
-    override fun component3(): String? = name
-    override fun component4(): Double? = price
-    override fun component5(): String? = currency
-    override fun component6(): Long? = eventId
-    override fun value1(): Long? = id
-    override fun value2(): OffsetDateTime? = createdDateTime
-    override fun value3(): String? = name
-    override fun value4(): Double? = price
-    override fun value5(): String? = currency
-    override fun value6(): Long? = eventId
+    override fun field1(): Field<Long?> = TicketPrice.TICKET_PRICE.TICKET_PRICE_ID
+    override fun field2(): Field<OffsetDateTime?> = TicketPrice.TICKET_PRICE.TICKET_PRICE_CREATED_DATE_TIME
+    override fun field3(): Field<String?> = TicketPrice.TICKET_PRICE.TICKET_PRICE_NAME
+    override fun field4(): Field<Double?> = TicketPrice.TICKET_PRICE.TICKET_PRICE_PRICE
+    override fun field5(): Field<String?> = TicketPrice.TICKET_PRICE.TICKET_PRICE_CURRENCY
+    override fun field6(): Field<Long?> = TicketPrice.TICKET_PRICE.TICKET_PRICE_EVENT_ID
+    override fun component1(): Long? = ticketPriceId
+    override fun component2(): OffsetDateTime? = ticketPriceCreatedDateTime
+    override fun component3(): String? = ticketPriceName
+    override fun component4(): Double? = ticketPricePrice
+    override fun component5(): String? = ticketPriceCurrency
+    override fun component6(): Long? = ticketPriceEventId
+    override fun value1(): Long? = ticketPriceId
+    override fun value2(): OffsetDateTime? = ticketPriceCreatedDateTime
+    override fun value3(): String? = ticketPriceName
+    override fun value4(): Double? = ticketPricePrice
+    override fun value5(): String? = ticketPriceCurrency
+    override fun value6(): Long? = ticketPriceEventId
 
     override fun value1(value: Long?): TicketPriceRecord {
-        this.id = value
+        this.ticketPriceId = value
         return this
     }
 
     override fun value2(value: OffsetDateTime?): TicketPriceRecord {
-        this.createdDateTime = value
+        this.ticketPriceCreatedDateTime = value
         return this
     }
 
     override fun value3(value: String?): TicketPriceRecord {
-        this.name = value
+        this.ticketPriceName = value
         return this
     }
 
     override fun value4(value: Double?): TicketPriceRecord {
-        this.price = value
+        this.ticketPricePrice = value
         return this
     }
 
     override fun value5(value: String?): TicketPriceRecord {
-        this.currency = value
+        this.ticketPriceCurrency = value
         return this
     }
 
     override fun value6(value: Long?): TicketPriceRecord {
-        this.eventId = value
+        this.ticketPriceEventId = value
         return this
     }
 
@@ -119,12 +119,12 @@ open class TicketPriceRecord() : UpdatableRecordImpl<TicketPriceRecord>(TicketPr
     /**
      * Create a detached, initialised TicketPriceRecord
      */
-    constructor(id: Long? = null, createdDateTime: OffsetDateTime? = null, name: String? = null, price: Double? = null, currency: String? = null, eventId: Long? = null): this() {
-        this.id = id
-        this.createdDateTime = createdDateTime
-        this.name = name
-        this.price = price
-        this.currency = currency
-        this.eventId = eventId
+    constructor(ticketPriceId: Long? = null, ticketPriceCreatedDateTime: OffsetDateTime? = null, ticketPriceName: String? = null, ticketPricePrice: Double? = null, ticketPriceCurrency: String? = null, ticketPriceEventId: Long? = null): this() {
+        this.ticketPriceId = ticketPriceId
+        this.ticketPriceCreatedDateTime = ticketPriceCreatedDateTime
+        this.ticketPriceName = ticketPriceName
+        this.ticketPricePrice = ticketPricePrice
+        this.ticketPriceCurrency = ticketPriceCurrency
+        this.ticketPriceEventId = ticketPriceEventId
     }
 }

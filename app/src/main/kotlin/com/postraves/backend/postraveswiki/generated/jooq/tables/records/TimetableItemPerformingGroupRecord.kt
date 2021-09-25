@@ -18,11 +18,11 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class TimetableItemPerformingGroupRecord() : UpdatableRecordImpl<TimetableItemPerformingGroupRecord>(TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP), Record2<Long?, Long?> {
 
-    var timetableItemId: Long?
+    var timetableItemPerformingGroupTimetableItemId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var artistId: Long?
+    var timetableItemPerformingGroupArtistId: Long?
         set(value) = set(1, value)
         get() = get(1) as Long?
 
@@ -38,20 +38,20 @@ open class TimetableItemPerformingGroupRecord() : UpdatableRecordImpl<TimetableI
 
     override fun fieldsRow(): Row2<Long?, Long?> = super.fieldsRow() as Row2<Long?, Long?>
     override fun valuesRow(): Row2<Long?, Long?> = super.valuesRow() as Row2<Long?, Long?>
-    override fun field1(): Field<Long?> = TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_ID
-    override fun field2(): Field<Long?> = TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP.ARTIST_ID
-    override fun component1(): Long? = timetableItemId
-    override fun component2(): Long? = artistId
-    override fun value1(): Long? = timetableItemId
-    override fun value2(): Long? = artistId
+    override fun field1(): Field<Long?> = TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID
+    override fun field2(): Field<Long?> = TimetableItemPerformingGroup.TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID
+    override fun component1(): Long? = timetableItemPerformingGroupTimetableItemId
+    override fun component2(): Long? = timetableItemPerformingGroupArtistId
+    override fun value1(): Long? = timetableItemPerformingGroupTimetableItemId
+    override fun value2(): Long? = timetableItemPerformingGroupArtistId
 
     override fun value1(value: Long?): TimetableItemPerformingGroupRecord {
-        this.timetableItemId = value
+        this.timetableItemPerformingGroupTimetableItemId = value
         return this
     }
 
     override fun value2(value: Long?): TimetableItemPerformingGroupRecord {
-        this.artistId = value
+        this.timetableItemPerformingGroupArtistId = value
         return this
     }
 
@@ -64,8 +64,8 @@ open class TimetableItemPerformingGroupRecord() : UpdatableRecordImpl<TimetableI
     /**
      * Create a detached, initialised TimetableItemPerformingGroupRecord
      */
-    constructor(timetableItemId: Long? = null, artistId: Long? = null): this() {
-        this.timetableItemId = timetableItemId
-        this.artistId = artistId
+    constructor(timetableItemPerformingGroupTimetableItemId: Long? = null, timetableItemPerformingGroupArtistId: Long? = null): this() {
+        this.timetableItemPerformingGroupTimetableItemId = timetableItemPerformingGroupTimetableItemId
+        this.timetableItemPerformingGroupArtistId = timetableItemPerformingGroupArtistId
     }
 }

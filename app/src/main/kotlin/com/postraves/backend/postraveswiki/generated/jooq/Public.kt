@@ -4,13 +4,13 @@
 package jooq
 
 
-import jooq.sequences.ARTIST_ID_SEQ
-import jooq.sequences.EVENT_ID_SEQ
-import jooq.sequences.PLACE_ID_SEQ
-import jooq.sequences.SCENE_ID_SEQ
-import jooq.sequences.TICKET_PRICE_ID_SEQ
-import jooq.sequences.TIMETABLE_ITEM_ID_SEQ
-import jooq.sequences.UNITY_ID_SEQ
+import jooq.sequences.ARTIST_ARTIST_ID_SEQ
+import jooq.sequences.EVENT_EVENT_ID_SEQ
+import jooq.sequences.PLACE_PLACE_ID_SEQ
+import jooq.sequences.SCENE_SCENE_ID_SEQ
+import jooq.sequences.TICKET_PRICE_TICKET_PRICE_ID_SEQ
+import jooq.sequences.TIMETABLE_ITEM_TIMETABLE_ITEM_ID_SEQ
+import jooq.sequences.UNITY_UNITY_ID_SEQ
 import jooq.tables.Artist
 import jooq.tables.City
 import jooq.tables.Country
@@ -144,13 +144,13 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     override fun getCatalog(): Catalog = DefaultCatalog.DEFAULT_CATALOG
 
     override fun getSequences(): List<Sequence<*>> = listOf(
-        ARTIST_ID_SEQ,
-        EVENT_ID_SEQ,
-        PLACE_ID_SEQ,
-        SCENE_ID_SEQ,
-        TICKET_PRICE_ID_SEQ,
-        TIMETABLE_ITEM_ID_SEQ,
-        UNITY_ID_SEQ
+        ARTIST_ARTIST_ID_SEQ,
+        EVENT_EVENT_ID_SEQ,
+        PLACE_PLACE_ID_SEQ,
+        SCENE_SCENE_ID_SEQ,
+        TICKET_PRICE_TICKET_PRICE_ID_SEQ,
+        TIMETABLE_ITEM_TIMETABLE_ITEM_ID_SEQ,
+        UNITY_UNITY_ID_SEQ
     )
 
     override fun getTables(): List<Table<*>> = listOf(

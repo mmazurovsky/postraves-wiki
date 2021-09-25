@@ -19,15 +19,15 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class UnityArtistRecord() : UpdatableRecordImpl<UnityArtistRecord>(UnityArtist.UNITY_ARTIST), Record3<Long?, Long?, Boolean?> {
 
-    var unityId: Long?
+    var unityArtistUnityId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var artistId: Long?
+    var unityArtistArtistId: Long?
         set(value) = set(1, value)
         get() = get(1) as Long?
 
-    var isFounder: Boolean?
+    var unityArtistIsFounder: Boolean?
         set(value) = set(2, value)
         get() = get(2) as Boolean?
 
@@ -43,28 +43,28 @@ open class UnityArtistRecord() : UpdatableRecordImpl<UnityArtistRecord>(UnityArt
 
     override fun fieldsRow(): Row3<Long?, Long?, Boolean?> = super.fieldsRow() as Row3<Long?, Long?, Boolean?>
     override fun valuesRow(): Row3<Long?, Long?, Boolean?> = super.valuesRow() as Row3<Long?, Long?, Boolean?>
-    override fun field1(): Field<Long?> = UnityArtist.UNITY_ARTIST.UNITY_ID
-    override fun field2(): Field<Long?> = UnityArtist.UNITY_ARTIST.ARTIST_ID
-    override fun field3(): Field<Boolean?> = UnityArtist.UNITY_ARTIST.IS_FOUNDER
-    override fun component1(): Long? = unityId
-    override fun component2(): Long? = artistId
-    override fun component3(): Boolean? = isFounder
-    override fun value1(): Long? = unityId
-    override fun value2(): Long? = artistId
-    override fun value3(): Boolean? = isFounder
+    override fun field1(): Field<Long?> = UnityArtist.UNITY_ARTIST.UNITY_ARTIST_UNITY_ID
+    override fun field2(): Field<Long?> = UnityArtist.UNITY_ARTIST.UNITY_ARTIST_ARTIST_ID
+    override fun field3(): Field<Boolean?> = UnityArtist.UNITY_ARTIST.UNITY_ARTIST_IS_FOUNDER
+    override fun component1(): Long? = unityArtistUnityId
+    override fun component2(): Long? = unityArtistArtistId
+    override fun component3(): Boolean? = unityArtistIsFounder
+    override fun value1(): Long? = unityArtistUnityId
+    override fun value2(): Long? = unityArtistArtistId
+    override fun value3(): Boolean? = unityArtistIsFounder
 
     override fun value1(value: Long?): UnityArtistRecord {
-        this.unityId = value
+        this.unityArtistUnityId = value
         return this
     }
 
     override fun value2(value: Long?): UnityArtistRecord {
-        this.artistId = value
+        this.unityArtistArtistId = value
         return this
     }
 
     override fun value3(value: Boolean?): UnityArtistRecord {
-        this.isFounder = value
+        this.unityArtistIsFounder = value
         return this
     }
 
@@ -78,9 +78,9 @@ open class UnityArtistRecord() : UpdatableRecordImpl<UnityArtistRecord>(UnityArt
     /**
      * Create a detached, initialised UnityArtistRecord
      */
-    constructor(unityId: Long? = null, artistId: Long? = null, isFounder: Boolean? = null): this() {
-        this.unityId = unityId
-        this.artistId = artistId
-        this.isFounder = isFounder
+    constructor(unityArtistUnityId: Long? = null, unityArtistArtistId: Long? = null, unityArtistIsFounder: Boolean? = null): this() {
+        this.unityArtistUnityId = unityArtistUnityId
+        this.unityArtistArtistId = unityArtistArtistId
+        this.unityArtistIsFounder = unityArtistIsFounder
     }
 }

@@ -8,8 +8,8 @@ import java.time.OffsetDateTime
 
 import jooq.Public
 import jooq.keys.TIMETABLE_ITEM_PKEY
-import jooq.keys.TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY
-import jooq.keys.TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY
+import jooq.keys.TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_EVENT_ID_FKEY
+import jooq.keys.TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_SCENE_ID_FKEY
 import jooq.tables.records.TimetableItemRecord
 
 import kotlin.collections.List
@@ -65,39 +65,39 @@ open class TimetableItem(
     override fun getRecordType(): Class<TimetableItemRecord> = TimetableItemRecord::class.java
 
     /**
-     * The column <code>public.timetable_item.id</code>.
+     * The column <code>public.timetable_item.timetable_item_id</code>.
      */
-    val ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val TIMETABLE_ITEM_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("timetable_item_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.timetable_item.event_id</code>.
+     * The column <code>public.timetable_item.timetable_item_event_id</code>.
      */
-    val EVENT_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("event_id"), SQLDataType.BIGINT, this, "")
+    val TIMETABLE_ITEM_EVENT_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("timetable_item_event_id"), SQLDataType.BIGINT, this, "")
 
     /**
-     * The column <code>public.timetable_item.scene_id</code>.
+     * The column <code>public.timetable_item.timetable_item_scene_id</code>.
      */
-    val SCENE_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("scene_id"), SQLDataType.BIGINT, this, "")
+    val TIMETABLE_ITEM_SCENE_ID: TableField<TimetableItemRecord, Long?> = createField(DSL.name("timetable_item_scene_id"), SQLDataType.BIGINT, this, "")
 
     /**
-     * The column <code>public.timetable_item.created_date_time</code>.
+     * The column <code>public.timetable_item.timetable_item_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<TimetableItemRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val TIMETABLE_ITEM_CREATED_DATE_TIME: TableField<TimetableItemRecord, OffsetDateTime?> = createField(DSL.name("timetable_item_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.timetable_item.starting_date_time</code>.
+     * The column <code>public.timetable_item.timetable_item_starting_date_time</code>.
      */
-    val STARTING_DATE_TIME: TableField<TimetableItemRecord, OffsetDateTime?> = createField(DSL.name("starting_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
+    val TIMETABLE_ITEM_STARTING_DATE_TIME: TableField<TimetableItemRecord, OffsetDateTime?> = createField(DSL.name("timetable_item_starting_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
 
     /**
-     * The column <code>public.timetable_item.ending_date_time</code>.
+     * The column <code>public.timetable_item.timetable_item_ending_date_time</code>.
      */
-    val ENDING_DATE_TIME: TableField<TimetableItemRecord, OffsetDateTime?> = createField(DSL.name("ending_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
+    val TIMETABLE_ITEM_ENDING_DATE_TIME: TableField<TimetableItemRecord, OffsetDateTime?> = createField(DSL.name("timetable_item_ending_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
 
     /**
-     * The column <code>public.timetable_item.type_of_performance</code>.
+     * The column <code>public.timetable_item.timetable_item_type_of_performance</code>.
      */
-    val TYPE_OF_PERFORMANCE: TableField<TimetableItemRecord, String?> = createField(DSL.name("type_of_performance"), SQLDataType.VARCHAR(60), this, "")
+    val TIMETABLE_ITEM_TYPE_OF_PERFORMANCE: TableField<TimetableItemRecord, String?> = createField(DSL.name("timetable_item_type_of_performance"), SQLDataType.VARCHAR(60), this, "")
 
     private constructor(alias: Name, aliased: Table<TimetableItemRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<TimetableItemRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -122,19 +122,19 @@ open class TimetableItem(
     override fun getIdentity(): Identity<TimetableItemRecord, Long?> = super.getIdentity() as Identity<TimetableItemRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<TimetableItemRecord> = TIMETABLE_ITEM_PKEY
     override fun getKeys(): List<UniqueKey<TimetableItemRecord>> = listOf(TIMETABLE_ITEM_PKEY)
-    override fun getReferences(): List<ForeignKey<TimetableItemRecord, *>> = listOf(TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY, TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<TimetableItemRecord, *>> = listOf(TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_EVENT_ID_FKEY, TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_SCENE_ID_FKEY)
 
     private lateinit var _event: Event
     private lateinit var _scene: Scene
     fun event(): Event {
         if (!this::_event.isInitialized)
-            _event = Event(this, TIMETABLE_ITEM__TIMETABLE_ITEM_EVENT_ID_FKEY)
+            _event = Event(this, TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_EVENT_ID_FKEY)
 
         return _event;
     }
     fun scene(): Scene {
         if (!this::_scene.isInitialized)
-            _scene = Scene(this, TIMETABLE_ITEM__TIMETABLE_ITEM_SCENE_ID_FKEY)
+            _scene = Scene(this, TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_SCENE_ID_FKEY)
 
         return _scene;
     }

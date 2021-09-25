@@ -25,15 +25,15 @@ class UnityConvertersImpl(
 
     override fun createFullDtoFromRecord(unityRecord: UnityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : UnityFullDto {
         return UnityFullDto(
-            id = unityRecord.id ?: throw RecordFieldNullException("Unity Id"),
-            name = unityRecord.name ?: throw RecordFieldNullException("Unity Name"),
-            imageLink = unityRecord.imageLink,
-            instagramLink = unityRecord.instagramLink,
-            soundcloudLink = unityRecord.soundcloudLink,
-            bandcampLink = unityRecord.bandcampLink,
-            about = unityRecord.about,
+            id = unityRecord.unityId ?: throw RecordFieldNullException("Unity Id"),
+            name = unityRecord.unityName ?: throw RecordFieldNullException("Unity Name"),
+            imageLink = unityRecord.unityImageLink,
+            instagramLink = unityRecord.unityInstagramLink,
+            soundcloudLink = unityRecord.unitySoundcloudLink,
+            bandcampLink = unityRecord.unityBandcampLink,
+            about = unityRecord.unityAbout,
             country =
-            if (countryRecord.name != null)
+            if (countryRecord.countryName != null)
                 countryConverters.createDtoFromRecord(countryRecord)
             else null,
             isFollowed = isFollowed
@@ -42,11 +42,11 @@ class UnityConvertersImpl(
 
     override fun createShortDtoFromRecord(unityRecord: UnityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : UnityShortDto {
         return UnityShortDto(
-            id = unityRecord.id ?: throw RecordFieldNullException("Unity Id"),
-            name = unityRecord.name ?: throw RecordFieldNullException("Unity Name"),
-            imageLink = unityRecord.imageLink,
+            id = unityRecord.unityId ?: throw RecordFieldNullException("Unity Id"),
+            name = unityRecord.unityName ?: throw RecordFieldNullException("Unity Name"),
+            imageLink = unityRecord.unityImageLink,
             country =
-            if (countryRecord.name != null)
+            if (countryRecord.countryName != null)
                 countryConverters.createDtoFromRecord(countryRecord)
             else null,
             isFollowed = isFollowed
@@ -55,13 +55,13 @@ class UnityConvertersImpl(
     }
 
     override fun transferDataFromDtoToRecord(dto: UnityWriteDto, record: UnityRecord) {
-        record.name = dto.name
-        record.imageLink = dto.imageLink
-        record.countryName = dto.countryName
-        record.soundcloudLink = dto.soundcloudLink
-        record.instagramLink = dto.instagramLink
-        record.bandcampLink = dto.bandcampLink
-        record.about = dto.about
+        record.unityName = dto.name
+        record.unityImageLink = dto.imageLink
+        record.unityCountryName = dto.countryName
+        record.unitySoundcloudLink = dto.soundcloudLink
+        record.unityInstagramLink = dto.instagramLink
+        record.unityBandcampLink = dto.bandcampLink
+        record.unityAbout = dto.about
     }
 
     @ExperimentalSerializationApi

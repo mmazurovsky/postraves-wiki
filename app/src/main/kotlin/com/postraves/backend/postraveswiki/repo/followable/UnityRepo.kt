@@ -51,17 +51,17 @@ class UnityRepoImpl(
     val userFollowsTable = USER_FOLLOWS_UNITY
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
-        return this.leftOuterJoin(COUNTRY).on(thisTable.COUNTRY_NAME.eq(COUNTRY.NAME))
+        return this.leftOuterJoin(COUNTRY).on(thisTable.UNITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
     }
 
     override fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(userFollowsTable)
-            .on(thisTable.ID.eq(userFollowsTable.UNITY_ID), userFollowsTable.USER_PROFILE_UID.eq(authUid))
+            .on(thisTable.UNITY_ID.eq(userFollowsTable.USER_FOLLOWS_UNITY_UNITY_ID), userFollowsTable.USER_FOLLOWS_UNITY_USER_PROFILE_UID.eq(authUid))
     }
 
     private fun SelectJoinStep<Record>.joinUserFollowArtist(authUid: String): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(USER_FOLLOWS_ARTIST)
-            .on(ARTIST.ID.eq(USER_FOLLOWS_ARTIST.ARTIST_ID), USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
+            .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
     }
 
     override fun SelectJoinStep<Record>.joinOtherData(): SelectOnConditionStep<Record>? {
@@ -69,34 +69,34 @@ class UnityRepoImpl(
     }
 
     override fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record> {
-        return this.where(thisTable.ID.eq(id))
+        return this.where(thisTable.UNITY_ID.eq(id))
     }
 
     override fun convertToShortDto(record: Record): UnityShortDto {
-        val isFollowed = record.into(userFollowsTable).userProfileUid != null
+        val isFollowed = record.into(userFollowsTable).userFollowsUnityUserProfileUid != null
         return unityConverters.createShortDtoFromRecord(record.into(thisTable), record.into(COUNTRY), isFollowed)
     }
 
     override fun convertToFullDto(record: Record): UnityFullDto {
-        val isFollowed = record.into(userFollowsTable).userProfileUid != null
+        val isFollowed = record.into(userFollowsTable).userFollowsUnityUserProfileUid != null
         return unityConverters.createFullDtoFromRecord(record.into(thisTable), record.into(COUNTRY), isFollowed)
     }
 
     override fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record> {
-        return this.where(thisTable.ID.`in`(ids))
+        return this.where(thisTable.UNITY_ID.`in`(ids))
     }
 
     override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
-        return this.where(lower(thisTable.NAME).contains(namePart.lowercase()))
+        return this.where(lower(thisTable.UNITY_NAME).contains(namePart.lowercase()))
     }
 
     override fun prepareRecordBeforeSaving(record: UnityRecord, dto: UnityWriteDto) {
         unityConverters.transferDataFromDtoToRecord(dto, record)
-        record.createdDateTime = dateTimeProvider.getNow()
+        record.unityCreatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun postSaveGetId(record: UnityRecord): Long {
-        return record.id ?: throw SaveException(thisString, record.name ?: "NULL")
+        return record.unityId ?: throw SaveException(thisString, record.unityName ?: "NULL")
     }
 
     override fun preUpdateGetId(dto: UnityWriteDto): Long {
@@ -111,10 +111,10 @@ class UnityRepoImpl(
         return dsl
             .select()
             .from(UNITY_ARTIST)
-            .leftOuterJoin(ARTIST).on(ARTIST.ID.eq(UNITY_ARTIST.ARTIST_ID))
-            .leftOuterJoin(COUNTRY).on(COUNTRY.NAME.eq(ARTIST.COUNTRY_NAME))
+            .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(UNITY_ARTIST.UNITY_ARTIST_ARTIST_ID))
+            .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(ARTIST.ARTIST_COUNTRY_NAME))
             .apply { if (authUid != null) joinUserFollowArtist(authUid) }
-            .where(UNITY_ARTIST.UNITY_ID.eq(id))
+            .where(UNITY_ARTIST.UNITY_ARTIST_UNITY_ID.eq(id))
             .fetch()
             .map { artistRepo.convertToShortDto(it) }
             .toList()
@@ -125,8 +125,8 @@ class UnityRepoImpl(
             dsl
                 .newRecord(UNITY_ARTIST)
                 .apply {
-                    this.unityId = id
-                    this.artistId = it
+                    this.unityArtistUnityId = id
+                    this.unityArtistArtistId = it
                 }
                 .store()
         }
@@ -137,7 +137,7 @@ class UnityRepoImpl(
         artists.forEach {
             dsl
                 .deleteFrom(UNITY_ARTIST)
-                .where(UNITY_ARTIST.UNITY_ID.eq(id), UNITY_ARTIST.ARTIST_ID.eq(it))
+                .where(UNITY_ARTIST.UNITY_ARTIST_UNITY_ID.eq(id), UNITY_ARTIST.UNITY_ARTIST_ARTIST_ID.eq(it))
                 .execute()
         }
     }

@@ -6,8 +6,8 @@ package jooq.tables
 
 import jooq.Public
 import jooq.keys.USER_FOLLOWS_PLACE_PKEY
-import jooq.keys.USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_PLACE_ID_FKEY
-import jooq.keys.USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_PROFILE_UID_FKEY
+import jooq.keys.USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_FOLLOWS_PLACE_PLACE_ID_FKEY
+import jooq.keys.USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_FOLLOWS_PLACE_USER_PROFILE_UID_FKEY
 import jooq.tables.records.UserFollowsPlaceRecord
 
 import kotlin.collections.List
@@ -62,14 +62,14 @@ open class UserFollowsPlace(
     override fun getRecordType(): Class<UserFollowsPlaceRecord> = UserFollowsPlaceRecord::class.java
 
     /**
-     * The column <code>public.user_follows_place.user_profile_uid</code>.
+     * The column <code>public.user_follows_place.user_follows_place_user_profile_uid</code>.
      */
-    val USER_PROFILE_UID: TableField<UserFollowsPlaceRecord, String?> = createField(DSL.name("user_profile_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
+    val USER_FOLLOWS_PLACE_USER_PROFILE_UID: TableField<UserFollowsPlaceRecord, String?> = createField(DSL.name("user_follows_place_user_profile_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
 
     /**
-     * The column <code>public.user_follows_place.place_id</code>.
+     * The column <code>public.user_follows_place.user_follows_place_place_id</code>.
      */
-    val PLACE_ID: TableField<UserFollowsPlaceRecord, Long?> = createField(DSL.name("place_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val USER_FOLLOWS_PLACE_PLACE_ID: TableField<UserFollowsPlaceRecord, Long?> = createField(DSL.name("user_follows_place_place_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<UserFollowsPlaceRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UserFollowsPlaceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -93,19 +93,19 @@ open class UserFollowsPlace(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserFollowsPlaceRecord> = USER_FOLLOWS_PLACE_PKEY
     override fun getKeys(): List<UniqueKey<UserFollowsPlaceRecord>> = listOf(USER_FOLLOWS_PLACE_PKEY)
-    override fun getReferences(): List<ForeignKey<UserFollowsPlaceRecord, *>> = listOf(USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_PROFILE_UID_FKEY, USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_PLACE_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UserFollowsPlaceRecord, *>> = listOf(USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_FOLLOWS_PLACE_USER_PROFILE_UID_FKEY, USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_FOLLOWS_PLACE_PLACE_ID_FKEY)
 
     private lateinit var _userProfile: UserProfile
     private lateinit var _place: Place
     fun userProfile(): UserProfile {
         if (!this::_userProfile.isInitialized)
-            _userProfile = UserProfile(this, USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_PROFILE_UID_FKEY)
+            _userProfile = UserProfile(this, USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_FOLLOWS_PLACE_USER_PROFILE_UID_FKEY)
 
         return _userProfile;
     }
     fun place(): Place {
         if (!this::_place.isInitialized)
-            _place = Place(this, USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_PLACE_ID_FKEY)
+            _place = Place(this, USER_FOLLOWS_PLACE__USER_FOLLOWS_PLACE_USER_FOLLOWS_PLACE_PLACE_ID_FKEY)
 
         return _place;
     }

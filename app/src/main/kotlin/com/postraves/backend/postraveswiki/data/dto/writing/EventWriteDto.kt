@@ -21,17 +21,4 @@ data class EventWriteDto(
     val endDateTime: OffsetDateTime?,
     val placeId: Long,
     val organizers: Set<Long>,
-) : BaseWriteDto {
-
-    fun transferDataToDbRecord(record: EventRecord) {
-        record.name = name
-        record.imageLink = imageLink
-        record.about = about
-        record.ticketsLink = ticketsLink
-        record.startDateTime = startDateTime
-        record.endDateTime = endDateTime
-        record.placeId = placeId
-        //todo ticket prices
-        //todo datetimes??
-    }
-}
+) : BaseWriteDto

@@ -8,7 +8,7 @@ import java.time.OffsetDateTime
 
 import jooq.Public
 import jooq.keys.SCENE_PKEY
-import jooq.keys.SCENE__SCENE_PLACE_ID_FKEY
+import jooq.keys.SCENE__SCENE_SCENE_PLACE_ID_FKEY
 import jooq.tables.records.SceneRecord
 
 import kotlin.collections.List
@@ -64,34 +64,34 @@ open class Scene(
     override fun getRecordType(): Class<SceneRecord> = SceneRecord::class.java
 
     /**
-     * The column <code>public.scene.id</code>.
+     * The column <code>public.scene.scene_id</code>.
      */
-    val ID: TableField<SceneRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val SCENE_ID: TableField<SceneRecord, Long?> = createField(DSL.name("scene_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.scene.created_date_time</code>.
+     * The column <code>public.scene.scene_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<SceneRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val SCENE_CREATED_DATE_TIME: TableField<SceneRecord, OffsetDateTime?> = createField(DSL.name("scene_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.scene.name</code>.
+     * The column <code>public.scene.scene_name</code>.
      */
-    val NAME: TableField<SceneRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
+    val SCENE_NAME: TableField<SceneRecord, String?> = createField(DSL.name("scene_name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
 
     /**
-     * The column <code>public.scene.image_link</code>.
+     * The column <code>public.scene.scene_image_link</code>.
      */
-    val IMAGE_LINK: TableField<SceneRecord, String?> = createField(DSL.name("image_link"), SQLDataType.CLOB, this, "")
+    val SCENE_IMAGE_LINK: TableField<SceneRecord, String?> = createField(DSL.name("scene_image_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.scene.priority</code>.
+     * The column <code>public.scene.scene_priority</code>.
      */
-    val PRIORITY: TableField<SceneRecord, Int?> = createField(DSL.name("priority"), SQLDataType.INTEGER, this, "")
+    val SCENE_PRIORITY: TableField<SceneRecord, Int?> = createField(DSL.name("scene_priority"), SQLDataType.INTEGER, this, "")
 
     /**
-     * The column <code>public.scene.place_id</code>.
+     * The column <code>public.scene.scene_place_id</code>.
      */
-    val PLACE_ID: TableField<SceneRecord, Long?> = createField(DSL.name("place_id"), SQLDataType.BIGINT, this, "")
+    val SCENE_PLACE_ID: TableField<SceneRecord, Long?> = createField(DSL.name("scene_place_id"), SQLDataType.BIGINT, this, "")
 
     private constructor(alias: Name, aliased: Table<SceneRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<SceneRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -116,12 +116,12 @@ open class Scene(
     override fun getIdentity(): Identity<SceneRecord, Long?> = super.getIdentity() as Identity<SceneRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<SceneRecord> = SCENE_PKEY
     override fun getKeys(): List<UniqueKey<SceneRecord>> = listOf(SCENE_PKEY)
-    override fun getReferences(): List<ForeignKey<SceneRecord, *>> = listOf(SCENE__SCENE_PLACE_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<SceneRecord, *>> = listOf(SCENE__SCENE_SCENE_PLACE_ID_FKEY)
 
     private lateinit var _place: Place
     fun place(): Place {
         if (!this::_place.isInitialized)
-            _place = Place(this, SCENE__SCENE_PLACE_ID_FKEY)
+            _place = Place(this, SCENE__SCENE_SCENE_PLACE_ID_FKEY)
 
         return _place;
     }

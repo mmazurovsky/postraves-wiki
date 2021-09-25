@@ -1,15 +1,15 @@
 CREATE TABLE place
 (
-    id                       BIGSERIAL                UNIQUE NOT NULL,
-    created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
-    name                     VARCHAR(60)              UNIQUE NOT NULL,
-    image_link               TEXT,
-    about                    TEXT,
-    city_name                VARCHAR(40)              REFERENCES city(name) ON UPDATE CASCADE ON DELETE CASCADE,
-    street_address           TEXT                     NOT NULL,
-    latitude                 double precision         NOT NULL,
-    longitude                double precision         NOT NULL,
-    instagram_link           TEXT,
-    soundcloud_link          TEXT,
-    PRIMARY KEY (id)
+    place_id                       BIGSERIAL                UNIQUE NOT NULL,
+    place_created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
+    place_name                     VARCHAR(60)              UNIQUE NOT NULL,
+    place_image_link               TEXT,
+    place_about                    TEXT,
+    place_city_name                VARCHAR(40)              REFERENCES city(city_name) ON UPDATE CASCADE ON DELETE CASCADE,
+    place_street_address           TEXT                     NOT NULL,
+    place_latitude                 double precision         NOT NULL,
+    place_longitude                double precision         NOT NULL,
+    place_instagram_link           TEXT,
+    place_soundcloud_link          TEXT,
+    PRIMARY KEY (place_id)
 );

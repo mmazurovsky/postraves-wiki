@@ -33,18 +33,18 @@ class PlaceConvertersImpl(
         isFollowed: Boolean
     ): PlaceFullDto {
         return PlaceFullDto(
-            id = placeRecord.id ?: throw RecordFieldNullException("Place Id"),
-            name = placeRecord.name ?: throw RecordFieldNullException("Place Name"),
-            imageLink = placeRecord.imageLink,
-            streetAddress = placeRecord.streetAddress ?: throw RecordFieldNullException("Place Street Address"),
+            id = placeRecord.placeId ?: throw RecordFieldNullException("Place Id"),
+            name = placeRecord.placeName ?: throw RecordFieldNullException("Place Name"),
+            imageLink = placeRecord.placeImageLink,
+            streetAddress = placeRecord.placeStreetAddress ?: throw RecordFieldNullException("Place Street Address"),
             coordinate = CoordinateDto(
-                latitude = placeRecord.latitude ?: throw RecordFieldNullException("Place Latitude"),
-                longitude = placeRecord.longitude ?: throw RecordFieldNullException("Place Longitude")
+                latitude = placeRecord.placeLatitude ?: throw RecordFieldNullException("Place Latitude"),
+                longitude = placeRecord.placeLongitude ?: throw RecordFieldNullException("Place Longitude")
             ),
             city = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
-            soundcloudLink = placeRecord.soundcloudLink,
-            instagramLink = placeRecord.instagramLink,
-            about = placeRecord.about,
+            soundcloudLink = placeRecord.placeSoundcloudLink,
+            instagramLink = placeRecord.placeInstagramLink,
+            about = placeRecord.placeAbout,
             isFollowed = isFollowed,
         )
     }
@@ -56,13 +56,13 @@ class PlaceConvertersImpl(
         isFollowed: Boolean
     ): PlaceShortDto {
         return PlaceShortDto(
-            id = placeRecord.id ?: throw RecordFieldNullException("Place Id"),
-            name = placeRecord.name ?: throw RecordFieldNullException("Place Name"),
-            imageLink = placeRecord.imageLink,
-            streetAddress = placeRecord.streetAddress ?: throw RecordFieldNullException("Place Street Address"),
+            id = placeRecord.placeId ?: throw RecordFieldNullException("Place Id"),
+            name = placeRecord.placeName ?: throw RecordFieldNullException("Place Name"),
+            imageLink = placeRecord.placeImageLink,
+            streetAddress = placeRecord.placeStreetAddress ?: throw RecordFieldNullException("Place Street Address"),
             coordinate = CoordinateDto(
-                latitude = placeRecord.latitude ?: throw RecordFieldNullException("Place Latitude"),
-                longitude = placeRecord.longitude ?: throw RecordFieldNullException("Place Longitude")
+                latitude = placeRecord.placeLatitude ?: throw RecordFieldNullException("Place Latitude"),
+                longitude = placeRecord.placeLongitude ?: throw RecordFieldNullException("Place Longitude")
             ),
             city = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
             isFollowed = isFollowed
@@ -70,15 +70,15 @@ class PlaceConvertersImpl(
     }
 
     override fun transferDataFromDtoToRecord(dto: PlaceWriteDto, record: PlaceRecord) {
-        record.name = dto.name
-        record.imageLink = dto.imageLink
-        record.cityName = dto.cityName
-        record.soundcloudLink = dto.soundcloudLink
-        record.instagramLink = dto.instagramLink
-        record.about = dto.about
-        record.latitude = dto.coordinate.latitude
-        record.longitude = dto.coordinate.longitude
-        record.streetAddress = dto.streetAddress
+        record.placeName = dto.name
+        record.placeImageLink = dto.imageLink
+        record.placeCityName = dto.cityName
+        record.placeSoundcloudLink = dto.soundcloudLink
+        record.placeInstagramLink = dto.instagramLink
+        record.placeAbout = dto.about
+        record.placeLatitude = dto.coordinate.latitude
+        record.placeLongitude = dto.coordinate.longitude
+        record.placeStreetAddress = dto.streetAddress
     }
 
     @ExperimentalSerializationApi

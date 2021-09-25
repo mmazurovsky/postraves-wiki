@@ -25,7 +25,7 @@ class OtherUserRepoImpl(
     override fun findFollowableByPartOfName(authUid: String?, namePart: String): List<UserShortDto> {
         val results = dsl
             .selectFrom(USER_PROFILE)
-            .where(DSL.lower(USER_PROFILE.NAME).contains(namePart.lowercase()))
+            .where(DSL.lower(USER_PROFILE.USER_PROFILE_NAME).contains(namePart.lowercase()))
             .fetch()
             .map { convertToShortDto(it) }
             .toList()

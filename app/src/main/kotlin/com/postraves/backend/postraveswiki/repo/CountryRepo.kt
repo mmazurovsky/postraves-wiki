@@ -30,7 +30,7 @@ class CountryImplRepo(
     private lateinit var dsl: DSLContext
 
     private fun findByNameWithoutJoins(name: String): CountryRecord {
-        val record = dsl.fetchOne(COUNTRY, COUNTRY.NAME.eq(name))
+        val record = dsl.fetchOne(COUNTRY, COUNTRY.COUNTRY_NAME.eq(name))
         return record ?: throw NotFoundException("Country", name)
     }
 
@@ -42,9 +42,9 @@ class CountryImplRepo(
     override fun save(dto: CountryWriteDto): CountryDto {
         val countryToSave = dsl.newRecord(COUNTRY)
         countryConverters.transferDataFromDtoToRecord(dto, countryToSave)
-        countryToSave.createdDateTime = dateTimeProvider.getNow()
+        countryToSave.countryCreatedDateTime = dateTimeProvider.getNow()
         countryToSave.store()
-        return findByName(countryToSave.name ?: throw SaveException("Country", dto.name))
+        return findByName(countryToSave.countryName ?: throw SaveException("Country", dto.name))
     }
 
     override fun update(dto: CountryWriteDto) {
@@ -71,7 +71,7 @@ class CountryImplRepo(
     override fun findByPartOfName(namePart: String): List<CountryDto> {
         val results = dsl
             .selectFrom(COUNTRY)
-            .where(DSL.lower(CITY.NAME).contains(namePart.lowercase()))
+            .where(DSL.lower(CITY.CITY_NAME).contains(namePart.lowercase()))
             .fetch()
             .map {
                 countryConverters.createDtoFromRecord(it.into(COUNTRY))

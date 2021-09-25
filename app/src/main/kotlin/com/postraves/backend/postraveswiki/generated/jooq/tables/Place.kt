@@ -7,9 +7,9 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.PLACE_NAME_KEY
 import jooq.keys.PLACE_PKEY
-import jooq.keys.PLACE__PLACE_CITY_NAME_FKEY
+import jooq.keys.PLACE_PLACE_NAME_KEY
+import jooq.keys.PLACE__PLACE_PLACE_CITY_NAME_FKEY
 import jooq.tables.records.PlaceRecord
 
 import kotlin.collections.List
@@ -65,59 +65,59 @@ open class Place(
     override fun getRecordType(): Class<PlaceRecord> = PlaceRecord::class.java
 
     /**
-     * The column <code>public.place.id</code>.
+     * The column <code>public.place.place_id</code>.
      */
-    val ID: TableField<PlaceRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val PLACE_ID: TableField<PlaceRecord, Long?> = createField(DSL.name("place_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.place.created_date_time</code>.
+     * The column <code>public.place.place_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<PlaceRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val PLACE_CREATED_DATE_TIME: TableField<PlaceRecord, OffsetDateTime?> = createField(DSL.name("place_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.place.name</code>.
+     * The column <code>public.place.place_name</code>.
      */
-    val NAME: TableField<PlaceRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
+    val PLACE_NAME: TableField<PlaceRecord, String?> = createField(DSL.name("place_name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
 
     /**
-     * The column <code>public.place.image_link</code>.
+     * The column <code>public.place.place_image_link</code>.
      */
-    val IMAGE_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("image_link"), SQLDataType.CLOB, this, "")
+    val PLACE_IMAGE_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("place_image_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.place.about</code>.
+     * The column <code>public.place.place_about</code>.
      */
-    val ABOUT: TableField<PlaceRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
+    val PLACE_ABOUT: TableField<PlaceRecord, String?> = createField(DSL.name("place_about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.place.city_name</code>.
+     * The column <code>public.place.place_city_name</code>.
      */
-    val CITY_NAME: TableField<PlaceRecord, String?> = createField(DSL.name("city_name"), SQLDataType.VARCHAR(40), this, "")
+    val PLACE_CITY_NAME: TableField<PlaceRecord, String?> = createField(DSL.name("place_city_name"), SQLDataType.VARCHAR(40), this, "")
 
     /**
-     * The column <code>public.place.street_address</code>.
+     * The column <code>public.place.place_street_address</code>.
      */
-    val STREET_ADDRESS: TableField<PlaceRecord, String?> = createField(DSL.name("street_address"), SQLDataType.CLOB.nullable(false), this, "")
+    val PLACE_STREET_ADDRESS: TableField<PlaceRecord, String?> = createField(DSL.name("place_street_address"), SQLDataType.CLOB.nullable(false), this, "")
 
     /**
-     * The column <code>public.place.latitude</code>.
+     * The column <code>public.place.place_latitude</code>.
      */
-    val LATITUDE: TableField<PlaceRecord, Double?> = createField(DSL.name("latitude"), SQLDataType.DOUBLE.nullable(false), this, "")
+    val PLACE_LATITUDE: TableField<PlaceRecord, Double?> = createField(DSL.name("place_latitude"), SQLDataType.DOUBLE.nullable(false), this, "")
 
     /**
-     * The column <code>public.place.longitude</code>.
+     * The column <code>public.place.place_longitude</code>.
      */
-    val LONGITUDE: TableField<PlaceRecord, Double?> = createField(DSL.name("longitude"), SQLDataType.DOUBLE.nullable(false), this, "")
+    val PLACE_LONGITUDE: TableField<PlaceRecord, Double?> = createField(DSL.name("place_longitude"), SQLDataType.DOUBLE.nullable(false), this, "")
 
     /**
-     * The column <code>public.place.instagram_link</code>.
+     * The column <code>public.place.place_instagram_link</code>.
      */
-    val INSTAGRAM_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("instagram_link"), SQLDataType.CLOB, this, "")
+    val PLACE_INSTAGRAM_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("place_instagram_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.place.soundcloud_link</code>.
+     * The column <code>public.place.place_soundcloud_link</code>.
      */
-    val SOUNDCLOUD_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("soundcloud_link"), SQLDataType.CLOB, this, "")
+    val PLACE_SOUNDCLOUD_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("place_soundcloud_link"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<PlaceRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<PlaceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -141,13 +141,13 @@ open class Place(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getIdentity(): Identity<PlaceRecord, Long?> = super.getIdentity() as Identity<PlaceRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<PlaceRecord> = PLACE_PKEY
-    override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY, PLACE_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<PlaceRecord, *>> = listOf(PLACE__PLACE_CITY_NAME_FKEY)
+    override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY, PLACE_PLACE_NAME_KEY)
+    override fun getReferences(): List<ForeignKey<PlaceRecord, *>> = listOf(PLACE__PLACE_PLACE_CITY_NAME_FKEY)
 
     private lateinit var _city: City
     fun city(): City {
         if (!this::_city.isInitialized)
-            _city = City(this, PLACE__PLACE_CITY_NAME_FKEY)
+            _city = City(this, PLACE__PLACE_PLACE_CITY_NAME_FKEY)
 
         return _city;
     }

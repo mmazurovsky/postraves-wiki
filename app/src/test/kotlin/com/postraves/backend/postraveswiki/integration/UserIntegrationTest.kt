@@ -65,7 +65,7 @@ class UserIntegrationTest(
         val country1 = CountryWriteDto(
             name = "BE",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+7",
@@ -77,7 +77,7 @@ class UserIntegrationTest(
         val city = CityWriteDto(
             name = "Bruges",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             countryName = "BE",

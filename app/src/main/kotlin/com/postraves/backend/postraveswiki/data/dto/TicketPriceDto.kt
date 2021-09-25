@@ -14,16 +14,16 @@ data class TicketPriceDto (
     companion object {
         fun createOutOfDbRecords(ticketPriceRecord: TicketPriceRecord): TicketPriceDto {
             return TicketPriceDto(
-                name = ticketPriceRecord.name ?: throw RecordFieldNullException("Ticket price"),
-                price = ticketPriceRecord.price ?: throw RecordFieldNullException("Ticket price"),
-                currency = MoneyCurrency.valueOf(ticketPriceRecord.currency ?: throw RecordFieldNullException("Ticket money currency"))
+                name = ticketPriceRecord.ticketPriceName ?: throw RecordFieldNullException("Ticket price"),
+                price = ticketPriceRecord.ticketPricePrice ?: throw RecordFieldNullException("Ticket price"),
+                currency = MoneyCurrency.valueOf(ticketPriceRecord.ticketPriceCurrency ?: throw RecordFieldNullException("Ticket money currency"))
             )
         }
     }
 
     fun transferDataToDbRecord(record: TicketPriceRecord) {
-        record.name = name
-        record.price = price
-        record.currency = currency.name
+        record.ticketPriceName = name
+        record.ticketPricePrice = price
+        record.ticketPriceCurrency = currency.name
     }
 }

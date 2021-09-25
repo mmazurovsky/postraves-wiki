@@ -46,10 +46,10 @@ class MyUserProfileRepoImpl(
         val record = dsl
             .selectFrom(
                 USER_PROFILE
-                    .leftOuterJoin(CITY).on(USER_PROFILE.CITY_NAME.eq(CITY.NAME))
-                    .leftOuterJoin(COUNTRY).on(CITY.COUNTRY_NAME.eq(COUNTRY.NAME))
+                    .leftOuterJoin(CITY).on(USER_PROFILE.USER_PROFILE_CITY_NAME.eq(CITY.CITY_NAME))
+                    .leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
             )
-            .where(USER_PROFILE.AUTH_UID.eq(authUid))
+            .where(USER_PROFILE.USER_PROFILE_AUTH_UID.eq(authUid))
             .fetchOne()
         return record
     }
@@ -57,7 +57,7 @@ class MyUserProfileRepoImpl(
     private fun findByAuthUidWithoutJoins(authUid: String): UserProfileRecord {
         val record = dsl
             .selectFrom(USER_PROFILE)
-            .where(USER_PROFILE.AUTH_UID.eq(authUid))
+            .where(USER_PROFILE.USER_PROFILE_AUTH_UID.eq(authUid))
             .fetchOne()
         return record ?: throw NotFoundException("User", authUid)
     }
@@ -71,8 +71,8 @@ class MyUserProfileRepoImpl(
     override fun save(dto: UserWriteDto, authUid: String): UserShortDto {
         val userToSave = dsl.newRecord(USER_PROFILE)
         userConverters.transferDataFromDtoToRecord(dto, userToSave)
-        userToSave.authUid = authUid
-        userToSave.createdDateTime = dateTimeProvider.getNow()
+        userToSave.userProfileAuthUid = authUid
+        userToSave.userProfileCreatedDateTime = dateTimeProvider.getNow()
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
         return userConverters.createShortDtoFromRecord(record?.into(USER_PROFILE) ?: throw SaveException("User", dto.name))
@@ -85,7 +85,7 @@ class MyUserProfileRepoImpl(
     }
 
     override fun deleteMyProfile(authUid: String) {
-        dsl.fetchOne(USER_PROFILE, USER_PROFILE.AUTH_UID.eq(authUid))
+        dsl.fetchOne(USER_PROFILE, USER_PROFILE.USER_PROFILE_AUTH_UID.eq(authUid))
             ?.delete()
     }
 
@@ -93,8 +93,8 @@ class MyUserProfileRepoImpl(
         // checking that artist exists
         artistRepo.findById(userAuthUid, id)
         val userFollowArtist = dsl.newRecord(USER_FOLLOWS_ARTIST)
-        userFollowArtist.artistId = id
-        userFollowArtist.userProfileUid = userAuthUid
+        userFollowArtist.userFollowsArtistArtistId = id
+        userFollowArtist.userFollowsArtistUserProfileUid = userAuthUid
         try {
             userFollowArtist.store()
         } catch (e: Exception) {
@@ -106,8 +106,8 @@ class MyUserProfileRepoImpl(
         artistRepo.findById(userAuthUid, id)
         if (dsl.fetchOne(
                 USER_FOLLOWS_ARTIST,
-                USER_FOLLOWS_ARTIST.ARTIST_ID.eq(id),
-                USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(userAuthUid)
+                USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID.eq(id),
+                USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(userAuthUid)
             )
                 ?.delete() == null
         ) throw FollowingException(userId = userAuthUid, entity = "Artist", entityId = id.toString(), message = "can't unfollow")
@@ -117,10 +117,10 @@ class MyUserProfileRepoImpl(
         return dsl
             .selectFrom(
                 USER_FOLLOWS_ARTIST
-                    .leftOuterJoin(ARTIST).on(USER_FOLLOWS_ARTIST.ARTIST_ID.eq(ARTIST.ID))
-                    .leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
+                    .leftOuterJoin(ARTIST).on(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID.eq(ARTIST.ARTIST_ID))
+                    .leftOuterJoin(COUNTRY).on(ARTIST.ARTIST_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
             )
-            .where(USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
+            .where(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
             .fetch()
             .map {
                 artistConverters.createShortDtoFromRecord(it.into(ARTIST), it.into(COUNTRY), true)
@@ -131,8 +131,8 @@ class MyUserProfileRepoImpl(
     override fun checkArtistIsFollowed(id: Long, authUid: String): Boolean {
         val association = dsl.fetchOne(
             USER_FOLLOWS_ARTIST,
-            USER_FOLLOWS_ARTIST.ARTIST_ID.eq(id),
-            USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid)
+            USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID.eq(id),
+            USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid)
         )
 
         return association != null

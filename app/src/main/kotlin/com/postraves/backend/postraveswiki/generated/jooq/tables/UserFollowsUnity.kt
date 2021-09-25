@@ -6,8 +6,8 @@ package jooq.tables
 
 import jooq.Public
 import jooq.keys.USER_FOLLOWS_UNITY_PKEY
-import jooq.keys.USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_UNITY_ID_FKEY
-import jooq.keys.USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_PROFILE_UID_FKEY
+import jooq.keys.USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_FOLLOWS_UNITY_UNITY_ID_FKEY
+import jooq.keys.USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_FOLLOWS_UNITY_USER_PROFILE_UID_FKEY
 import jooq.tables.records.UserFollowsUnityRecord
 
 import kotlin.collections.List
@@ -62,14 +62,14 @@ open class UserFollowsUnity(
     override fun getRecordType(): Class<UserFollowsUnityRecord> = UserFollowsUnityRecord::class.java
 
     /**
-     * The column <code>public.user_follows_unity.user_profile_uid</code>.
+     * The column <code>public.user_follows_unity.user_follows_unity_user_profile_uid</code>.
      */
-    val USER_PROFILE_UID: TableField<UserFollowsUnityRecord, String?> = createField(DSL.name("user_profile_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
+    val USER_FOLLOWS_UNITY_USER_PROFILE_UID: TableField<UserFollowsUnityRecord, String?> = createField(DSL.name("user_follows_unity_user_profile_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
 
     /**
-     * The column <code>public.user_follows_unity.unity_id</code>.
+     * The column <code>public.user_follows_unity.user_follows_unity_unity_id</code>.
      */
-    val UNITY_ID: TableField<UserFollowsUnityRecord, Long?> = createField(DSL.name("unity_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val USER_FOLLOWS_UNITY_UNITY_ID: TableField<UserFollowsUnityRecord, Long?> = createField(DSL.name("user_follows_unity_unity_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<UserFollowsUnityRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UserFollowsUnityRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -93,19 +93,19 @@ open class UserFollowsUnity(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserFollowsUnityRecord> = USER_FOLLOWS_UNITY_PKEY
     override fun getKeys(): List<UniqueKey<UserFollowsUnityRecord>> = listOf(USER_FOLLOWS_UNITY_PKEY)
-    override fun getReferences(): List<ForeignKey<UserFollowsUnityRecord, *>> = listOf(USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_PROFILE_UID_FKEY, USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_UNITY_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UserFollowsUnityRecord, *>> = listOf(USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_FOLLOWS_UNITY_USER_PROFILE_UID_FKEY, USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_FOLLOWS_UNITY_UNITY_ID_FKEY)
 
     private lateinit var _userProfile: UserProfile
     private lateinit var _unity: Unity
     fun userProfile(): UserProfile {
         if (!this::_userProfile.isInitialized)
-            _userProfile = UserProfile(this, USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_PROFILE_UID_FKEY)
+            _userProfile = UserProfile(this, USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_FOLLOWS_UNITY_USER_PROFILE_UID_FKEY)
 
         return _userProfile;
     }
     fun unity(): Unity {
         if (!this::_unity.isInitialized)
-            _unity = Unity(this, USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_UNITY_ID_FKEY)
+            _unity = Unity(this, USER_FOLLOWS_UNITY__USER_FOLLOWS_UNITY_USER_FOLLOWS_UNITY_UNITY_ID_FKEY)
 
         return _unity;
     }

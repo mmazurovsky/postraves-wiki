@@ -22,31 +22,31 @@ class CityConvertersImpl(
     private fun resolveLocalizedName(cityRecord: CityRecord): String? {
         val userLocale = LocaleContextHolder.getLocale()
         return if (userLocale.language.equals(Locale("ru").language)) {
-            cityRecord.nameRu
+            cityRecord.cityNameRu
         } else if (userLocale.language.equals(Locale("de").language)) {
-            cityRecord.nameDe
+            cityRecord.cityNameDe
         } else if (userLocale.language.equals(Locale("fr").language)) {
-            cityRecord.nameFr
+            cityRecord.cityNameFr
         } else {
-            cityRecord.nameUk
+            cityRecord.cityNameEn
         }
     }
 
     override fun createDtoFromRecord(cityRecord: CityRecord, countryRecord: CountryRecord): CityDto {
         return CityDto(
-            name = cityRecord.name ?: throw RecordFieldNullException("City Name"),
+            name = cityRecord.cityName ?: throw RecordFieldNullException("City Name"),
             localizedName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Name"),
             country = countryConverters.createDtoFromRecord(countryRecord)
         )
     }
 
     override fun transferDataFromDtoToRecord(dto: CityWriteDto, record: CityRecord) {
-        record.name = dto.name
-        record.nameRu = dto.nameRu
-        record.nameUk = dto.nameUk
-        record.nameDe = dto.nameDe
-        record.nameFr = dto.nameFr
-        record.countryName = dto.countryName
-        record.timeOffset = dto.timeOffset
+        record.cityName = dto.name
+        record.cityNameRu = dto.nameRu
+        record.cityNameEn = dto.nameEn
+        record.cityNameDe = dto.nameDe
+        record.cityNameFr = dto.nameFr
+        record.cityCountryName = dto.countryName
+        record.cityTimeOffset = dto.timeOffset
     }
 }

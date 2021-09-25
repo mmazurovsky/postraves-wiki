@@ -45,12 +45,12 @@ class ArtistRepoImpl(
     private lateinit var dsl: DSLContext
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
-        return this.leftOuterJoin(COUNTRY).on(ARTIST.COUNTRY_NAME.eq(COUNTRY.NAME))
+        return this.leftOuterJoin(COUNTRY).on(ARTIST.ARTIST_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
     }
 
     override fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(USER_FOLLOWS_ARTIST)
-            .on(ARTIST.ID.eq(USER_FOLLOWS_ARTIST.ARTIST_ID), USER_FOLLOWS_ARTIST.USER_PROFILE_UID.eq(authUid))
+            .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
     }
 
     override fun SelectJoinStep<Record>.joinOtherData(): SelectOnConditionStep<Record>? {
@@ -58,52 +58,52 @@ class ArtistRepoImpl(
     }
 
     override fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record> {
-        return this.where(ARTIST.ID.eq(id))
+        return this.where(ARTIST.ARTIST_ID.eq(id))
     }
 
     private fun SelectJoinStep<Record>.joinUserFollowUnity(authUid: String): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(USER_FOLLOWS_UNITY)
-            .on(UNITY.ID.eq(USER_FOLLOWS_UNITY.UNITY_ID), USER_FOLLOWS_UNITY.USER_PROFILE_UID.eq(authUid))
+            .on(UNITY.UNITY_ID.eq(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID), USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_UID.eq(authUid))
     }
 
     override fun getUnitiesOfArtist(authUid: String?, id: Long): List<UnityShortDto> {
         return dsl
             .select()
             .from(UNITY_ARTIST)
-            .leftOuterJoin(UNITY).on(UNITY.ID.eq(UNITY_ARTIST.UNITY_ID))
-            .leftOuterJoin(COUNTRY).on(COUNTRY.NAME.eq(UNITY.COUNTRY_NAME))
+            .leftOuterJoin(UNITY).on(UNITY.UNITY_ID.eq(UNITY_ARTIST.UNITY_ARTIST_UNITY_ID))
+            .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(UNITY.UNITY_COUNTRY_NAME))
             .apply { if (authUid != null) joinUserFollowUnity(authUid) }
-            .where(UNITY_ARTIST.ARTIST_ID.eq(id))
+            .where(UNITY_ARTIST.UNITY_ARTIST_ARTIST_ID.eq(id))
             .fetch()
             .map { unityRepo.convertToShortDto(it) }
             .toList()
     }
 
     override fun convertToShortDto(record: Record): ArtistShortDto {
-        val isFollowed = record.into(USER_FOLLOWS_ARTIST).userProfileUid != null
+        val isFollowed = record.into(USER_FOLLOWS_ARTIST).userFollowsArtistUserProfileUid != null
         return artistConverters.createShortDtoFromRecord(record.into(ARTIST), record.into(COUNTRY), isFollowed)
     }
 
     override fun convertToFullDto(record: Record): ArtistFullDto {
-        val isFollowed = record.into(USER_FOLLOWS_ARTIST).userProfileUid != null
+        val isFollowed = record.into(USER_FOLLOWS_ARTIST).userFollowsArtistUserProfileUid != null
         return artistConverters.createFullDtoFromRecord(record.into(ARTIST), record.into(COUNTRY), isFollowed)
     }
 
     override fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record> {
-        return this.where(ARTIST.ID.`in`(ids))
+        return this.where(ARTIST.ARTIST_ID.`in`(ids))
     }
 
     override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
-        return this.where(lower(ARTIST.NAME).contains(namePart.lowercase()))
+        return this.where(lower(ARTIST.ARTIST_NAME).contains(namePart.lowercase()))
     }
 
     override fun prepareRecordBeforeSaving(record: ArtistRecord, dto: ArtistWriteDto) {
         artistConverters.transferDataFromDtoToRecord(dto, record)
-        record.createdDateTime = dateTimeProvider.getNow()
+        record.artistCreatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun postSaveGetId(record: ArtistRecord): Long {
-        return record.id ?: throw SaveException("Artist", record.name ?: "NULL")
+        return record.artistId ?: throw SaveException("Artist", record.artistName ?: "NULL")
     }
 
     override fun preUpdateGetId(dto: ArtistWriteDto): Long {

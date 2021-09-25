@@ -7,9 +7,9 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.UNITY_NAME_KEY
 import jooq.keys.UNITY_PKEY
-import jooq.keys.UNITY__UNITY_COUNTRY_NAME_FKEY
+import jooq.keys.UNITY_UNITY_NAME_KEY
+import jooq.keys.UNITY__UNITY_UNITY_COUNTRY_NAME_FKEY
 import jooq.tables.records.UnityRecord
 
 import kotlin.collections.List
@@ -65,49 +65,49 @@ open class Unity(
     override fun getRecordType(): Class<UnityRecord> = UnityRecord::class.java
 
     /**
-     * The column <code>public.unity.id</code>.
+     * The column <code>public.unity.unity_id</code>.
      */
-    val ID: TableField<UnityRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val UNITY_ID: TableField<UnityRecord, Long?> = createField(DSL.name("unity_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.unity.created_date_time</code>.
+     * The column <code>public.unity.unity_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<UnityRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val UNITY_CREATED_DATE_TIME: TableField<UnityRecord, OffsetDateTime?> = createField(DSL.name("unity_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.unity.name</code>.
+     * The column <code>public.unity.unity_name</code>.
      */
-    val NAME: TableField<UnityRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
+    val UNITY_NAME: TableField<UnityRecord, String?> = createField(DSL.name("unity_name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
 
     /**
-     * The column <code>public.unity.image_link</code>.
+     * The column <code>public.unity.unity_image_link</code>.
      */
-    val IMAGE_LINK: TableField<UnityRecord, String?> = createField(DSL.name("image_link"), SQLDataType.CLOB, this, "")
+    val UNITY_IMAGE_LINK: TableField<UnityRecord, String?> = createField(DSL.name("unity_image_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.unity.about</code>.
+     * The column <code>public.unity.unity_about</code>.
      */
-    val ABOUT: TableField<UnityRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
+    val UNITY_ABOUT: TableField<UnityRecord, String?> = createField(DSL.name("unity_about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.unity.country_name</code>.
+     * The column <code>public.unity.unity_country_name</code>.
      */
-    val COUNTRY_NAME: TableField<UnityRecord, String?> = createField(DSL.name("country_name"), SQLDataType.VARCHAR(3), this, "")
+    val UNITY_COUNTRY_NAME: TableField<UnityRecord, String?> = createField(DSL.name("unity_country_name"), SQLDataType.VARCHAR(3), this, "")
 
     /**
-     * The column <code>public.unity.instagram_link</code>.
+     * The column <code>public.unity.unity_instagram_link</code>.
      */
-    val INSTAGRAM_LINK: TableField<UnityRecord, String?> = createField(DSL.name("instagram_link"), SQLDataType.CLOB, this, "")
+    val UNITY_INSTAGRAM_LINK: TableField<UnityRecord, String?> = createField(DSL.name("unity_instagram_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.unity.soundcloud_link</code>.
+     * The column <code>public.unity.unity_soundcloud_link</code>.
      */
-    val SOUNDCLOUD_LINK: TableField<UnityRecord, String?> = createField(DSL.name("soundcloud_link"), SQLDataType.CLOB, this, "")
+    val UNITY_SOUNDCLOUD_LINK: TableField<UnityRecord, String?> = createField(DSL.name("unity_soundcloud_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.unity.bandcamp_link</code>.
+     * The column <code>public.unity.unity_bandcamp_link</code>.
      */
-    val BANDCAMP_LINK: TableField<UnityRecord, String?> = createField(DSL.name("bandcamp_link"), SQLDataType.CLOB, this, "")
+    val UNITY_BANDCAMP_LINK: TableField<UnityRecord, String?> = createField(DSL.name("unity_bandcamp_link"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<UnityRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UnityRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -131,13 +131,13 @@ open class Unity(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getIdentity(): Identity<UnityRecord, Long?> = super.getIdentity() as Identity<UnityRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<UnityRecord> = UNITY_PKEY
-    override fun getKeys(): List<UniqueKey<UnityRecord>> = listOf(UNITY_PKEY, UNITY_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<UnityRecord, *>> = listOf(UNITY__UNITY_COUNTRY_NAME_FKEY)
+    override fun getKeys(): List<UniqueKey<UnityRecord>> = listOf(UNITY_PKEY, UNITY_UNITY_NAME_KEY)
+    override fun getReferences(): List<ForeignKey<UnityRecord, *>> = listOf(UNITY__UNITY_UNITY_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country
     fun country(): Country {
         if (!this::_country.isInitialized)
-            _country = Country(this, UNITY__UNITY_COUNTRY_NAME_FKEY)
+            _country = Country(this, UNITY__UNITY_UNITY_COUNTRY_NAME_FKEY)
 
         return _country;
     }

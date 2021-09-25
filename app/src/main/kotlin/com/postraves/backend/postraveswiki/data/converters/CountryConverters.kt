@@ -20,34 +20,34 @@ class CountryConvertersImpl(
     private fun resolveLocalizedName(countryRecord: CountryRecord): String? {
         val userLocale = LocaleContextHolder.getLocale()
         return if (userLocale.language.equals(Locale("ru").language)) {
-            countryRecord.nameRu
+            countryRecord.countryNameRu
         } else if (userLocale.language.equals(Locale("de").language)) {
-            countryRecord.nameDe
+            countryRecord.countryNameDe
         } else if (userLocale.language.equals(Locale("fr").language)) {
-            countryRecord.nameFr
+            countryRecord.countryNameFr
         } else {
-            countryRecord.nameUk
+            countryRecord.countryNameEn
         }
     }
 
     override fun createDtoFromRecord(countryRecord: CountryRecord): CountryDto {
         return CountryDto(
-            name = countryRecord.name ?: throw RecordFieldNullException("Country Name"),
+            name = countryRecord.countryName ?: throw RecordFieldNullException("Country Name"),
             localizedName = resolveLocalizedName(countryRecord) ?: throw RecordFieldNullException("Country Name"),
-            phoneCode = countryRecord.phoneCode ?: throw RecordFieldNullException("Country phone code"),
-            emojiCode = countryRecord.emojiCode ?: throw RecordFieldNullException("Country emoji code"),
+            phoneCode = countryRecord.countryPhoneCode ?: throw RecordFieldNullException("Country phone code"),
+            emojiCode = countryRecord.countryEmojiCode ?: throw RecordFieldNullException("Country emoji code"),
         )
     }
 
     override fun transferDataFromDtoToRecord(dto: CountryWriteDto, record: CountryRecord) {
         val emojiCode = createEmojiCode(dto.name)
-        record.name = dto.name
-        record.nameRu = dto.nameRu
-        record.nameUk = dto.nameUk
-        record.nameDe = dto.nameDe
-        record.nameFr = dto.nameFr
-        record.phoneCode = dto.phoneCode
-        record.emojiCode = emojiCode
+        record.countryName = dto.name
+        record.countryNameRu = dto.nameRu
+        record.countryNameEn = dto.nameEn
+        record.countryNameDe = dto.nameDe
+        record.countryNameFr = dto.nameFr
+        record.countryPhoneCode = dto.phoneCode
+        record.countryEmojiCode = emojiCode
     }
 
     private fun createEmojiCode(countryCode: String): String {

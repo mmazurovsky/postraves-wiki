@@ -39,14 +39,14 @@ class ArtistConvertersImpl(
         isFollowed: Boolean
     ): ArtistFullDto {
         return ArtistFullDto(
-            id = artistRecord.id ?: throw RecordFieldNullException("Artist Id"),
-            name = artistRecord.name ?: throw RecordFieldNullException("Artist Name"),
-            imageLink = artistRecord.imageLink,
-            instagramLink = artistRecord.instagramLink,
-            soundcloudLink = artistRecord.soundcloudLink,
-            about = artistRecord.about,
+            id = artistRecord.artistId ?: throw RecordFieldNullException("Artist Id"),
+            name = artistRecord.artistName ?: throw RecordFieldNullException("Artist Name"),
+            imageLink = artistRecord.artistImageLink,
+            instagramLink = artistRecord.artistInstagramLink,
+            soundcloudLink = artistRecord.artistSoundcloudLink,
+            about = artistRecord.artistAbout,
             country =
-            if (countryRecord.name != null)
+            if (countryRecord.countryName != null)
                 countryConverters.createDtoFromRecord(countryRecord)
             else null,
             isFollowed = isFollowed
@@ -59,11 +59,11 @@ class ArtistConvertersImpl(
         isFollowed: Boolean
     ): ArtistShortDto {
         return ArtistShortDto(
-            id = artistRecord.id ?: throw RecordFieldNullException("Artist Id"),
-            name = artistRecord.name ?: throw RecordFieldNullException("Artist Name"),
-            imageLink = artistRecord.imageLink,
+            id = artistRecord.artistId ?: throw RecordFieldNullException("Artist Id"),
+            name = artistRecord.artistName ?: throw RecordFieldNullException("Artist Name"),
+            imageLink = artistRecord.artistImageLink,
             country =
-            if (countryRecord.name != null)
+            if (countryRecord.countryName != null)
                 countryConverters.createDtoFromRecord(countryRecord)
             else null,
             isFollowed = isFollowed
@@ -72,12 +72,12 @@ class ArtistConvertersImpl(
     }
 
     override fun transferDataFromDtoToRecord(dto: ArtistWriteDto, record: ArtistRecord) {
-        record.name = dto.name
-        record.imageLink = dto.imageLink
-        record.countryName = dto.countryName
-        record.soundcloudLink = dto.soundcloudLink
-        record.instagramLink = dto.instagramLink
-        record.about = dto.about
+        record.artistName = dto.name
+        record.artistImageLink = dto.imageLink
+        record.artistCountryName = dto.countryName
+        record.artistSoundcloudLink = dto.soundcloudLink
+        record.artistInstagramLink = dto.instagramLink
+        record.artistAbout = dto.about
     }
 
     @ExperimentalSerializationApi

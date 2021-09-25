@@ -43,7 +43,7 @@ class CountryIntegrationTest(
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
-        nameUk = "NameEn",
+        nameEn = "NameEn",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",

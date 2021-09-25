@@ -36,30 +36,30 @@ class UserConvertersImpl(
         countryRecord: CountryRecord
     ): UserFullDto {
         return UserFullDto(
-            name = userRecord.name ?: throw RecordFieldNullException("User Name"),
-            imageLink = userRecord.imageLink,
+            name = userRecord.userProfileName ?: throw RecordFieldNullException("User Name"),
+            imageLink = userRecord.userProfileImageLink,
             currentCity = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
-            telegramLink = userRecord.telegramLink,
-            instagramLink = userRecord.instagramLink,
-            about = userRecord.about,
+            telegramLink = userRecord.userProfileTelegramLink,
+            instagramLink = userRecord.userProfileInstagramLink,
+            about = userRecord.userProfileAbout,
         )
     }
 
     override fun createShortDtoFromRecord(userRecord: UserProfileRecord): UserShortDto {
         return UserShortDto(
-            name = userRecord.name ?: throw RecordFieldNullException("User Name"),
-            imageLink = userRecord.imageLink,
+            name = userRecord.userProfileName ?: throw RecordFieldNullException("User Name"),
+            imageLink = userRecord.userProfileImageLink,
         )
     }
 
 
     override fun transferDataFromDtoToRecord(dto: UserWriteDto, record: UserProfileRecord) {
-        record.name = dto.name
-        record.imageLink = dto.imageLink
-        record.cityName = dto.currentCity
-        record.telegramLink = dto.telegramLink
-        record.instagramLink = dto.instagramLink
-        record.about = dto.about
+        record.userProfileName = dto.name
+        record.userProfileImageLink = dto.imageLink
+        record.userProfileCityName = dto.currentCity
+        record.userProfileTelegramLink = dto.telegramLink
+        record.userProfileInstagramLink = dto.instagramLink
+        record.userProfileAbout = dto.about
     }
 
     @ExperimentalSerializationApi

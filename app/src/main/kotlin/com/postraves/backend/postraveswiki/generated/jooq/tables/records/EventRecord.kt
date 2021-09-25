@@ -21,43 +21,43 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record10<Long?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?> {
 
-    var id: Long?
+    var eventId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var createdDateTime: OffsetDateTime?
+    var eventCreatedDateTime: OffsetDateTime?
         set(value) = set(1, value)
         get() = get(1) as OffsetDateTime?
 
-    var name: String?
+    var eventName: String?
         set(value) = set(2, value)
         get() = get(2) as String?
 
-    var imageLink: String?
+    var eventImageLink: String?
         set(value) = set(3, value)
         get() = get(3) as String?
 
-    var about: String?
+    var eventAbout: String?
         set(value) = set(4, value)
         get() = get(4) as String?
 
-    var isCancelled: Boolean?
+    var eventIsCancelled: Boolean?
         set(value) = set(5, value)
         get() = get(5) as Boolean?
 
-    var startDateTime: OffsetDateTime?
+    var eventStartDateTime: OffsetDateTime?
         set(value) = set(6, value)
         get() = get(6) as OffsetDateTime?
 
-    var endDateTime: OffsetDateTime?
+    var eventEndDateTime: OffsetDateTime?
         set(value) = set(7, value)
         get() = get(7) as OffsetDateTime?
 
-    var ticketsLink: String?
+    var eventTicketsLink: String?
         set(value) = set(8, value)
         get() = get(8) as String?
 
-    var placeId: Long?
+    var eventPlaceId: Long?
         set(value) = set(9, value)
         get() = get(9) as Long?
 
@@ -73,84 +73,84 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
 
     override fun fieldsRow(): Row10<Long?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?> = super.fieldsRow() as Row10<Long?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?>
     override fun valuesRow(): Row10<Long?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?> = super.valuesRow() as Row10<Long?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?>
-    override fun field1(): Field<Long?> = Event.EVENT.ID
-    override fun field2(): Field<OffsetDateTime?> = Event.EVENT.CREATED_DATE_TIME
-    override fun field3(): Field<String?> = Event.EVENT.NAME
-    override fun field4(): Field<String?> = Event.EVENT.IMAGE_LINK
-    override fun field5(): Field<String?> = Event.EVENT.ABOUT
-    override fun field6(): Field<Boolean?> = Event.EVENT.IS_CANCELLED
-    override fun field7(): Field<OffsetDateTime?> = Event.EVENT.START_DATE_TIME
-    override fun field8(): Field<OffsetDateTime?> = Event.EVENT.END_DATE_TIME
-    override fun field9(): Field<String?> = Event.EVENT.TICKETS_LINK
-    override fun field10(): Field<Long?> = Event.EVENT.PLACE_ID
-    override fun component1(): Long? = id
-    override fun component2(): OffsetDateTime? = createdDateTime
-    override fun component3(): String? = name
-    override fun component4(): String? = imageLink
-    override fun component5(): String? = about
-    override fun component6(): Boolean? = isCancelled
-    override fun component7(): OffsetDateTime? = startDateTime
-    override fun component8(): OffsetDateTime? = endDateTime
-    override fun component9(): String? = ticketsLink
-    override fun component10(): Long? = placeId
-    override fun value1(): Long? = id
-    override fun value2(): OffsetDateTime? = createdDateTime
-    override fun value3(): String? = name
-    override fun value4(): String? = imageLink
-    override fun value5(): String? = about
-    override fun value6(): Boolean? = isCancelled
-    override fun value7(): OffsetDateTime? = startDateTime
-    override fun value8(): OffsetDateTime? = endDateTime
-    override fun value9(): String? = ticketsLink
-    override fun value10(): Long? = placeId
+    override fun field1(): Field<Long?> = Event.EVENT.EVENT_ID
+    override fun field2(): Field<OffsetDateTime?> = Event.EVENT.EVENT_CREATED_DATE_TIME
+    override fun field3(): Field<String?> = Event.EVENT.EVENT_NAME
+    override fun field4(): Field<String?> = Event.EVENT.EVENT_IMAGE_LINK
+    override fun field5(): Field<String?> = Event.EVENT.EVENT_ABOUT
+    override fun field6(): Field<Boolean?> = Event.EVENT.EVENT_IS_CANCELLED
+    override fun field7(): Field<OffsetDateTime?> = Event.EVENT.EVENT_START_DATE_TIME
+    override fun field8(): Field<OffsetDateTime?> = Event.EVENT.EVENT_END_DATE_TIME
+    override fun field9(): Field<String?> = Event.EVENT.EVENT_TICKETS_LINK
+    override fun field10(): Field<Long?> = Event.EVENT.EVENT_PLACE_ID
+    override fun component1(): Long? = eventId
+    override fun component2(): OffsetDateTime? = eventCreatedDateTime
+    override fun component3(): String? = eventName
+    override fun component4(): String? = eventImageLink
+    override fun component5(): String? = eventAbout
+    override fun component6(): Boolean? = eventIsCancelled
+    override fun component7(): OffsetDateTime? = eventStartDateTime
+    override fun component8(): OffsetDateTime? = eventEndDateTime
+    override fun component9(): String? = eventTicketsLink
+    override fun component10(): Long? = eventPlaceId
+    override fun value1(): Long? = eventId
+    override fun value2(): OffsetDateTime? = eventCreatedDateTime
+    override fun value3(): String? = eventName
+    override fun value4(): String? = eventImageLink
+    override fun value5(): String? = eventAbout
+    override fun value6(): Boolean? = eventIsCancelled
+    override fun value7(): OffsetDateTime? = eventStartDateTime
+    override fun value8(): OffsetDateTime? = eventEndDateTime
+    override fun value9(): String? = eventTicketsLink
+    override fun value10(): Long? = eventPlaceId
 
     override fun value1(value: Long?): EventRecord {
-        this.id = value
+        this.eventId = value
         return this
     }
 
     override fun value2(value: OffsetDateTime?): EventRecord {
-        this.createdDateTime = value
+        this.eventCreatedDateTime = value
         return this
     }
 
     override fun value3(value: String?): EventRecord {
-        this.name = value
+        this.eventName = value
         return this
     }
 
     override fun value4(value: String?): EventRecord {
-        this.imageLink = value
+        this.eventImageLink = value
         return this
     }
 
     override fun value5(value: String?): EventRecord {
-        this.about = value
+        this.eventAbout = value
         return this
     }
 
     override fun value6(value: Boolean?): EventRecord {
-        this.isCancelled = value
+        this.eventIsCancelled = value
         return this
     }
 
     override fun value7(value: OffsetDateTime?): EventRecord {
-        this.startDateTime = value
+        this.eventStartDateTime = value
         return this
     }
 
     override fun value8(value: OffsetDateTime?): EventRecord {
-        this.endDateTime = value
+        this.eventEndDateTime = value
         return this
     }
 
     override fun value9(value: String?): EventRecord {
-        this.ticketsLink = value
+        this.eventTicketsLink = value
         return this
     }
 
     override fun value10(value: Long?): EventRecord {
-        this.placeId = value
+        this.eventPlaceId = value
         return this
     }
 
@@ -171,16 +171,16 @@ open class EventRecord() : UpdatableRecordImpl<EventRecord>(Event.EVENT), Record
     /**
      * Create a detached, initialised EventRecord
      */
-    constructor(id: Long? = null, createdDateTime: OffsetDateTime? = null, name: String? = null, imageLink: String? = null, about: String? = null, isCancelled: Boolean? = null, startDateTime: OffsetDateTime? = null, endDateTime: OffsetDateTime? = null, ticketsLink: String? = null, placeId: Long? = null): this() {
-        this.id = id
-        this.createdDateTime = createdDateTime
-        this.name = name
-        this.imageLink = imageLink
-        this.about = about
-        this.isCancelled = isCancelled
-        this.startDateTime = startDateTime
-        this.endDateTime = endDateTime
-        this.ticketsLink = ticketsLink
-        this.placeId = placeId
+    constructor(eventId: Long? = null, eventCreatedDateTime: OffsetDateTime? = null, eventName: String? = null, eventImageLink: String? = null, eventAbout: String? = null, eventIsCancelled: Boolean? = null, eventStartDateTime: OffsetDateTime? = null, eventEndDateTime: OffsetDateTime? = null, eventTicketsLink: String? = null, eventPlaceId: Long? = null): this() {
+        this.eventId = eventId
+        this.eventCreatedDateTime = eventCreatedDateTime
+        this.eventName = eventName
+        this.eventImageLink = eventImageLink
+        this.eventAbout = eventAbout
+        this.eventIsCancelled = eventIsCancelled
+        this.eventStartDateTime = eventStartDateTime
+        this.eventEndDateTime = eventEndDateTime
+        this.eventTicketsLink = eventTicketsLink
+        this.eventPlaceId = eventPlaceId
     }
 }

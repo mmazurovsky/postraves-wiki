@@ -52,13 +52,13 @@ class PlaceRepoImpl(
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
         return this
-            .leftOuterJoin(CITY).on(PLACE.CITY_NAME.eq(CITY.NAME))
-            .leftOuterJoin(COUNTRY).on(CITY.COUNTRY_NAME.eq(COUNTRY.NAME))
+            .leftOuterJoin(CITY).on(PLACE.PLACE_CITY_NAME.eq(CITY.CITY_NAME))
+            .leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
     }
 
     override fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(USER_FOLLOWS_PLACE)
-            .on(PLACE.ID.eq(USER_FOLLOWS_PLACE.PLACE_ID), USER_FOLLOWS_PLACE.USER_PROFILE_UID.eq(authUid))
+            .on(PLACE.PLACE_ID.eq(USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_PLACE_ID), USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_USER_PROFILE_UID.eq(authUid))
     }
 
     override fun SelectJoinStep<Record>.joinOtherData(): SelectOnConditionStep<Record>? {
@@ -66,11 +66,11 @@ class PlaceRepoImpl(
     }
 
     override fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record> {
-        return this.where(PLACE.ID.eq(id))
+        return this.where(PLACE.PLACE_ID.eq(id))
     }
 
     override fun convertToShortDto(record: Record): PlaceShortDto {
-        val isFollowed = record.into(USER_FOLLOWS_PLACE).userProfileUid != null
+        val isFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileUid != null
         return placeConverters.createShortDtoFromRecord(
             record.into(PLACE),
             record.into(CITY),
@@ -80,7 +80,7 @@ class PlaceRepoImpl(
     }
 
     override fun convertToFullDto(record: Record): PlaceFullDto {
-        val isFollowed = record.into(USER_FOLLOWS_PLACE).userProfileUid != null
+        val isFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileUid != null
         return placeConverters.createFullDtoFromRecord(
             record.into(PLACE),
             record.into(CITY),
@@ -90,20 +90,20 @@ class PlaceRepoImpl(
     }
 
     override fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record> {
-        return this.where(PLACE.ID.`in`(ids))
+        return this.where(PLACE.PLACE_ID.`in`(ids))
     }
 
     override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
-        return this.where(lower(PLACE.NAME).contains(namePart.lowercase()))
+        return this.where(lower(PLACE.PLACE_NAME).contains(namePart.lowercase()))
     }
 
     override fun prepareRecordBeforeSaving(record: PlaceRecord, dto: PlaceWriteDto) {
         placeConverters.transferDataFromDtoToRecord(dto, record)
-        record.createdDateTime = dateTimeProvider.getNow()
+        record.placeCreatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun postSaveGetId(record: PlaceRecord): Long {
-        return record.id ?: throw SaveException("Place", record.name ?: "NULL")
+        return record.placeId ?: throw SaveException("Place", record.placeName ?: "NULL")
     }
 
     override fun preUpdateGetId(dto: PlaceWriteDto): Long {
@@ -117,7 +117,7 @@ class PlaceRepoImpl(
     override fun getAllScenes(): List<SceneDto> {
         val scenes = dsl
             .selectFrom(SCENE)
-            .orderBy(SCENE.PRIORITY.desc())
+            .orderBy(SCENE.SCENE_PRIORITY.desc())
             .fetch()
             .map { sceneConverters.createDtoFromRecord(it) }
             .toList()
@@ -127,8 +127,8 @@ class PlaceRepoImpl(
     override fun getScenesOfPlace(id: Long): List<SceneDto> {
         val scenes = dsl
             .selectFrom(SCENE)
-            .where(SCENE.PLACE_ID.eq(id))
-            .orderBy(SCENE.PRIORITY.desc())
+            .where(SCENE.SCENE_PLACE_ID.eq(id))
+            .orderBy(SCENE.SCENE_PRIORITY.desc())
             .fetch()
             .map { sceneConverters.createDtoFromRecord(it) }
             .toList()
@@ -139,15 +139,15 @@ class PlaceRepoImpl(
         scenes.forEach {
             val newSceneRecord = dsl.newRecord(SCENE)
             sceneConverters.transferDataFromDtoToRecord(it, newSceneRecord)
-            newSceneRecord.createdDateTime = dateTimeProvider.getNow()
-            newSceneRecord.placeId = id
+            newSceneRecord.sceneCreatedDateTime = dateTimeProvider.getNow()
+            newSceneRecord.scenePlaceId = id
             newSceneRecord.store()
         }
     }
 
     override fun updateScenes(scenes: Set<SceneDto>) {
         scenes.forEach {
-            val recordToUpdate = dsl.fetchOne(SCENE, SCENE.ID.eq(it.id))!!
+            val recordToUpdate = dsl.fetchOne(SCENE, SCENE.SCENE_ID.eq(it.id))!!
             sceneConverters.transferDataFromDtoToRecord(it, recordToUpdate)
             recordToUpdate.update()
         }
@@ -157,7 +157,7 @@ class PlaceRepoImpl(
         scenes.forEach {
             dsl
                 .delete(SCENE)
-                .where(SCENE.ID.eq(it.id))
+                .where(SCENE.SCENE_ID.eq(it.id))
                 .execute()
         }
     }

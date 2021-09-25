@@ -8,7 +8,7 @@ import java.time.OffsetDateTime
 
 import jooq.Public
 import jooq.keys.TICKET_PRICE_PKEY
-import jooq.keys.TICKET_PRICE__TICKET_PRICE_EVENT_ID_FKEY
+import jooq.keys.TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY
 import jooq.tables.records.TicketPriceRecord
 
 import kotlin.collections.List
@@ -64,34 +64,34 @@ open class TicketPrice(
     override fun getRecordType(): Class<TicketPriceRecord> = TicketPriceRecord::class.java
 
     /**
-     * The column <code>public.ticket_price.id</code>.
+     * The column <code>public.ticket_price.ticket_price_id</code>.
      */
-    val ID: TableField<TicketPriceRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val TICKET_PRICE_ID: TableField<TicketPriceRecord, Long?> = createField(DSL.name("ticket_price_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.ticket_price.created_date_time</code>.
+     * The column <code>public.ticket_price.ticket_price_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<TicketPriceRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val TICKET_PRICE_CREATED_DATE_TIME: TableField<TicketPriceRecord, OffsetDateTime?> = createField(DSL.name("ticket_price_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.ticket_price.name</code>.
+     * The column <code>public.ticket_price.ticket_price_name</code>.
      */
-    val NAME: TableField<TicketPriceRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(60), this, "")
+    val TICKET_PRICE_NAME: TableField<TicketPriceRecord, String?> = createField(DSL.name("ticket_price_name"), SQLDataType.VARCHAR(60), this, "")
 
     /**
-     * The column <code>public.ticket_price.price</code>.
+     * The column <code>public.ticket_price.ticket_price_price</code>.
      */
-    val PRICE: TableField<TicketPriceRecord, Double?> = createField(DSL.name("price"), SQLDataType.DOUBLE.nullable(false), this, "")
+    val TICKET_PRICE_PRICE: TableField<TicketPriceRecord, Double?> = createField(DSL.name("ticket_price_price"), SQLDataType.DOUBLE.nullable(false), this, "")
 
     /**
-     * The column <code>public.ticket_price.currency</code>.
+     * The column <code>public.ticket_price.ticket_price_currency</code>.
      */
-    val CURRENCY: TableField<TicketPriceRecord, String?> = createField(DSL.name("currency"), SQLDataType.CLOB.nullable(false), this, "")
+    val TICKET_PRICE_CURRENCY: TableField<TicketPriceRecord, String?> = createField(DSL.name("ticket_price_currency"), SQLDataType.CLOB.nullable(false), this, "")
 
     /**
-     * The column <code>public.ticket_price.event_id</code>.
+     * The column <code>public.ticket_price.ticket_price_event_id</code>.
      */
-    val EVENT_ID: TableField<TicketPriceRecord, Long?> = createField(DSL.name("event_id"), SQLDataType.BIGINT, this, "")
+    val TICKET_PRICE_EVENT_ID: TableField<TicketPriceRecord, Long?> = createField(DSL.name("ticket_price_event_id"), SQLDataType.BIGINT, this, "")
 
     private constructor(alias: Name, aliased: Table<TicketPriceRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<TicketPriceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -116,12 +116,12 @@ open class TicketPrice(
     override fun getIdentity(): Identity<TicketPriceRecord, Long?> = super.getIdentity() as Identity<TicketPriceRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<TicketPriceRecord> = TICKET_PRICE_PKEY
     override fun getKeys(): List<UniqueKey<TicketPriceRecord>> = listOf(TICKET_PRICE_PKEY)
-    override fun getReferences(): List<ForeignKey<TicketPriceRecord, *>> = listOf(TICKET_PRICE__TICKET_PRICE_EVENT_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<TicketPriceRecord, *>> = listOf(TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY)
 
     private lateinit var _event: Event
     fun event(): Event {
         if (!this::_event.isInitialized)
-            _event = Event(this, TICKET_PRICE__TICKET_PRICE_EVENT_ID_FKEY)
+            _event = Event(this, TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY)
 
         return _event;
     }

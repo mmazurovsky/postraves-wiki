@@ -18,11 +18,11 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class UserFollowsEventRecord() : UpdatableRecordImpl<UserFollowsEventRecord>(UserFollowsEvent.USER_FOLLOWS_EVENT), Record2<String?, Long?> {
 
-    var userProfileUid: String?
+    var userFollowsEventUserProfileUid: String?
         set(value) = set(0, value)
         get() = get(0) as String?
 
-    var eventId: Long?
+    var userFollowsEventEventId: Long?
         set(value) = set(1, value)
         get() = get(1) as Long?
 
@@ -38,20 +38,20 @@ open class UserFollowsEventRecord() : UpdatableRecordImpl<UserFollowsEventRecord
 
     override fun fieldsRow(): Row2<String?, Long?> = super.fieldsRow() as Row2<String?, Long?>
     override fun valuesRow(): Row2<String?, Long?> = super.valuesRow() as Row2<String?, Long?>
-    override fun field1(): Field<String?> = UserFollowsEvent.USER_FOLLOWS_EVENT.USER_PROFILE_UID
-    override fun field2(): Field<Long?> = UserFollowsEvent.USER_FOLLOWS_EVENT.EVENT_ID
-    override fun component1(): String? = userProfileUid
-    override fun component2(): Long? = eventId
-    override fun value1(): String? = userProfileUid
-    override fun value2(): Long? = eventId
+    override fun field1(): Field<String?> = UserFollowsEvent.USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_USER_PROFILE_UID
+    override fun field2(): Field<Long?> = UserFollowsEvent.USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_EVENT_ID
+    override fun component1(): String? = userFollowsEventUserProfileUid
+    override fun component2(): Long? = userFollowsEventEventId
+    override fun value1(): String? = userFollowsEventUserProfileUid
+    override fun value2(): Long? = userFollowsEventEventId
 
     override fun value1(value: String?): UserFollowsEventRecord {
-        this.userProfileUid = value
+        this.userFollowsEventUserProfileUid = value
         return this
     }
 
     override fun value2(value: Long?): UserFollowsEventRecord {
-        this.eventId = value
+        this.userFollowsEventEventId = value
         return this
     }
 
@@ -64,8 +64,8 @@ open class UserFollowsEventRecord() : UpdatableRecordImpl<UserFollowsEventRecord
     /**
      * Create a detached, initialised UserFollowsEventRecord
      */
-    constructor(userProfileUid: String? = null, eventId: Long? = null): this() {
-        this.userProfileUid = userProfileUid
-        this.eventId = eventId
+    constructor(userFollowsEventUserProfileUid: String? = null, userFollowsEventEventId: Long? = null): this() {
+        this.userFollowsEventUserProfileUid = userFollowsEventUserProfileUid
+        this.userFollowsEventEventId = userFollowsEventEventId
     }
 }

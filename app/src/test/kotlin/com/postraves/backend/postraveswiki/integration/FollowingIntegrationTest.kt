@@ -94,7 +94,7 @@ class FollowingIntegrationTest(
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameEn = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
@@ -104,7 +104,7 @@ class FollowingIntegrationTest(
     private val city = CityWriteDto(
         name = "Bruges",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameEn = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         countryName = "BE",

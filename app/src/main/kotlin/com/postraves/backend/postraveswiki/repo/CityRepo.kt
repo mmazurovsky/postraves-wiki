@@ -32,14 +32,14 @@ class CityImplRepo(
     private lateinit var dsl: DSLContext
 
     private fun findByNameWithoutJoins(name: String): CityRecord {
-        val record = dsl.fetchOne(CITY, CITY.NAME.eq(name))
+        val record = dsl.fetchOne(CITY, CITY.CITY_NAME.eq(name))
         return record ?: throw NotFoundException("City", name)
     }
 
     private fun findByNameWithJoins(name: String): Record {
         val selectedRecord = dsl
-            .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.COUNTRY_NAME.eq(COUNTRY.NAME)))
-            .where(CITY.NAME.eq(name))
+            .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME)))
+            .where(CITY.CITY_NAME.eq(name))
             .fetchOne()
         return selectedRecord ?: throw NotFoundException("City", name)
     }
@@ -49,7 +49,7 @@ class CityImplRepo(
             .selectFrom(
                 CITY
                     .leftOuterJoin(COUNTRY)
-                    .on(CITY.COUNTRY_NAME.eq(COUNTRY.NAME))
+                    .on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
             )
         return select
     }
@@ -62,9 +62,9 @@ class CityImplRepo(
     override fun save(dto: CityWriteDto): CityDto {
         val recordToSave = dsl.newRecord(CITY)
         cityConverters.transferDataFromDtoToRecord(dto, recordToSave)
-        recordToSave.createdDateTime = dateTimeProvider.getNow()
+        recordToSave.cityCreatedDateTime = dateTimeProvider.getNow()
         recordToSave.store()
-        return findByName(recordToSave.name ?: throw SaveException("City", dto.name))
+        return findByName(recordToSave.cityName ?: throw SaveException("City", dto.name))
     }
 
     override fun update(dto: CityWriteDto) {
@@ -79,7 +79,7 @@ class CityImplRepo(
 
     override fun findAll(): List<CityDto> {
         val results = dsl
-            .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.COUNTRY_NAME.eq(COUNTRY.NAME)))
+            .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME)))
             .fetch()
             .map {
                 cityConverters.createDtoFromRecord(it.into(CITY), it.into(COUNTRY))
@@ -90,7 +90,7 @@ class CityImplRepo(
 
     override fun findByPartOfName(namePart: String): List<CityDto> {
         val results = selectCityList()
-            .where(DSL.lower(CITY.NAME).contains(namePart.lowercase()))
+            .where(DSL.lower(CITY.CITY_NAME).contains(namePart.lowercase()))
             .fetch()
             .map {
                 cityConverters.createDtoFromRecord(it.into(CITY), it.into(COUNTRY))

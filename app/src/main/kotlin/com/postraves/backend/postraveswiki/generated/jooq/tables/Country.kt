@@ -7,8 +7,8 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.COUNTRY_EMOJI_CODE_KEY
-import jooq.keys.COUNTRY_PHONE_CODE_KEY
+import jooq.keys.COUNTRY_COUNTRY_EMOJI_CODE_KEY
+import jooq.keys.COUNTRY_COUNTRY_PHONE_CODE_KEY
 import jooq.keys.COUNTRY_PKEY
 import jooq.tables.records.CountryRecord
 
@@ -64,44 +64,44 @@ open class Country(
     override fun getRecordType(): Class<CountryRecord> = CountryRecord::class.java
 
     /**
-     * The column <code>public.country.name</code>.
+     * The column <code>public.country.country_name</code>.
      */
-    val NAME: TableField<CountryRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(3).nullable(false), this, "")
+    val COUNTRY_NAME: TableField<CountryRecord, String?> = createField(DSL.name("country_name"), SQLDataType.VARCHAR(3).nullable(false), this, "")
 
     /**
-     * The column <code>public.country.name_ru</code>.
+     * The column <code>public.country.country_name_ru</code>.
      */
-    val NAME_RU: TableField<CountryRecord, String?> = createField(DSL.name("name_ru"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+    val COUNTRY_NAME_RU: TableField<CountryRecord, String?> = createField(DSL.name("country_name_ru"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
-     * The column <code>public.country.name_uk</code>.
+     * The column <code>public.country.country_name_en</code>.
      */
-    val NAME_UK: TableField<CountryRecord, String?> = createField(DSL.name("name_uk"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+    val COUNTRY_NAME_EN: TableField<CountryRecord, String?> = createField(DSL.name("country_name_en"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
-     * The column <code>public.country.name_de</code>.
+     * The column <code>public.country.country_name_de</code>.
      */
-    val NAME_DE: TableField<CountryRecord, String?> = createField(DSL.name("name_de"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+    val COUNTRY_NAME_DE: TableField<CountryRecord, String?> = createField(DSL.name("country_name_de"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
-     * The column <code>public.country.name_fr</code>.
+     * The column <code>public.country.country_name_fr</code>.
      */
-    val NAME_FR: TableField<CountryRecord, String?> = createField(DSL.name("name_fr"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+    val COUNTRY_NAME_FR: TableField<CountryRecord, String?> = createField(DSL.name("country_name_fr"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
-     * The column <code>public.country.created_date_time</code>.
+     * The column <code>public.country.country_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<CountryRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val COUNTRY_CREATED_DATE_TIME: TableField<CountryRecord, OffsetDateTime?> = createField(DSL.name("country_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.country.phone_code</code>.
+     * The column <code>public.country.country_phone_code</code>.
      */
-    val PHONE_CODE: TableField<CountryRecord, String?> = createField(DSL.name("phone_code"), SQLDataType.VARCHAR(15).nullable(false), this, "")
+    val COUNTRY_PHONE_CODE: TableField<CountryRecord, String?> = createField(DSL.name("country_phone_code"), SQLDataType.VARCHAR(15).nullable(false), this, "")
 
     /**
-     * The column <code>public.country.emoji_code</code>.
+     * The column <code>public.country.country_emoji_code</code>.
      */
-    val EMOJI_CODE: TableField<CountryRecord, String?> = createField(DSL.name("emoji_code"), SQLDataType.VARCHAR(20).nullable(false), this, "")
+    val COUNTRY_EMOJI_CODE: TableField<CountryRecord, String?> = createField(DSL.name("country_emoji_code"), SQLDataType.VARCHAR(20).nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<CountryRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<CountryRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -124,7 +124,7 @@ open class Country(
     constructor(child: Table<out Record>, key: ForeignKey<out Record, CountryRecord>): this(Internal.createPathAlias(child, key), child, key, COUNTRY, null)
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<CountryRecord> = COUNTRY_PKEY
-    override fun getKeys(): List<UniqueKey<CountryRecord>> = listOf(COUNTRY_PKEY, COUNTRY_PHONE_CODE_KEY, COUNTRY_EMOJI_CODE_KEY)
+    override fun getKeys(): List<UniqueKey<CountryRecord>> = listOf(COUNTRY_PKEY, COUNTRY_COUNTRY_PHONE_CODE_KEY, COUNTRY_COUNTRY_EMOJI_CODE_KEY)
     override fun `as`(alias: String): Country = Country(DSL.name(alias), this)
     override fun `as`(alias: Name): Country = Country(alias, this)
 

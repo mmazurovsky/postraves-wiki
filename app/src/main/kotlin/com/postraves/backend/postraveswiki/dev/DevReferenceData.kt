@@ -36,7 +36,7 @@ class DevReferenceData(
     val countryRu = CountryWriteDto(
         name = "RU",
         nameRu = "Россия",
-        nameUk = "Russia",
+        nameEn = "Russia",
         nameDe = "Russia2",
         nameFr = "Russia3",
         phoneCode = "+7",
@@ -45,7 +45,7 @@ class DevReferenceData(
     val countryUa = CountryWriteDto(
         name = "UA",
         nameRu = "Украина",
-        nameUk = "Ukraine",
+        nameEn = "Ukraine",
         nameDe = "Ukraine2",
         nameFr = "Ukraine3",
         phoneCode = "+380",
@@ -54,7 +54,7 @@ class DevReferenceData(
     val countryBe = CountryWriteDto(
         name = "BE",
         nameRu = "Бельгия",
-        nameUk = "Belgium",
+        nameEn = "Belgium",
         nameDe = "Belgium2",
         nameFr = "Belgium3",
         phoneCode = "+32",
@@ -63,7 +63,7 @@ class DevReferenceData(
     val countryDe = CountryWriteDto(
         name = "DE",
         nameRu = "Германия",
-        nameUk = "Germany",
+        nameEn = "Germany",
         nameDe = "Germany2",
         nameFr = "Germany3",
         phoneCode = "+49",
@@ -72,7 +72,7 @@ class DevReferenceData(
     val countryFr = CountryWriteDto(
         name = "FR",
         nameRu = "Франция",
-        nameUk = "France",
+        nameEn = "France",
         nameDe = "France2",
         nameFr = "France3",
         phoneCode = "+33",
@@ -82,7 +82,7 @@ class DevReferenceData(
         name = "RU_Moscow",
         countryName = "RU",
         nameRu = "Москва",
-        nameUk = "Moscow",
+        nameEn = "Moscow",
         nameDe = "Moscow2",
         nameFr = "Moscow3",
         timeOffset = 3
@@ -92,7 +92,7 @@ class DevReferenceData(
         name = "RU_Petersburg",
         countryName = "RU",
         nameRu = "Санкт-Петербург",
-        nameUk = "Saint-Petersburg",
+        nameEn = "Saint-Petersburg",
         nameDe = "Saint-Petersburg2",
         nameFr = "Saint-Petersburg3",
         timeOffset = 3

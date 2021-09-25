@@ -18,11 +18,11 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class UserFollowsArtistRecord() : UpdatableRecordImpl<UserFollowsArtistRecord>(UserFollowsArtist.USER_FOLLOWS_ARTIST), Record2<String?, Long?> {
 
-    var userProfileUid: String?
+    var userFollowsArtistUserProfileUid: String?
         set(value) = set(0, value)
         get() = get(0) as String?
 
-    var artistId: Long?
+    var userFollowsArtistArtistId: Long?
         set(value) = set(1, value)
         get() = get(1) as Long?
 
@@ -38,20 +38,20 @@ open class UserFollowsArtistRecord() : UpdatableRecordImpl<UserFollowsArtistReco
 
     override fun fieldsRow(): Row2<String?, Long?> = super.fieldsRow() as Row2<String?, Long?>
     override fun valuesRow(): Row2<String?, Long?> = super.valuesRow() as Row2<String?, Long?>
-    override fun field1(): Field<String?> = UserFollowsArtist.USER_FOLLOWS_ARTIST.USER_PROFILE_UID
-    override fun field2(): Field<Long?> = UserFollowsArtist.USER_FOLLOWS_ARTIST.ARTIST_ID
-    override fun component1(): String? = userProfileUid
-    override fun component2(): Long? = artistId
-    override fun value1(): String? = userProfileUid
-    override fun value2(): Long? = artistId
+    override fun field1(): Field<String?> = UserFollowsArtist.USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID
+    override fun field2(): Field<Long?> = UserFollowsArtist.USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID
+    override fun component1(): String? = userFollowsArtistUserProfileUid
+    override fun component2(): Long? = userFollowsArtistArtistId
+    override fun value1(): String? = userFollowsArtistUserProfileUid
+    override fun value2(): Long? = userFollowsArtistArtistId
 
     override fun value1(value: String?): UserFollowsArtistRecord {
-        this.userProfileUid = value
+        this.userFollowsArtistUserProfileUid = value
         return this
     }
 
     override fun value2(value: Long?): UserFollowsArtistRecord {
-        this.artistId = value
+        this.userFollowsArtistArtistId = value
         return this
     }
 
@@ -64,8 +64,8 @@ open class UserFollowsArtistRecord() : UpdatableRecordImpl<UserFollowsArtistReco
     /**
      * Create a detached, initialised UserFollowsArtistRecord
      */
-    constructor(userProfileUid: String? = null, artistId: Long? = null): this() {
-        this.userProfileUid = userProfileUid
-        this.artistId = artistId
+    constructor(userFollowsArtistUserProfileUid: String? = null, userFollowsArtistArtistId: Long? = null): this() {
+        this.userFollowsArtistUserProfileUid = userFollowsArtistUserProfileUid
+        this.userFollowsArtistArtistId = userFollowsArtistArtistId
     }
 }

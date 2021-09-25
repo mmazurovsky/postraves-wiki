@@ -8,7 +8,7 @@ import kotlinx.serialization.*
 data class CityWriteDto(
     val name: String,
     val nameRu: String,
-    val nameUk: String,
+    val nameEn: String,
     val nameDe: String,
     val nameFr: String,
     val countryName: String,

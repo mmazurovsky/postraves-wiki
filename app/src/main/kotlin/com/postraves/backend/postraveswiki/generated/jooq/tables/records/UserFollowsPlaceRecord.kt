@@ -18,11 +18,11 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class UserFollowsPlaceRecord() : UpdatableRecordImpl<UserFollowsPlaceRecord>(UserFollowsPlace.USER_FOLLOWS_PLACE), Record2<String?, Long?> {
 
-    var userProfileUid: String?
+    var userFollowsPlaceUserProfileUid: String?
         set(value) = set(0, value)
         get() = get(0) as String?
 
-    var placeId: Long?
+    var userFollowsPlacePlaceId: Long?
         set(value) = set(1, value)
         get() = get(1) as Long?
 
@@ -38,20 +38,20 @@ open class UserFollowsPlaceRecord() : UpdatableRecordImpl<UserFollowsPlaceRecord
 
     override fun fieldsRow(): Row2<String?, Long?> = super.fieldsRow() as Row2<String?, Long?>
     override fun valuesRow(): Row2<String?, Long?> = super.valuesRow() as Row2<String?, Long?>
-    override fun field1(): Field<String?> = UserFollowsPlace.USER_FOLLOWS_PLACE.USER_PROFILE_UID
-    override fun field2(): Field<Long?> = UserFollowsPlace.USER_FOLLOWS_PLACE.PLACE_ID
-    override fun component1(): String? = userProfileUid
-    override fun component2(): Long? = placeId
-    override fun value1(): String? = userProfileUid
-    override fun value2(): Long? = placeId
+    override fun field1(): Field<String?> = UserFollowsPlace.USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_USER_PROFILE_UID
+    override fun field2(): Field<Long?> = UserFollowsPlace.USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_PLACE_ID
+    override fun component1(): String? = userFollowsPlaceUserProfileUid
+    override fun component2(): Long? = userFollowsPlacePlaceId
+    override fun value1(): String? = userFollowsPlaceUserProfileUid
+    override fun value2(): Long? = userFollowsPlacePlaceId
 
     override fun value1(value: String?): UserFollowsPlaceRecord {
-        this.userProfileUid = value
+        this.userFollowsPlaceUserProfileUid = value
         return this
     }
 
     override fun value2(value: Long?): UserFollowsPlaceRecord {
-        this.placeId = value
+        this.userFollowsPlacePlaceId = value
         return this
     }
 
@@ -64,8 +64,8 @@ open class UserFollowsPlaceRecord() : UpdatableRecordImpl<UserFollowsPlaceRecord
     /**
      * Create a detached, initialised UserFollowsPlaceRecord
      */
-    constructor(userProfileUid: String? = null, placeId: Long? = null): this() {
-        this.userProfileUid = userProfileUid
-        this.placeId = placeId
+    constructor(userFollowsPlaceUserProfileUid: String? = null, userFollowsPlacePlaceId: Long? = null): this() {
+        this.userFollowsPlaceUserProfileUid = userFollowsPlaceUserProfileUid
+        this.userFollowsPlacePlaceId = userFollowsPlacePlaceId
     }
 }

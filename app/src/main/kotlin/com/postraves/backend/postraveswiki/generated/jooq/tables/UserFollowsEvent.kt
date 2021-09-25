@@ -6,8 +6,8 @@ package jooq.tables
 
 import jooq.Public
 import jooq.keys.USER_FOLLOWS_EVENT_PKEY
-import jooq.keys.USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_EVENT_ID_FKEY
-import jooq.keys.USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_PROFILE_UID_FKEY
+import jooq.keys.USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_FOLLOWS_EVENT_EVENT_ID_FKEY
+import jooq.keys.USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_FOLLOWS_EVENT_USER_PROFILE_UID_FKEY
 import jooq.tables.records.UserFollowsEventRecord
 
 import kotlin.collections.List
@@ -62,14 +62,14 @@ open class UserFollowsEvent(
     override fun getRecordType(): Class<UserFollowsEventRecord> = UserFollowsEventRecord::class.java
 
     /**
-     * The column <code>public.user_follows_event.user_profile_uid</code>.
+     * The column <code>public.user_follows_event.user_follows_event_user_profile_uid</code>.
      */
-    val USER_PROFILE_UID: TableField<UserFollowsEventRecord, String?> = createField(DSL.name("user_profile_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
+    val USER_FOLLOWS_EVENT_USER_PROFILE_UID: TableField<UserFollowsEventRecord, String?> = createField(DSL.name("user_follows_event_user_profile_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
 
     /**
-     * The column <code>public.user_follows_event.event_id</code>.
+     * The column <code>public.user_follows_event.user_follows_event_event_id</code>.
      */
-    val EVENT_ID: TableField<UserFollowsEventRecord, Long?> = createField(DSL.name("event_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val USER_FOLLOWS_EVENT_EVENT_ID: TableField<UserFollowsEventRecord, Long?> = createField(DSL.name("user_follows_event_event_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<UserFollowsEventRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UserFollowsEventRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -93,19 +93,19 @@ open class UserFollowsEvent(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserFollowsEventRecord> = USER_FOLLOWS_EVENT_PKEY
     override fun getKeys(): List<UniqueKey<UserFollowsEventRecord>> = listOf(USER_FOLLOWS_EVENT_PKEY)
-    override fun getReferences(): List<ForeignKey<UserFollowsEventRecord, *>> = listOf(USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_PROFILE_UID_FKEY, USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_EVENT_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UserFollowsEventRecord, *>> = listOf(USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_FOLLOWS_EVENT_USER_PROFILE_UID_FKEY, USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_FOLLOWS_EVENT_EVENT_ID_FKEY)
 
     private lateinit var _userProfile: UserProfile
     private lateinit var _event: Event
     fun userProfile(): UserProfile {
         if (!this::_userProfile.isInitialized)
-            _userProfile = UserProfile(this, USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_PROFILE_UID_FKEY)
+            _userProfile = UserProfile(this, USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_FOLLOWS_EVENT_USER_PROFILE_UID_FKEY)
 
         return _userProfile;
     }
     fun event(): Event {
         if (!this::_event.isInitialized)
-            _event = Event(this, USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_EVENT_ID_FKEY)
+            _event = Event(this, USER_FOLLOWS_EVENT__USER_FOLLOWS_EVENT_USER_FOLLOWS_EVENT_EVENT_ID_FKEY)
 
         return _event;
     }

@@ -21,39 +21,39 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class UnityRecord() : UpdatableRecordImpl<UnityRecord>(Unity.UNITY), Record9<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?> {
 
-    var id: Long?
+    var unityId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var createdDateTime: OffsetDateTime?
+    var unityCreatedDateTime: OffsetDateTime?
         set(value) = set(1, value)
         get() = get(1) as OffsetDateTime?
 
-    var name: String?
+    var unityName: String?
         set(value) = set(2, value)
         get() = get(2) as String?
 
-    var imageLink: String?
+    var unityImageLink: String?
         set(value) = set(3, value)
         get() = get(3) as String?
 
-    var about: String?
+    var unityAbout: String?
         set(value) = set(4, value)
         get() = get(4) as String?
 
-    var countryName: String?
+    var unityCountryName: String?
         set(value) = set(5, value)
         get() = get(5) as String?
 
-    var instagramLink: String?
+    var unityInstagramLink: String?
         set(value) = set(6, value)
         get() = get(6) as String?
 
-    var soundcloudLink: String?
+    var unitySoundcloudLink: String?
         set(value) = set(7, value)
         get() = get(7) as String?
 
-    var bandcampLink: String?
+    var unityBandcampLink: String?
         set(value) = set(8, value)
         get() = get(8) as String?
 
@@ -69,76 +69,76 @@ open class UnityRecord() : UpdatableRecordImpl<UnityRecord>(Unity.UNITY), Record
 
     override fun fieldsRow(): Row9<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row9<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?>
     override fun valuesRow(): Row9<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?> = super.valuesRow() as Row9<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?>
-    override fun field1(): Field<Long?> = Unity.UNITY.ID
-    override fun field2(): Field<OffsetDateTime?> = Unity.UNITY.CREATED_DATE_TIME
-    override fun field3(): Field<String?> = Unity.UNITY.NAME
-    override fun field4(): Field<String?> = Unity.UNITY.IMAGE_LINK
-    override fun field5(): Field<String?> = Unity.UNITY.ABOUT
-    override fun field6(): Field<String?> = Unity.UNITY.COUNTRY_NAME
-    override fun field7(): Field<String?> = Unity.UNITY.INSTAGRAM_LINK
-    override fun field8(): Field<String?> = Unity.UNITY.SOUNDCLOUD_LINK
-    override fun field9(): Field<String?> = Unity.UNITY.BANDCAMP_LINK
-    override fun component1(): Long? = id
-    override fun component2(): OffsetDateTime? = createdDateTime
-    override fun component3(): String? = name
-    override fun component4(): String? = imageLink
-    override fun component5(): String? = about
-    override fun component6(): String? = countryName
-    override fun component7(): String? = instagramLink
-    override fun component8(): String? = soundcloudLink
-    override fun component9(): String? = bandcampLink
-    override fun value1(): Long? = id
-    override fun value2(): OffsetDateTime? = createdDateTime
-    override fun value3(): String? = name
-    override fun value4(): String? = imageLink
-    override fun value5(): String? = about
-    override fun value6(): String? = countryName
-    override fun value7(): String? = instagramLink
-    override fun value8(): String? = soundcloudLink
-    override fun value9(): String? = bandcampLink
+    override fun field1(): Field<Long?> = Unity.UNITY.UNITY_ID
+    override fun field2(): Field<OffsetDateTime?> = Unity.UNITY.UNITY_CREATED_DATE_TIME
+    override fun field3(): Field<String?> = Unity.UNITY.UNITY_NAME
+    override fun field4(): Field<String?> = Unity.UNITY.UNITY_IMAGE_LINK
+    override fun field5(): Field<String?> = Unity.UNITY.UNITY_ABOUT
+    override fun field6(): Field<String?> = Unity.UNITY.UNITY_COUNTRY_NAME
+    override fun field7(): Field<String?> = Unity.UNITY.UNITY_INSTAGRAM_LINK
+    override fun field8(): Field<String?> = Unity.UNITY.UNITY_SOUNDCLOUD_LINK
+    override fun field9(): Field<String?> = Unity.UNITY.UNITY_BANDCAMP_LINK
+    override fun component1(): Long? = unityId
+    override fun component2(): OffsetDateTime? = unityCreatedDateTime
+    override fun component3(): String? = unityName
+    override fun component4(): String? = unityImageLink
+    override fun component5(): String? = unityAbout
+    override fun component6(): String? = unityCountryName
+    override fun component7(): String? = unityInstagramLink
+    override fun component8(): String? = unitySoundcloudLink
+    override fun component9(): String? = unityBandcampLink
+    override fun value1(): Long? = unityId
+    override fun value2(): OffsetDateTime? = unityCreatedDateTime
+    override fun value3(): String? = unityName
+    override fun value4(): String? = unityImageLink
+    override fun value5(): String? = unityAbout
+    override fun value6(): String? = unityCountryName
+    override fun value7(): String? = unityInstagramLink
+    override fun value8(): String? = unitySoundcloudLink
+    override fun value9(): String? = unityBandcampLink
 
     override fun value1(value: Long?): UnityRecord {
-        this.id = value
+        this.unityId = value
         return this
     }
 
     override fun value2(value: OffsetDateTime?): UnityRecord {
-        this.createdDateTime = value
+        this.unityCreatedDateTime = value
         return this
     }
 
     override fun value3(value: String?): UnityRecord {
-        this.name = value
+        this.unityName = value
         return this
     }
 
     override fun value4(value: String?): UnityRecord {
-        this.imageLink = value
+        this.unityImageLink = value
         return this
     }
 
     override fun value5(value: String?): UnityRecord {
-        this.about = value
+        this.unityAbout = value
         return this
     }
 
     override fun value6(value: String?): UnityRecord {
-        this.countryName = value
+        this.unityCountryName = value
         return this
     }
 
     override fun value7(value: String?): UnityRecord {
-        this.instagramLink = value
+        this.unityInstagramLink = value
         return this
     }
 
     override fun value8(value: String?): UnityRecord {
-        this.soundcloudLink = value
+        this.unitySoundcloudLink = value
         return this
     }
 
     override fun value9(value: String?): UnityRecord {
-        this.bandcampLink = value
+        this.unityBandcampLink = value
         return this
     }
 
@@ -158,15 +158,15 @@ open class UnityRecord() : UpdatableRecordImpl<UnityRecord>(Unity.UNITY), Record
     /**
      * Create a detached, initialised UnityRecord
      */
-    constructor(id: Long? = null, createdDateTime: OffsetDateTime? = null, name: String? = null, imageLink: String? = null, about: String? = null, countryName: String? = null, instagramLink: String? = null, soundcloudLink: String? = null, bandcampLink: String? = null): this() {
-        this.id = id
-        this.createdDateTime = createdDateTime
-        this.name = name
-        this.imageLink = imageLink
-        this.about = about
-        this.countryName = countryName
-        this.instagramLink = instagramLink
-        this.soundcloudLink = soundcloudLink
-        this.bandcampLink = bandcampLink
+    constructor(unityId: Long? = null, unityCreatedDateTime: OffsetDateTime? = null, unityName: String? = null, unityImageLink: String? = null, unityAbout: String? = null, unityCountryName: String? = null, unityInstagramLink: String? = null, unitySoundcloudLink: String? = null, unityBandcampLink: String? = null): this() {
+        this.unityId = unityId
+        this.unityCreatedDateTime = unityCreatedDateTime
+        this.unityName = unityName
+        this.unityImageLink = unityImageLink
+        this.unityAbout = unityAbout
+        this.unityCountryName = unityCountryName
+        this.unityInstagramLink = unityInstagramLink
+        this.unitySoundcloudLink = unitySoundcloudLink
+        this.unityBandcampLink = unityBandcampLink
     }
 }

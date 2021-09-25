@@ -7,9 +7,9 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.USER_PROFILE_NAME_KEY
 import jooq.keys.USER_PROFILE_PKEY
-import jooq.keys.USER_PROFILE__USER_PROFILE_CITY_NAME_FKEY
+import jooq.keys.USER_PROFILE_USER_PROFILE_NAME_KEY
+import jooq.keys.USER_PROFILE__USER_PROFILE_USER_PROFILE_CITY_NAME_FKEY
 import jooq.tables.records.UserProfileRecord
 
 import kotlin.collections.List
@@ -64,44 +64,44 @@ open class UserProfile(
     override fun getRecordType(): Class<UserProfileRecord> = UserProfileRecord::class.java
 
     /**
-     * The column <code>public.user_profile.auth_uid</code>.
+     * The column <code>public.user_profile.user_profile_auth_uid</code>.
      */
-    val AUTH_UID: TableField<UserProfileRecord, String?> = createField(DSL.name("auth_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
+    val USER_PROFILE_AUTH_UID: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_auth_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
 
     /**
-     * The column <code>public.user_profile.created_date_time</code>.
+     * The column <code>public.user_profile.user_profile_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<UserProfileRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val USER_PROFILE_CREATED_DATE_TIME: TableField<UserProfileRecord, OffsetDateTime?> = createField(DSL.name("user_profile_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.user_profile.name</code>.
+     * The column <code>public.user_profile.user_profile_name</code>.
      */
-    val NAME: TableField<UserProfileRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(40).nullable(false), this, "")
+    val USER_PROFILE_NAME: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_name"), SQLDataType.VARCHAR(40).nullable(false), this, "")
 
     /**
-     * The column <code>public.user_profile.image_link</code>.
+     * The column <code>public.user_profile.user_profile_image_link</code>.
      */
-    val IMAGE_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("image_link"), SQLDataType.CLOB, this, "")
+    val USER_PROFILE_IMAGE_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_image_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.user_profile.about</code>.
+     * The column <code>public.user_profile.user_profile_about</code>.
      */
-    val ABOUT: TableField<UserProfileRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
+    val USER_PROFILE_ABOUT: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.user_profile.city_name</code>.
+     * The column <code>public.user_profile.user_profile_city_name</code>.
      */
-    val CITY_NAME: TableField<UserProfileRecord, String?> = createField(DSL.name("city_name"), SQLDataType.VARCHAR(40), this, "")
+    val USER_PROFILE_CITY_NAME: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_city_name"), SQLDataType.VARCHAR(40), this, "")
 
     /**
-     * The column <code>public.user_profile.instagram_link</code>.
+     * The column <code>public.user_profile.user_profile_instagram_link</code>.
      */
-    val INSTAGRAM_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("instagram_link"), SQLDataType.CLOB, this, "")
+    val USER_PROFILE_INSTAGRAM_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_instagram_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.user_profile.telegram_link</code>.
+     * The column <code>public.user_profile.user_profile_telegram_link</code>.
      */
-    val TELEGRAM_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("telegram_link"), SQLDataType.CLOB, this, "")
+    val USER_PROFILE_TELEGRAM_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_telegram_link"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<UserProfileRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UserProfileRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -124,13 +124,13 @@ open class UserProfile(
     constructor(child: Table<out Record>, key: ForeignKey<out Record, UserProfileRecord>): this(Internal.createPathAlias(child, key), child, key, USER_PROFILE, null)
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserProfileRecord> = USER_PROFILE_PKEY
-    override fun getKeys(): List<UniqueKey<UserProfileRecord>> = listOf(USER_PROFILE_PKEY, USER_PROFILE_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<UserProfileRecord, *>> = listOf(USER_PROFILE__USER_PROFILE_CITY_NAME_FKEY)
+    override fun getKeys(): List<UniqueKey<UserProfileRecord>> = listOf(USER_PROFILE_PKEY, USER_PROFILE_USER_PROFILE_NAME_KEY)
+    override fun getReferences(): List<ForeignKey<UserProfileRecord, *>> = listOf(USER_PROFILE__USER_PROFILE_USER_PROFILE_CITY_NAME_FKEY)
 
     private lateinit var _city: City
     fun city(): City {
         if (!this::_city.isInitialized)
-            _city = City(this, USER_PROFILE__USER_PROFILE_CITY_NAME_FKEY)
+            _city = City(this, USER_PROFILE__USER_PROFILE_USER_PROFILE_CITY_NAME_FKEY)
 
         return _city;
     }

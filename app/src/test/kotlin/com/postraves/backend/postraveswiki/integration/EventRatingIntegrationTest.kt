@@ -84,7 +84,7 @@ class EventRatingIntegrationTest(
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameEn = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
@@ -99,7 +99,7 @@ class EventRatingIntegrationTest(
     private val cityTest1 = CityWriteDto(
         name = "Bruges",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameEn = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         countryName = "BE",

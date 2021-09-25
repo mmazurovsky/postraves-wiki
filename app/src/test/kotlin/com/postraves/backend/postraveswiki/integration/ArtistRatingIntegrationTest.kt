@@ -64,7 +64,7 @@ class ArtistRatingIntegrationTest(
         val country1 = CountryWriteDto(
             name = "BE",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+7",
@@ -73,7 +73,7 @@ class ArtistRatingIntegrationTest(
         val country2 = CountryWriteDto(
             name = "RU",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+9",
@@ -83,7 +83,7 @@ class ArtistRatingIntegrationTest(
         val country3 = CountryWriteDto(
             name = "CA",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+10",
@@ -93,7 +93,7 @@ class ArtistRatingIntegrationTest(
         val city1 = CityWriteDto(
             name = "Bruges",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             countryName = "BE",
@@ -103,7 +103,7 @@ class ArtistRatingIntegrationTest(
         val city2 = CityWriteDto(
             name = "Moscow",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             countryName = "RU",
@@ -113,7 +113,7 @@ class ArtistRatingIntegrationTest(
         val city3 = CityWriteDto(
             name = "Toronto",
             nameRu = "NameRu",
-            nameUk = "NameUk",
+            nameEn = "NameUk",
             nameDe = "NameDe",
             nameFr = "NameFr",
             countryName = "CA",

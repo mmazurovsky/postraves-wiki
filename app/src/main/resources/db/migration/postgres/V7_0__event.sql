@@ -1,14 +1,14 @@
 CREATE TABLE event
 (
-    id                       BIGSERIAL                UNIQUE NOT NULL,
-    created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
-    name                     VARCHAR(80)              UNIQUE NOT NULL,
-    image_link               TEXT,
-    about                    TEXT,
-    is_cancelled             BOOLEAN                  NOT NULL,
-    start_date_time          TIMESTAMP                WITH TIME ZONE NOT NULL,
-    end_date_time            TIMESTAMP                WITH TIME ZONE NOT NULL,
-    tickets_link             TEXT,
-    place_id                 BIGINT                   REFERENCES place(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    PRIMARY KEY (id)
+    event_id                       BIGSERIAL                UNIQUE NOT NULL,
+    event_created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
+    event_name                     VARCHAR(80)              UNIQUE NOT NULL,
+    event_image_link               TEXT,
+    event_about                    TEXT,
+    event_is_cancelled             BOOLEAN                  NOT NULL,
+    event_start_date_time          TIMESTAMP                WITH TIME ZONE NOT NULL,
+    event_end_date_time            TIMESTAMP                WITH TIME ZONE NOT NULL,
+    event_tickets_link             TEXT,
+    event_place_id                 BIGINT                   REFERENCES place(place_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (event_id)
 );

@@ -7,9 +7,9 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.ARTIST_NAME_KEY
+import jooq.keys.ARTIST_ARTIST_NAME_KEY
 import jooq.keys.ARTIST_PKEY
-import jooq.keys.ARTIST__ARTIST_COUNTRY_NAME_FKEY
+import jooq.keys.ARTIST__ARTIST_ARTIST_COUNTRY_NAME_FKEY
 import jooq.tables.records.ArtistRecord
 
 import kotlin.collections.List
@@ -65,44 +65,44 @@ open class Artist(
     override fun getRecordType(): Class<ArtistRecord> = ArtistRecord::class.java
 
     /**
-     * The column <code>public.artist.id</code>.
+     * The column <code>public.artist.artist_id</code>.
      */
-    val ID: TableField<ArtistRecord, Long?> = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
+    val ARTIST_ID: TableField<ArtistRecord, Long?> = createField(DSL.name("artist_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.artist.created_date_time</code>.
+     * The column <code>public.artist.artist_created_date_time</code>.
      */
-    val CREATED_DATE_TIME: TableField<ArtistRecord, OffsetDateTime?> = createField(DSL.name("created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+    val ARTIST_CREATED_DATE_TIME: TableField<ArtistRecord, OffsetDateTime?> = createField(DSL.name("artist_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
-     * The column <code>public.artist.name</code>.
+     * The column <code>public.artist.artist_name</code>.
      */
-    val NAME: TableField<ArtistRecord, String?> = createField(DSL.name("name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
+    val ARTIST_NAME: TableField<ArtistRecord, String?> = createField(DSL.name("artist_name"), SQLDataType.VARCHAR(60).nullable(false), this, "")
 
     /**
-     * The column <code>public.artist.image_link</code>.
+     * The column <code>public.artist.artist_image_link</code>.
      */
-    val IMAGE_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("image_link"), SQLDataType.CLOB, this, "")
+    val ARTIST_IMAGE_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("artist_image_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.artist.about</code>.
+     * The column <code>public.artist.artist_about</code>.
      */
-    val ABOUT: TableField<ArtistRecord, String?> = createField(DSL.name("about"), SQLDataType.CLOB, this, "")
+    val ARTIST_ABOUT: TableField<ArtistRecord, String?> = createField(DSL.name("artist_about"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.artist.country_name</code>.
+     * The column <code>public.artist.artist_country_name</code>.
      */
-    val COUNTRY_NAME: TableField<ArtistRecord, String?> = createField(DSL.name("country_name"), SQLDataType.VARCHAR(3), this, "")
+    val ARTIST_COUNTRY_NAME: TableField<ArtistRecord, String?> = createField(DSL.name("artist_country_name"), SQLDataType.VARCHAR(3), this, "")
 
     /**
-     * The column <code>public.artist.instagram_link</code>.
+     * The column <code>public.artist.artist_instagram_link</code>.
      */
-    val INSTAGRAM_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("instagram_link"), SQLDataType.CLOB, this, "")
+    val ARTIST_INSTAGRAM_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("artist_instagram_link"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.artist.soundcloud_link</code>.
+     * The column <code>public.artist.artist_soundcloud_link</code>.
      */
-    val SOUNDCLOUD_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("soundcloud_link"), SQLDataType.CLOB, this, "")
+    val ARTIST_SOUNDCLOUD_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("artist_soundcloud_link"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<ArtistRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<ArtistRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -126,13 +126,13 @@ open class Artist(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getIdentity(): Identity<ArtistRecord, Long?> = super.getIdentity() as Identity<ArtistRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<ArtistRecord> = ARTIST_PKEY
-    override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY, ARTIST_NAME_KEY)
-    override fun getReferences(): List<ForeignKey<ArtistRecord, *>> = listOf(ARTIST__ARTIST_COUNTRY_NAME_FKEY)
+    override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY, ARTIST_ARTIST_NAME_KEY)
+    override fun getReferences(): List<ForeignKey<ArtistRecord, *>> = listOf(ARTIST__ARTIST_ARTIST_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country
     fun country(): Country {
         if (!this::_country.isInitialized)
-            _country = Country(this, ARTIST__ARTIST_COUNTRY_NAME_FKEY)
+            _country = Country(this, ARTIST__ARTIST_ARTIST_COUNTRY_NAME_FKEY)
 
         return _country;
     }

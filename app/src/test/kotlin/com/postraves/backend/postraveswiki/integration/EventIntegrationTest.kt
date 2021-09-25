@@ -83,7 +83,7 @@ class EventIntegrationTest(
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameEn = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
@@ -99,7 +99,7 @@ class EventIntegrationTest(
     private val cityTest1 = CityWriteDto(
         name = "Bruges",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameEn = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         countryName = "BE",
@@ -1361,11 +1361,22 @@ class EventIntegrationTest(
             endingDateTime = null,
         )
 
+        val timetablePerformance2 = TimetablePerformanceWriteDto(
+            id = null,
+            artistIds = setOf(
+                artist1Id
+            ),
+            sceneId = scene1Id,
+            typeOfPerformance = null,
+            startingDateTime = null,
+            endingDateTime = null,
+        )
+
         makePutRequest(
             mockMvc, "$eventEndpoint/$event1Id/timetable",
             Json.encodeToString(
                 listOf(
-                    timetablePerformance1,
+                    timetablePerformance1, timetablePerformance2,
                 )
             ),
             status().isOk
@@ -1375,7 +1386,7 @@ class EventIntegrationTest(
             mockMvc, "$eventEndpoint/$event2Id/timetable",
             Json.encodeToString(
                 listOf(
-                    timetablePerformance1,
+                    timetablePerformance1, timetablePerformance2,
                 )
             ),
             status().isOk

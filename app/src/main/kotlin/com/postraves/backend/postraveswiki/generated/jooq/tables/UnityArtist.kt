@@ -6,8 +6,8 @@ package jooq.tables
 
 import jooq.Public
 import jooq.keys.UNITY_ARTIST_PKEY
-import jooq.keys.UNITY_ARTIST__UNITY_ARTIST_ARTIST_ID_FKEY
-import jooq.keys.UNITY_ARTIST__UNITY_ARTIST_UNITY_ID_FKEY
+import jooq.keys.UNITY_ARTIST__UNITY_ARTIST_UNITY_ARTIST_ARTIST_ID_FKEY
+import jooq.keys.UNITY_ARTIST__UNITY_ARTIST_UNITY_ARTIST_UNITY_ID_FKEY
 import jooq.tables.records.UnityArtistRecord
 
 import kotlin.collections.List
@@ -62,19 +62,19 @@ open class UnityArtist(
     override fun getRecordType(): Class<UnityArtistRecord> = UnityArtistRecord::class.java
 
     /**
-     * The column <code>public.unity_artist.unity_id</code>.
+     * The column <code>public.unity_artist.unity_artist_unity_id</code>.
      */
-    val UNITY_ID: TableField<UnityArtistRecord, Long?> = createField(DSL.name("unity_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val UNITY_ARTIST_UNITY_ID: TableField<UnityArtistRecord, Long?> = createField(DSL.name("unity_artist_unity_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
-     * The column <code>public.unity_artist.artist_id</code>.
+     * The column <code>public.unity_artist.unity_artist_artist_id</code>.
      */
-    val ARTIST_ID: TableField<UnityArtistRecord, Long?> = createField(DSL.name("artist_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val UNITY_ARTIST_ARTIST_ID: TableField<UnityArtistRecord, Long?> = createField(DSL.name("unity_artist_artist_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
-     * The column <code>public.unity_artist.is_founder</code>.
+     * The column <code>public.unity_artist.unity_artist_is_founder</code>.
      */
-    val IS_FOUNDER: TableField<UnityArtistRecord, Boolean?> = createField(DSL.name("is_founder"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "")
+    val UNITY_ARTIST_IS_FOUNDER: TableField<UnityArtistRecord, Boolean?> = createField(DSL.name("unity_artist_is_founder"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "")
 
     private constructor(alias: Name, aliased: Table<UnityArtistRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UnityArtistRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -98,19 +98,19 @@ open class UnityArtist(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UnityArtistRecord> = UNITY_ARTIST_PKEY
     override fun getKeys(): List<UniqueKey<UnityArtistRecord>> = listOf(UNITY_ARTIST_PKEY)
-    override fun getReferences(): List<ForeignKey<UnityArtistRecord, *>> = listOf(UNITY_ARTIST__UNITY_ARTIST_UNITY_ID_FKEY, UNITY_ARTIST__UNITY_ARTIST_ARTIST_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UnityArtistRecord, *>> = listOf(UNITY_ARTIST__UNITY_ARTIST_UNITY_ARTIST_UNITY_ID_FKEY, UNITY_ARTIST__UNITY_ARTIST_UNITY_ARTIST_ARTIST_ID_FKEY)
 
     private lateinit var _unity: Unity
     private lateinit var _artist: Artist
     fun unity(): Unity {
         if (!this::_unity.isInitialized)
-            _unity = Unity(this, UNITY_ARTIST__UNITY_ARTIST_UNITY_ID_FKEY)
+            _unity = Unity(this, UNITY_ARTIST__UNITY_ARTIST_UNITY_ARTIST_UNITY_ID_FKEY)
 
         return _unity;
     }
     fun artist(): Artist {
         if (!this::_artist.isInitialized)
-            _artist = Artist(this, UNITY_ARTIST__UNITY_ARTIST_ARTIST_ID_FKEY)
+            _artist = Artist(this, UNITY_ARTIST__UNITY_ARTIST_UNITY_ARTIST_ARTIST_ID_FKEY)
 
         return _artist;
     }

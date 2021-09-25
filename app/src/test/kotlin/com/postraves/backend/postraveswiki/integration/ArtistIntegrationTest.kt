@@ -62,7 +62,7 @@ class ArtistIntegrationTest(
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
-        nameUk = "NameUk",
+        nameEn = "NameUk",
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",

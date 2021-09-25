@@ -21,35 +21,35 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class CountryRecord() : UpdatableRecordImpl<CountryRecord>(Country.COUNTRY), Record8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?> {
 
-    var name: String?
+    var countryName: String?
         set(value) = set(0, value)
         get() = get(0) as String?
 
-    var nameRu: String?
+    var countryNameRu: String?
         set(value) = set(1, value)
         get() = get(1) as String?
 
-    var nameUk: String?
+    var countryNameEn: String?
         set(value) = set(2, value)
         get() = get(2) as String?
 
-    var nameDe: String?
+    var countryNameDe: String?
         set(value) = set(3, value)
         get() = get(3) as String?
 
-    var nameFr: String?
+    var countryNameFr: String?
         set(value) = set(4, value)
         get() = get(4) as String?
 
-    var createdDateTime: OffsetDateTime?
+    var countryCreatedDateTime: OffsetDateTime?
         set(value) = set(5, value)
         get() = get(5) as OffsetDateTime?
 
-    var phoneCode: String?
+    var countryPhoneCode: String?
         set(value) = set(6, value)
         get() = get(6) as String?
 
-    var emojiCode: String?
+    var countryEmojiCode: String?
         set(value) = set(7, value)
         get() = get(7) as String?
 
@@ -65,68 +65,68 @@ open class CountryRecord() : UpdatableRecordImpl<CountryRecord>(Country.COUNTRY)
 
     override fun fieldsRow(): Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?> = super.fieldsRow() as Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?>
     override fun valuesRow(): Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?> = super.valuesRow() as Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?>
-    override fun field1(): Field<String?> = Country.COUNTRY.NAME
-    override fun field2(): Field<String?> = Country.COUNTRY.NAME_RU
-    override fun field3(): Field<String?> = Country.COUNTRY.NAME_UK
-    override fun field4(): Field<String?> = Country.COUNTRY.NAME_DE
-    override fun field5(): Field<String?> = Country.COUNTRY.NAME_FR
-    override fun field6(): Field<OffsetDateTime?> = Country.COUNTRY.CREATED_DATE_TIME
-    override fun field7(): Field<String?> = Country.COUNTRY.PHONE_CODE
-    override fun field8(): Field<String?> = Country.COUNTRY.EMOJI_CODE
-    override fun component1(): String? = name
-    override fun component2(): String? = nameRu
-    override fun component3(): String? = nameUk
-    override fun component4(): String? = nameDe
-    override fun component5(): String? = nameFr
-    override fun component6(): OffsetDateTime? = createdDateTime
-    override fun component7(): String? = phoneCode
-    override fun component8(): String? = emojiCode
-    override fun value1(): String? = name
-    override fun value2(): String? = nameRu
-    override fun value3(): String? = nameUk
-    override fun value4(): String? = nameDe
-    override fun value5(): String? = nameFr
-    override fun value6(): OffsetDateTime? = createdDateTime
-    override fun value7(): String? = phoneCode
-    override fun value8(): String? = emojiCode
+    override fun field1(): Field<String?> = Country.COUNTRY.COUNTRY_NAME
+    override fun field2(): Field<String?> = Country.COUNTRY.COUNTRY_NAME_RU
+    override fun field3(): Field<String?> = Country.COUNTRY.COUNTRY_NAME_EN
+    override fun field4(): Field<String?> = Country.COUNTRY.COUNTRY_NAME_DE
+    override fun field5(): Field<String?> = Country.COUNTRY.COUNTRY_NAME_FR
+    override fun field6(): Field<OffsetDateTime?> = Country.COUNTRY.COUNTRY_CREATED_DATE_TIME
+    override fun field7(): Field<String?> = Country.COUNTRY.COUNTRY_PHONE_CODE
+    override fun field8(): Field<String?> = Country.COUNTRY.COUNTRY_EMOJI_CODE
+    override fun component1(): String? = countryName
+    override fun component2(): String? = countryNameRu
+    override fun component3(): String? = countryNameEn
+    override fun component4(): String? = countryNameDe
+    override fun component5(): String? = countryNameFr
+    override fun component6(): OffsetDateTime? = countryCreatedDateTime
+    override fun component7(): String? = countryPhoneCode
+    override fun component8(): String? = countryEmojiCode
+    override fun value1(): String? = countryName
+    override fun value2(): String? = countryNameRu
+    override fun value3(): String? = countryNameEn
+    override fun value4(): String? = countryNameDe
+    override fun value5(): String? = countryNameFr
+    override fun value6(): OffsetDateTime? = countryCreatedDateTime
+    override fun value7(): String? = countryPhoneCode
+    override fun value8(): String? = countryEmojiCode
 
     override fun value1(value: String?): CountryRecord {
-        this.name = value
+        this.countryName = value
         return this
     }
 
     override fun value2(value: String?): CountryRecord {
-        this.nameRu = value
+        this.countryNameRu = value
         return this
     }
 
     override fun value3(value: String?): CountryRecord {
-        this.nameUk = value
+        this.countryNameEn = value
         return this
     }
 
     override fun value4(value: String?): CountryRecord {
-        this.nameDe = value
+        this.countryNameDe = value
         return this
     }
 
     override fun value5(value: String?): CountryRecord {
-        this.nameFr = value
+        this.countryNameFr = value
         return this
     }
 
     override fun value6(value: OffsetDateTime?): CountryRecord {
-        this.createdDateTime = value
+        this.countryCreatedDateTime = value
         return this
     }
 
     override fun value7(value: String?): CountryRecord {
-        this.phoneCode = value
+        this.countryPhoneCode = value
         return this
     }
 
     override fun value8(value: String?): CountryRecord {
-        this.emojiCode = value
+        this.countryEmojiCode = value
         return this
     }
 
@@ -145,14 +145,14 @@ open class CountryRecord() : UpdatableRecordImpl<CountryRecord>(Country.COUNTRY)
     /**
      * Create a detached, initialised CountryRecord
      */
-    constructor(name: String? = null, nameRu: String? = null, nameUk: String? = null, nameDe: String? = null, nameFr: String? = null, createdDateTime: OffsetDateTime? = null, phoneCode: String? = null, emojiCode: String? = null): this() {
-        this.name = name
-        this.nameRu = nameRu
-        this.nameUk = nameUk
-        this.nameDe = nameDe
-        this.nameFr = nameFr
-        this.createdDateTime = createdDateTime
-        this.phoneCode = phoneCode
-        this.emojiCode = emojiCode
+    constructor(countryName: String? = null, countryNameRu: String? = null, countryNameEn: String? = null, countryNameDe: String? = null, countryNameFr: String? = null, countryCreatedDateTime: OffsetDateTime? = null, countryPhoneCode: String? = null, countryEmojiCode: String? = null): this() {
+        this.countryName = countryName
+        this.countryNameRu = countryNameRu
+        this.countryNameEn = countryNameEn
+        this.countryNameDe = countryNameDe
+        this.countryNameFr = countryNameFr
+        this.countryCreatedDateTime = countryCreatedDateTime
+        this.countryPhoneCode = countryPhoneCode
+        this.countryEmojiCode = countryEmojiCode
     }
 }

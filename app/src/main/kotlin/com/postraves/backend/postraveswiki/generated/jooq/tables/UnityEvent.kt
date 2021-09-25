@@ -6,8 +6,8 @@ package jooq.tables
 
 import jooq.Public
 import jooq.keys.UNITY_EVENT_PKEY
-import jooq.keys.UNITY_EVENT__UNITY_EVENT_EVENT_ID_FKEY
-import jooq.keys.UNITY_EVENT__UNITY_EVENT_UNITY_ID_FKEY
+import jooq.keys.UNITY_EVENT__UNITY_EVENT_UNITY_EVENT_EVENT_ID_FKEY
+import jooq.keys.UNITY_EVENT__UNITY_EVENT_UNITY_EVENT_UNITY_ID_FKEY
 import jooq.tables.records.UnityEventRecord
 
 import kotlin.collections.List
@@ -62,14 +62,14 @@ open class UnityEvent(
     override fun getRecordType(): Class<UnityEventRecord> = UnityEventRecord::class.java
 
     /**
-     * The column <code>public.unity_event.unity_id</code>.
+     * The column <code>public.unity_event.unity_event_unity_id</code>.
      */
-    val UNITY_ID: TableField<UnityEventRecord, Long?> = createField(DSL.name("unity_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val UNITY_EVENT_UNITY_ID: TableField<UnityEventRecord, Long?> = createField(DSL.name("unity_event_unity_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
-     * The column <code>public.unity_event.event_id</code>.
+     * The column <code>public.unity_event.unity_event_event_id</code>.
      */
-    val EVENT_ID: TableField<UnityEventRecord, Long?> = createField(DSL.name("event_id"), SQLDataType.BIGINT.nullable(false), this, "")
+    val UNITY_EVENT_EVENT_ID: TableField<UnityEventRecord, Long?> = createField(DSL.name("unity_event_event_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     private constructor(alias: Name, aliased: Table<UnityEventRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UnityEventRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -93,19 +93,19 @@ open class UnityEvent(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UnityEventRecord> = UNITY_EVENT_PKEY
     override fun getKeys(): List<UniqueKey<UnityEventRecord>> = listOf(UNITY_EVENT_PKEY)
-    override fun getReferences(): List<ForeignKey<UnityEventRecord, *>> = listOf(UNITY_EVENT__UNITY_EVENT_UNITY_ID_FKEY, UNITY_EVENT__UNITY_EVENT_EVENT_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UnityEventRecord, *>> = listOf(UNITY_EVENT__UNITY_EVENT_UNITY_EVENT_UNITY_ID_FKEY, UNITY_EVENT__UNITY_EVENT_UNITY_EVENT_EVENT_ID_FKEY)
 
     private lateinit var _unity: Unity
     private lateinit var _event: Event
     fun unity(): Unity {
         if (!this::_unity.isInitialized)
-            _unity = Unity(this, UNITY_EVENT__UNITY_EVENT_UNITY_ID_FKEY)
+            _unity = Unity(this, UNITY_EVENT__UNITY_EVENT_UNITY_EVENT_UNITY_ID_FKEY)
 
         return _unity;
     }
     fun event(): Event {
         if (!this::_event.isInitialized)
-            _event = Event(this, UNITY_EVENT__UNITY_EVENT_EVENT_ID_FKEY)
+            _event = Event(this, UNITY_EVENT__UNITY_EVENT_UNITY_EVENT_EVENT_ID_FKEY)
 
         return _event;
     }

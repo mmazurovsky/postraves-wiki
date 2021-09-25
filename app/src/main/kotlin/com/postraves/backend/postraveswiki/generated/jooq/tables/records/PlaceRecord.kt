@@ -21,47 +21,47 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?> {
 
-    var id: Long?
+    var placeId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var createdDateTime: OffsetDateTime?
+    var placeCreatedDateTime: OffsetDateTime?
         set(value) = set(1, value)
         get() = get(1) as OffsetDateTime?
 
-    var name: String?
+    var placeName: String?
         set(value) = set(2, value)
         get() = get(2) as String?
 
-    var imageLink: String?
+    var placeImageLink: String?
         set(value) = set(3, value)
         get() = get(3) as String?
 
-    var about: String?
+    var placeAbout: String?
         set(value) = set(4, value)
         get() = get(4) as String?
 
-    var cityName: String?
+    var placeCityName: String?
         set(value) = set(5, value)
         get() = get(5) as String?
 
-    var streetAddress: String?
+    var placeStreetAddress: String?
         set(value) = set(6, value)
         get() = get(6) as String?
 
-    var latitude: Double?
+    var placeLatitude: Double?
         set(value) = set(7, value)
         get() = get(7) as Double?
 
-    var longitude: Double?
+    var placeLongitude: Double?
         set(value) = set(8, value)
         get() = get(8) as Double?
 
-    var instagramLink: String?
+    var placeInstagramLink: String?
         set(value) = set(9, value)
         get() = get(9) as String?
 
-    var soundcloudLink: String?
+    var placeSoundcloudLink: String?
         set(value) = set(10, value)
         get() = get(10) as String?
 
@@ -77,92 +77,92 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
 
     override fun fieldsRow(): Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?> = super.fieldsRow() as Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?>
     override fun valuesRow(): Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?> = super.valuesRow() as Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?>
-    override fun field1(): Field<Long?> = Place.PLACE.ID
-    override fun field2(): Field<OffsetDateTime?> = Place.PLACE.CREATED_DATE_TIME
-    override fun field3(): Field<String?> = Place.PLACE.NAME
-    override fun field4(): Field<String?> = Place.PLACE.IMAGE_LINK
-    override fun field5(): Field<String?> = Place.PLACE.ABOUT
-    override fun field6(): Field<String?> = Place.PLACE.CITY_NAME
-    override fun field7(): Field<String?> = Place.PLACE.STREET_ADDRESS
-    override fun field8(): Field<Double?> = Place.PLACE.LATITUDE
-    override fun field9(): Field<Double?> = Place.PLACE.LONGITUDE
-    override fun field10(): Field<String?> = Place.PLACE.INSTAGRAM_LINK
-    override fun field11(): Field<String?> = Place.PLACE.SOUNDCLOUD_LINK
-    override fun component1(): Long? = id
-    override fun component2(): OffsetDateTime? = createdDateTime
-    override fun component3(): String? = name
-    override fun component4(): String? = imageLink
-    override fun component5(): String? = about
-    override fun component6(): String? = cityName
-    override fun component7(): String? = streetAddress
-    override fun component8(): Double? = latitude
-    override fun component9(): Double? = longitude
-    override fun component10(): String? = instagramLink
-    override fun component11(): String? = soundcloudLink
-    override fun value1(): Long? = id
-    override fun value2(): OffsetDateTime? = createdDateTime
-    override fun value3(): String? = name
-    override fun value4(): String? = imageLink
-    override fun value5(): String? = about
-    override fun value6(): String? = cityName
-    override fun value7(): String? = streetAddress
-    override fun value8(): Double? = latitude
-    override fun value9(): Double? = longitude
-    override fun value10(): String? = instagramLink
-    override fun value11(): String? = soundcloudLink
+    override fun field1(): Field<Long?> = Place.PLACE.PLACE_ID
+    override fun field2(): Field<OffsetDateTime?> = Place.PLACE.PLACE_CREATED_DATE_TIME
+    override fun field3(): Field<String?> = Place.PLACE.PLACE_NAME
+    override fun field4(): Field<String?> = Place.PLACE.PLACE_IMAGE_LINK
+    override fun field5(): Field<String?> = Place.PLACE.PLACE_ABOUT
+    override fun field6(): Field<String?> = Place.PLACE.PLACE_CITY_NAME
+    override fun field7(): Field<String?> = Place.PLACE.PLACE_STREET_ADDRESS
+    override fun field8(): Field<Double?> = Place.PLACE.PLACE_LATITUDE
+    override fun field9(): Field<Double?> = Place.PLACE.PLACE_LONGITUDE
+    override fun field10(): Field<String?> = Place.PLACE.PLACE_INSTAGRAM_LINK
+    override fun field11(): Field<String?> = Place.PLACE.PLACE_SOUNDCLOUD_LINK
+    override fun component1(): Long? = placeId
+    override fun component2(): OffsetDateTime? = placeCreatedDateTime
+    override fun component3(): String? = placeName
+    override fun component4(): String? = placeImageLink
+    override fun component5(): String? = placeAbout
+    override fun component6(): String? = placeCityName
+    override fun component7(): String? = placeStreetAddress
+    override fun component8(): Double? = placeLatitude
+    override fun component9(): Double? = placeLongitude
+    override fun component10(): String? = placeInstagramLink
+    override fun component11(): String? = placeSoundcloudLink
+    override fun value1(): Long? = placeId
+    override fun value2(): OffsetDateTime? = placeCreatedDateTime
+    override fun value3(): String? = placeName
+    override fun value4(): String? = placeImageLink
+    override fun value5(): String? = placeAbout
+    override fun value6(): String? = placeCityName
+    override fun value7(): String? = placeStreetAddress
+    override fun value8(): Double? = placeLatitude
+    override fun value9(): Double? = placeLongitude
+    override fun value10(): String? = placeInstagramLink
+    override fun value11(): String? = placeSoundcloudLink
 
     override fun value1(value: Long?): PlaceRecord {
-        this.id = value
+        this.placeId = value
         return this
     }
 
     override fun value2(value: OffsetDateTime?): PlaceRecord {
-        this.createdDateTime = value
+        this.placeCreatedDateTime = value
         return this
     }
 
     override fun value3(value: String?): PlaceRecord {
-        this.name = value
+        this.placeName = value
         return this
     }
 
     override fun value4(value: String?): PlaceRecord {
-        this.imageLink = value
+        this.placeImageLink = value
         return this
     }
 
     override fun value5(value: String?): PlaceRecord {
-        this.about = value
+        this.placeAbout = value
         return this
     }
 
     override fun value6(value: String?): PlaceRecord {
-        this.cityName = value
+        this.placeCityName = value
         return this
     }
 
     override fun value7(value: String?): PlaceRecord {
-        this.streetAddress = value
+        this.placeStreetAddress = value
         return this
     }
 
     override fun value8(value: Double?): PlaceRecord {
-        this.latitude = value
+        this.placeLatitude = value
         return this
     }
 
     override fun value9(value: Double?): PlaceRecord {
-        this.longitude = value
+        this.placeLongitude = value
         return this
     }
 
     override fun value10(value: String?): PlaceRecord {
-        this.instagramLink = value
+        this.placeInstagramLink = value
         return this
     }
 
     override fun value11(value: String?): PlaceRecord {
-        this.soundcloudLink = value
+        this.placeSoundcloudLink = value
         return this
     }
 
@@ -184,17 +184,17 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
     /**
      * Create a detached, initialised PlaceRecord
      */
-    constructor(id: Long? = null, createdDateTime: OffsetDateTime? = null, name: String? = null, imageLink: String? = null, about: String? = null, cityName: String? = null, streetAddress: String? = null, latitude: Double? = null, longitude: Double? = null, instagramLink: String? = null, soundcloudLink: String? = null): this() {
-        this.id = id
-        this.createdDateTime = createdDateTime
-        this.name = name
-        this.imageLink = imageLink
-        this.about = about
-        this.cityName = cityName
-        this.streetAddress = streetAddress
-        this.latitude = latitude
-        this.longitude = longitude
-        this.instagramLink = instagramLink
-        this.soundcloudLink = soundcloudLink
+    constructor(placeId: Long? = null, placeCreatedDateTime: OffsetDateTime? = null, placeName: String? = null, placeImageLink: String? = null, placeAbout: String? = null, placeCityName: String? = null, placeStreetAddress: String? = null, placeLatitude: Double? = null, placeLongitude: Double? = null, placeInstagramLink: String? = null, placeSoundcloudLink: String? = null): this() {
+        this.placeId = placeId
+        this.placeCreatedDateTime = placeCreatedDateTime
+        this.placeName = placeName
+        this.placeImageLink = placeImageLink
+        this.placeAbout = placeAbout
+        this.placeCityName = placeCityName
+        this.placeStreetAddress = placeStreetAddress
+        this.placeLatitude = placeLatitude
+        this.placeLongitude = placeLongitude
+        this.placeInstagramLink = placeInstagramLink
+        this.placeSoundcloudLink = placeSoundcloudLink
     }
 }

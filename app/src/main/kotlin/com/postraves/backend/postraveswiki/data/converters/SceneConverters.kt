@@ -20,16 +20,16 @@ class SceneConvertersImpl : SceneConverters {
         sceneRecord: SceneRecord,
     ): SceneDto {
         return SceneDto(
-            id = sceneRecord.id ?: throw RecordFieldNullException("Scene Id"),
-            name = sceneRecord.name ?: throw RecordFieldNullException("Scene Name"),
-            imageLink = sceneRecord.imageLink,
-            priority = sceneRecord.priority ?: throw RecordFieldNullException("Scene Priority"),
+            id = sceneRecord.sceneId ?: throw RecordFieldNullException("Scene Id"),
+            name = sceneRecord.sceneName ?: throw RecordFieldNullException("Scene Name"),
+            imageLink = sceneRecord.sceneImageLink,
+            priority = sceneRecord.scenePriority ?: throw RecordFieldNullException("Scene Priority"),
         )
     }
 
     override fun transferDataFromDtoToRecord(dto: SceneDto, record: SceneRecord) {
-        record.name = dto.name
-        record.imageLink = dto.imageLink
-        record.priority = dto.priority
+        record.sceneName = dto.name
+        record.sceneImageLink = dto.imageLink
+        record.scenePriority = dto.priority
     }
 }

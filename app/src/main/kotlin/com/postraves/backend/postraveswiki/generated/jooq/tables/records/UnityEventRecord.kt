@@ -18,11 +18,11 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class UnityEventRecord() : UpdatableRecordImpl<UnityEventRecord>(UnityEvent.UNITY_EVENT), Record2<Long?, Long?> {
 
-    var unityId: Long?
+    var unityEventUnityId: Long?
         set(value) = set(0, value)
         get() = get(0) as Long?
 
-    var eventId: Long?
+    var unityEventEventId: Long?
         set(value) = set(1, value)
         get() = get(1) as Long?
 
@@ -38,20 +38,20 @@ open class UnityEventRecord() : UpdatableRecordImpl<UnityEventRecord>(UnityEvent
 
     override fun fieldsRow(): Row2<Long?, Long?> = super.fieldsRow() as Row2<Long?, Long?>
     override fun valuesRow(): Row2<Long?, Long?> = super.valuesRow() as Row2<Long?, Long?>
-    override fun field1(): Field<Long?> = UnityEvent.UNITY_EVENT.UNITY_ID
-    override fun field2(): Field<Long?> = UnityEvent.UNITY_EVENT.EVENT_ID
-    override fun component1(): Long? = unityId
-    override fun component2(): Long? = eventId
-    override fun value1(): Long? = unityId
-    override fun value2(): Long? = eventId
+    override fun field1(): Field<Long?> = UnityEvent.UNITY_EVENT.UNITY_EVENT_UNITY_ID
+    override fun field2(): Field<Long?> = UnityEvent.UNITY_EVENT.UNITY_EVENT_EVENT_ID
+    override fun component1(): Long? = unityEventUnityId
+    override fun component2(): Long? = unityEventEventId
+    override fun value1(): Long? = unityEventUnityId
+    override fun value2(): Long? = unityEventEventId
 
     override fun value1(value: Long?): UnityEventRecord {
-        this.unityId = value
+        this.unityEventUnityId = value
         return this
     }
 
     override fun value2(value: Long?): UnityEventRecord {
-        this.eventId = value
+        this.unityEventEventId = value
         return this
     }
 
@@ -64,8 +64,8 @@ open class UnityEventRecord() : UpdatableRecordImpl<UnityEventRecord>(UnityEvent
     /**
      * Create a detached, initialised UnityEventRecord
      */
-    constructor(unityId: Long? = null, eventId: Long? = null): this() {
-        this.unityId = unityId
-        this.eventId = eventId
+    constructor(unityEventUnityId: Long? = null, unityEventEventId: Long? = null): this() {
+        this.unityEventUnityId = unityEventUnityId
+        this.unityEventEventId = unityEventEventId
     }
 }

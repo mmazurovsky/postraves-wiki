@@ -13,36 +13,36 @@ import org.jooq.impl.SQLDataType
 
 
 /**
- * The sequence <code>public.artist_id_seq</code>
+ * The sequence <code>public.artist_artist_id_seq</code>
  */
-val ARTIST_ID_SEQ: Sequence<Long> = Internal.createSequence("artist_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val ARTIST_ARTIST_ID_SEQ: Sequence<Long> = Internal.createSequence("artist_artist_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
 
 /**
- * The sequence <code>public.event_id_seq</code>
+ * The sequence <code>public.event_event_id_seq</code>
  */
-val EVENT_ID_SEQ: Sequence<Long> = Internal.createSequence("event_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val EVENT_EVENT_ID_SEQ: Sequence<Long> = Internal.createSequence("event_event_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
 
 /**
- * The sequence <code>public.place_id_seq</code>
+ * The sequence <code>public.place_place_id_seq</code>
  */
-val PLACE_ID_SEQ: Sequence<Long> = Internal.createSequence("place_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val PLACE_PLACE_ID_SEQ: Sequence<Long> = Internal.createSequence("place_place_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
 
 /**
- * The sequence <code>public.scene_id_seq</code>
+ * The sequence <code>public.scene_scene_id_seq</code>
  */
-val SCENE_ID_SEQ: Sequence<Long> = Internal.createSequence("scene_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val SCENE_SCENE_ID_SEQ: Sequence<Long> = Internal.createSequence("scene_scene_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
 
 /**
- * The sequence <code>public.ticket_price_id_seq</code>
+ * The sequence <code>public.ticket_price_ticket_price_id_seq</code>
  */
-val TICKET_PRICE_ID_SEQ: Sequence<Long> = Internal.createSequence("ticket_price_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val TICKET_PRICE_TICKET_PRICE_ID_SEQ: Sequence<Long> = Internal.createSequence("ticket_price_ticket_price_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
 
 /**
- * The sequence <code>public.timetable_item_id_seq</code>
+ * The sequence <code>public.timetable_item_timetable_item_id_seq</code>
  */
-val TIMETABLE_ITEM_ID_SEQ: Sequence<Long> = Internal.createSequence("timetable_item_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val TIMETABLE_ITEM_TIMETABLE_ITEM_ID_SEQ: Sequence<Long> = Internal.createSequence("timetable_item_timetable_item_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
 
 /**
- * The sequence <code>public.unity_id_seq</code>
+ * The sequence <code>public.unity_unity_id_seq</code>
  */
-val UNITY_ID_SEQ: Sequence<Long> = Internal.createSequence("unity_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+val UNITY_UNITY_ID_SEQ: Sequence<Long> = Internal.createSequence("unity_unity_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
