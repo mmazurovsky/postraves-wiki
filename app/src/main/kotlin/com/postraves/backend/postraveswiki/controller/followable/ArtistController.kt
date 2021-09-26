@@ -51,6 +51,12 @@ class ArtistController (
         return artistService.findWeeklyRatingInCountryForCity(cityName, maxQuantity)
     }
 
+    @GetMapping("/public/weeklyBest")
+    @ResponseStatus(HttpStatus.OK)
+    fun findBestOfTheWeekForCityByCountry(cityName: String): ArtistShortDto? {
+        return artistService.findBestOfTheWeekByCityInCountry(cityName)
+    }
+
     override fun findByPartOfName(namePart: String): List<ArtistShortDto> {
         return artistService.findByPartOfName(namePart)
     }
