@@ -18,7 +18,7 @@ data class EventWriteDto(
     @Serializable(KOffsetDateTimeSerializer::class)
     val startDateTime: OffsetDateTime,
     @Serializable(KOffsetDateTimeSerializer::class)
-    val endDateTime: OffsetDateTime?,
+    val endDateTime: OffsetDateTime,
     val placeId: Long,
     val organizers: Set<Long>,
 ) : BaseWriteDto
