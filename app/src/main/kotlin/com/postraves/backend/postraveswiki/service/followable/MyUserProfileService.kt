@@ -21,6 +21,7 @@ interface MyUserProfileService {
     fun findMyFollowsArtist(): List<ArtistShortDto>
     fun findByAuthUidForSecurityService(authUid: String): UserFullDto?
     fun checkArtistIsFollowed(id: Long): Boolean
+    fun checkNicknameIsFree(nickname: String): Boolean
 }
 
 @Service
@@ -49,6 +50,10 @@ class MyUserProfileServiceImpl(
     override fun checkArtistIsFollowed(id: Long): Boolean {
         val authUid = getMyAuthUidOnlyIfUserProfileExists()
         return myUserProfileRepo.checkArtistIsFollowed(id, authUid ?: throw NotAuthenticated())
+    }
+
+    override fun checkNicknameIsFree(nickname: String): Boolean {
+        return myUserProfileRepo.checkNicknameIsFree(nickname)
     }
 
     override fun followArtist(id: Long) {

@@ -38,6 +38,12 @@ class MyUserProfileController(
         myUserProfileService.deleteMyProfile()
     }
 
+    @GetMapping("/public/nicknameCheck/{nickname}")
+    @ResponseStatus(HttpStatus.OK)
+    fun checkNickname(@PathVariable nickname: String): Boolean {
+        return myUserProfileService.checkNicknameIsFree(nickname)
+    }
+
     @PostMapping("/myFollows/artist/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun followArtist(@PathVariable id: Long) {

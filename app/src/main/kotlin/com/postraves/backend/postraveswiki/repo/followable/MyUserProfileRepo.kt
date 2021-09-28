@@ -28,6 +28,7 @@ interface MyUserProfileRepo {
     fun unfollowArtist(userAuthUid: String, id: Long)
     fun findMyFollowsArtist(authUid: String): List<ArtistShortDto>
     fun checkArtistIsFollowed(id: Long, authUid: String): Boolean
+    fun checkNicknameIsFree(nickname: String): Boolean
 }
 
 @Repository
@@ -42,10 +43,12 @@ class MyUserProfileRepoImpl(
     @Lazy
     private lateinit var dsl: DSLContext
 
+    private val thisTable = USER_PROFILE
+
     private fun findByAuthUidWithJoins(authUid: String): Record? {
         val record = dsl
             .selectFrom(
-                USER_PROFILE
+                thisTable
                     .leftOuterJoin(CITY).on(USER_PROFILE.USER_PROFILE_CITY_NAME.eq(CITY.CITY_NAME))
                     .leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
             )
@@ -56,7 +59,7 @@ class MyUserProfileRepoImpl(
 
     private fun findByAuthUidWithoutJoins(authUid: String): UserProfileRecord {
         val record = dsl
-            .selectFrom(USER_PROFILE)
+            .selectFrom(thisTable)
             .where(USER_PROFILE.USER_PROFILE_AUTH_UID.eq(authUid))
             .fetchOne()
         return record ?: throw NotFoundException("User", authUid)
@@ -69,7 +72,7 @@ class MyUserProfileRepoImpl(
     }
 
     override fun save(dto: UserWriteDto, authUid: String): UserShortDto {
-        val userToSave = dsl.newRecord(USER_PROFILE)
+        val userToSave = dsl.newRecord(thisTable)
         userConverters.transferDataFromDtoToRecord(dto, userToSave)
         userToSave.userProfileAuthUid = authUid
         userToSave.userProfileCreatedDateTime = dateTimeProvider.getNow()
@@ -85,7 +88,7 @@ class MyUserProfileRepoImpl(
     }
 
     override fun deleteMyProfile(authUid: String) {
-        dsl.fetchOne(USER_PROFILE, USER_PROFILE.USER_PROFILE_AUTH_UID.eq(authUid))
+        dsl.fetchOne(thisTable, USER_PROFILE.USER_PROFILE_AUTH_UID.eq(authUid))
             ?.delete()
     }
 
@@ -136,5 +139,10 @@ class MyUserProfileRepoImpl(
         )
 
         return association != null
+    }
+
+    override fun checkNicknameIsFree(nickname: String): Boolean {
+        val foundProfile = dsl.fetchOne(thisTable, USER_PROFILE.USER_PROFILE_NAME.eq(nickname))
+        return foundProfile == null
     }
 }

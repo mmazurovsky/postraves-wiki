@@ -65,9 +65,9 @@ class EventRepoImpl(
     @Lazy
     private lateinit var dsl: DSLContext
 
-    val thisTable = EVENT
-    val thisString = EntityType.EVENT.nameString
-    val userFollowsTable = USER_FOLLOWS_EVENT
+    private val thisTable = EVENT
+    private val thisString = EntityType.EVENT.nameString
+    private val userFollowsTable = USER_FOLLOWS_EVENT
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
         return this
