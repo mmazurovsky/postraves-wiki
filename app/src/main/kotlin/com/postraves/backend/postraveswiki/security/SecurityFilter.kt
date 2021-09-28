@@ -42,7 +42,7 @@ class SecurityFilter(
 
     private fun verifyToken(request: HttpServletRequest) {
         var session: String? = null
-        var decodedToken: FirebaseToken? = null
+        var decodedTokenWithFirebaseCredentials: FirebaseToken? = null
         var type: CredentialType? = null
         val strictServerSessionEnabled = securityProps!!.firebaseProps!!.enableStrictServerSession
         val sessionCookie = cookieUtils!!.getCookie("session")
@@ -55,14 +55,14 @@ class SecurityFilter(
         try {
             if (sessionCookie != null) {
                 session = sessionCookie.value
-                decodedToken = FirebaseAuth.getInstance().verifySessionCookie(
+                decodedTokenWithFirebaseCredentials = FirebaseAuth.getInstance().verifySessionCookie(
                     session,
                     securityProps.firebaseProps!!.enableCheckSessionRevoked
                 )
                 type = CredentialType.SESSION
             } else if (!strictServerSessionEnabled) {
                 if (token != null && !token.equals("undefined", ignoreCase = true)) {
-                    decodedToken = FirebaseAuth.getInstance().verifyIdToken(token)
+                    decodedTokenWithFirebaseCredentials = FirebaseAuth.getInstance().verifyIdToken(token)
                     type = CredentialType.ID_TOKEN
                 }
             }
@@ -70,18 +70,18 @@ class SecurityFilter(
             e.printStackTrace()
             logger.error("Firebase Exception:: " + e.localizedMessage)
         }
-        val userProfile = firebaseTokenToUser(decodedToken)
+        val userProfile = firebaseTokenToMyBackendUser(decodedTokenWithFirebaseCredentials)
         if (userProfile != null) {
             val authentication = UsernamePasswordAuthenticationToken(
-                decodedToken!!.uid,
-                Credentials(type, decodedToken, token, session), null
+                decodedTokenWithFirebaseCredentials!!.uid,
+                Credentials(type, decodedTokenWithFirebaseCredentials, token, session), null
             )
             authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
         }
     }
 
-    private fun firebaseTokenToUser(decodedToken: FirebaseToken?): UserFullDto? {
+    private fun firebaseTokenToMyBackendUser(decodedToken: FirebaseToken?): UserFullDto? {
         return if (decodedToken == null) null else myUserProfileService.findByAuthUidForSecurityService(decodedToken.uid)
     }
 }

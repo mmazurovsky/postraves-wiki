@@ -14,7 +14,7 @@ class MyUserProfileController(
     private val myUserProfileService: MyUserProfileService
     ) {
 
-    @GetMapping("/myProfile")
+    @GetMapping("/public/myProfile")
     @ResponseStatus(HttpStatus.OK)
     fun findMyProfile(): UserFullDto? {
         return myUserProfileService.findMyProfile().first
