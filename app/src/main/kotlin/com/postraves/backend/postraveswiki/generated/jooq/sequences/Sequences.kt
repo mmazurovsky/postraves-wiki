@@ -46,3 +46,8 @@ val TIMETABLE_ITEM_TIMETABLE_ITEM_ID_SEQ: Sequence<Long> = Internal.createSequen
  * The sequence <code>public.unity_unity_id_seq</code>
  */
 val UNITY_UNITY_ID_SEQ: Sequence<Long> = Internal.createSequence("unity_unity_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
+ * The sequence <code>public.user_profile_user_profile_id_seq</code>
+ */
+val USER_PROFILE_USER_PROFILE_ID_SEQ: Sequence<Long> = Internal.createSequence("user_profile_user_profile_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)

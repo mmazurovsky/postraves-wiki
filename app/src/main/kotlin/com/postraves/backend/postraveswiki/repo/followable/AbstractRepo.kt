@@ -1,8 +1,6 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDtoWithId
-import com.postraves.backend.postraveswiki.data.dto.BaseShortDtoWithId
-import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
+import com.postraves.backend.postraveswiki.data.dto.*
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
@@ -12,7 +10,7 @@ import org.jooq.impl.TableImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 
-abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : BaseFullDtoWithId, SHORTDTO : BaseShortDtoWithId, R>(
+abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableShortDto<SHORTDTO>, R>(
     val table: TableImpl<R>,
     val entityType: String,
 ) : BaseRepo<WRITEDTO, SHORTDTO>,

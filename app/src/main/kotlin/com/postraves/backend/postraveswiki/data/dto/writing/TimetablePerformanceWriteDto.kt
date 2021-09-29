@@ -10,12 +10,12 @@ import java.time.OffsetDateTime
 
 @Serializable
 data class TimetablePerformanceWriteDto(
-    val id: Long?,
-    val sceneId: Long?,
+    val id: Long? = null,
+    val sceneId: Long? = null,
     val artistIds: Set<Long>,
-    val typeOfPerformance: String?,
+    val typeOfPerformance: String? = null,
     @Serializable(KOffsetDateTimeSerializer::class)
-    val startingDateTime: OffsetDateTime?,
+    val startingDateTime: OffsetDateTime? = null,
     @Serializable(KOffsetDateTimeSerializer::class)
-    val endingDateTime: OffsetDateTime?,
+    val endingDateTime: OffsetDateTime? = null,
 ) : BaseWriteDto

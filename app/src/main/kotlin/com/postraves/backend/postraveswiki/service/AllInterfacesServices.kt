@@ -14,7 +14,7 @@ interface FindByName<SHORTDTO : BaseShortDto> {
     fun findByPartOfName(namePart: String): List<SHORTDTO>
 }
 
-interface ByIdService<FULLDTO : BaseFullDtoWithId, SHORTDTO : BaseShortDtoWithId> {
+interface ByIdService<FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableShortDto<SHORTDTO>> {
     fun findById(id: Long): FULLDTO
     fun deleteById(id: Long)
 }

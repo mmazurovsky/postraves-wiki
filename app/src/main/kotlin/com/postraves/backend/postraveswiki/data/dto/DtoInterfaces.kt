@@ -17,12 +17,12 @@ interface ConvertableToMap {
 }
 
 interface BaseShortDto : BaseDto
-interface BaseShortDtoWithId : BaseShortDto, BaseIdDto
-interface FollowableShortDto<T> : BaseShortDtoWithId, FollowableDto<T>
+//interface BaseShortDtoWithId : BaseShortDto, BaseIdDto
+interface FollowableShortDto<T> : BaseShortDto, FollowableDto<T>
 
 interface BaseFullDto : BaseDto
-interface BaseFullDtoWithId : BaseFullDto, BaseIdDto
-interface FollowableFullDto<T> : BaseFullDtoWithId, FollowableDto<T>
+//interface BaseFullDtoWithId : BaseFullDto, BaseIdDto
+interface FollowableFullDto<T> : BaseFullDto, FollowableDto<T>
 
 interface BaseWriteDto : BaseDto
 interface BaseIdWriteDto : BaseIdDto

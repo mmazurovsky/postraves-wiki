@@ -1,18 +1,24 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
-import com.postraves.backend.postraveswiki.data.dto.BaseFullDto
-import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
-import jooq.tables.records.CityRecord
-import jooq.tables.records.CountryRecord
-import jooq.tables.records.UserProfileRecord
+import com.postraves.backend.postraveswiki.data.dto.FollowableFullDto
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserFullDto(
+    override val id: Long,
     val name: String,
-    val imageLink : String?,
     val currentCity: CityDto,
+    val imageLink : String?,
+    val about: String?,
     val telegramLink: String?,
     val instagramLink: String?,
-    val about: String?,
-) : BaseFullDto
+    @Required
+    override val overallFollowers: Int = 0,
+    @Required
+    override val weeklyFollowers: Int = 0,
+) : FollowableFullDto<UserFullDto> {
+    override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): UserFullDto {
+        return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
+    }
+}

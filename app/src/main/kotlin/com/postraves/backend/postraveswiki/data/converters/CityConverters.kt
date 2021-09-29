@@ -21,21 +21,26 @@ class CityConvertersImpl(
 
     private fun resolveLocalizedName(cityRecord: CityRecord): String? {
         val userLocale = LocaleContextHolder.getLocale()
-        return if (userLocale.language.equals(Locale("ru").language)) {
-            cityRecord.cityNameRu
-        } else if (userLocale.language.equals(Locale("de").language)) {
-            cityRecord.cityNameDe
-        } else if (userLocale.language.equals(Locale("fr").language)) {
-            cityRecord.cityNameFr
-        } else {
-            cityRecord.cityNameEn
+        return when {
+            userLocale.language.equals(Locale("ru").language) -> {
+                cityRecord.cityNameRu
+            }
+            userLocale.language.equals(Locale("de").language) -> {
+                cityRecord.cityNameDe
+            }
+            userLocale.language.equals(Locale("fr").language) -> {
+                cityRecord.cityNameFr
+            }
+            else -> {
+                cityRecord.cityNameEn
+            }
         }
     }
 
     override fun createDtoFromRecord(cityRecord: CityRecord, countryRecord: CountryRecord): CityDto {
         return CityDto(
             name = cityRecord.cityName ?: throw RecordFieldNullException("City Name"),
-            localizedName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Name"),
+            localName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Name"),
             country = countryConverters.createDtoFromRecord(countryRecord)
         )
     }

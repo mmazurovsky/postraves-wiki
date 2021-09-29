@@ -9,16 +9,16 @@ import java.time.OffsetDateTime
 
 @Serializable
 data class EventWriteDto(
-    val id: Long?,
+    val id: Long? = null,
     val name: String,
-    val imageLink : String?,
-    val about: String?,
-    val ticketsLink: String?,
-    val ticketPrices: Collection<TicketPriceDto>,
+    val placeId: Long,
     @Serializable(KOffsetDateTimeSerializer::class)
     val startDateTime: OffsetDateTime,
     @Serializable(KOffsetDateTimeSerializer::class)
     val endDateTime: OffsetDateTime,
-    val placeId: Long,
+    val ticketPrices: Collection<TicketPriceDto>,
     val organizers: Set<Long>,
+    val imageLink : String? = null,
+    val about: String? = null,
+    val ticketsLink: String? = null,
 ) : BaseWriteDto

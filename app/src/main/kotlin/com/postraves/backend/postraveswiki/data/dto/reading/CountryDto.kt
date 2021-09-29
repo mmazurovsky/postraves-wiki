@@ -10,7 +10,7 @@ import kotlinx.serialization.*
 @Serializable
 data class CountryDto(
     val name: String,
-    val localizedName: String,
+    val localName: String,
     val phoneCode: String,
     val emojiCode: String,
 ) : BaseShortDto, BaseFullDto

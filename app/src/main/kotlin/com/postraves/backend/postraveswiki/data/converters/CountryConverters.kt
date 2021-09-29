@@ -19,21 +19,26 @@ class CountryConvertersImpl(
 
     private fun resolveLocalizedName(countryRecord: CountryRecord): String? {
         val userLocale = LocaleContextHolder.getLocale()
-        return if (userLocale.language.equals(Locale("ru").language)) {
-            countryRecord.countryNameRu
-        } else if (userLocale.language.equals(Locale("de").language)) {
-            countryRecord.countryNameDe
-        } else if (userLocale.language.equals(Locale("fr").language)) {
-            countryRecord.countryNameFr
-        } else {
-            countryRecord.countryNameEn
+        return when {
+            userLocale.language.equals(Locale("ru").language) -> {
+                countryRecord.countryNameRu
+            }
+            userLocale.language.equals(Locale("de").language) -> {
+                countryRecord.countryNameDe
+            }
+            userLocale.language.equals(Locale("fr").language) -> {
+                countryRecord.countryNameFr
+            }
+            else -> {
+                countryRecord.countryNameEn
+            }
         }
     }
 
     override fun createDtoFromRecord(countryRecord: CountryRecord): CountryDto {
         return CountryDto(
             name = countryRecord.countryName ?: throw RecordFieldNullException("Country Name"),
-            localizedName = resolveLocalizedName(countryRecord) ?: throw RecordFieldNullException("Country Name"),
+            localName = resolveLocalizedName(countryRecord) ?: throw RecordFieldNullException("Country Name"),
             phoneCode = countryRecord.countryPhoneCode ?: throw RecordFieldNullException("Country phone code"),
             emojiCode = countryRecord.countryEmojiCode ?: throw RecordFieldNullException("Country emoji code"),
         )

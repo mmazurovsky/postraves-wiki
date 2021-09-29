@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UnityWriteDto(
-    val id: Long?,
+    val id: Long? = null,
     val name: String,
-    val imageLink : String?,
-    val countryName: String?,
-    val soundcloudLink: String?,
-    val instagramLink: String?,
-    val bandcampLink: String?,
-    val about: String?,
+    val imageLink : String? = null,
+    val countryName: String? = null,
+    val soundcloudLink: String? = null,
+    val instagramLink: String? = null,
+    val bandcampLink: String? = null,
+    val about: String? = null,
 ) : BaseWriteDto

@@ -8,6 +8,6 @@ import kotlinx.serialization.*
 @Serializable
 data class CityDto(
     val name: String,
-    val localizedName: String,
+    val localName: String,
     val country: CountryDto,
 ) : BaseShortDto, BaseFullDto

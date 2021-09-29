@@ -26,7 +26,6 @@ interface UserConverters {
 
 @Service
 class UserConvertersImpl(
-    private val countryConverters: CountryConverters,
     private val cityConverters: CityConverters,
 ) : UserConverters {
 
@@ -36,6 +35,7 @@ class UserConvertersImpl(
         countryRecord: CountryRecord
     ): UserFullDto {
         return UserFullDto(
+            id = userRecord.userProfileId ?: throw RecordFieldNullException("User Id"),
             name = userRecord.userProfileName ?: throw RecordFieldNullException("User Name"),
             imageLink = userRecord.userProfileImageLink,
             currentCity = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
@@ -47,6 +47,7 @@ class UserConvertersImpl(
 
     override fun createShortDtoFromRecord(userRecord: UserProfileRecord): UserShortDto {
         return UserShortDto(
+            id = userRecord.userProfileId ?: throw RecordFieldNullException("User Id"),
             name = userRecord.userProfileName ?: throw RecordFieldNullException("User Name"),
             imageLink = userRecord.userProfileImageLink,
         )

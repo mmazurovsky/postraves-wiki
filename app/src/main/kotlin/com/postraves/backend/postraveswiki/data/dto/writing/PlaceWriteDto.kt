@@ -7,13 +7,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlaceWriteDto(
-    val id: Long?,
+    val id: Long? = null,
     val name: String,
-    val imageLink : String?,
     val cityName: String,
     val streetAddress: String,
     val coordinate: CoordinateDto,
-    val soundcloudLink: String?,
-    val instagramLink: String?,
-    val about: String?,
+    val imageLink : String? = null,
+    val soundcloudLink: String? = null,
+    val instagramLink: String? = null,
+    val about: String? = null,
 ) : BaseWriteDto

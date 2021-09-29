@@ -17,7 +17,7 @@ interface FollowableRepo<SHORTDTO : BaseShortDto> {
     fun convertToShortDto(record: Record): SHORTDTO
 }
 
-interface ByIdRepo<FULLDTO : BaseFullDtoWithId, SHORTDTO: BaseShortDtoWithId> {
+interface ByIdRepo<FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableShortDto<SHORTDTO>>{
     fun findById(authUid: String?, id: Long): FULLDTO
     fun deleteById(id: Long)
     fun findListByIds(authUid: String?, ids: Set<Long>): List<SHORTDTO>

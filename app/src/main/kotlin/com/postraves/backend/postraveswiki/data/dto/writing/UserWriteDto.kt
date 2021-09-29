@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserWriteDto(
     val name: String,
-    val imageLink : String?,
     val currentCity: String,
-    val telegramLink: String?,
-    val instagramLink: String?,
-    val about: String?,
+    val imageLink : String? = null,
+    val telegramLink: String? = null,
+    val instagramLink: String? = null,
+    val about: String? = null,
 ) : BaseWriteDto

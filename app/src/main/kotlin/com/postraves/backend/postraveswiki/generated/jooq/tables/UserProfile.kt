@@ -8,6 +8,8 @@ import java.time.OffsetDateTime
 
 import jooq.Public
 import jooq.keys.USER_PROFILE_PKEY
+import jooq.keys.USER_PROFILE_USER_PROFILE_AUTH_UID_KEY
+import jooq.keys.USER_PROFILE_USER_PROFILE_ID_KEY
 import jooq.keys.USER_PROFILE_USER_PROFILE_NAME_KEY
 import jooq.keys.USER_PROFILE__USER_PROFILE_USER_PROFILE_CITY_NAME_FKEY
 import jooq.tables.records.UserProfileRecord
@@ -16,9 +18,10 @@ import kotlin.collections.List
 
 import org.jooq.Field
 import org.jooq.ForeignKey
+import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row8
+import org.jooq.Row9
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -62,6 +65,11 @@ open class UserProfile(
      * The class holding records for this type
      */
     override fun getRecordType(): Class<UserProfileRecord> = UserProfileRecord::class.java
+
+    /**
+     * The column <code>public.user_profile.user_profile_id</code>.
+     */
+    val USER_PROFILE_ID: TableField<UserProfileRecord, Long?> = createField(DSL.name("user_profile_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "")
 
     /**
      * The column <code>public.user_profile.user_profile_auth_uid</code>.
@@ -123,8 +131,9 @@ open class UserProfile(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, UserProfileRecord>): this(Internal.createPathAlias(child, key), child, key, USER_PROFILE, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIdentity(): Identity<UserProfileRecord, Long?> = super.getIdentity() as Identity<UserProfileRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<UserProfileRecord> = USER_PROFILE_PKEY
-    override fun getKeys(): List<UniqueKey<UserProfileRecord>> = listOf(USER_PROFILE_PKEY, USER_PROFILE_USER_PROFILE_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<UserProfileRecord>> = listOf(USER_PROFILE_PKEY, USER_PROFILE_USER_PROFILE_ID_KEY, USER_PROFILE_USER_PROFILE_AUTH_UID_KEY, USER_PROFILE_USER_PROFILE_NAME_KEY)
     override fun getReferences(): List<ForeignKey<UserProfileRecord, *>> = listOf(USER_PROFILE__USER_PROFILE_USER_PROFILE_CITY_NAME_FKEY)
 
     private lateinit var _city: City
@@ -148,7 +157,7 @@ open class UserProfile(
     override fun rename(name: Name): UserProfile = UserProfile(name, null)
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<String?, OffsetDateTime?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row8<String?, OffsetDateTime?, String?, String?, String?, String?, String?, String?>
+    override fun fieldsRow(): Row9<Long?, String?, OffsetDateTime?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row9<Long?, String?, OffsetDateTime?, String?, String?, String?, String?, String?, String?>
 }

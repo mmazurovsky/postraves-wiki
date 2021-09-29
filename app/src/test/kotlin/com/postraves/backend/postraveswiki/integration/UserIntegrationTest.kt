@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @SpringBootTest
@@ -125,7 +126,8 @@ class UserIntegrationTest(
 
         val saved = myUserProfileService.findMyProfile().first
 
-        assertEquals(userToSave.name, saved!!.name)
+        assertNotNull(saved!!.id)
+        assertEquals(userToSave.name, saved.name)
         assertEquals(userToSave.imageLink, saved.imageLink)
         assertEquals(userToSave.about, saved.about)
         assertEquals(userToSave.instagramLink, saved.instagramLink)
