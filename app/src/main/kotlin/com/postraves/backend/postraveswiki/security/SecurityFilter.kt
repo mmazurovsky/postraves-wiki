@@ -70,18 +70,20 @@ class SecurityFilter(
             e.printStackTrace()
             logger.error("Firebase Exception:: " + e.localizedMessage)
         }
-        val userProfile = firebaseTokenToMyBackendUser(decodedTokenWithFirebaseCredentials)
+        val userProfile = convertFirebaseTokenToMyBackendUser(decodedTokenWithFirebaseCredentials)
         if (userProfile != null) {
-            val authentication = UsernamePasswordAuthenticationToken(
-                decodedTokenWithFirebaseCredentials!!.uid,
-                Credentials(type, decodedTokenWithFirebaseCredentials, token, session), null
+            val authentication =
+                UsernamePasswordAuthenticationToken(
+                userProfile,
+                Credentials(type, decodedTokenWithFirebaseCredentials, token, session),
+                null
             )
             authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
         }
     }
 
-    private fun firebaseTokenToMyBackendUser(decodedToken: FirebaseToken?): UserFullDto? {
+    private fun convertFirebaseTokenToMyBackendUser(decodedToken: FirebaseToken?): UserFullDto? {
         return if (decodedToken == null) null else myUserProfileService.findByAuthUidForSecurityService(decodedToken.uid)
     }
 }

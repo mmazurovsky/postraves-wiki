@@ -47,7 +47,6 @@ class ArtistServiceImpl(
     @Lazy
     private lateinit var myUserProfileService: MyUserProfileService
 
-
     override fun checkLocationsAndRemoveFromLocationsQuickRepos(dto: ArtistFullDto) {
         val countryOfDtoToDelete = dto.country?.name
         if (countryOfDtoToDelete != null) {

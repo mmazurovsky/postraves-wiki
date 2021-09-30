@@ -16,18 +16,18 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import redis.embedded.RedisServer
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @SpringBootTest
@@ -38,8 +38,6 @@ class UserIntegrationTest(
     @Autowired
     private val mockMvc: MockMvc,
     @Autowired
-    private val myUserProfileService: MyUserProfileService,
-    @Autowired
     private val artistService: ArtistService,
     @Autowired
     private val cityService: CityService,
@@ -47,7 +45,7 @@ class UserIntegrationTest(
     private val countryService: CountryService,
     @Value("\${spring.redis.port}")
     private val redisPort: Int,
-    ) : AbstractPostgresTest() {
+) : AbstractPostgresTest() {
 
     private val redisServer = RedisServer(redisPort)
 
@@ -55,7 +53,10 @@ class UserIntegrationTest(
         redisServer.start()
     }
 
-    @MockBean
+    @SpyBean
+    private lateinit var myUserProfileService: MyUserProfileService
+
+    @SpyBean
     private lateinit var securityService: SecurityService
 
     @BeforeAll
@@ -70,8 +71,8 @@ class UserIntegrationTest(
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+7",
-            
-        )
+
+            )
         val countryJson1 = Json.encodeToString(country1)
         Requests.makePostRequest(mockMvc, "/country", countryJson1, MockMvcResultMatchers.status().isCreated)
 
@@ -90,6 +91,7 @@ class UserIntegrationTest(
 
     @AfterEach
     private fun cleanDb() {
+        `when`(myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()).thenReturn("abc")
         myUserProfileService.deleteMyProfile()
         artistService.findAll().forEach { artistService.deleteById(it.id) }
     }
@@ -104,8 +106,8 @@ class UserIntegrationTest(
 
     @Test
     fun getUserForAuthUidNotExistingInDb() {
-        `when`(securityService.userAuthUid).thenReturn("abc")
-        val result = myUserProfileService.findMyProfile().first
+        `when`(securityService.firebaseAuthUid).thenReturn("abc")
+        val result = securityService.user
         assertNull(result)
     }
 
@@ -120,20 +122,14 @@ class UserIntegrationTest(
             currentCity = "Bruges"
         )
 
-        `when`(securityService.userAuthUid).thenReturn("abc")
+        `when`(securityService.firebaseAuthUid).thenReturn("abc")
+        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
         myUserProfileService.save(userToSave)
+        val savedUserFromMethodForSecurityService = myUserProfileService.findByAuthUidForSecurityService("abc")
 
-        val saved = myUserProfileService.findMyProfile().first
-
-        assertNotNull(saved!!.id)
-        assertEquals(userToSave.name, saved.name)
-        assertEquals(userToSave.imageLink, saved.imageLink)
-        assertEquals(userToSave.about, saved.about)
-        assertEquals(userToSave.instagramLink, saved.instagramLink)
-        assertEquals(userToSave.telegramLink, saved.telegramLink)
-        assertEquals(userToSave.currentCity, saved.currentCity.name)
-        assertEquals("BE", saved.currentCity.country.name)
+        assertEquals(userToSave.name, savedUserFromMethodForSecurityService?.name)
+        assertEquals(userToSave.currentCity, savedUserFromMethodForSecurityService?.currentCity?.name)
     }
 
     @Test
@@ -147,7 +143,8 @@ class UserIntegrationTest(
             currentCity = "Bruges"
         )
 
-        `when`(securityService.userAuthUid).thenReturn("abc")
+        `when`(securityService.firebaseAuthUid).thenReturn("abc")
+        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
         myUserProfileService.save(userToSave)
 
@@ -192,7 +189,8 @@ class UserIntegrationTest(
             currentCity = "Bruges"
         )
 
-        `when`(securityService.userAuthUid).thenReturn("abc")
+        `when`(securityService.firebaseAuthUid).thenReturn("abc")
+        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
         myUserProfileService.save(userToSave)
 
@@ -247,7 +245,8 @@ class UserIntegrationTest(
             currentCity = "Bruges"
         )
 
-        `when`(securityService.userAuthUid).thenReturn("abc")
+        `when`(securityService.firebaseAuthUid).thenReturn("abc")
+        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
         myUserProfileService.save(userToSave)
 

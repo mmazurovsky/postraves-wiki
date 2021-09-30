@@ -81,6 +81,25 @@ class EventRatingIntegrationTest(
         redisServer.start()
     }
 
+    private val testUser = UserFullDto(
+        id = 69,
+        name = "abc",
+        currentCity = CityDto(
+            name = "Bruges",
+            localName = "Bruges",
+            country = CountryDto(
+                name = "BE",
+                localName = "Belgium",
+                emojiCode = "",
+                phoneCode = "",
+            )
+        ),
+        about = null,
+        imageLink = null,
+        instagramLink = null,
+        telegramLink = null,
+    )
+
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
@@ -194,8 +213,8 @@ class EventRatingIntegrationTest(
     fun getRelevantEventsByRating() {
         val now = OffsetDateTime.now(UTC).withHour(0)
 
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-        Mockito.`when`(securityService.userAuthUid).thenReturn("abc")
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
         val event1 = eventTestData.copy(placeId = persistedPlaceId)

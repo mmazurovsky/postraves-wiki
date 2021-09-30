@@ -2,10 +2,8 @@ package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
+import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistFullDto
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UnityWriteDto
@@ -25,7 +23,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito
 import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -91,6 +89,25 @@ class FollowingIntegrationTest(
         redisServer.start()
     }
 
+    private val testUser = UserFullDto(
+        id = 69,
+        name = "abc",
+        currentCity = CityDto(
+            name = "Bruges",
+            localName = "Bruges",
+            country = CountryDto(
+                name = "BE",
+                localName = "Belgium",
+                emojiCode = "",
+                phoneCode = "",
+            )
+        ),
+        about = null,
+        imageLink = null,
+        instagramLink = null,
+        telegramLink = null,
+    )
+
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
@@ -144,8 +161,10 @@ class FollowingIntegrationTest(
     @BeforeAll
     private fun prepare() {
         logger.info("Following Integration Test started")
-        `when`(securityService.userAuthUid).thenReturn("abc")
-        doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
+
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
+        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(city), status().isCreated)
@@ -170,8 +189,8 @@ class FollowingIntegrationTest(
     @Test
     @Order(1)
     fun saveArtistAndFollowAndGetIt() {
-        `when`(securityService.userAuthUid).thenReturn("abc")
-        doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artistToSave = artistTestData
 
@@ -202,8 +221,8 @@ class FollowingIntegrationTest(
     @Test
     @Order(2)
     fun cleanupCheck() {
-        `when`(securityService.userAuthUid).thenReturn("abc")
-        doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artists = artistService.findAll()
         val unities = unityService.findAll()
@@ -225,8 +244,9 @@ class FollowingIntegrationTest(
     @Test
     @Order(3)
     fun addArtistsToUnityAndFollowOneArtistAndGetAllArtistsOfUnity() {
-        `when`(securityService.userAuthUid).thenReturn("abc")
-        doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
+
 
         val unity1 = unityTestData
 

@@ -4,6 +4,9 @@ import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
+import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
+import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.security.SecurityService
@@ -44,17 +47,35 @@ class ArtistRatingIntegrationTest(
     private val redisPort: Int,
 ) : AbstractPostgresTest() {
 
-    @SpyBean
-    private lateinit var myUserProfileService: MyUserProfileService
     @MockBean
     private lateinit var securityService: SecurityService
 
     private val artistEndpoint: String = "/artist"
     private val redisServer = RedisServer(redisPort)
 
+
     init {
         redisServer.start()
     }
+
+    private val testUser = UserFullDto(
+        id = 69,
+        name = "abc",
+        currentCity = CityDto(
+            name = "Bruges",
+            localName = "Bruges",
+            country = CountryDto(
+                name = "BE",
+                localName = "Belgium",
+                emojiCode = "",
+                phoneCode = "",
+            )
+        ),
+        about = null,
+        imageLink = null,
+        instagramLink = null,
+        telegramLink = null,
+    )
 
     @BeforeAll
     private fun createCountryAndCityForAssociations() {
@@ -147,8 +168,8 @@ class ArtistRatingIntegrationTest(
 
     @Test
     fun saveArtistsAndIncrementFollowersAndFindOverallRating() {
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-        Mockito.`when`(securityService.userAuthUid).thenReturn("abc")
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artist1 = ArtistWriteDto(
             id = null,
@@ -267,8 +288,8 @@ class ArtistRatingIntegrationTest(
 
     @Test
     fun saveArtistsAndIncrementFollowersAndFindWeeklyRating() {
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-        Mockito.`when`(securityService.userAuthUid).thenReturn("abc")
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artist1 = ArtistWriteDto(
             id = null,
@@ -393,8 +414,9 @@ class ArtistRatingIntegrationTest(
 
     @Test
     fun saveArtistsAndIncrementFollowersAndChangeCountriesOfArtistsAndGetOverallRating() {
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-        Mockito.`when`(securityService.userAuthUid).thenReturn("abc")
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
+
 
         val artist1 = ArtistWriteDto(
             id = null,
@@ -584,8 +606,8 @@ class ArtistRatingIntegrationTest(
 
     @Test
     fun saveArtistsAndIncrementFollowersAndChangeCountriesOfArtistsAndGetWeeklyRating() {
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-        Mockito.`when`(securityService.userAuthUid).thenReturn("abc")
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artist1 = ArtistWriteDto(
             id = null,
@@ -775,8 +797,8 @@ class ArtistRatingIntegrationTest(
 
     @Test
     fun saveArtistsAndSetWeeklyBestAndGetWeeklyBest() {
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-        Mockito.`when`(securityService.userAuthUid).thenReturn("abc")
+        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artist1 = ArtistWriteDto(
             id = null,

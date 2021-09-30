@@ -4,6 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
+import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -11,13 +12,14 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/user")
 class MyUserProfileController(
-    private val myUserProfileService: MyUserProfileService
+    private val myUserProfileService: MyUserProfileService,
+    private val securityService: SecurityService,
     ) {
 
     @GetMapping("/public/myProfile")
     @ResponseStatus(HttpStatus.OK)
     fun findMyProfile(): UserFullDto? {
-        return myUserProfileService.findMyProfile().first
+        return securityService.user
     }
 
     @PostMapping("/public/myProfile")

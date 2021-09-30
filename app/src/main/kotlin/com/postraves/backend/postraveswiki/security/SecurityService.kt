@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.security
 
-import com.google.auth.Credentials
+import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
+import com.postraves.backend.postraveswiki.security.dataclass.Credentials
 import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties
 import lombok.RequiredArgsConstructor
 import org.springframework.security.core.context.SecurityContextHolder
@@ -16,21 +17,27 @@ class SecurityService(
     private val securityProps: SecurityProperties? = null
 ) {
 
-    val userAuthUid: String?
+    val user: UserFullDto?
         get() {
-            var userPrincipal: String? = null
             val securityContext = SecurityContextHolder.getContext()
-            val principal = securityContext.authentication?.principal
-            if (principal is String) {
-                userPrincipal = principal
+            val principal = securityContext.authentication?.principal //todo
+            return if (principal == null || principal == "anonymousUser") {
+                null
+            } else {
+                principal as UserFullDto
             }
-            return userPrincipal
         }
 
-    val credentials: Credentials
+    val firebaseAuthUid: String?
+        get() {
+            return credentials?.decodedToken?.uid
+        }
+
+
+    val credentials: Credentials?
         get() {
             val securityContext = SecurityContextHolder.getContext()
-            return securityContext.authentication.credentials as Credentials
+            return securityContext.authentication?.credentials as Credentials?
         }
 
     fun getBearerToken(request: HttpServletRequest): String? {

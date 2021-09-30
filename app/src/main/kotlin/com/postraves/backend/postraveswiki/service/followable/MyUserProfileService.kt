@@ -11,7 +11,8 @@ import com.postraves.backend.postraveswiki.security.SecurityService
 import org.springframework.stereotype.Service
 
 interface MyUserProfileService {
-    fun findMyProfile(): Pair<UserFullDto?, String?>
+//    fun getMyProfileInSecurityService(): UserFullDto?
+//    fun getMyAuthUidInSecurityService(): String?
     fun getMyAuthUidOnlyIfUserProfileExists(): String?
     fun save(dto: UserWriteDto): UserShortDto
     fun update(dto: UserWriteDto)
@@ -31,14 +32,11 @@ class MyUserProfileServiceImpl(
     private val artistService: ArtistService,
 ) : MyUserProfileService {
 
-    override fun findMyProfile(): Pair<UserFullDto?, String?> {
-        return myUserProfileRepo.findMyProfile(securityService.userAuthUid ?: return null to null)
-    }
-
     override fun getMyAuthUidOnlyIfUserProfileExists(): String? {
-        val myProfile = findMyProfile()
-        return if (myProfile.first == null) null
-        else myProfile.second
+        val myProfile = securityService.user
+        val myAuthUid = securityService.firebaseAuthUid
+        return if (myProfile == null) null
+        else myAuthUid
     }
 
     override fun deleteMyProfile() {
@@ -91,16 +89,16 @@ class MyUserProfileServiceImpl(
     }
 
     override fun findByAuthUidForSecurityService(authUid: String): UserFullDto? {
-        return myUserProfileRepo.findMyProfile(authUid).first
+        return myUserProfileRepo.findMyProfileByAuthUid(authUid)
     }
 
     override fun save(dto: UserWriteDto): UserShortDto {
-        return myUserProfileRepo.save(dto, securityService.userAuthUid ?: throw NotAuthenticated())
+        val authUid = securityService.firebaseAuthUid
+        return myUserProfileRepo.save(dto, authUid ?: throw NotAuthenticated())
     }
 
     override fun update(dto: UserWriteDto) {
         val authUid = getMyAuthUidOnlyIfUserProfileExists() ?: throw NotAuthenticated()
-        if (findMyProfile().first != null)
-            myUserProfileRepo.update(dto, authUid)
+        myUserProfileRepo.update(dto, authUid)
     }
 }

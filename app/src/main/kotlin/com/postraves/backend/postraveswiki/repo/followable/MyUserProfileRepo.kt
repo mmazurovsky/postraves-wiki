@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
 
 interface MyUserProfileRepo {
-    fun findMyProfile(authUid: String): Pair<UserFullDto?, String>
+    fun findMyProfileByAuthUid(authUid: String): UserFullDto?
     fun save(dto: UserWriteDto, authUid: String): UserShortDto
     fun update(dto: UserWriteDto, authUid: String)
     fun deleteMyProfile(authUid: String)
@@ -65,10 +65,10 @@ class MyUserProfileRepoImpl(
         return record ?: throw NotFoundException("User", authUid)
     }
 
-    override fun findMyProfile(authUid: String): Pair<UserFullDto?, String> {
+    override fun findMyProfileByAuthUid(authUid: String): UserFullDto? {
         val user = findByAuthUidWithJoins(authUid)
-        return if (user == null) null to authUid
-        else userConverters.createFullDtoFromRecord(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY)) to authUid
+        return if (user == null) null
+        else userConverters.createFullDtoFromRecord(user.into(USER_PROFILE), user.into(CITY), user.into(COUNTRY))
     }
 
     override fun save(dto: UserWriteDto, authUid: String): UserShortDto {

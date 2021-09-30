@@ -18,6 +18,7 @@ data class UserFullDto(
     @Required
     override val weeklyFollowers: Int = 0,
 ) : FollowableFullDto<UserFullDto> {
+
     override fun copyWithFollowersEnriched(overallFollowers: Int, weeklyFollowers: Int): UserFullDto {
         return this.copy(overallFollowers = overallFollowers, weeklyFollowers = weeklyFollowers)
     }
