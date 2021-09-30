@@ -36,7 +36,7 @@ class SecurityService(
         get() {
             val securityContext = SecurityContextHolder.getContext()
             val rawCredentials = securityContext.authentication?.credentials
-            return if (rawCredentials == "") null else rawCredentials as Credentials
+            return if (rawCredentials == "" || rawCredentials == null) null else rawCredentials as Credentials
         }
 
     fun getBearerToken(request: HttpServletRequest): String? {

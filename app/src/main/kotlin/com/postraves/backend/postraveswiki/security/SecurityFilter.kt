@@ -44,46 +44,52 @@ class SecurityFilter(
         var session: String? = null
         var decodedTokenWithFirebaseCredentials: FirebaseToken? = null
         var type: CredentialType? = null
+
         val strictServerSessionEnabled = securityProps!!.firebaseProps!!.enableStrictServerSession
         val sessionCookie = cookieUtils!!.getCookie("session")
         val token = securityService!!.getBearerToken(request)
-        if (token == null || token.isEmpty()) {
+
+        if (token == null || token.isEmpty() || token.equals("undefined", ignoreCase = true)) {
             logger.info("Incoming token is not provided")
+            return
         } else {
             logger.info("Incoming token is provided")
-        }
-        try {
-            if (sessionCookie != null) {
-                session = sessionCookie.value
-                decodedTokenWithFirebaseCredentials = FirebaseAuth.getInstance().verifySessionCookie(
-                    session,
-                    securityProps.firebaseProps!!.enableCheckSessionRevoked
-                )
-                type = CredentialType.SESSION
-            } else if (!strictServerSessionEnabled) {
-                if (token != null && !token.equals("undefined", ignoreCase = true)) {
+            try {
+                if (sessionCookie != null) {
+                    session = sessionCookie.value
+                    decodedTokenWithFirebaseCredentials = FirebaseAuth.getInstance().verifySessionCookie(
+                        session,
+                        securityProps.firebaseProps!!.enableCheckSessionRevoked
+                    )
+                    type = CredentialType.SESSION
+                } else if (!strictServerSessionEnabled) {
                     decodedTokenWithFirebaseCredentials = FirebaseAuth.getInstance().verifyIdToken(token)
                     type = CredentialType.ID_TOKEN
+
                 }
+            } catch (e: FirebaseAuthException) {
+                logger.error("Firebase Exception: " + e.localizedMessage)
+                logger.error("Firebase Exception stacktrace: " + e.printStackTrace())
             }
-        } catch (e: FirebaseAuthException) {
-            e.printStackTrace()
-            logger.error("Firebase Exception:: " + e.localizedMessage)
-        }
-        val userProfile = convertFirebaseTokenToMyBackendUser(decodedTokenWithFirebaseCredentials)
-        if (userProfile != null) {
+
+            if (decodedTokenWithFirebaseCredentials == null) {
+                return
+            }
+
+            val userProfile = convertFirebaseTokenToMyBackendUser(decodedTokenWithFirebaseCredentials)
+
             val authentication =
                 UsernamePasswordAuthenticationToken(
-                userProfile,
-                Credentials(type, decodedTokenWithFirebaseCredentials, token, session),
-                null
-            )
+                    userProfile,
+                    Credentials(type, decodedTokenWithFirebaseCredentials, token, session),
+                    null
+                )
             authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
         }
     }
 
-    private fun convertFirebaseTokenToMyBackendUser(decodedToken: FirebaseToken?): UserFullDto? {
-        return if (decodedToken == null) null else myUserProfileService.findByAuthUidForSecurityService(decodedToken.uid)
+    private fun convertFirebaseTokenToMyBackendUser(decodedToken: FirebaseToken): UserFullDto? {
+        return myUserProfileService.findByAuthUidForSecurityService(decodedToken.uid)
     }
 }

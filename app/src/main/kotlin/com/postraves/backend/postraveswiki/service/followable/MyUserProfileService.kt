@@ -89,7 +89,7 @@ class MyUserProfileServiceImpl(
     }
 
     override fun findByAuthUidForSecurityService(authUid: String): UserFullDto? {
-        return myUserProfileRepo.findMyProfileByAuthUid(authUid)
+         return myUserProfileRepo.findMyProfileByAuthUid(authUid)
     }
 
     override fun save(dto: UserWriteDto): UserShortDto {
