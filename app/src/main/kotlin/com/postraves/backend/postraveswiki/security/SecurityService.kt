@@ -3,11 +3,9 @@ package com.postraves.backend.postraveswiki.security
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.security.dataclass.Credentials
 import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties
-import lombok.RequiredArgsConstructor
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
-import java.util.*
 import javax.servlet.http.HttpServletRequest
 
 @Service
@@ -37,7 +35,8 @@ class SecurityService(
     val credentials: Credentials?
         get() {
             val securityContext = SecurityContextHolder.getContext()
-            return securityContext.authentication?.credentials as Credentials?
+            val rawCredentials = securityContext.authentication?.credentials
+            return if (rawCredentials == "") null else rawCredentials as Credentials
         }
 
     fun getBearerToken(request: HttpServletRequest): String? {
