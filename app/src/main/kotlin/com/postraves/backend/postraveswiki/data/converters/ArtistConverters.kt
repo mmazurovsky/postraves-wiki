@@ -42,8 +42,8 @@ class ArtistConvertersImpl(
             id = artistRecord.artistId ?: throw RecordFieldNullException("Artist Id"),
             name = artistRecord.artistName ?: throw RecordFieldNullException("Artist Name"),
             imageLink = artistRecord.artistImageLink,
-            instagramLink = artistRecord.artistInstagramUsername,
-            soundcloudLink = artistRecord.artistSoundcloudUsername,
+            instagramUsername = artistRecord.artistInstagramUsername,
+            soundcloudUsername = artistRecord.artistSoundcloudUsername,
             about = artistRecord.artistAbout,
             country =
             if (countryRecord.countryName != null)

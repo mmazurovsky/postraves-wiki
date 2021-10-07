@@ -71,8 +71,8 @@ class ArtistRatingIntegrationTest(
         ),
         about = null,
         imageLink = null,
-        instagramLink = null,
-        telegramLink = null,
+        instagramUsername = null,
+        telegramUsername = null,
     )
 
     @BeforeAll

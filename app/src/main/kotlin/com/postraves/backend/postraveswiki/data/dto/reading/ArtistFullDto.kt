@@ -15,8 +15,8 @@ data class ArtistFullDto(
     val name: String,
     val imageLink : String?,
     val country: CountryDto?,
-    val soundcloudLink: String?,
-    val instagramLink: String?,
+    val soundcloudUsername: String?,
+    val instagramUsername: String?,
     val about: String?,
     @Required
     val isFollowed: Boolean = false,

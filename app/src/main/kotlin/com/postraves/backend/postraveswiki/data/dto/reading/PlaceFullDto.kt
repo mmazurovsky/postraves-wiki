@@ -20,8 +20,8 @@ data class PlaceFullDto(
     val city: CityDto,
     val streetAddress: String,
     val coordinate: CoordinateDto,
-    val soundcloudLink: String?,
-    val instagramLink: String?,
+    val soundcloudUsername: String?,
+    val instagramUsername: String?,
     val about: String?,
     @Required
     val isFollowed: Boolean = false,

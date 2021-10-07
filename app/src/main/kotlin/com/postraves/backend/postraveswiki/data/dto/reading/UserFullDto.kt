@@ -11,8 +11,8 @@ data class UserFullDto(
     val currentCity: CityDto,
     val imageLink : String?,
     val about: String?,
-    val telegramLink: String?,
-    val instagramLink: String?,
+    val telegramUsername: String?,
+    val instagramUsername: String?,
     @Required
     override val overallFollowers: Int = 0,
     @Required

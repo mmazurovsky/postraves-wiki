@@ -103,8 +103,8 @@ class FollowingIntegrationTest(
         ),
         about = null,
         imageLink = null,
-        instagramLink = null,
-        telegramLink = null,
+        instagramUsername = null,
+        telegramUsername = null,
     )
 
     private val countryTestData = CountryWriteDto(

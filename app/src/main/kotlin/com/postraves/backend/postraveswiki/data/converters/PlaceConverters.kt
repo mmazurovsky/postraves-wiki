@@ -40,8 +40,8 @@ class PlaceConvertersImpl(
                 longitude = placeRecord.placeLongitude ?: throw RecordFieldNullException("Place Longitude")
             ),
             city = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
-            soundcloudLink = placeRecord.placeSoundcloudUsername,
-            instagramLink = placeRecord.placeInstagramUsername,
+            soundcloudUsername = placeRecord.placeSoundcloudUsername,
+            instagramUsername = placeRecord.placeInstagramUsername,
             about = placeRecord.placeAbout,
             isFollowed = isFollowed,
         )
