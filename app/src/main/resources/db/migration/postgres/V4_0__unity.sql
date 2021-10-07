@@ -6,8 +6,8 @@ CREATE TABLE unity
     unity_image_link               TEXT,
     unity_about                    TEXT,
     unity_country_name             VARCHAR(3)               REFERENCES country(country_name) ON UPDATE CASCADE ON DELETE CASCADE,
-    unity_instagram_link           TEXT,
-    unity_soundcloud_link          TEXT,
-    unity_bandcamp_link            TEXT,
+    unity_instagram_username           TEXT,
+    unity_soundcloud_username          TEXT,
+    unity_bandcamp_username            TEXT,
     PRIMARY KEY (unity_id)
 );

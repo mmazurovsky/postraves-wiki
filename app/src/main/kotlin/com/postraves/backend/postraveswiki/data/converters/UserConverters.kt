@@ -39,8 +39,8 @@ class UserConvertersImpl(
             name = userRecord.userProfileName ?: throw RecordFieldNullException("User Name"),
             imageLink = userRecord.userProfileImageLink,
             currentCity = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
-            telegramLink = userRecord.userProfileTelegramLink,
-            instagramLink = userRecord.userProfileInstagramLink,
+            telegramLink = userRecord.userProfileTelegramUsername,
+            instagramLink = userRecord.userProfileInstagramUsername,
             about = userRecord.userProfileAbout,
         )
     }
@@ -58,8 +58,8 @@ class UserConvertersImpl(
         record.userProfileName = dto.name
         record.userProfileImageLink = dto.imageLink
         record.userProfileCityName = dto.currentCity
-        record.userProfileTelegramLink = dto.telegramLink
-        record.userProfileInstagramLink = dto.instagramLink
+        record.userProfileTelegramUsername = dto.telegramUsername
+        record.userProfileInstagramUsername = dto.instagramUsername
         record.userProfileAbout = dto.about
     }
 

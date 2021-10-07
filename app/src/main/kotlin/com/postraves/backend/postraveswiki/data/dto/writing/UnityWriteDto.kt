@@ -10,8 +10,8 @@ data class UnityWriteDto(
     val name: String,
     val imageLink : String? = null,
     val countryName: String? = null,
-    val soundcloudLink: String? = null,
-    val instagramLink: String? = null,
-    val bandcampLink: String? = null,
+    val soundcloudUsername: String? = null,
+    val instagramUsername: String? = null,
+    val bandcampUsername: String? = null,
     val about: String? = null,
 ) : BaseWriteDto

@@ -9,7 +9,7 @@ data class UserWriteDto(
     val name: String,
     val currentCity: String,
     val imageLink : String? = null,
-    val telegramLink: String? = null,
-    val instagramLink: String? = null,
+    val telegramUsername: String? = null,
+    val instagramUsername: String? = null,
     val about: String? = null,
 ) : BaseWriteDto

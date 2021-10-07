@@ -80,9 +80,9 @@ class UnityIntegrationTest(
         id = null,
         name = "Unity 1",
         imageLink = "image 1",
-        soundcloudLink = "soundcloud 1",
-        instagramLink = "instagram 1",
-        bandcampLink = "bandcamp 1",
+        soundcloudUsername = "soundcloud 1",
+        instagramUsername = "instagram 1",
+        bandcampUsername = "bandcamp 1",
         about = "About 1",
         countryName = countryTestData.name,
     )
@@ -127,9 +127,9 @@ class UnityIntegrationTest(
         assertEquals(0, savedUnity.overallFollowers)
         assertEquals(0, savedUnity.weeklyFollowers)
         assertEquals(unityToSave.imageLink, savedUnity.imageLink)
-        assertEquals(unityToSave.soundcloudLink, savedUnity.soundcloudLink)
-        assertEquals(unityToSave.instagramLink, savedUnity.instagramLink)
-        assertEquals(unityToSave.bandcampLink, savedUnity.bandcampLink)
+        assertEquals(unityToSave.soundcloudUsername, savedUnity.soundcloudLink)
+        assertEquals(unityToSave.instagramUsername, savedUnity.instagramLink)
+        assertEquals(unityToSave.bandcampUsername, savedUnity.bandcampLink)
         assertEquals(unityToSave.about, savedUnity.about)
         assertEquals(unityToSave.countryName, savedUnity.country?.name)
         assertEquals(countryTestData.phoneCode, savedUnity.country?.phoneCode)
@@ -153,9 +153,9 @@ class UnityIntegrationTest(
             id = savedId,
             name = "Unity 2",
             imageLink = "image 2",
-            soundcloudLink = "soundcloud 2",
-            instagramLink = "instagram 2",
-            bandcampLink = "bandcamp 2",
+            soundcloudUsername = "soundcloud 2",
+            instagramUsername = "instagram 2",
+            bandcampUsername = "bandcamp 2",
             about = "About 2",
             countryName = null,
         )
@@ -174,9 +174,9 @@ class UnityIntegrationTest(
         assertEquals(0, updatedUnity.overallFollowers)
         assertEquals(0, updatedUnity.weeklyFollowers)
         assertEquals(unityToUpdate.imageLink, updatedUnity.imageLink)
-        assertEquals(unityToUpdate.soundcloudLink, updatedUnity.soundcloudLink)
-        assertEquals(unityToUpdate.instagramLink, updatedUnity.instagramLink)
-        assertEquals(unityToUpdate.bandcampLink, updatedUnity.bandcampLink)
+        assertEquals(unityToUpdate.soundcloudUsername, updatedUnity.soundcloudLink)
+        assertEquals(unityToUpdate.instagramUsername, updatedUnity.instagramLink)
+        assertEquals(unityToUpdate.bandcampUsername, updatedUnity.bandcampLink)
         assertEquals(unityToUpdate.about, updatedUnity.about)
         assertNull(updatedUnity.country)
 
@@ -219,8 +219,8 @@ class UnityIntegrationTest(
             imageLink = "image2",
             countryName = null,
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val unity3 = unity1.copy(
@@ -228,8 +228,8 @@ class UnityIntegrationTest(
             imageLink = "image3",
             countryName = null,
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         makePostRequest(mockMvc, unityEndpoint, Json.encodeToString(unity1), status().isCreated)
@@ -328,8 +328,8 @@ class UnityIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )
@@ -339,8 +339,8 @@ class UnityIntegrationTest(
             imageLink = "image2",
             countryName = null,
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = artist1.copy(
@@ -348,8 +348,8 @@ class UnityIntegrationTest(
             imageLink = "image3",
             countryName = null,
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val savedArtist1Json = makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist1), status().isCreated)
@@ -406,8 +406,8 @@ class UnityIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )
@@ -417,8 +417,8 @@ class UnityIntegrationTest(
             imageLink = "image2",
             countryName = null,
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = artist1.copy(
@@ -426,8 +426,8 @@ class UnityIntegrationTest(
             imageLink = "image3",
             countryName = null,
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val artist4 = artist1.copy(
@@ -435,8 +435,8 @@ class UnityIntegrationTest(
             imageLink = "image4",
             countryName = null,
             about = "About4",
-            instagramLink = "instagram4",
-            soundcloudLink = "soundcloud4",
+            instagramUsername = "instagram4",
+            soundcloudUsername = "soundcloud4",
         )
 
         val savedArtist1Json =

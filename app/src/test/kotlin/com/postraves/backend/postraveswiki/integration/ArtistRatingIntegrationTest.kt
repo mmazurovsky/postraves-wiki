@@ -12,7 +12,6 @@ import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
-import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import com.postraves.backend.postraveswiki.utils.Requests
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -177,8 +175,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image1",
             countryName = "BE",
             about = "About1",
-            instagramLink = "instagram1",
-            soundcloudLink = "soundcloud1",
+            instagramUsername = "instagram1",
+            soundcloudUsername = "soundcloud1",
         )
 
         val artist2 = ArtistWriteDto(
@@ -187,8 +185,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image2",
             countryName = "BE",
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = ArtistWriteDto(
@@ -197,8 +195,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image3",
             countryName = "BE",
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val artist4 = ArtistWriteDto(
@@ -207,8 +205,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image4",
             countryName = "BE",
             about = "About4",
-            instagramLink = "instagram4",
-            soundcloudLink = "soundcloud4",
+            instagramUsername = "instagram4",
+            soundcloudUsername = "soundcloud4",
         )
 
         val response1 = Requests.makePostRequest(
@@ -297,8 +295,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image1",
             countryName = "BE",
             about = "About1",
-            instagramLink = "instagram1",
-            soundcloudLink = "soundcloud1",
+            instagramUsername = "instagram1",
+            soundcloudUsername = "soundcloud1",
         )
 
         val artist2 = ArtistWriteDto(
@@ -307,8 +305,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image2",
             countryName = "BE",
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = ArtistWriteDto(
@@ -317,8 +315,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image3",
             countryName = "BE",
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val artist4 = ArtistWriteDto(
@@ -327,8 +325,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image4",
             countryName = "BE",
             about = "About4",
-            instagramLink = "instagram4",
-            soundcloudLink = "soundcloud4",
+            instagramUsername = "instagram4",
+            soundcloudUsername = "soundcloud4",
         )
 
         val response1 = Requests.makePostRequest(
@@ -424,8 +422,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image1",
             countryName = "BE",
             about = "About1",
-            instagramLink = "instagram1",
-            soundcloudLink = "soundcloud1",
+            instagramUsername = "instagram1",
+            soundcloudUsername = "soundcloud1",
         )
 
         val artist2 = ArtistWriteDto(
@@ -434,8 +432,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image2",
             countryName = "BE",
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = ArtistWriteDto(
@@ -444,8 +442,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image3",
             countryName = "BE",
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val artist4 = ArtistWriteDto(
@@ -454,8 +452,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image4",
             countryName = "BE",
             about = "About4",
-            instagramLink = "instagram4",
-            soundcloudLink = "soundcloud4",
+            instagramUsername = "instagram4",
+            soundcloudUsername = "soundcloud4",
         )
 
         val response1 = Requests.makePostRequest(
@@ -615,8 +613,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image1",
             countryName = "BE",
             about = "About1",
-            instagramLink = "instagram1",
-            soundcloudLink = "soundcloud1",
+            instagramUsername = "instagram1",
+            soundcloudUsername = "soundcloud1",
         )
 
         val artist2 = ArtistWriteDto(
@@ -625,8 +623,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image2",
             countryName = "BE",
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = ArtistWriteDto(
@@ -635,8 +633,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image3",
             countryName = "BE",
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val artist4 = ArtistWriteDto(
@@ -645,8 +643,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image4",
             countryName = "BE",
             about = "About4",
-            instagramLink = "instagram4",
-            soundcloudLink = "soundcloud4",
+            instagramUsername = "instagram4",
+            soundcloudUsername = "soundcloud4",
         )
 
         val response1 = Requests.makePostRequest(
@@ -806,8 +804,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image1",
             countryName = "BE",
             about = "About1",
-            instagramLink = "instagram1",
-            soundcloudLink = "soundcloud1",
+            instagramUsername = "instagram1",
+            soundcloudUsername = "soundcloud1",
         )
 
         val artist2 = ArtistWriteDto(
@@ -816,8 +814,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image2",
             countryName = "BE",
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = ArtistWriteDto(
@@ -826,8 +824,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image3",
             countryName = "BE",
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val artist4 = ArtistWriteDto(
@@ -836,8 +834,8 @@ class ArtistRatingIntegrationTest(
             imageLink = "image4",
             countryName = "BE",
             about = "About4",
-            instagramLink = "instagram4",
-            soundcloudLink = "soundcloud4",
+            instagramUsername = "instagram4",
+            soundcloudUsername = "soundcloud4",
         )
 
         val response1 = Requests.makePostRequest(

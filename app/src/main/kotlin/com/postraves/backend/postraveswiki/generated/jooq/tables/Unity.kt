@@ -95,19 +95,19 @@ open class Unity(
     val UNITY_COUNTRY_NAME: TableField<UnityRecord, String?> = createField(DSL.name("unity_country_name"), SQLDataType.VARCHAR(3), this, "")
 
     /**
-     * The column <code>public.unity.unity_instagram_link</code>.
+     * The column <code>public.unity.unity_instagram_username</code>.
      */
-    val UNITY_INSTAGRAM_LINK: TableField<UnityRecord, String?> = createField(DSL.name("unity_instagram_link"), SQLDataType.CLOB, this, "")
+    val UNITY_INSTAGRAM_USERNAME: TableField<UnityRecord, String?> = createField(DSL.name("unity_instagram_username"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.unity.unity_soundcloud_link</code>.
+     * The column <code>public.unity.unity_soundcloud_username</code>.
      */
-    val UNITY_SOUNDCLOUD_LINK: TableField<UnityRecord, String?> = createField(DSL.name("unity_soundcloud_link"), SQLDataType.CLOB, this, "")
+    val UNITY_SOUNDCLOUD_USERNAME: TableField<UnityRecord, String?> = createField(DSL.name("unity_soundcloud_username"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.unity.unity_bandcamp_link</code>.
+     * The column <code>public.unity.unity_bandcamp_username</code>.
      */
-    val UNITY_BANDCAMP_LINK: TableField<UnityRecord, String?> = createField(DSL.name("unity_bandcamp_link"), SQLDataType.CLOB, this, "")
+    val UNITY_BANDCAMP_USERNAME: TableField<UnityRecord, String?> = createField(DSL.name("unity_bandcamp_username"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<UnityRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UnityRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)

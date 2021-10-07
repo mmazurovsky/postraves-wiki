@@ -95,14 +95,14 @@ open class Artist(
     val ARTIST_COUNTRY_NAME: TableField<ArtistRecord, String?> = createField(DSL.name("artist_country_name"), SQLDataType.VARCHAR(3), this, "")
 
     /**
-     * The column <code>public.artist.artist_instagram_link</code>.
+     * The column <code>public.artist.artist_instagram_username</code>.
      */
-    val ARTIST_INSTAGRAM_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("artist_instagram_link"), SQLDataType.CLOB, this, "")
+    val ARTIST_INSTAGRAM_USERNAME: TableField<ArtistRecord, String?> = createField(DSL.name("artist_instagram_username"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.artist.artist_soundcloud_link</code>.
+     * The column <code>public.artist.artist_soundcloud_username</code>.
      */
-    val ARTIST_SOUNDCLOUD_LINK: TableField<ArtistRecord, String?> = createField(DSL.name("artist_soundcloud_link"), SQLDataType.CLOB, this, "")
+    val ARTIST_SOUNDCLOUD_USERNAME: TableField<ArtistRecord, String?> = createField(DSL.name("artist_soundcloud_username"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<ArtistRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<ArtistRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)

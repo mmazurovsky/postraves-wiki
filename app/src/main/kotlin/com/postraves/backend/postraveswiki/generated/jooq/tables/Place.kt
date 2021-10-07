@@ -110,14 +110,14 @@ open class Place(
     val PLACE_LONGITUDE: TableField<PlaceRecord, Double?> = createField(DSL.name("place_longitude"), SQLDataType.DOUBLE.nullable(false), this, "")
 
     /**
-     * The column <code>public.place.place_instagram_link</code>.
+     * The column <code>public.place.place_instagram_username</code>.
      */
-    val PLACE_INSTAGRAM_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("place_instagram_link"), SQLDataType.CLOB, this, "")
+    val PLACE_INSTAGRAM_USERNAME: TableField<PlaceRecord, String?> = createField(DSL.name("place_instagram_username"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.place.place_soundcloud_link</code>.
+     * The column <code>public.place.place_soundcloud_username</code>.
      */
-    val PLACE_SOUNDCLOUD_LINK: TableField<PlaceRecord, String?> = createField(DSL.name("place_soundcloud_link"), SQLDataType.CLOB, this, "")
+    val PLACE_SOUNDCLOUD_USERNAME: TableField<PlaceRecord, String?> = createField(DSL.name("place_soundcloud_username"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<PlaceRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<PlaceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)

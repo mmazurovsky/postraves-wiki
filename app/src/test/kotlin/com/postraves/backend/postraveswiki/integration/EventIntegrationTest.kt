@@ -116,8 +116,8 @@ class EventIntegrationTest(
         id = null,
         name = "Club1",
         imageLink = "image1",
-        soundcloudLink = "soundcloud1",
-        instagramLink = "instagram1",
+        soundcloudUsername = "soundcloud1",
+        instagramUsername = "instagram1",
         about = "About club1",
         streetAddress = "Street address1",
         coordinate = CoordinateDto(
@@ -131,8 +131,8 @@ class EventIntegrationTest(
         id = null,
         name = "Club2",
         imageLink = "image2",
-        soundcloudLink = "soundcloud2",
-        instagramLink = "instagram2",
+        soundcloudUsername = "soundcloud2",
+        instagramUsername = "instagram2",
         about = "About club2",
         streetAddress = "Street address2",
         coordinate = CoordinateDto(
@@ -430,9 +430,9 @@ class EventIntegrationTest(
             id = null,
             name = "Unity 1",
             imageLink = "image 1",
-            soundcloudLink = "soundcloud 1",
-            instagramLink = "instagram 1",
-            bandcampLink = "bandcamp 1",
+            soundcloudUsername = "soundcloud 1",
+            instagramUsername = "instagram 1",
+            bandcampUsername = "bandcamp 1",
             about = "About 1",
             countryName = countryTestData.name,
         )
@@ -442,8 +442,8 @@ class EventIntegrationTest(
             imageLink = "image2",
             countryName = null,
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val unity3 = unity1.copy(
@@ -451,8 +451,8 @@ class EventIntegrationTest(
             imageLink = "image3",
             countryName = null,
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         val savedUnity1Json =
@@ -520,8 +520,8 @@ class EventIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )
@@ -660,8 +660,8 @@ class EventIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )
@@ -805,8 +805,8 @@ class EventIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )
@@ -927,8 +927,8 @@ class EventIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )
@@ -1320,8 +1320,8 @@ class EventIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )

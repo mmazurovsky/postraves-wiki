@@ -9,7 +9,7 @@ CREATE TABLE place
     place_street_address           TEXT                     NOT NULL,
     place_latitude                 double precision         NOT NULL,
     place_longitude                double precision         NOT NULL,
-    place_instagram_link           TEXT,
-    place_soundcloud_link          TEXT,
+    place_instagram_username          TEXT,
+    place_soundcloud_username          TEXT,
     PRIMARY KEY (place_id)
 );

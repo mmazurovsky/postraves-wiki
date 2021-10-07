@@ -45,15 +45,15 @@ open class UnityRecord() : UpdatableRecordImpl<UnityRecord>(Unity.UNITY), Record
         set(value) = set(5, value)
         get() = get(5) as String?
 
-    var unityInstagramLink: String?
+    var unityInstagramUsername: String?
         set(value) = set(6, value)
         get() = get(6) as String?
 
-    var unitySoundcloudLink: String?
+    var unitySoundcloudUsername: String?
         set(value) = set(7, value)
         get() = get(7) as String?
 
-    var unityBandcampLink: String?
+    var unityBandcampUsername: String?
         set(value) = set(8, value)
         get() = get(8) as String?
 
@@ -75,27 +75,27 @@ open class UnityRecord() : UpdatableRecordImpl<UnityRecord>(Unity.UNITY), Record
     override fun field4(): Field<String?> = Unity.UNITY.UNITY_IMAGE_LINK
     override fun field5(): Field<String?> = Unity.UNITY.UNITY_ABOUT
     override fun field6(): Field<String?> = Unity.UNITY.UNITY_COUNTRY_NAME
-    override fun field7(): Field<String?> = Unity.UNITY.UNITY_INSTAGRAM_LINK
-    override fun field8(): Field<String?> = Unity.UNITY.UNITY_SOUNDCLOUD_LINK
-    override fun field9(): Field<String?> = Unity.UNITY.UNITY_BANDCAMP_LINK
+    override fun field7(): Field<String?> = Unity.UNITY.UNITY_INSTAGRAM_USERNAME
+    override fun field8(): Field<String?> = Unity.UNITY.UNITY_SOUNDCLOUD_USERNAME
+    override fun field9(): Field<String?> = Unity.UNITY.UNITY_BANDCAMP_USERNAME
     override fun component1(): Long? = unityId
     override fun component2(): OffsetDateTime? = unityCreatedDateTime
     override fun component3(): String? = unityName
     override fun component4(): String? = unityImageLink
     override fun component5(): String? = unityAbout
     override fun component6(): String? = unityCountryName
-    override fun component7(): String? = unityInstagramLink
-    override fun component8(): String? = unitySoundcloudLink
-    override fun component9(): String? = unityBandcampLink
+    override fun component7(): String? = unityInstagramUsername
+    override fun component8(): String? = unitySoundcloudUsername
+    override fun component9(): String? = unityBandcampUsername
     override fun value1(): Long? = unityId
     override fun value2(): OffsetDateTime? = unityCreatedDateTime
     override fun value3(): String? = unityName
     override fun value4(): String? = unityImageLink
     override fun value5(): String? = unityAbout
     override fun value6(): String? = unityCountryName
-    override fun value7(): String? = unityInstagramLink
-    override fun value8(): String? = unitySoundcloudLink
-    override fun value9(): String? = unityBandcampLink
+    override fun value7(): String? = unityInstagramUsername
+    override fun value8(): String? = unitySoundcloudUsername
+    override fun value9(): String? = unityBandcampUsername
 
     override fun value1(value: Long?): UnityRecord {
         this.unityId = value
@@ -128,17 +128,17 @@ open class UnityRecord() : UpdatableRecordImpl<UnityRecord>(Unity.UNITY), Record
     }
 
     override fun value7(value: String?): UnityRecord {
-        this.unityInstagramLink = value
+        this.unityInstagramUsername = value
         return this
     }
 
     override fun value8(value: String?): UnityRecord {
-        this.unitySoundcloudLink = value
+        this.unitySoundcloudUsername = value
         return this
     }
 
     override fun value9(value: String?): UnityRecord {
-        this.unityBandcampLink = value
+        this.unityBandcampUsername = value
         return this
     }
 
@@ -158,15 +158,15 @@ open class UnityRecord() : UpdatableRecordImpl<UnityRecord>(Unity.UNITY), Record
     /**
      * Create a detached, initialised UnityRecord
      */
-    constructor(unityId: Long? = null, unityCreatedDateTime: OffsetDateTime? = null, unityName: String? = null, unityImageLink: String? = null, unityAbout: String? = null, unityCountryName: String? = null, unityInstagramLink: String? = null, unitySoundcloudLink: String? = null, unityBandcampLink: String? = null): this() {
+    constructor(unityId: Long? = null, unityCreatedDateTime: OffsetDateTime? = null, unityName: String? = null, unityImageLink: String? = null, unityAbout: String? = null, unityCountryName: String? = null, unityInstagramUsername: String? = null, unitySoundcloudUsername: String? = null, unityBandcampUsername: String? = null): this() {
         this.unityId = unityId
         this.unityCreatedDateTime = unityCreatedDateTime
         this.unityName = unityName
         this.unityImageLink = unityImageLink
         this.unityAbout = unityAbout
         this.unityCountryName = unityCountryName
-        this.unityInstagramLink = unityInstagramLink
-        this.unitySoundcloudLink = unitySoundcloudLink
-        this.unityBandcampLink = unityBandcampLink
+        this.unityInstagramUsername = unityInstagramUsername
+        this.unitySoundcloudUsername = unitySoundcloudUsername
+        this.unityBandcampUsername = unityBandcampUsername
     }
 }

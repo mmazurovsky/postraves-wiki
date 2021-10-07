@@ -117,8 +117,8 @@ class UserIntegrationTest(
             name = "Mika",
             imageLink = null,
             about = null,
-            instagramLink = null,
-            telegramLink = null,
+            instagramUsername = null,
+            telegramUsername = null,
             currentCity = "Bruges"
         )
 
@@ -138,8 +138,8 @@ class UserIntegrationTest(
             name = "Mika",
             imageLink = null,
             about = null,
-            instagramLink = null,
-            telegramLink = null,
+            instagramUsername = null,
+            telegramUsername = null,
             currentCity = "Bruges"
         )
 
@@ -152,8 +152,8 @@ class UserIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = "BE",
         )
@@ -184,8 +184,8 @@ class UserIntegrationTest(
             name = "Mika",
             imageLink = null,
             about = null,
-            instagramLink = null,
-            telegramLink = null,
+            instagramUsername = null,
+            telegramUsername = null,
             currentCity = "Bruges"
         )
 
@@ -198,8 +198,8 @@ class UserIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = "BE",
         )
@@ -240,8 +240,8 @@ class UserIntegrationTest(
             name = "Mika",
             imageLink = null,
             about = null,
-            instagramLink = null,
-            telegramLink = null,
+            instagramUsername = null,
+            telegramUsername = null,
             currentCity = "Bruges"
         )
 
@@ -254,8 +254,8 @@ class UserIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = "BE",
         )

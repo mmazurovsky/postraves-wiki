@@ -28,9 +28,9 @@ class UnityConvertersImpl(
             id = unityRecord.unityId ?: throw RecordFieldNullException("Unity Id"),
             name = unityRecord.unityName ?: throw RecordFieldNullException("Unity Name"),
             imageLink = unityRecord.unityImageLink,
-            instagramLink = unityRecord.unityInstagramLink,
-            soundcloudLink = unityRecord.unitySoundcloudLink,
-            bandcampLink = unityRecord.unityBandcampLink,
+            instagramLink = unityRecord.unityInstagramUsername,
+            soundcloudLink = unityRecord.unitySoundcloudUsername,
+            bandcampLink = unityRecord.unityBandcampUsername,
             about = unityRecord.unityAbout,
             country =
             if (countryRecord.countryName != null)
@@ -58,9 +58,9 @@ class UnityConvertersImpl(
         record.unityName = dto.name
         record.unityImageLink = dto.imageLink
         record.unityCountryName = dto.countryName
-        record.unitySoundcloudLink = dto.soundcloudLink
-        record.unityInstagramLink = dto.instagramLink
-        record.unityBandcampLink = dto.bandcampLink
+        record.unitySoundcloudUsername = dto.soundcloudUsername
+        record.unityInstagramUsername = dto.instagramUsername
+        record.unityBandcampUsername = dto.bandcampUsername
         record.unityAbout = dto.about
     }
 

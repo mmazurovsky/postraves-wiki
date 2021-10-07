@@ -24,7 +24,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
 import org.mockito.Mockito
-import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -132,8 +131,8 @@ class FollowingIntegrationTest(
         id = null,
         name = "Amelie Lens",
         imageLink = "image",
-        soundcloudLink = "soundcloud",
-        instagramLink = "instagram",
+        soundcloudUsername = "soundcloud",
+        instagramUsername = "instagram",
         about = "About Amelie",
         countryName = countryTestData.name,
     )
@@ -142,9 +141,9 @@ class FollowingIntegrationTest(
         id = null,
         name = "Unity 1",
         imageLink = "image 1",
-        soundcloudLink = "soundcloud 1",
-        instagramLink = "instagram 1",
-        bandcampLink = "bandcamp 1",
+        soundcloudUsername = "soundcloud 1",
+        instagramUsername = "instagram 1",
+        bandcampUsername = "bandcamp 1",
         about = "About 1",
         countryName = countryTestData.name,
     )
@@ -153,8 +152,8 @@ class FollowingIntegrationTest(
         name = "Mika",
         imageLink = null,
         about = null,
-        instagramLink = null,
-        telegramLink = null,
+        instagramUsername = null,
+        telegramUsername = null,
         currentCity = "Bruges"
     )
 
@@ -257,8 +256,8 @@ class FollowingIntegrationTest(
             id = null,
             name = "Amelie Lens",
             imageLink = "image",
-            soundcloudLink = "soundcloud",
-            instagramLink = "instagram",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
             about = "About Amelie",
             countryName = countryTestData.name,
         )
@@ -268,8 +267,8 @@ class FollowingIntegrationTest(
             imageLink = "image2",
             countryName = null,
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val savedArtist1Json =

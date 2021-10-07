@@ -7,7 +7,7 @@ CREATE TABLE user_profile
     user_profile_image_link               TEXT,
     user_profile_about                    TEXT,
     user_profile_city_name                VARCHAR(40)              REFERENCES city(city_name) ON UPDATE CASCADE ON DELETE SET NULL,
-    user_profile_instagram_link           TEXT,
-    user_profile_telegram_link            TEXT,
+    user_profile_instagram_username           TEXT,
+    user_profile_telegram_username            TEXT,
     PRIMARY KEY (user_profile_id, user_profile_auth_uid)
 );

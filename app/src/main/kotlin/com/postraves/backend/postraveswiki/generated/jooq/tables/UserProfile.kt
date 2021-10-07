@@ -102,14 +102,14 @@ open class UserProfile(
     val USER_PROFILE_CITY_NAME: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_city_name"), SQLDataType.VARCHAR(40), this, "")
 
     /**
-     * The column <code>public.user_profile.user_profile_instagram_link</code>.
+     * The column <code>public.user_profile.user_profile_instagram_username</code>.
      */
-    val USER_PROFILE_INSTAGRAM_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_instagram_link"), SQLDataType.CLOB, this, "")
+    val USER_PROFILE_INSTAGRAM_USERNAME: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_instagram_username"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.user_profile.user_profile_telegram_link</code>.
+     * The column <code>public.user_profile.user_profile_telegram_username</code>.
      */
-    val USER_PROFILE_TELEGRAM_LINK: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_telegram_link"), SQLDataType.CLOB, this, "")
+    val USER_PROFILE_TELEGRAM_USERNAME: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_telegram_username"), SQLDataType.CLOB, this, "")
 
     private constructor(alias: Name, aliased: Table<UserProfileRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UserProfileRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)

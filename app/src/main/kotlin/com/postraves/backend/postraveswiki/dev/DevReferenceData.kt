@@ -108,9 +108,9 @@ class DevReferenceData(
             latitude = 55.719591,
             longitude = 37.686350,
         ),
-        soundcloudLink = "sc link",
-        instagramLink = "insta link",
-        about = "about Mutabor",
+        soundcloudUsername = "mutabormoscow",
+        instagramUsername = "muta.bor",
+        about = "Главное арт-пространство России",
     )
 
     val placeSlezy = PlaceWriteDto(
@@ -123,23 +123,23 @@ class DevReferenceData(
             latitude = 55.719591,
             longitude = 37.686350,
         ),
-        soundcloudLink = "sc link",
-        instagramLink = "insta link",
-        about = "about Slezy",
+        soundcloudUsername = null,
+        instagramUsername = null,
+        about = null,
     )
 
     val placePowerhouse = PlaceWriteDto(
         id = null,
         name = "Powerhouse",
         cityName = cityMoscow.name,
-        imageLink = "",
+        imageLink = null,
         streetAddress = "Гончарная, 7/4",
         coordinate = CoordinateDto(
             latitude = 55.719591,
             longitude = 37.686350,
         ),
-        soundcloudLink = "sc link",
-        instagramLink = "insta link",
+        soundcloudUsername = null,
+        instagramUsername = null,
         about = "about Powerhouse",
     )
 
@@ -147,14 +147,14 @@ class DevReferenceData(
         id = null,
         name = "Gazgolder",
         cityName = cityMoscow.name,
-        imageLink = "",
+        imageLink = null,
         streetAddress = "Нижний Сусальный пер. 5, стр. 26 ГазгольдербайБастаэнд хис паверфул френдс ГазгольдербайБастаэнд хис паверфул френдс",
         coordinate = CoordinateDto(
             latitude = 55.719591,
             longitude = 37.686350,
         ),
-        soundcloudLink = "sc link",
-        instagramLink = "insta link",
+        soundcloudUsername = null,
+        instagramUsername = null,
         about = "about Gazgolder",
     )
 
@@ -175,7 +175,7 @@ class DevReferenceData(
     val sceneMutaborGarden = SceneDto(
         id = null,
         name = "Garden",
-        imageLink = "",
+        imageLink = null,
         priority = 1,
     )
 
@@ -184,53 +184,53 @@ class DevReferenceData(
         name = "System 108",
         imageLink = "https://www.residentadvisor.net/images/labels/system108.jpg",
         countryName = "RU",
-        soundcloudLink = "sc",
-        instagramLink = "ins",
-        bandcampLink = "band",
+        soundcloudUsername = "system108",
+        instagramUsername = "system108",
+        bandcampUsername = "system108",
         about = "about System",
     )
 
     val unityArma = UnityWriteDto(
         id = null,
         name = "ARMA",
-        imageLink = "",
+        imageLink = null,
         countryName = "RU",
-        soundcloudLink = "https://soundcloud.com/arma17",
-        instagramLink = "https://www.instagram.com/arma17ru/",
-        bandcampLink = "https://armarecords.bandcamp.com/",
+        soundcloudUsername = "https://soundcloud.com/arma17",
+        instagramUsername = "https://www.instagram.com/arma17ru/",
+        bandcampUsername = "https://armarecords.bandcamp.com/",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     )
 
     val unityMonasterio = UnityWriteDto(
         id = null,
         name = "Monasterio",
-        imageLink = "",
+        imageLink = null,
         countryName = "RU",
-        soundcloudLink = "https://soundcloud.com/arma17",
-        instagramLink = "https://www.instagram.com/arma17ru/",
-        bandcampLink = "https://armarecords.bandcamp.com/",
+        soundcloudUsername = "https://soundcloud.com/arma17",
+        instagramUsername = "https://www.instagram.com/arma17ru/",
+        bandcampUsername = "https://armarecords.bandcamp.com/",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     )
 
     val unityRabitsa = UnityWriteDto(
         id = null,
         name = "Рабица",
-        imageLink = "",
+        imageLink = null,
         countryName = "RU",
-        soundcloudLink = "https://soundcloud.com/arma17",
-        instagramLink = "https://www.instagram.com/arma17ru/",
-        bandcampLink = "https://armarecords.bandcamp.com/",
+        soundcloudUsername = "arma17",
+        instagramUsername = "arma17ru",
+        bandcampUsername = "armarecords",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     )
 
     val unityNii = UnityWriteDto(
         id = null,
         name = "НИИ",
-        imageLink = "",
+        imageLink = null,
         countryName = "RU",
-        soundcloudLink = "https://soundcloud.com/arma17",
-        instagramLink = "https://www.instagram.com/arma17ru/",
-        bandcampLink = "https://armarecords.bandcamp.com/",
+        soundcloudUsername = null,
+        instagramUsername = null,
+        bandcampUsername = null,
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     )
 
@@ -240,8 +240,8 @@ class DevReferenceData(
         imageLink = "https://i1.sndcdn.com/avatars-000006616275-8t6obr-t500x500.jpg",
         countryName = "RU",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistMashkov = ArtistWriteDto(
@@ -250,8 +250,8 @@ class DevReferenceData(
         imageLink = "https://photos.bandsintown.com/thumb/8065761.jpeg",
         countryName = "RU",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistMujuice = ArtistWriteDto(
@@ -260,8 +260,8 @@ class DevReferenceData(
         imageLink = "https://i1.sndcdn.com/avatars-zubprYWZWJCMUPe7-Nlui4Q-t500x500.jpg",
         countryName = "RU",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistRodina = ArtistWriteDto(
@@ -270,8 +270,8 @@ class DevReferenceData(
         imageLink = "https://i1.sndcdn.com/avatars-000114541978-sixgd1-t500x500.jpg",
         countryName = "RU",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistAllien = ArtistWriteDto(
@@ -280,8 +280,8 @@ class DevReferenceData(
         imageLink = "https://geo-static.traxsource.com/files/artists/5349.jpg",
         countryName = "DE",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistCuve = ArtistWriteDto(
@@ -290,8 +290,8 @@ class DevReferenceData(
         imageLink = "https://geo-media.beatport.com/image_size/500x500/10a6d60c-098d-4497-b710-85fee4ec1d9c.jpg",
         countryName = "FR",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistModels = ArtistWriteDto(
@@ -300,8 +300,8 @@ class DevReferenceData(
         imageLink = "https://ravemovement.com/wp-content/uploads/2020/01/i-hate-models-rave-movement.jpg",
         countryName = "FR",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistParfait = ArtistWriteDto(
@@ -310,8 +310,8 @@ class DevReferenceData(
         imageLink = "https://i1.sndcdn.com/artworks-000105255737-c3bl9u-t500x500.jpg",
         countryName = "FR",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistLens = ArtistWriteDto(
@@ -320,8 +320,8 @@ class DevReferenceData(
         imageLink = "https://www.amsterdam-dance-event.nl/uploads/images/artists-speakers/_AUTOxAUTO_crop_center-center_none/13717210_1809902755895840_9030645021916190431_o_77261.jpg",
         countryName = "BE",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistFarrago = ArtistWriteDto(
@@ -330,8 +330,8 @@ class DevReferenceData(
         imageLink = "https://i1.sndcdn.com/avatars-000650903115-zk4q63-t500x500.jpg",
         countryName = "BE",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistBejenec = ArtistWriteDto(
@@ -340,8 +340,8 @@ class DevReferenceData(
         imageLink = "https://f4.bcbits.com/img/a3619367416_2.jpg",
         countryName = "UA",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistKolosova = ArtistWriteDto(
@@ -350,8 +350,8 @@ class DevReferenceData(
         imageLink = "https://i1.sndcdn.com/avatars-kvYrVE26X0kvpKQ2-qty6jA-t500x500.jpg",
         countryName = "UA",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistVillalobos = ArtistWriteDto(
@@ -360,8 +360,8 @@ class DevReferenceData(
         imageLink = "https://mixmag.asia/assets/uploads/images/_full/Ricardo-Villalobos-sq.jpg",
         countryName = "DE",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistGorbachev = ArtistWriteDto(
@@ -370,8 +370,8 @@ class DevReferenceData(
         imageLink = "http://orchid-am.com/wp-content/uploads/2020/02/Philipp-Gorbachev-2019-%C2%A9-Camille-Blake-1-900x900.jpg",
         countryName = "RU",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistZots = ArtistWriteDto(
@@ -380,8 +380,8 @@ class DevReferenceData(
         imageLink = "https://img.discogs.com/tsUcfpy11hvkPWZqoAbAZi2mFoU=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/A-995736-1597376234-9390.jpeg.jpg",
         countryName = "RU",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     val artistChronic = ArtistWriteDto(
@@ -390,8 +390,8 @@ class DevReferenceData(
         imageLink = "https://i1.sndcdn.com/avatars-fzyLziCt2hJ6BqZs-AKsy9g-t500x500.jpg",
         countryName = "RU",
         about = null,
-        instagramLink = null,
-        soundcloudLink = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
     )
 
     @EventListener(ApplicationReadyEvent::class)

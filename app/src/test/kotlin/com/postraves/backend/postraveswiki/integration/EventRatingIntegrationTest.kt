@@ -135,8 +135,8 @@ class EventRatingIntegrationTest(
         id = null,
         name = "Club1",
         imageLink = "image1",
-        soundcloudLink = "soundcloud1",
-        instagramLink = "instagram1",
+        soundcloudUsername = "soundcloud1",
+        instagramUsername = "instagram1",
         about = "About club1",
         streetAddress = "Street address1",
         coordinate = CoordinateDto(
@@ -150,8 +150,8 @@ class EventRatingIntegrationTest(
         id = null,
         name = "Club2",
         imageLink = "image2",
-        soundcloudLink = "soundcloud2",
-        instagramLink = "instagram2",
+        soundcloudUsername = "soundcloud2",
+        instagramUsername = "instagram2",
         about = "About club2",
         streetAddress = "Street address2",
         coordinate = CoordinateDto(

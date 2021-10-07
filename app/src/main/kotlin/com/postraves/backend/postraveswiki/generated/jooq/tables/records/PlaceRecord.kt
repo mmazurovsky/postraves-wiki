@@ -57,11 +57,11 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
         set(value) = set(8, value)
         get() = get(8) as Double?
 
-    var placeInstagramLink: String?
+    var placeInstagramUsername: String?
         set(value) = set(9, value)
         get() = get(9) as String?
 
-    var placeSoundcloudLink: String?
+    var placeSoundcloudUsername: String?
         set(value) = set(10, value)
         get() = get(10) as String?
 
@@ -86,8 +86,8 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
     override fun field7(): Field<String?> = Place.PLACE.PLACE_STREET_ADDRESS
     override fun field8(): Field<Double?> = Place.PLACE.PLACE_LATITUDE
     override fun field9(): Field<Double?> = Place.PLACE.PLACE_LONGITUDE
-    override fun field10(): Field<String?> = Place.PLACE.PLACE_INSTAGRAM_LINK
-    override fun field11(): Field<String?> = Place.PLACE.PLACE_SOUNDCLOUD_LINK
+    override fun field10(): Field<String?> = Place.PLACE.PLACE_INSTAGRAM_USERNAME
+    override fun field11(): Field<String?> = Place.PLACE.PLACE_SOUNDCLOUD_USERNAME
     override fun component1(): Long? = placeId
     override fun component2(): OffsetDateTime? = placeCreatedDateTime
     override fun component3(): String? = placeName
@@ -97,8 +97,8 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
     override fun component7(): String? = placeStreetAddress
     override fun component8(): Double? = placeLatitude
     override fun component9(): Double? = placeLongitude
-    override fun component10(): String? = placeInstagramLink
-    override fun component11(): String? = placeSoundcloudLink
+    override fun component10(): String? = placeInstagramUsername
+    override fun component11(): String? = placeSoundcloudUsername
     override fun value1(): Long? = placeId
     override fun value2(): OffsetDateTime? = placeCreatedDateTime
     override fun value3(): String? = placeName
@@ -108,8 +108,8 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
     override fun value7(): String? = placeStreetAddress
     override fun value8(): Double? = placeLatitude
     override fun value9(): Double? = placeLongitude
-    override fun value10(): String? = placeInstagramLink
-    override fun value11(): String? = placeSoundcloudLink
+    override fun value10(): String? = placeInstagramUsername
+    override fun value11(): String? = placeSoundcloudUsername
 
     override fun value1(value: Long?): PlaceRecord {
         this.placeId = value
@@ -157,12 +157,12 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
     }
 
     override fun value10(value: String?): PlaceRecord {
-        this.placeInstagramLink = value
+        this.placeInstagramUsername = value
         return this
     }
 
     override fun value11(value: String?): PlaceRecord {
-        this.placeSoundcloudLink = value
+        this.placeSoundcloudUsername = value
         return this
     }
 
@@ -184,7 +184,7 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
     /**
      * Create a detached, initialised PlaceRecord
      */
-    constructor(placeId: Long? = null, placeCreatedDateTime: OffsetDateTime? = null, placeName: String? = null, placeImageLink: String? = null, placeAbout: String? = null, placeCityName: String? = null, placeStreetAddress: String? = null, placeLatitude: Double? = null, placeLongitude: Double? = null, placeInstagramLink: String? = null, placeSoundcloudLink: String? = null): this() {
+    constructor(placeId: Long? = null, placeCreatedDateTime: OffsetDateTime? = null, placeName: String? = null, placeImageLink: String? = null, placeAbout: String? = null, placeCityName: String? = null, placeStreetAddress: String? = null, placeLatitude: Double? = null, placeLongitude: Double? = null, placeInstagramUsername: String? = null, placeSoundcloudUsername: String? = null): this() {
         this.placeId = placeId
         this.placeCreatedDateTime = placeCreatedDateTime
         this.placeName = placeName
@@ -194,7 +194,7 @@ open class PlaceRecord() : UpdatableRecordImpl<PlaceRecord>(Place.PLACE), Record
         this.placeStreetAddress = placeStreetAddress
         this.placeLatitude = placeLatitude
         this.placeLongitude = placeLongitude
-        this.placeInstagramLink = placeInstagramLink
-        this.placeSoundcloudLink = placeSoundcloudLink
+        this.placeInstagramUsername = placeInstagramUsername
+        this.placeSoundcloudUsername = placeSoundcloudUsername
     }
 }

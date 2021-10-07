@@ -45,11 +45,11 @@ open class ArtistRecord() : UpdatableRecordImpl<ArtistRecord>(Artist.ARTIST), Re
         set(value) = set(5, value)
         get() = get(5) as String?
 
-    var artistInstagramLink: String?
+    var artistInstagramUsername: String?
         set(value) = set(6, value)
         get() = get(6) as String?
 
-    var artistSoundcloudLink: String?
+    var artistSoundcloudUsername: String?
         set(value) = set(7, value)
         get() = get(7) as String?
 
@@ -71,24 +71,24 @@ open class ArtistRecord() : UpdatableRecordImpl<ArtistRecord>(Artist.ARTIST), Re
     override fun field4(): Field<String?> = Artist.ARTIST.ARTIST_IMAGE_LINK
     override fun field5(): Field<String?> = Artist.ARTIST.ARTIST_ABOUT
     override fun field6(): Field<String?> = Artist.ARTIST.ARTIST_COUNTRY_NAME
-    override fun field7(): Field<String?> = Artist.ARTIST.ARTIST_INSTAGRAM_LINK
-    override fun field8(): Field<String?> = Artist.ARTIST.ARTIST_SOUNDCLOUD_LINK
+    override fun field7(): Field<String?> = Artist.ARTIST.ARTIST_INSTAGRAM_USERNAME
+    override fun field8(): Field<String?> = Artist.ARTIST.ARTIST_SOUNDCLOUD_USERNAME
     override fun component1(): Long? = artistId
     override fun component2(): OffsetDateTime? = artistCreatedDateTime
     override fun component3(): String? = artistName
     override fun component4(): String? = artistImageLink
     override fun component5(): String? = artistAbout
     override fun component6(): String? = artistCountryName
-    override fun component7(): String? = artistInstagramLink
-    override fun component8(): String? = artistSoundcloudLink
+    override fun component7(): String? = artistInstagramUsername
+    override fun component8(): String? = artistSoundcloudUsername
     override fun value1(): Long? = artistId
     override fun value2(): OffsetDateTime? = artistCreatedDateTime
     override fun value3(): String? = artistName
     override fun value4(): String? = artistImageLink
     override fun value5(): String? = artistAbout
     override fun value6(): String? = artistCountryName
-    override fun value7(): String? = artistInstagramLink
-    override fun value8(): String? = artistSoundcloudLink
+    override fun value7(): String? = artistInstagramUsername
+    override fun value8(): String? = artistSoundcloudUsername
 
     override fun value1(value: Long?): ArtistRecord {
         this.artistId = value
@@ -121,12 +121,12 @@ open class ArtistRecord() : UpdatableRecordImpl<ArtistRecord>(Artist.ARTIST), Re
     }
 
     override fun value7(value: String?): ArtistRecord {
-        this.artistInstagramLink = value
+        this.artistInstagramUsername = value
         return this
     }
 
     override fun value8(value: String?): ArtistRecord {
-        this.artistSoundcloudLink = value
+        this.artistSoundcloudUsername = value
         return this
     }
 
@@ -145,14 +145,14 @@ open class ArtistRecord() : UpdatableRecordImpl<ArtistRecord>(Artist.ARTIST), Re
     /**
      * Create a detached, initialised ArtistRecord
      */
-    constructor(artistId: Long? = null, artistCreatedDateTime: OffsetDateTime? = null, artistName: String? = null, artistImageLink: String? = null, artistAbout: String? = null, artistCountryName: String? = null, artistInstagramLink: String? = null, artistSoundcloudLink: String? = null): this() {
+    constructor(artistId: Long? = null, artistCreatedDateTime: OffsetDateTime? = null, artistName: String? = null, artistImageLink: String? = null, artistAbout: String? = null, artistCountryName: String? = null, artistInstagramUsername: String? = null, artistSoundcloudUsername: String? = null): this() {
         this.artistId = artistId
         this.artistCreatedDateTime = artistCreatedDateTime
         this.artistName = artistName
         this.artistImageLink = artistImageLink
         this.artistAbout = artistAbout
         this.artistCountryName = artistCountryName
-        this.artistInstagramLink = artistInstagramLink
-        this.artistSoundcloudLink = artistSoundcloudLink
+        this.artistInstagramUsername = artistInstagramUsername
+        this.artistSoundcloudUsername = artistSoundcloudUsername
     }
 }

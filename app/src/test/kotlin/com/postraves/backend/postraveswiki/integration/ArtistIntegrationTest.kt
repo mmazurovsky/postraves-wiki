@@ -72,8 +72,8 @@ class ArtistIntegrationTest(
         id = null,
         name = "Amelie Lens",
         imageLink = "image",
-        soundcloudLink = "soundcloud",
-        instagramLink = "instagram",
+        soundcloudUsername = "soundcloud",
+        instagramUsername = "instagram",
         about = "About Amelie",
         countryName = countryTestData.name,
     )
@@ -115,8 +115,8 @@ class ArtistIntegrationTest(
         assertEquals(0, savedArtist.overallFollowers)
         assertEquals(0, savedArtist.weeklyFollowers)
         assertEquals(artistToSave.imageLink, savedArtist.imageLink)
-        assertEquals(artistToSave.soundcloudLink, savedArtist.soundcloudLink)
-        assertEquals(artistToSave.instagramLink, savedArtist.instagramLink)
+        assertEquals(artistToSave.soundcloudUsername, savedArtist.soundcloudLink)
+        assertEquals(artistToSave.instagramUsername, savedArtist.instagramLink)
         assertEquals(artistToSave.about, savedArtist.about)
         assertEquals(artistToSave.countryName, savedArtist.country?.name)
         assertEquals(countryTestData.phoneCode, savedArtist.country?.phoneCode)
@@ -140,8 +140,8 @@ class ArtistIntegrationTest(
             id = savedId,
             name = "Amelie Lens2",
             imageLink = "image2",
-            soundcloudLink = "soundcloud2",
-            instagramLink = "instagram2",
+            soundcloudUsername = "soundcloud2",
+            instagramUsername = "instagram2",
             about = "About Amelie2",
             countryName = null,
         )
@@ -160,8 +160,8 @@ class ArtistIntegrationTest(
         assertEquals(0, updatedArtist.overallFollowers)
         assertEquals(0, updatedArtist.weeklyFollowers)
         assertEquals(artistToUpdate.imageLink, updatedArtist.imageLink)
-        assertEquals(artistToUpdate.soundcloudLink, updatedArtist.soundcloudLink)
-        assertEquals(artistToUpdate.instagramLink, updatedArtist.instagramLink)
+        assertEquals(artistToUpdate.soundcloudUsername, updatedArtist.soundcloudLink)
+        assertEquals(artistToUpdate.instagramUsername, updatedArtist.instagramLink)
         assertEquals(artistToUpdate.about, updatedArtist.about)
         assertNull(updatedArtist.country)
 
@@ -205,8 +205,8 @@ class ArtistIntegrationTest(
             imageLink = "image2",
             countryName = null,
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val artist3 = artist1.copy(
@@ -214,8 +214,8 @@ class ArtistIntegrationTest(
             imageLink = "image3",
             countryName = null,
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist1), status().isCreated)

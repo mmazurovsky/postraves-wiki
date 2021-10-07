@@ -1,8 +1,6 @@
 package com.postraves.backend.postraveswiki.data.converters
 
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.PlaceWriteDto
@@ -42,8 +40,8 @@ class PlaceConvertersImpl(
                 longitude = placeRecord.placeLongitude ?: throw RecordFieldNullException("Place Longitude")
             ),
             city = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
-            soundcloudLink = placeRecord.placeSoundcloudLink,
-            instagramLink = placeRecord.placeInstagramLink,
+            soundcloudLink = placeRecord.placeSoundcloudUsername,
+            instagramLink = placeRecord.placeInstagramUsername,
             about = placeRecord.placeAbout,
             isFollowed = isFollowed,
         )
@@ -73,8 +71,8 @@ class PlaceConvertersImpl(
         record.placeName = dto.name
         record.placeImageLink = dto.imageLink
         record.placeCityName = dto.cityName
-        record.placeSoundcloudLink = dto.soundcloudLink
-        record.placeInstagramLink = dto.instagramLink
+        record.placeSoundcloudUsername = dto.soundcloudUsername
+        record.placeInstagramUsername = dto.instagramUsername
         record.placeAbout = dto.about
         record.placeLatitude = dto.coordinate.latitude
         record.placeLongitude = dto.coordinate.longitude

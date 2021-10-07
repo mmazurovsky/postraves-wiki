@@ -49,11 +49,11 @@ open class UserProfileRecord() : UpdatableRecordImpl<UserProfileRecord>(UserProf
         set(value) = set(6, value)
         get() = get(6) as String?
 
-    var userProfileInstagramLink: String?
+    var userProfileInstagramUsername: String?
         set(value) = set(7, value)
         get() = get(7) as String?
 
-    var userProfileTelegramLink: String?
+    var userProfileTelegramUsername: String?
         set(value) = set(8, value)
         get() = get(8) as String?
 
@@ -76,8 +76,8 @@ open class UserProfileRecord() : UpdatableRecordImpl<UserProfileRecord>(UserProf
     override fun field5(): Field<String?> = UserProfile.USER_PROFILE.USER_PROFILE_IMAGE_LINK
     override fun field6(): Field<String?> = UserProfile.USER_PROFILE.USER_PROFILE_ABOUT
     override fun field7(): Field<String?> = UserProfile.USER_PROFILE.USER_PROFILE_CITY_NAME
-    override fun field8(): Field<String?> = UserProfile.USER_PROFILE.USER_PROFILE_INSTAGRAM_LINK
-    override fun field9(): Field<String?> = UserProfile.USER_PROFILE.USER_PROFILE_TELEGRAM_LINK
+    override fun field8(): Field<String?> = UserProfile.USER_PROFILE.USER_PROFILE_INSTAGRAM_USERNAME
+    override fun field9(): Field<String?> = UserProfile.USER_PROFILE.USER_PROFILE_TELEGRAM_USERNAME
     override fun component1(): Long? = userProfileId
     override fun component2(): String? = userProfileAuthUid
     override fun component3(): OffsetDateTime? = userProfileCreatedDateTime
@@ -85,8 +85,8 @@ open class UserProfileRecord() : UpdatableRecordImpl<UserProfileRecord>(UserProf
     override fun component5(): String? = userProfileImageLink
     override fun component6(): String? = userProfileAbout
     override fun component7(): String? = userProfileCityName
-    override fun component8(): String? = userProfileInstagramLink
-    override fun component9(): String? = userProfileTelegramLink
+    override fun component8(): String? = userProfileInstagramUsername
+    override fun component9(): String? = userProfileTelegramUsername
     override fun value1(): Long? = userProfileId
     override fun value2(): String? = userProfileAuthUid
     override fun value3(): OffsetDateTime? = userProfileCreatedDateTime
@@ -94,8 +94,8 @@ open class UserProfileRecord() : UpdatableRecordImpl<UserProfileRecord>(UserProf
     override fun value5(): String? = userProfileImageLink
     override fun value6(): String? = userProfileAbout
     override fun value7(): String? = userProfileCityName
-    override fun value8(): String? = userProfileInstagramLink
-    override fun value9(): String? = userProfileTelegramLink
+    override fun value8(): String? = userProfileInstagramUsername
+    override fun value9(): String? = userProfileTelegramUsername
 
     override fun value1(value: Long?): UserProfileRecord {
         this.userProfileId = value
@@ -133,12 +133,12 @@ open class UserProfileRecord() : UpdatableRecordImpl<UserProfileRecord>(UserProf
     }
 
     override fun value8(value: String?): UserProfileRecord {
-        this.userProfileInstagramLink = value
+        this.userProfileInstagramUsername = value
         return this
     }
 
     override fun value9(value: String?): UserProfileRecord {
-        this.userProfileTelegramLink = value
+        this.userProfileTelegramUsername = value
         return this
     }
 
@@ -158,7 +158,7 @@ open class UserProfileRecord() : UpdatableRecordImpl<UserProfileRecord>(UserProf
     /**
      * Create a detached, initialised UserProfileRecord
      */
-    constructor(userProfileId: Long? = null, userProfileAuthUid: String? = null, userProfileCreatedDateTime: OffsetDateTime? = null, userProfileName: String? = null, userProfileImageLink: String? = null, userProfileAbout: String? = null, userProfileCityName: String? = null, userProfileInstagramLink: String? = null, userProfileTelegramLink: String? = null): this() {
+    constructor(userProfileId: Long? = null, userProfileAuthUid: String? = null, userProfileCreatedDateTime: OffsetDateTime? = null, userProfileName: String? = null, userProfileImageLink: String? = null, userProfileAbout: String? = null, userProfileCityName: String? = null, userProfileInstagramUsername: String? = null, userProfileTelegramUsername: String? = null): this() {
         this.userProfileId = userProfileId
         this.userProfileAuthUid = userProfileAuthUid
         this.userProfileCreatedDateTime = userProfileCreatedDateTime
@@ -166,7 +166,7 @@ open class UserProfileRecord() : UpdatableRecordImpl<UserProfileRecord>(UserProf
         this.userProfileImageLink = userProfileImageLink
         this.userProfileAbout = userProfileAbout
         this.userProfileCityName = userProfileCityName
-        this.userProfileInstagramLink = userProfileInstagramLink
-        this.userProfileTelegramLink = userProfileTelegramLink
+        this.userProfileInstagramUsername = userProfileInstagramUsername
+        this.userProfileTelegramUsername = userProfileTelegramUsername
     }
 }

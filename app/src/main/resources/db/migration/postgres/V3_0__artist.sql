@@ -6,7 +6,7 @@ CREATE TABLE artist
     artist_image_link               TEXT,
     artist_about                    TEXT,
     artist_country_name             VARCHAR(3)               REFERENCES country(country_name) ON UPDATE CASCADE ON DELETE CASCADE,
-    artist_instagram_link           TEXT,
-    artist_soundcloud_link          TEXT,
+    artist_instagram_username          TEXT,
+    artist_soundcloud_username          TEXT,
     PRIMARY KEY (artist_id)
 );

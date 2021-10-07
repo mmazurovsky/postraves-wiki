@@ -107,8 +107,8 @@ class PlaceIntegrationTest(
         id = null,
         name = "Club1",
         imageLink = "image1",
-        soundcloudLink = "soundcloud1",
-        instagramLink = "instagram1",
+        soundcloudUsername = "soundcloud1",
+        instagramUsername = "instagram1",
         about = "About club1",
         streetAddress = "Street address1",
         coordinate = CoordinateDto(
@@ -167,8 +167,8 @@ class PlaceIntegrationTest(
         assertEquals(0, placeSaved.overallFollowers)
         assertEquals(0, placeSaved.weeklyFollowers)
         assertEquals(placeToSave.imageLink, placeSaved.imageLink)
-        assertEquals(placeToSave.soundcloudLink, placeSaved.soundcloudLink)
-        assertEquals(placeToSave.instagramLink, placeSaved.instagramLink)
+        assertEquals(placeToSave.soundcloudUsername, placeSaved.soundcloudLink)
+        assertEquals(placeToSave.instagramUsername, placeSaved.instagramLink)
         assertEquals(placeToSave.about, placeSaved.about)
         assertEquals(placeToSave.cityName, placeSaved.city.name)
         assertEquals(countryTest1.name, placeSaved.city.country.name)
@@ -193,8 +193,8 @@ class PlaceIntegrationTest(
             id = savedId,
             name = "Club2",
             imageLink = "image2",
-            soundcloudLink = "soundcloud2",
-            instagramLink = "instagram2",
+            soundcloudUsername = "soundcloud2",
+            instagramUsername = "instagram2",
             about = "About club2",
             cityName = cityTest2.name
         )
@@ -213,8 +213,8 @@ class PlaceIntegrationTest(
         assertEquals(0, updatedPlace.overallFollowers)
         assertEquals(0, updatedPlace.weeklyFollowers)
         assertEquals(placeToUpdate.imageLink, updatedPlace.imageLink)
-        assertEquals(placeToUpdate.soundcloudLink, updatedPlace.soundcloudLink)
-        assertEquals(placeToUpdate.instagramLink, updatedPlace.instagramLink)
+        assertEquals(placeToUpdate.soundcloudUsername, updatedPlace.soundcloudLink)
+        assertEquals(placeToUpdate.instagramUsername, updatedPlace.instagramLink)
         assertEquals(placeToUpdate.about, updatedPlace.about)
         assertEquals(cityTest2.name, updatedPlace.city.name)
         assertEquals(countryTest1.name, updatedPlace.city.country.name)
@@ -260,8 +260,8 @@ class PlaceIntegrationTest(
             imageLink = "image2",
             cityName = "Antwerp",
             about = "About2",
-            instagramLink = "instagram2",
-            soundcloudLink = "soundcloud2",
+            instagramUsername = "instagram2",
+            soundcloudUsername = "soundcloud2",
         )
 
         val place3 = place1.copy(
@@ -269,8 +269,8 @@ class PlaceIntegrationTest(
             imageLink = "image3",
             cityName = "Antwerp",
             about = "About3",
-            instagramLink = "instagram3",
-            soundcloudLink = "soundcloud3",
+            instagramUsername = "instagram3",
+            soundcloudUsername = "soundcloud3",
         )
 
         makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(place1), status().isCreated)
@@ -363,8 +363,8 @@ class PlaceIntegrationTest(
             id = savedId,
             name = "Club2",
             imageLink = "image2",
-            soundcloudLink = "soundcloud2",
-            instagramLink = "instagram2",
+            soundcloudUsername = "soundcloud2",
+            instagramUsername = "instagram2",
             about = "About club2",
             cityName = cityTest3.name
         )
