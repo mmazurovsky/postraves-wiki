@@ -7,6 +7,7 @@ import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.data.enum.MoneyCurrency
+import com.postraves.backend.postraveswiki.repo.followable.OtherUserRepo
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
@@ -29,6 +30,7 @@ class DevReferenceData(
     private val unityService: UnityService,
     private val artistService: ArtistService,
     private val eventService: EventService,
+    private val otherUserRepo: OtherUserRepo,
     private val dateTimeProvider: DateTimeProvider,
     private val quickRepoCleaner: CleaningQuickRepo,
 ) {
@@ -398,6 +400,7 @@ class DevReferenceData(
     fun manageData() {
         quickRepoCleaner.clearAllData()
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
+        otherUserRepo.findAll().forEach { otherUserRepo.deleteById(it.id) }
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         placeService.findAll().forEach { placeService.deleteById(it.id) }
         unityService.findAll().forEach { unityService.deleteById(it.id) }

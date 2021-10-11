@@ -40,7 +40,7 @@ class CityConvertersImpl(
     override fun createDtoFromRecord(cityRecord: CityRecord, countryRecord: CountryRecord): CityDto {
         return CityDto(
             name = cityRecord.cityName ?: throw RecordFieldNullException("City Name"),
-            localName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Name"),
+            localName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Local Name"),
             country = countryConverters.createDtoFromRecord(countryRecord)
         )
     }
