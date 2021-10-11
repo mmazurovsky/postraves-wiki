@@ -249,9 +249,9 @@ class DevReferenceData(
         name = "Mashkov",
         imageLink = "https://photos.bandsintown.com/thumb/8065761.jpeg",
         countryName = "RU",
-        about = null,
-        instagramUsername = null,
-        soundcloudUsername = null,
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+        instagramUsername = "mashkov",
+        soundcloudUsername = "mashkov",
     )
 
     val artistMujuice = ArtistWriteDto(
@@ -259,9 +259,9 @@ class DevReferenceData(
         name = "Mujuice",
         imageLink = "https://i1.sndcdn.com/avatars-zubprYWZWJCMUPe7-Nlui4Q-t500x500.jpg",
         countryName = "RU",
-        about = null,
-        instagramUsername = null,
-        soundcloudUsername = null,
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+        instagramUsername = "mujuice",
+        soundcloudUsername = "mujuice",
     )
 
     val artistRodina = ArtistWriteDto(
@@ -279,9 +279,9 @@ class DevReferenceData(
         name = "Ellen Allien",
         imageLink = "https://geo-static.traxsource.com/files/artists/5349.jpg",
         countryName = "DE",
-        about = null,
-        instagramUsername = null,
-        soundcloudUsername = null,
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+        instagramUsername = "ellen.allien",
+        soundcloudUsername = "ellen-allien",
     )
 
     val artistCuve = ArtistWriteDto(
@@ -486,7 +486,7 @@ class DevReferenceData(
             name = "System One Hundred Eight",
             imageLink = "https://sun9-32.userapi.com/impf/6iUkR2dK_tKA_XrtK_uDC1S84Wi6A798V9F1sQ/5_vyoPxQnKI.jpg?size=807x422&quality=96&sign=d9392037eda29e1270fbce125735c89d&type=album",
             about = "После длительного воздержания, лесных приключений и сайд-вечеринок, команда System 108 возвращается в стены любимого завода на Дубровке. В субботнюю ночь лайнап события составят резиденты объединения, а также их друзья с лайвами и сетами. В программе ивента четыре живых выступления, которые исполнят Kovyazin D, Mujuice, Pavel Afanasyev и Philipp Gorbachev. Помимо громких лайвов, ожидаем оскароносные сеты от Chronic Preview, Egor Holkin, Errortica, Fanick, Mashkov, Nastya Zimens, Odopt, Orange и Séxstasy.",
-            ticketsLink = null,
+            ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusHours(1),
             endDateTime = dateTimeProvider.getNow().plusHours(12),
             ticketPrices = listOf(
@@ -498,7 +498,8 @@ class DevReferenceData(
             ),
             placeId = placeMutaborSaved.id,
             organizers = setOf(
-                unitySystemSaved.id
+                unitySystemSaved.id,
+                unityArmaSaved.id,
             )
         )
 
