@@ -97,6 +97,11 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
         } else throw TODO()
     }
 
+    override fun incrementFollowersUnsafe(id: Long) {
+        entityOverallFollowersQuickRepo.incrementFollowers(id)
+        entityWeeklyFollowersQuickRepo.incrementFollowers(id)
+    }
+
     override fun decrementFollowers(id: Long) {
         if (myUserProfileService.getMyAuthUidOnlyIfUserProfileExists() != null) {
             entityOverallFollowersQuickRepo.decrementFollowers(id)

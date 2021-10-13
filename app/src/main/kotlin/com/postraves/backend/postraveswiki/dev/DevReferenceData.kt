@@ -9,6 +9,7 @@ import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.data.enum.MoneyCurrency
 import com.postraves.backend.postraveswiki.repo.followable.OtherUserRepo
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
@@ -16,6 +17,7 @@ import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
@@ -33,6 +35,14 @@ class DevReferenceData(
     private val otherUserRepo: OtherUserRepo,
     private val dateTimeProvider: DateTimeProvider,
     private val quickRepoCleaner: CleaningQuickRepo,
+    @Qualifier("artistWeeklyFollowersQuickRepoImpl")
+    private val artistWeeklyFollowersQuickRepo: FollowersQuickRepo,
+    @Qualifier("unityWeeklyFollowersQuickRepoImpl")
+    private val unityWeeklyFollowersQuickRepo: FollowersQuickRepo,
+    @Qualifier("placeWeeklyFollowersQuickRepoImpl")
+    private val placeWeeklyFollowersQuickRepo: FollowersQuickRepo,
+    @Qualifier("eventWeeklyFollowersQuickRepoImpl")
+    private val eventWeeklyFollowersQuickRepo: FollowersQuickRepo,
 ) {
 
     val countryRu = CountryWriteDto(
@@ -181,6 +191,17 @@ class DevReferenceData(
         priority = 1,
     )
 
+    val unityLenske = UnityWriteDto(
+        id = null,
+        name = "Lenske Records",
+        imageLink = "https://i1.sndcdn.com/avatars-000349628618-0tza1o-t500x500.jpg",
+        countryName = "FR",
+        soundcloudUsername = "lenskerecords",
+        instagramUsername = null,
+        bandcampUsername = null,
+        about = "About Lenske",
+    )
+
     val unitySystem = UnityWriteDto(
         id = null,
         name = "System 108",
@@ -321,9 +342,9 @@ class DevReferenceData(
         name = "Amelie Lens",
         imageLink = "https://www.amsterdam-dance-event.nl/uploads/images/artists-speakers/_AUTOxAUTO_crop_center-center_none/13717210_1809902755895840_9030645021916190431_o_77261.jpg",
         countryName = "BE",
-        about = null,
-        instagramUsername = null,
-        soundcloudUsername = null,
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+        instagramUsername = "amelie_lens",
+        soundcloudUsername = "AMELIELENS",
     )
 
     val artistFarrago = ArtistWriteDto(
@@ -444,6 +465,7 @@ class DevReferenceData(
 
         val scenesMutaborSaved = placeService.getAllScenes()
 
+        val unityLenskeSaved = unityService.save(unityLenske)
         val unitySystemSaved = unityService.save(unitySystem)
         val unityArmaSaved = unityService.save(unityArma)
         val unityMonasterioSaved = unityService.save(unityMonasterio)
@@ -466,6 +488,13 @@ class DevReferenceData(
         val artistRodinaSaved = artistService.save(artistRodina)
         val artistVillalobosSaved = artistService.save(artistVillalobos)
         val artistZotsSaved = artistService.save(artistZots)
+
+        unityService.updateArtistsOfUnity(
+            unityLenskeSaved.id, setOf(
+                artistLensSaved.id,
+                artistFarragoSaved.id,
+            )
+        )
 
         unityService.updateArtistsOfUnity(
             unitySystemSaved.id, setOf(
@@ -491,7 +520,7 @@ class DevReferenceData(
             about = "После длительного воздержания, лесных приключений и сайд-вечеринок, команда System 108 возвращается в стены любимого завода на Дубровке. В субботнюю ночь лайнап события составят резиденты объединения, а также их друзья с лайвами и сетами. В программе ивента четыре живых выступления, которые исполнят Kovyazin D, Mujuice, Pavel Afanasyev и Philipp Gorbachev. Помимо громких лайвов, ожидаем оскароносные сеты от Chronic Preview, Egor Holkin, Errortica, Fanick, Mashkov, Nastya Zimens, Odopt, Orange и Séxstasy.",
             ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusHours(1),
-            endDateTime = dateTimeProvider.getNow().plusHours(12),
+            endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(12),
             ticketPrices = listOf(
                 TicketPriceDto(
                     name = "One",
@@ -761,7 +790,7 @@ class DevReferenceData(
             about = null,
             ticketsLink = "https://system108.com/pax", // todo check it opens in app
             startDateTime = dateTimeProvider.getNow().minusHours(2),
-            endDateTime = dateTimeProvider.getNow().plusHours(10),
+            endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(10),
             ticketPrices = listOf(
                 TicketPriceDto(
                     name = "До 00:00",
@@ -776,7 +805,8 @@ class DevReferenceData(
             ),
             placeId = placeMutaborSaved.id,
             organizers = setOf(
-                unitySystemSaved.id
+                unitySystemSaved.id,
+                unityLenskeSaved.id,
             )
         )
 
@@ -807,7 +837,7 @@ class DevReferenceData(
             artistIds = setOf(artistBejenecSaved.id),
             typeOfPerformance = "DJ SET",
             startingDateTime = dateTimeProvider.getNow().minusHours(1),
-            endingDateTime = dateTimeProvider.getNow().plusHours(6)
+            endingDateTime = dateTimeProvider.getNow().minusMinutes(6)
         )
 
         val performance3 = TimetablePerformanceWriteDto(
@@ -816,7 +846,7 @@ class DevReferenceData(
             artistIds = setOf(artistAbelleSaved.id, artistAllienSaved.id, artistCuveSaved.id),
             typeOfPerformance = null,
             startingDateTime = dateTimeProvider.getNow().minusHours(6),
-            endingDateTime = dateTimeProvider.getNow().plusHours(8)
+            endingDateTime = dateTimeProvider.getNow().plusMinutes(5),
         )
 
         val performance4 = TimetablePerformanceWriteDto(
@@ -855,6 +885,24 @@ class DevReferenceData(
             endingDateTime = dateTimeProvider.getNow().plusHours(6)
         )
 
+        val performance8 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[1].id,
+            artistIds = setOf(artistLensSaved.id),
+            typeOfPerformance = null,
+            startingDateTime = null,
+            endingDateTime = null
+        )
+
+        val performance9 = TimetablePerformanceWriteDto(
+            id = null,
+            sceneId = scenesMutaborSaved[1].id,
+            artistIds = setOf(artistFarragoSaved.id),
+            typeOfPerformance = null,
+            startingDateTime = null,
+            endingDateTime = null
+        )
+
         eventService.updateTimetableForEvent(
             eventSystemSaved.id, setOf(
                 performance1,
@@ -866,6 +914,128 @@ class DevReferenceData(
                 performance7,
             )
         )
+
+        eventService.updateTimetableForEvent(
+            eventPaxSaved.id, setOf(
+                performance8,
+                performance9,
+            )
+        )
+
+        var i = 0
+        while (i < 50) {
+            eventService.incrementFollowersUnsafe(eventPaxSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 60) {
+            eventService.incrementFollowersUnsafe(eventSystemSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 30) {
+            unityService.incrementFollowersUnsafe(unityLenskeSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 40) {
+            unityService.incrementFollowersUnsafe(unitySystemSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 10) {
+            artistService.incrementFollowersUnsafe(artistAbelleSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 55) {
+            artistService.incrementFollowersUnsafe(artistMujuiceSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 15) {
+            artistService.incrementFollowersUnsafe(artistMashkovSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 75) {
+            artistService.incrementFollowersUnsafe(artistLensSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 20) {
+            artistService.incrementFollowersUnsafe(artistFarragoSaved.id)
+            i++
+        }
+
+        artistService.setBestOfTheWeekForAllCities()
+
+        artistWeeklyFollowersQuickRepo.returnAllValuesToInitial()
+        unityWeeklyFollowersQuickRepo.returnAllValuesToInitial()
+        placeWeeklyFollowersQuickRepo.returnAllValuesToInitial()
+        eventWeeklyFollowersQuickRepo.returnAllValuesToInitial();
+
+        i = 0
+        while (i < 63) {
+            eventService.incrementFollowersUnsafe(eventPaxSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 74) {
+            eventService.incrementFollowersUnsafe(eventSystemSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 24) {
+            unityService.incrementFollowersUnsafe(unityLenskeSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 39) {
+            unityService.incrementFollowersUnsafe(unitySystemSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 8) {
+            artistService.incrementFollowersUnsafe(artistAbelleSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 57) {
+            artistService.incrementFollowersUnsafe(artistMujuiceSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 25) {
+            artistService.incrementFollowersUnsafe(artistMashkovSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 34) {
+            artistService.incrementFollowersUnsafe(artistLensSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 29) {
+            artistService.incrementFollowersUnsafe(artistFarragoSaved.id)
+            i++
+        }
 
         logger.info("Reference data is written")
     }
