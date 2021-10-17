@@ -837,7 +837,7 @@ class DevReferenceData(
             artistIds = setOf(artistBejenecSaved.id),
             typeOfPerformance = "DJ SET",
             startingDateTime = dateTimeProvider.getNow().minusHours(1),
-            endingDateTime = dateTimeProvider.getNow().minusMinutes(6)
+            endingDateTime = dateTimeProvider.getNow().minusMinutes(3)
         )
 
         val performance3 = TimetablePerformanceWriteDto(
@@ -846,7 +846,7 @@ class DevReferenceData(
             artistIds = setOf(artistAbelleSaved.id, artistAllienSaved.id, artistCuveSaved.id),
             typeOfPerformance = null,
             startingDateTime = dateTimeProvider.getNow().minusHours(6),
-            endingDateTime = dateTimeProvider.getNow().plusMinutes(5),
+            endingDateTime = dateTimeProvider.getNow().plusMinutes(1),
         )
 
         val performance4 = TimetablePerformanceWriteDto(
@@ -863,7 +863,7 @@ class DevReferenceData(
             sceneId = scenesMutaborSaved[0].id,
             artistIds = setOf(artistGorbachevSaved.id),
             typeOfPerformance = null,
-            startingDateTime = dateTimeProvider.getNow().minusHours(9),
+            startingDateTime = dateTimeProvider.getNow(),
             endingDateTime = dateTimeProvider.getNow().plusHours(9).plusMinutes(1)
         )
 
@@ -981,7 +981,7 @@ class DevReferenceData(
         artistWeeklyFollowersQuickRepo.returnAllValuesToInitial()
         unityWeeklyFollowersQuickRepo.returnAllValuesToInitial()
         placeWeeklyFollowersQuickRepo.returnAllValuesToInitial()
-        eventWeeklyFollowersQuickRepo.returnAllValuesToInitial();
+        eventWeeklyFollowersQuickRepo.returnAllValuesToInitial()
 
         i = 0
         while (i < 63) {
