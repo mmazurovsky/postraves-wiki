@@ -7,7 +7,7 @@ package jooq.tables
 import jooq.Public
 import jooq.keys.USER_FOLLOWS_ARTIST_PKEY
 import jooq.keys.USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_ARTIST_ID_FKEY
-import jooq.keys.USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_USER_PROFILE_UID_FKEY
+import jooq.keys.USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_USER_PROFILE_ID_FKEY
 import jooq.tables.records.UserFollowsArtistRecord
 
 import kotlin.collections.List
@@ -62,9 +62,9 @@ open class UserFollowsArtist(
     override fun getRecordType(): Class<UserFollowsArtistRecord> = UserFollowsArtistRecord::class.java
 
     /**
-     * The column <code>public.user_follows_artist.user_follows_artist_user_profile_uid</code>.
+     * The column <code>public.user_follows_artist.user_follows_artist_user_profile_id</code>.
      */
-    val USER_FOLLOWS_ARTIST_USER_PROFILE_UID: TableField<UserFollowsArtistRecord, String?> = createField(DSL.name("user_follows_artist_user_profile_uid"), SQLDataType.VARCHAR(28).nullable(false), this, "")
+    val USER_FOLLOWS_ARTIST_USER_PROFILE_ID: TableField<UserFollowsArtistRecord, Long?> = createField(DSL.name("user_follows_artist_user_profile_id"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
      * The column <code>public.user_follows_artist.user_follows_artist_artist_id</code>.
@@ -93,13 +93,13 @@ open class UserFollowsArtist(
     override fun getSchema(): Schema = Public.PUBLIC
     override fun getPrimaryKey(): UniqueKey<UserFollowsArtistRecord> = USER_FOLLOWS_ARTIST_PKEY
     override fun getKeys(): List<UniqueKey<UserFollowsArtistRecord>> = listOf(USER_FOLLOWS_ARTIST_PKEY)
-    override fun getReferences(): List<ForeignKey<UserFollowsArtistRecord, *>> = listOf(USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_USER_PROFILE_UID_FKEY, USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_ARTIST_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<UserFollowsArtistRecord, *>> = listOf(USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_USER_PROFILE_ID_FKEY, USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_ARTIST_ID_FKEY)
 
     private lateinit var _userProfile: UserProfile
     private lateinit var _artist: Artist
     fun userProfile(): UserProfile {
         if (!this::_userProfile.isInitialized)
-            _userProfile = UserProfile(this, USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_USER_PROFILE_UID_FKEY)
+            _userProfile = UserProfile(this, USER_FOLLOWS_ARTIST__USER_FOLLOWS_ARTIST_USER_FOLLOWS_ARTIST_USER_PROFILE_ID_FKEY)
 
         return _userProfile;
     }
@@ -125,5 +125,5 @@ open class UserFollowsArtist(
     // -------------------------------------------------------------------------
     // Row2 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row2<String?, Long?> = super.fieldsRow() as Row2<String?, Long?>
+    override fun fieldsRow(): Row2<Long?, Long?> = super.fieldsRow() as Row2<Long?, Long?>
 }

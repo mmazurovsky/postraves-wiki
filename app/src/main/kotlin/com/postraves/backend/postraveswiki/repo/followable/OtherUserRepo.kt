@@ -41,7 +41,7 @@ class OtherUserRepoImpl(
             .fetchOne()?.delete()
     }
 
-    override fun findFollowableByPartOfName(authUid: String?, namePart: String): List<UserShortDto> {
+    override fun findFollowableByPartOfName(userId: Long?, namePart: String): List<UserShortDto> {
         val results = dsl
             .selectFrom(USER_PROFILE)
             .where(DSL.lower(USER_PROFILE.USER_PROFILE_NAME).contains(namePart.lowercase()))

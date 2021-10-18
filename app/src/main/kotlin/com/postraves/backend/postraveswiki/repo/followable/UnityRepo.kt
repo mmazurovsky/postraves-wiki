@@ -19,13 +19,12 @@ import org.jooq.impl.DSL.lower
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
-import java.time.OffsetDateTime
 
 interface UnityRepo :
     BaseRepo<UnityWriteDto, UnityShortDto>,
     ByIdRepo<UnityFullDto, UnityShortDto>,
     FollowableRepo<UnityShortDto> {
-    fun getArtistsOfUnity(authUid: String?, id: Long): List<ArtistShortDto>
+    fun getArtistsOfUnity(userId: Long?, id: Long): List<ArtistShortDto>
     fun addArtistsToUnity(id: Long, artists: Set<Long>)
     fun removeArtistsFromUnity(id: Long, artists: Set<Long>)
 }
@@ -51,17 +50,11 @@ class UnityRepoImpl(
     val userFollowsTable = USER_FOLLOWS_UNITY
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
-        return this.leftOuterJoin(COUNTRY).on(thisTable.UNITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
+        return joinUnityLocation()
     }
 
-    override fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record> {
-        return this.leftOuterJoin(userFollowsTable)
-            .on(thisTable.UNITY_ID.eq(userFollowsTable.USER_FOLLOWS_UNITY_UNITY_ID), userFollowsTable.USER_FOLLOWS_UNITY_USER_PROFILE_UID.eq(authUid))
-    }
-
-    private fun SelectJoinStep<Record>.joinUserFollowArtist(authUid: String): SelectOnConditionStep<Record> {
-        return this.leftOuterJoin(USER_FOLLOWS_ARTIST)
-            .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
+    override fun SelectJoinStep<Record>.joinUserFollow(userId: Long): SelectOnConditionStep<Record> {
+        return joinUnityUserFollow(userId)
     }
 
     override fun SelectJoinStep<Record>.joinOtherData(): SelectOnConditionStep<Record>? {
@@ -73,12 +66,12 @@ class UnityRepoImpl(
     }
 
     override fun convertToShortDto(record: Record): UnityShortDto {
-        val isFollowed = record.into(userFollowsTable).userFollowsUnityUserProfileUid != null
+        val isFollowed = record.into(userFollowsTable).userFollowsUnityUserProfileId != null
         return unityConverters.createShortDtoFromRecord(record.into(thisTable), record.into(COUNTRY), isFollowed)
     }
 
     override fun convertToFullDto(record: Record): UnityFullDto {
-        val isFollowed = record.into(userFollowsTable).userFollowsUnityUserProfileUid != null
+        val isFollowed = record.into(userFollowsTable).userFollowsUnityUserProfileId != null
         return unityConverters.createFullDtoFromRecord(record.into(thisTable), record.into(COUNTRY), isFollowed)
     }
 
@@ -107,13 +100,13 @@ class UnityRepoImpl(
         unityConverters.transferDataFromDtoToRecord(dto, record)
     }
 
-    override fun getArtistsOfUnity(authUid: String?, id: Long): List<ArtistShortDto> {
+    override fun getArtistsOfUnity(userId: Long?, id: Long): List<ArtistShortDto> {
         return dsl
             .select()
             .from(UNITY_ARTIST)
             .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(UNITY_ARTIST.UNITY_ARTIST_ARTIST_ID))
             .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(ARTIST.ARTIST_COUNTRY_NAME))
-            .apply { if (authUid != null) joinUserFollowArtist(authUid) }
+            .apply { if (userId != null) joinArtistUserFollow(userId) }
             .where(UNITY_ARTIST.UNITY_ARTIST_UNITY_ID.eq(id))
             .fetch()
             .map { artistRepo.convertToShortDto(it) }

@@ -77,7 +77,7 @@ class UnityServiceImpl(
     }
 
     override fun getArtistsOfUnity(id: Long): List<ArtistShortDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         val artistsOfUnityWithoutFollowers = thisRepo.getArtistsOfUnity(authUid, id)
         return artistsOfUnityWithoutFollowers
             .map { artistService.enrichWithFollowersCalculationRequired(it) }

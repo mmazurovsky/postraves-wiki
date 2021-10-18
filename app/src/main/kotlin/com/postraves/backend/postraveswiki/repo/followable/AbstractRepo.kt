@@ -8,6 +8,7 @@ import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import org.jooq.*
 import org.jooq.impl.TableImpl
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Lazy
 
 abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableShortDto<SHORTDTO>, R>(
@@ -18,13 +19,15 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     FollowableRepo<SHORTDTO>
         where R : Record,
               R : UpdatableRecord<R> {
+
+    @Qualifier("getDSLContext")
     @Autowired
     @Lazy
     private lateinit var dsl: DSLContext
 
-    protected abstract fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record>
+    abstract fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record>
     protected abstract fun SelectJoinStep<Record>.joinOtherData(): SelectOnConditionStep<Record>?
-    protected abstract fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record>
+    protected abstract fun SelectJoinStep<Record>.joinUserFollow(userId: Long): SelectOnConditionStep<Record>
     protected abstract fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record>
     abstract override fun convertToShortDto(record: Record): SHORTDTO
     protected abstract fun convertToFullDto(record: Record): FULLDTO
@@ -53,19 +56,19 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
         return record ?: throw NotFoundException(entityType, id.toString())
     }
 
-    private fun findByIdWithJoins(authUid: String?, id: Long): Record {
+    private fun findByIdWithJoins(userId: Long?, id: Long): Record {
         val record =
             selectFromEntity()
                 .joinLocation()
                 .apply {if (joinOtherData() != null) joinOtherData()}
-                .apply {if (authUid != null) joinUserFollow(authUid)}
+                .apply {if (userId != null) joinUserFollow(userId)}
                 .whereMatchingId(id)
                 .fetchOne()
         return record ?: throw NotFoundException(entityType, id.toString())
     }
 
-    override fun findById(authUid: String?, id: Long): FULLDTO {
-        val selectedRecord = findByIdWithJoins(authUid, id)
+    override fun findById(userId: Long?, id: Long): FULLDTO {
+        val selectedRecord = findByIdWithJoins(userId, id)
         return convertToFullDto(selectedRecord)
     }
 
@@ -73,11 +76,11 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
         findByIdWithoutJoins(id).delete()
     }
 
-    override fun findListByIds(authUid: String?, ids: Set<Long>): List<SHORTDTO> {
+    override fun findListByIds(userId: Long?, ids: Set<Long>): List<SHORTDTO> {
         return selectFromEntity()
             .joinLocation()
             .apply {if (joinOtherData() != null) joinOtherData()}
-            .apply {if (authUid != null) joinUserFollow(authUid)}
+            .apply {if (userId != null) joinUserFollow(userId)}
             .whereIdIsInIds(ids)
             .fetch()
             .map { convertToShortDto(it) }
@@ -96,11 +99,11 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     }
 
     //todo create new special simple dto for finding purposes??
-    override fun findFollowableByPartOfName(authUid: String?, namePart: String): List<SHORTDTO> {
+    override fun findFollowableByPartOfName(userId: Long?, namePart: String): List<SHORTDTO> {
         return selectFromEntity()
             .joinLocation()
             .apply {if (joinOtherData() != null) joinOtherData()}
-            .apply {if (authUid != null) joinUserFollow(authUid)}
+            .apply {if (userId != null) joinUserFollow(userId)}
             .whereNameIsLike(namePart)
             .fetch()
             .map { convertToShortDto(it) }

@@ -88,25 +88,6 @@ class FollowingIntegrationTest(
         redisServer.start()
     }
 
-    private val testUser = UserFullDto(
-        id = 69,
-        name = "abc",
-        currentCity = CityDto(
-            name = "Bruges",
-            localName = "Bruges",
-            country = CountryDto(
-                name = "BE",
-                localName = "Belgium",
-                emojiCode = "",
-                phoneCode = "",
-            )
-        ),
-        about = null,
-        imageLink = null,
-        instagramUsername = null,
-        telegramUsername = null,
-    )
-
     private val countryTestData = CountryWriteDto(
         name = "BE",
         nameRu = "NameRu",
@@ -157,17 +138,38 @@ class FollowingIntegrationTest(
         currentCity = "Bruges"
     )
 
+    private var savedUserMimic
+    = UserFullDto(
+        id = 0,
+        name = userToSave.name,
+        currentCity = CityDto(
+            name = "Bruges",
+            localName = "Bruges",
+            country = CountryDto(
+                name = "BE",
+                localName = "Belgium",
+                emojiCode = "",
+                phoneCode = "",
+            )
+        ),
+        about = null,
+        imageLink = null,
+        instagramUsername = null,
+        telegramUsername = null,
+    )
+
     @BeforeAll
     private fun prepare() {
         logger.info("Following Integration Test started")
 
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(city), status().isCreated)
-        makePostRequest(mockMvc, "/user/public/myProfile", Json.encodeToString(userToSave), status().isCreated)
+        val userJson = makePostRequest(mockMvc, "/user/public/myProfile", Json.encodeToString(userToSave), status().isCreated)
+        val userSaved = Json.decodeFromString<UserShortDto>(userJson)
+        savedUserMimic = savedUserMimic.copy(id = userSaved.id)
     }
 
     @AfterEach
@@ -188,7 +190,7 @@ class FollowingIntegrationTest(
     @Test
     @Order(1)
     fun saveArtistAndFollowAndGetIt() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artistToSave = artistTestData
@@ -200,7 +202,7 @@ class FollowingIntegrationTest(
         val artistRespJson = makeGetRequest(mockMvc, "$artistEndpoint/public/$artistId", status().isOk)
         val savedArtist = Json.decodeFromString<ArtistFullDto>(artistRespJson)
 
-        makePostRequest(mockMvc, "/user/myFollows/artist/${savedArtist.id}", null, status().isOk)
+        makePostRequest(mockMvc, "/user/myFollowing/artist/${savedArtist.id}", null, status().isOk)
 
         val updatedArtistJson = makeGetRequest(mockMvc, "$artistEndpoint/public/$artistId", status().isOk)
         val updatedArtist = Json.decodeFromString<ArtistFullDto>(updatedArtistJson)
@@ -220,7 +222,7 @@ class FollowingIntegrationTest(
     @Test
     @Order(2)
     fun cleanupCheck() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
         val artists = artistService.findAll()
@@ -229,7 +231,7 @@ class FollowingIntegrationTest(
         val artistsInWeeklyRating = artistWeeklyFollowersQuickRepoImpl.findTop(-1)
         val unitiesInOverallRating = unityOverallFollowersQuickRepoImpl.findTop(-1)
         val unitiesInWeeklyRating = unityWeeklyFollowersQuickRepoImpl.findTop(-1)
-        val userFollows = userProfileService.findMyFollowsArtist()
+        val userFollows = userProfileService.findMyFollowingArtists()
 
         assertEquals(0, artists.size)
         assertEquals(0, unities.size)
@@ -243,9 +245,8 @@ class FollowingIntegrationTest(
     @Test
     @Order(3)
     fun addArtistsToUnityAndFollowOneArtistAndGetAllArtistsOfUnity() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
-
 
         val unity1 = unityTestData
 
@@ -286,7 +287,7 @@ class FollowingIntegrationTest(
             status().isOk
         )
 
-        makePostRequest(mockMvc, "/user/myFollows/artist/$savedArtist1Id", null, status().isOk)
+        makePostRequest(mockMvc, "/user/myFollowing/artist/$savedArtist1Id", null, status().isOk)
 
         val savedArtist1UpdatedJson = makeGetRequest(mockMvc, "$artistEndpoint/public/$savedArtist1Id", status().isOk)
         val savedArtist1Updated = Json.decodeFromString<ArtistFullDto>(savedArtist1UpdatedJson)

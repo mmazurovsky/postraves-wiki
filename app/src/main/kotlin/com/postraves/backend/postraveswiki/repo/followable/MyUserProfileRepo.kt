@@ -1,10 +1,8 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
-import com.postraves.backend.postraveswiki.data.converters.ArtistConverters
+import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.converters.UserConverters
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
-import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
+import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.exception.FollowingException
 import com.postraves.backend.postraveswiki.exception.NotFoundException
@@ -15,30 +13,45 @@ import jooq.tables.references.*
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
-import java.time.OffsetDateTime
 
 interface MyUserProfileRepo {
     fun findMyProfileByAuthUid(authUid: String): UserFullDto?
-    fun save(dto: UserWriteDto, authUid: String): UserShortDto
-    fun update(dto: UserWriteDto, authUid: String)
-    fun deleteMyProfile(authUid: String)
-    fun followArtist(userAuthUid: String, id: Long)
-    fun unfollowArtist(userAuthUid: String, id: Long)
-    fun findMyFollowsArtist(authUid: String): List<ArtistShortDto>
-    fun checkArtistIsFollowed(id: Long, authUid: String): Boolean
     fun checkNicknameIsFree(nickname: String): Boolean
+    fun save(dto: UserWriteDto, authUid: String): UserShortDto
+    fun update(dto: UserWriteDto, userId: Long)
+    fun deleteMyProfile(authUid: String)
+    fun checkArtistIsFollowed(userId: Long, id: Long): Boolean
+    fun checkEventIsFollowed(userId: Long, id: Long): Boolean
+    fun checkPlaceIsFollowed(userId: Long, id: Long): Boolean
+    fun checkUnityIsFollowed(userId: Long, id: Long): Boolean
+    fun followArtist(userId: Long, id: Long)
+    fun followEvent(userId: Long, id: Long)
+    fun followPlace(userId: Long, id: Long)
+    fun followUnity(userId: Long, id: Long)
+    fun unfollowArtist(userId: Long, id: Long)
+    fun unfollowEvent(userId: Long, id: Long)
+    fun unfollowPlace(userId: Long, id: Long)
+    fun unfollowUnity(userId: Long, id: Long)
+    fun findMyFollowingArtists(userId: Long): List<ArtistShortDto>
+    fun findMyFollowingEvents(userId: Long): List<EventShortDto>
+    fun findMyFollowingPlaces(userId: Long): List<PlaceShortDto>
+    fun findMyFollowingUnities(userId: Long): List<UnityShortDto>
 }
 
 @Repository
 class MyUserProfileRepoImpl(
     private val dateTimeProvider: DateTimeProvider,
     private val artistRepo: ArtistRepo,
-    private val artistConverters: ArtistConverters,
+    private val eventRepo: EventRepo,
+    private val placeRepo: PlaceRepo,
+    private val unityRepo: UnityRepo,
     private val userConverters: UserConverters,
 ) : MyUserProfileRepo {
 
+    @Qualifier("getDSLContext")
     @Autowired
     @Lazy
     private lateinit var dsl: DSLContext
@@ -57,12 +70,12 @@ class MyUserProfileRepoImpl(
         return record
     }
 
-    private fun findByAuthUidWithoutJoins(authUid: String): UserProfileRecord {
+    private fun findByIdWithoutJoins(userId: Long): UserProfileRecord {
         val record = dsl
             .selectFrom(thisTable)
-            .where(USER_PROFILE.USER_PROFILE_AUTH_UID.eq(authUid))
+            .where(USER_PROFILE.USER_PROFILE_ID.eq(userId))
             .fetchOne()
-        return record ?: throw NotFoundException("User", authUid)
+        return record ?: throw NotFoundException("User", userId.toString())
     }
 
     override fun findMyProfileByAuthUid(authUid: String): UserFullDto? {
@@ -78,11 +91,16 @@ class MyUserProfileRepoImpl(
         userToSave.userProfileCreatedDateTime = dateTimeProvider.getNow()
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
-        return userConverters.createShortDtoFromRecord(record?.into(USER_PROFILE) ?: throw SaveException("User", dto.name))
+        return userConverters.createShortDtoFromRecord(
+            record?.into(USER_PROFILE) ?: throw SaveException(
+                "User",
+                dto.name
+            )
+        )
     }
 
-    override fun update(dto: UserWriteDto, authUid: String) {
-        val userToUpdate = findByAuthUidWithoutJoins(authUid)
+    override fun update(dto: UserWriteDto, userId: Long) {
+        val userToUpdate = findByIdWithoutJoins(userId)
         userConverters.transferDataFromDtoToRecord(dto, userToUpdate)
         userToUpdate.update()
     }
@@ -92,50 +110,223 @@ class MyUserProfileRepoImpl(
             ?.delete()
     }
 
-    override fun followArtist(userAuthUid: String, id: Long) {
-        // checking that artist exists
-        artistRepo.findById(userAuthUid, id)
+    override fun followArtist(userId: Long, id: Long) {
         val userFollowArtist = dsl.newRecord(USER_FOLLOWS_ARTIST)
         userFollowArtist.userFollowsArtistArtistId = id
-        userFollowArtist.userFollowsArtistUserProfileUid = userAuthUid
+        userFollowArtist.userFollowsArtistUserProfileId = userId
         try {
             userFollowArtist.store()
         } catch (e: Exception) {
-            throw FollowingException(userId = userAuthUid, entity = "Artist", entityId = id.toString(), message = "can't follow")
+            logger.debug(e.toString())
+            throw FollowingException(
+                userId = userId,
+                entity = "Artist",
+                entityId = id.toString(),
+                message = "can't follow"
+            )
         }
     }
 
-    override fun unfollowArtist(userAuthUid: String, id: Long) {
-        artistRepo.findById(userAuthUid, id)
+    override fun followEvent(userId: Long, id: Long) {
+        val userFollowEvent = dsl.newRecord(USER_FOLLOWS_EVENT)
+        userFollowEvent.userFollowsEventEventId = id
+        userFollowEvent.userFollowsEventUserProfileId = userId
+        try {
+            userFollowEvent.store()
+        } catch (e: Exception) {
+            throw FollowingException(
+                userId = userId,
+                entity = "Event",
+                entityId = id.toString(),
+                message = "can't follow"
+            )
+        }
+    }
+
+    override fun followPlace(userId: Long, id: Long) {
+        val userFollowPlace = dsl.newRecord(USER_FOLLOWS_PLACE)
+        userFollowPlace.userFollowsPlacePlaceId = id
+        userFollowPlace.userFollowsPlaceUserProfileId = userId
+        try {
+            userFollowPlace.store()
+        } catch (e: Exception) {
+            throw FollowingException(
+                userId = userId,
+                entity = "Place",
+                entityId = id.toString(),
+                message = "can't follow"
+            )
+        }
+    }
+
+    override fun followUnity(userId: Long, id: Long) {
+        val userFollowUnity = dsl.newRecord(USER_FOLLOWS_UNITY)
+        userFollowUnity.userFollowsUnityUnityId = id
+        userFollowUnity.userFollowsUnityUserProfileId = userId
+        try {
+            userFollowUnity.store()
+        } catch (e: Exception) {
+            throw FollowingException(
+                userId = userId,
+                entity = "Unity",
+                entityId = id.toString(),
+                message = "can't follow"
+            )
+        }
+    }
+
+    override fun unfollowArtist(userId: Long, id: Long) {
         if (dsl.fetchOne(
                 USER_FOLLOWS_ARTIST,
                 USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID.eq(id),
-                USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(userAuthUid)
+                USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId)
             )
                 ?.delete() == null
-        ) throw FollowingException(userId = userAuthUid, entity = "Artist", entityId = id.toString(), message = "can't unfollow")
+        ) throw FollowingException(
+            userId = userId,
+            entity = "Artist",
+            entityId = id.toString(),
+            message = "can't unfollow"
+        )
     }
 
-    override fun findMyFollowsArtist(authUid: String): List<ArtistShortDto> {
-        return dsl
-            .selectFrom(
-                USER_FOLLOWS_ARTIST
-                    .leftOuterJoin(ARTIST).on(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID.eq(ARTIST.ARTIST_ID))
-                    .leftOuterJoin(COUNTRY).on(ARTIST.ARTIST_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
+    override fun unfollowEvent(userId: Long, id: Long) {
+        if (dsl.fetchOne(
+                USER_FOLLOWS_EVENT,
+                USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_EVENT_ID.eq(id),
+                USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_USER_PROFILE_ID.eq(userId)
             )
-            .where(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
+                ?.delete() == null
+        ) throw FollowingException(
+            userId = userId,
+            entity = "Event",
+            entityId = id.toString(),
+            message = "can't unfollow"
+        )
+    }
+
+    override fun unfollowPlace(userId: Long, id: Long) {
+        if (dsl.fetchOne(
+                USER_FOLLOWS_PLACE,
+                USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_PLACE_ID.eq(id),
+                USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_USER_PROFILE_ID.eq(userId)
+            )
+                ?.delete() == null
+        ) throw FollowingException(
+            userId = userId,
+            entity = "Place",
+            entityId = id.toString(),
+            message = "can't unfollow"
+        )
+
+    }
+
+    override fun unfollowUnity(userId: Long, id: Long) {
+        if (dsl.fetchOne(
+                USER_FOLLOWS_UNITY,
+                USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID.eq(id),
+                USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId)
+            )
+                ?.delete() == null
+        ) throw FollowingException(
+            userId = userId,
+            entity = "Unity",
+            entityId = id.toString(),
+            message = "can't unfollow"
+        )
+
+    }
+
+    override fun findMyFollowingArtists(userId: Long): List<ArtistShortDto> {
+        return dsl
+            .select().from(USER_FOLLOWS_ARTIST)
+            .leftOuterJoin(ARTIST).on(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID.eq(ARTIST.ARTIST_ID))
+            .joinArtistLocation()
+            .where(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId))
             .fetch()
             .map {
-                artistConverters.createShortDtoFromRecord(it.into(ARTIST), it.into(COUNTRY), true)
+                artistRepo.convertToShortDto(it)
             }
             .toList()
     }
 
-    override fun checkArtistIsFollowed(id: Long, authUid: String): Boolean {
+    override fun findMyFollowingEvents(userId: Long): List<EventShortDto> {
+        return dsl
+            .select()
+            .from(USER_FOLLOWS_EVENT)
+            .leftOuterJoin(EVENT).on(USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_EVENT_ID.eq(ARTIST.ARTIST_ID))
+            .joinEventLocation()
+            .where(USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_USER_PROFILE_ID.eq(userId))
+            .fetch()
+            .map {
+                eventRepo.convertToShortDto(it)
+            }
+            .toList()
+    }
+
+    override fun findMyFollowingPlaces(userId: Long): List<PlaceShortDto> {
+        return dsl
+            .select()
+            .from(USER_FOLLOWS_PLACE)
+            .leftOuterJoin(PLACE).on(USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_PLACE_ID.eq(PLACE.PLACE_ID))
+            .joinPlaceLocation()
+            .where(USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_USER_PROFILE_ID.eq(userId))
+            .fetch()
+            .map {
+                placeRepo.convertToShortDto(it)
+            }
+            .toList()
+    }
+
+    override fun findMyFollowingUnities(userId: Long): List<UnityShortDto> {
+        return dsl
+            .select()
+            .from(USER_FOLLOWS_UNITY)
+            .leftOuterJoin(UNITY).on(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID.eq(UNITY.UNITY_ID))
+            .joinUnityLocation()
+            .where(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId))
+            .fetch()
+            .map {
+                unityRepo.convertToShortDto(it)
+            }
+            .toList()
+    }
+
+    override fun checkArtistIsFollowed(userId: Long, id: Long): Boolean {
         val association = dsl.fetchOne(
             USER_FOLLOWS_ARTIST,
             USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID.eq(id),
-            USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid)
+            USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId)
+        )
+
+        return association != null
+    }
+
+    override fun checkEventIsFollowed(userId: Long, id: Long): Boolean {
+        val association = dsl.fetchOne(
+            USER_FOLLOWS_EVENT,
+            USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_EVENT_ID.eq(id),
+            USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_USER_PROFILE_ID.eq(userId)
+        )
+
+        return association != null
+    }
+
+    override fun checkPlaceIsFollowed(userId: Long, id: Long): Boolean {
+        val association = dsl.fetchOne(
+            USER_FOLLOWS_PLACE,
+            USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_PLACE_ID.eq(id),
+            USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_USER_PROFILE_ID.eq(userId)
+        )
+
+        return association != null
+    }
+
+    override fun checkUnityIsFollowed(userId: Long, id: Long): Boolean {
+        val association = dsl.fetchOne(
+            USER_FOLLOWS_UNITY,
+            USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID.eq(id),
+            USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId)
         )
 
         return association != null

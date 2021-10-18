@@ -28,7 +28,7 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
     private lateinit var myUserProfileService: MyUserProfileService
 
     private fun findByIdDependingOnUser(id: Long): FULLDTO {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         return entityRepo.findById(authUid, id)
     }
 
@@ -91,7 +91,7 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
     abstract fun checkLocationsAndAddAndRemoveFromLocationsQuickRepos(dto: WRITEDTO)
 
     override fun incrementFollowers(id: Long) {
-        if (myUserProfileService.getMyAuthUidOnlyIfUserProfileExists() != null) {
+        if (myUserProfileService.getMyUserId() != null) {
             entityOverallFollowersQuickRepo.incrementFollowers(id)
             entityWeeklyFollowersQuickRepo.incrementFollowers(id)
         } else throw TODO()
@@ -103,7 +103,7 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
     }
 
     override fun decrementFollowers(id: Long) {
-        if (myUserProfileService.getMyAuthUidOnlyIfUserProfileExists() != null) {
+        if (myUserProfileService.getMyUserId() != null) {
             entityOverallFollowersQuickRepo.decrementFollowers(id)
             entityWeeklyFollowersQuickRepo.decrementFollowers(id)
         }
@@ -115,7 +115,7 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
 
     // todo not enriched with rating
     override fun findByPartOfName(namePart: String): List<SHORTDTO> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         return entityRepo.findFollowableByPartOfName(authUid, namePart)
     }
 

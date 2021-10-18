@@ -20,7 +20,7 @@ abstract class BadRequestException(customMessage: String): Exception(customMessa
 class NotFoundException(entity: String, id: String): BadRequestException("${ExMessage.canNotFind} $entity with id or name $id")
 class SaveException(entity: String, name: String): BadRequestException("${ExMessage.canNotSave} $entity with id or name $name")
 class UpdateException(entity: String, name: String): BadRequestException("${ExMessage.canNotUpdate} $entity with id or name $name")
-class FollowingException(userId: String, entity: String, entityId: String, message: String): BadRequestException("User $userId has following problem with $entity id $entityId: $message")
+class FollowingException(userId: Long, entity: String, entityId: String, message: String): BadRequestException("User $userId has following problem with $entity id $entityId: $message")
 class DeleteException(sourceOfDeletion: String, entity: String, entityId: String): BadRequestException("${ExMessage.canNotDelete} from $sourceOfDeletion $entity with id $entityId")
 
 abstract class AuthenticationException(customMessage: String): Exception(customMessage)

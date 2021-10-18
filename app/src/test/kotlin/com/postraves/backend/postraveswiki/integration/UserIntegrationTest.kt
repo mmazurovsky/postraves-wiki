@@ -7,6 +7,8 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
+import com.postraves.backend.postraveswiki.exception.FollowingException
+import com.postraves.backend.postraveswiki.repo.followable.MyUserProfileRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.*
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
@@ -57,6 +59,9 @@ class UserIntegrationTest(
     private lateinit var myUserProfileService: MyUserProfileService
 
     @SpyBean
+    private lateinit var myUserProfileRepo: MyUserProfileRepo
+
+    @SpyBean
     private lateinit var securityService: SecurityService
 
     @BeforeAll
@@ -91,7 +96,7 @@ class UserIntegrationTest(
 
     @AfterEach
     private fun cleanDb() {
-        `when`(myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()).thenReturn("abc")
+        `when`(securityService.firebaseAuthUid).thenReturn("abc")
         myUserProfileService.deleteMyProfile()
         artistService.findAll().forEach { artistService.deleteById(it.id) }
     }
@@ -123,7 +128,6 @@ class UserIntegrationTest(
         )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
 
         myUserProfileService.save(userToSave)
         val savedUserFromMethodForSecurityService = myUserProfileService.findByAuthUidForSecurityService("abc")
@@ -144,9 +148,9 @@ class UserIntegrationTest(
         )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-
-        myUserProfileService.save(userToSave)
+        val savedUserId = myUserProfileService.save(userToSave).id
+        Mockito.doReturn(savedUserId).`when`(myUserProfileService).getMyUserId()
+//        `when`(myUserProfileService.getMyUserId()).thenReturn(savedUserId)
 
         val artistToSave = ArtistWriteDto(
             id = null,
@@ -167,7 +171,7 @@ class UserIntegrationTest(
 
         myUserProfileService.followArtist(artistId)
 
-        val followed = myUserProfileService.findMyFollowsArtist()
+        val followed = myUserProfileService.findMyFollowingArtists()
 
         assertEquals(1, followed.size)
         assertEquals(artistId, followed[0].id)
@@ -190,9 +194,9 @@ class UserIntegrationTest(
         )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-
-        myUserProfileService.save(userToSave)
+        val savedUserId = myUserProfileService.save(userToSave).id
+        Mockito.doReturn(savedUserId).`when`(myUserProfileService).getMyUserId()
+//        `when`(myUserProfileService.getMyUserId()).thenReturn(savedUserId)
 
         val artistToSave = ArtistWriteDto(
             id = null,
@@ -246,9 +250,8 @@ class UserIntegrationTest(
         )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
-        Mockito.doReturn("abc").`when`(myUserProfileService).getMyAuthUidOnlyIfUserProfileExists()
-
-        myUserProfileService.save(userToSave)
+        val savedUserId = myUserProfileService.save(userToSave).id
+        Mockito.doReturn(savedUserId).`when`(myUserProfileService).getMyUserId()
 
         val artistToSave = ArtistWriteDto(
             id = null,
@@ -267,24 +270,25 @@ class UserIntegrationTest(
         )
         val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
 
-        val isFollowed1 = myUserProfileService.checkArtistIsFollowed(artistId)
+        val isFollowed1 = myUserProfileRepo.checkArtistIsFollowed(savedUserId, artistId)
         myUserProfileService.followArtist(artistId)
-        val isFollowed2 = myUserProfileService.checkArtistIsFollowed(artistId)
-        myUserProfileService.followArtist(artistId)
-        val isFollowed3 = myUserProfileService.checkArtistIsFollowed(artistId)
+        val isFollowed2 = myUserProfileRepo.checkArtistIsFollowed(savedUserId, artistId)
         myUserProfileService.unfollowArtist(artistId)
-        val isFollowed4 = myUserProfileService.checkArtistIsFollowed(artistId)
-        myUserProfileService.unfollowArtist(artistId)
-        val isFollowed5 = myUserProfileService.checkArtistIsFollowed(artistId)
+        val isFollowed3 = myUserProfileRepo.checkArtistIsFollowed(savedUserId, artistId)
         myUserProfileService.followArtist(artistId)
-        val isFollowed6 = myUserProfileService.checkArtistIsFollowed(artistId)
+        val isFollowed4 = myUserProfileRepo.checkArtistIsFollowed(savedUserId, artistId)
+        assertThrows<FollowingException> { myUserProfileService.followArtist(artistId) }
+        val isFollowed5 = myUserProfileRepo.checkArtistIsFollowed(savedUserId, artistId)
+        myUserProfileService.unfollowArtist(artistId)
+        val isFollowed6 = myUserProfileRepo.checkArtistIsFollowed(savedUserId, artistId)
+        assertThrows<FollowingException> { myUserProfileService.unfollowArtist(artistId) }
 
         assertEquals(false, isFollowed1)
         assertEquals(true, isFollowed2)
-        assertEquals(true, isFollowed3)
-        assertEquals(false, isFollowed4)
-        assertEquals(false, isFollowed5)
-        assertEquals(true, isFollowed6)
+        assertEquals(false, isFollowed3)
+        assertEquals(true, isFollowed4)
+        assertEquals(true, isFollowed5)
+        assertEquals(false, isFollowed6)
     }
 
 }

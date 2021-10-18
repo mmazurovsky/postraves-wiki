@@ -12,7 +12,6 @@ import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.followable.ArtistRepo
-import com.postraves.backend.postraveswiki.repo.followable.EventRepo
 import com.postraves.backend.postraveswiki.repo.followable.PlaceRepo
 import com.postraves.backend.postraveswiki.repo.followable.UnityRepo
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepoAbstract
@@ -46,7 +45,7 @@ abstract class RatingsServiceAbstractImpl<FULLDTO : FollowableFullDto<FULLDTO>, 
     private lateinit var myUserProfileService: MyUserProfileService
 
     private fun findListByIds(ids: Set<Long>): List<SHORTDTOCONVERTABLE> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         return entityRepo.findListByIds(authUid, ids)
     }
 

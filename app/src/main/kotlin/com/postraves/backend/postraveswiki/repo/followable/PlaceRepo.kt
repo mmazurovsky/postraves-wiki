@@ -20,7 +20,6 @@ import org.jooq.impl.DSL.lower
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
-import java.time.OffsetDateTime
 
 
 interface PlaceRepo :
@@ -51,14 +50,11 @@ class PlaceRepoImpl(
     private lateinit var dsl: DSLContext
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
-        return this
-            .leftOuterJoin(CITY).on(PLACE.PLACE_CITY_NAME.eq(CITY.CITY_NAME))
-            .leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
+        return joinPlaceLocation()
     }
 
-    override fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record> {
-        return this.leftOuterJoin(USER_FOLLOWS_PLACE)
-            .on(PLACE.PLACE_ID.eq(USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_PLACE_ID), USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_USER_PROFILE_UID.eq(authUid))
+    override fun SelectJoinStep<Record>.joinUserFollow(userId: Long): SelectOnConditionStep<Record> {
+        return joinPlaceUserFollow(userId)
     }
 
     override fun SelectJoinStep<Record>.joinOtherData(): SelectOnConditionStep<Record>? {
@@ -70,7 +66,7 @@ class PlaceRepoImpl(
     }
 
     override fun convertToShortDto(record: Record): PlaceShortDto {
-        val isFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileUid != null
+        val isFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileId != null
         return placeConverters.createShortDtoFromRecord(
             record.into(PLACE),
             record.into(CITY),
@@ -80,7 +76,7 @@ class PlaceRepoImpl(
     }
 
     override fun convertToFullDto(record: Record): PlaceFullDto {
-        val isFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileUid != null
+        val isFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileId != null
         return placeConverters.createFullDtoFromRecord(
             record.into(PLACE),
             record.into(CITY),

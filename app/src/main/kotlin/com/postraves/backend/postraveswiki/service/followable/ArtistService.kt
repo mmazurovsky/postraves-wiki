@@ -72,7 +72,7 @@ class ArtistServiceImpl(
     }
 
     override fun getUnitiesOfArtist(id: Long): List<UnityShortDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         val unitiesOfArtistWithoutFollowers = thisRepo.getUnitiesOfArtist(authUid, id)
         return unitiesOfArtistWithoutFollowers
             .map { unityService.enrichWithFollowersCalculationRequired(it) }

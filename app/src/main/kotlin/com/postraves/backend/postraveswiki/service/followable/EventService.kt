@@ -85,29 +85,29 @@ class EventServiceImpl(
     }
 
     override fun getRelevantEventsForArtist(artistId: Long): List<EventShortDto> {
-        val func = { authUid: String?, entityId: Long -> eventRepo.getRelevantEventsForArtist(authUid, entityId) }
+        val func = { userId: Long?, entityId: Long -> eventRepo.getRelevantEventsForArtist(userId, entityId) }
         return getRelevantEventsForEntity(func, artistId)
     }
 
     override fun getRelevantEventsForPlace(placeId: Long): List<EventShortDto> {
-        val func = { authUid: String?, entityId: Long -> eventRepo.getRelevantEventsForPlace(authUid, entityId) }
+        val func = { userId: Long?, entityId: Long -> eventRepo.getRelevantEventsForPlace(userId, entityId) }
         return getRelevantEventsForEntity(func, placeId)
     }
 
     override fun getRelevantEventsForUnity(unityId: Long): List<EventShortDto> {
-        val func = { authUid: String?, entityId: Long -> eventRepo.getRelevantEventsForUnity(authUid, entityId) }
+        val func = { userId: Long?, entityId: Long -> eventRepo.getRelevantEventsForUnity(userId, entityId) }
         return getRelevantEventsForEntity(func, unityId)
     }
 
-    private fun getRelevantEventsForEntity(func: (authUid: String?, entityId: Long) -> List<EventShortDto>, entityId: Long): List<EventShortDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
-        val eventsWithoutFollowers = func(authUid, entityId)
+    private fun getRelevantEventsForEntity(func: (userId: Long?, entityId: Long) -> List<EventShortDto>, entityId: Long): List<EventShortDto> {
+        val userId = myUserProfileService.getMyUserId()
+        val eventsWithoutFollowers = func(userId, entityId)
         val eventsWithFollowers = eventsWithoutFollowers.map { this.enrichWithFollowersCalculationRequired(it) }.toList()
         return eventsWithFollowers
     }
 
     override fun getEventsByDate(cityName: String): List<EventsByDateDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         val startIntervalDateTime = dateTimeProvider.getNow()
         val endIntervalDateTime = startIntervalDateTime.plusDays(31)
         val eventsWithoutFollowers = eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
@@ -129,7 +129,7 @@ class EventServiceImpl(
     }
 
     override fun getEventsByRating(cityName: String): List<EventShortDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         val startIntervalDateTime = dateTimeProvider.getNow()
         val endIntervalDateTime = startIntervalDateTime.plusDays(31)
         val eventsWithoutFollowers = eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
@@ -138,7 +138,7 @@ class EventServiceImpl(
     }
 
     override fun getOrganizers(id: Long): List<UnityShortDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         val orgsWithoutFollowers = eventRepo.getOrganizers(authUid, id)
         return unityService.enrichListWithFollowersAndSortByOverallFollowers(orgsWithoutFollowers)
     }
@@ -155,13 +155,13 @@ class EventServiceImpl(
     }
 
     override fun getLineup(id: Long): List<ArtistShortDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         val lineupWithoutFollowers = eventRepo.getLineup(authUid, id)
         return artistService.enrichListWithFollowersAndSortByOverallFollowers(lineupWithoutFollowers)
     }
 
     override fun getTimetableForEvent(id: Long): List<TimetableForSceneDto> {
-        val authUid = myUserProfileService.getMyAuthUidOnlyIfUserProfileExists()
+        val authUid = myUserProfileService.getMyUserId()
         val timetableWithArtistsNotEnrichedWithFollowers = eventRepo.getTimetableForEvent(authUid, id)
         return enrichTimetableArtistsWithFollowers(timetableWithArtistsNotEnrichedWithFollowers)
     }

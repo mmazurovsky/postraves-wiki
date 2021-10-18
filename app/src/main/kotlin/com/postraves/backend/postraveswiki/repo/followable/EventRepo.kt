@@ -19,6 +19,7 @@ import org.jooq.*
 import org.jooq.impl.DSL.lower
 import org.jooq.impl.DSL.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
@@ -27,20 +28,20 @@ interface EventRepo :
     BaseRepo<EventWriteDto, EventShortDto>,
     ByIdRepo<EventFullDto, EventShortDto>,
     FollowableRepo<EventShortDto> {
-    fun getRelevantEventsForArtist(authUid: String?, artistId: Long): List<EventShortDto>
-    fun getRelevantEventsForPlace(authUid: String?, placeId: Long): List<EventShortDto>
-    fun getRelevantEventsForUnity(authUid: String?, unityId: Long): List<EventShortDto>
+    fun getRelevantEventsForArtist(userId: Long?, artistId: Long): List<EventShortDto>
+    fun getRelevantEventsForPlace(userId: Long?, placeId: Long): List<EventShortDto>
+    fun getRelevantEventsForUnity(userId: Long?, unityId: Long): List<EventShortDto>
     fun getEventsByCityAndTimeInterval(
-        authUid: String?,
+        userId: Long?,
         cityName: String,
         startOfIntervalDateTime: OffsetDateTime,
         endOfIntervalDateTime: OffsetDateTime
     ): List<EventShortDto>
-    fun getOrganizers(authUid: String?, id: Long): List<UnityShortDto>
+    fun getOrganizers(userId: Long?, id: Long): List<UnityShortDto>
     fun addOrganizers(id: Long, orgs: Set<Long>)
     fun removeOrganizers(id: Long, orgs: Set<Long>)
-    fun getLineup(authUid: String?, id: Long): List<ArtistShortDto>
-    fun getTimetableForEvent(authUid: String?, id: Long): List<TimetableForSceneDto>
+    fun getLineup(userId: Long?, id: Long): List<ArtistShortDto>
+    fun getTimetableForEvent(userId: Long?, id: Long): List<TimetableForSceneDto>
     fun getTimetableItemsForEvent(eventId: Long): Set<TimetablePerformanceWriteDto>
     fun addTimetablePerformances(id: Long, performances: Set<TimetablePerformanceWriteDto>)
     fun updateTimetablePerformancesNotTouchingArtists(id: Long, performances: Set<TimetablePerformanceWriteDto>)
@@ -61,6 +62,7 @@ class EventRepoImpl(
         entityType = EntityType.EVENT.nameString
     ) {
 
+    @Qualifier("getDSLContext")
     @Autowired
     @Lazy
     private lateinit var dsl: DSLContext
@@ -70,27 +72,15 @@ class EventRepoImpl(
     private val userFollowsTable = USER_FOLLOWS_EVENT
 
     override fun SelectJoinStep<Record>.joinLocation(): SelectOnConditionStep<Record> {
-        return this
-            .leftOuterJoin(PLACE).on(thisTable.EVENT_PLACE_ID.eq(PLACE.PLACE_ID))
-            .leftOuterJoin(CITY).on(PLACE.PLACE_CITY_NAME.eq(CITY.CITY_NAME))
-            .leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME))
+        return joinEventLocation()
     }
 
-    override fun SelectJoinStep<Record>.joinUserFollow(authUid: String): SelectOnConditionStep<Record> {
-        return this
-            .leftOuterJoin(userFollowsTable)
-            .on(thisTable.EVENT_ID.eq(userFollowsTable.USER_FOLLOWS_EVENT_EVENT_ID), userFollowsTable.USER_FOLLOWS_EVENT_USER_PROFILE_UID.eq(authUid))
-            .leftOuterJoin(USER_FOLLOWS_PLACE)
-            .on(PLACE.PLACE_ID.eq(USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_PLACE_ID), USER_FOLLOWS_PLACE.USER_FOLLOWS_PLACE_USER_PROFILE_UID.eq(authUid))
+    override fun SelectJoinStep<Record>.joinUserFollow(userId: Long): SelectOnConditionStep<Record> {
+        return joinEventUserFollow(userId)
     }
 
     override fun SelectJoinStep<Record>.joinOtherData(): SelectOnConditionStep<Record>? {
         return null
-    }
-
-    private fun SelectJoinStep<Record>.joinUserFollowArtist(authUid: String): SelectOnConditionStep<Record> {
-        return this.leftOuterJoin(USER_FOLLOWS_ARTIST)
-            .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
     }
 
     override fun SelectWhereStep<Record>.whereMatchingId(id: Long): SelectConditionStep<Record> {
@@ -126,8 +116,8 @@ class EventRepoImpl(
 
     // getting tickets from here might be not optimal
     override fun convertToShortDto(record: Record): EventShortDto {
-        val isFollowed = record.into(userFollowsTable).userFollowsEventUserProfileUid != null
-        val isPlaceFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileUid != null
+        val isFollowed = record.into(userFollowsTable).userFollowsEventUserProfileId != null
+        val isPlaceFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileId != null
 
         val eventRecord = record.into(thisTable)
         val ticketPrices = getTicketPrices(
@@ -150,8 +140,8 @@ class EventRepoImpl(
 
     // getting tickets from here might be not optimal
     override fun convertToFullDto(record: Record): EventFullDto {
-        val isFollowed = record.into(userFollowsTable).userFollowsEventUserProfileUid != null
-        val isPlaceFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileUid != null
+        val isFollowed = record.into(userFollowsTable).userFollowsEventUserProfileId != null
+        val isPlaceFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileId != null
 
         val eventRecord = record.into(thisTable)
         val ticketPrices = getTicketPrices(
@@ -208,7 +198,7 @@ class EventRepoImpl(
         eventConverters.transferDataFromDtoToRecord(dto, record)
     }
 
-    override fun getRelevantEventsForArtist(authUid: String?, artistId: Long): List<EventShortDto> {
+    override fun getRelevantEventsForArtist(userId: Long?, artistId: Long): List<EventShortDto> {
         // todo too many joins here, better store event - artist relation in redis
 
         val nestedSelectUpcomingEventsOfArtist = select()
@@ -220,7 +210,7 @@ class EventRepoImpl(
                 .on(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(TIMETABLE_ITEM.TIMETABLE_ITEM_ID))
                 .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
                 .apply {
-                    if (authUid != null) joinUserFollow(authUid)
+                    if (userId != null) joinUserFollow(userId)
                 }
                 .where(ARTIST.ARTIST_ID.eq(artistId).and(EVENT.EVENT_END_DATE_TIME.gt(dateTimeProvider.getNow())))
                 .asTable("nested")
@@ -237,12 +227,12 @@ class EventRepoImpl(
             .toList()
     }
 
-    override fun getRelevantEventsForPlace(authUid: String?, placeId: Long): List<EventShortDto> {
+    override fun getRelevantEventsForPlace(userId: Long?, placeId: Long): List<EventShortDto> {
         return dsl
             .select()
             .from(EVENT)
             .joinLocation()
-            .apply { if (authUid != null) joinUserFollow(authUid) }
+            .apply { if (userId != null) joinUserFollow(userId) }
             .where(PLACE.PLACE_ID.eq(placeId).and(EVENT.EVENT_END_DATE_TIME.gt(dateTimeProvider.getNow())))
             .orderBy(EVENT.EVENT_START_DATE_TIME.asc())
             .fetch()
@@ -252,14 +242,14 @@ class EventRepoImpl(
             .toList()
     }
 
-    override fun getRelevantEventsForUnity(authUid: String?, unityId: Long): List<EventShortDto> {
+    override fun getRelevantEventsForUnity(userId: Long?, unityId: Long): List<EventShortDto> {
         return dsl
             .select()
             .from(EVENT)
             .joinLocation()
             .leftOuterJoin(UNITY_EVENT).on(UNITY_EVENT.UNITY_EVENT_EVENT_ID.eq(EVENT.EVENT_ID))
             .leftOuterJoin(UNITY).on(UNITY.UNITY_ID.eq(UNITY_EVENT.UNITY_EVENT_UNITY_ID))
-            .apply { if (authUid != null) joinUserFollow(authUid) }
+            .apply { if (userId != null) joinUserFollow(userId) }
             .where(UNITY.UNITY_ID.eq(unityId).and(EVENT.EVENT_END_DATE_TIME.gt(dateTimeProvider.getNow())))
             .orderBy(EVENT.EVENT_START_DATE_TIME.asc())
             .fetch()
@@ -271,7 +261,7 @@ class EventRepoImpl(
 
 
     override fun getEventsByCityAndTimeInterval(
-        authUid: String?,
+        userId: Long?,
         cityName: String,
         startOfIntervalDateTime: OffsetDateTime,
         endOfIntervalDateTime: OffsetDateTime
@@ -280,7 +270,7 @@ class EventRepoImpl(
             .select()
             .from(EVENT)
             .joinLocation()
-            .apply { if (authUid != null) joinUserFollow(authUid) }
+            .apply { if (userId != null) joinUserFollow(userId) }
             // offset datetime now is with what offset
             .where(
                 PLACE.PLACE_CITY_NAME.eq(cityName)
@@ -296,14 +286,14 @@ class EventRepoImpl(
         return events
     }
 
-    override fun getOrganizers(authUid: String?, id: Long): List<UnityShortDto> {
+    override fun getOrganizers(userId: Long?, id: Long): List<UnityShortDto> {
         return dsl
             .select()
             .from(UNITY_EVENT)
             .leftOuterJoin(UNITY).on(UNITY.UNITY_ID.eq(UNITY_EVENT.UNITY_EVENT_UNITY_ID))
             .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(UNITY.UNITY_COUNTRY_NAME))
             .leftOuterJoin(USER_FOLLOWS_UNITY)
-            .on(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID.eq(UNITY.UNITY_ID), USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_UID.eq(authUid))
+            .on(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID.eq(UNITY.UNITY_ID), USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId))
             .where(UNITY_EVENT.UNITY_EVENT_EVENT_ID.eq(id))
             .fetch()
             .map {
@@ -333,7 +323,7 @@ class EventRepoImpl(
         }
     }
 
-    override fun getLineup(authUid: String?, id: Long): List<ArtistShortDto> {
+    override fun getLineup(userId: Long?, id: Long): List<ArtistShortDto> {
         return dsl
             .select()
             .distinctOn(ARTIST.ARTIST_ID)
@@ -343,7 +333,7 @@ class EventRepoImpl(
             .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
             .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(ARTIST.ARTIST_COUNTRY_NAME))
             .leftOuterJoin(USER_FOLLOWS_ARTIST)
-            .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
+            .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId))
             .where(TIMETABLE_ITEM.TIMETABLE_ITEM_EVENT_ID.eq(id))
             .fetch()
             .map {
@@ -352,7 +342,7 @@ class EventRepoImpl(
             .toList()
     }
 
-    override fun getTimetableForEvent(authUid: String?, id: Long): List<TimetableForSceneDto> {
+    override fun getTimetableForEvent(userId: Long?, id: Long): List<TimetableForSceneDto> {
 
         val cityOfEvent = dsl
             .select()
@@ -396,7 +386,7 @@ class EventRepoImpl(
                 .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
                 .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(ARTIST.ARTIST_COUNTRY_NAME))
                 .leftOuterJoin(USER_FOLLOWS_ARTIST)
-                .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_UID.eq(authUid))
+                .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId))
                 .where(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(timetableItemRecord.timetableItemId))
                 .fetch()
 
@@ -406,7 +396,7 @@ class EventRepoImpl(
                     Triple(
                         it.into(ARTIST),
                         it.into(COUNTRY),
-                        it.into(USER_FOLLOWS_ARTIST).userFollowsArtistUserProfileUid != null
+                        it.into(USER_FOLLOWS_ARTIST).userFollowsArtistUserProfileId != null
                     )
                 }.toList())
             } else {
@@ -415,7 +405,7 @@ class EventRepoImpl(
                         Triple(
                             it.into(ARTIST),
                             it.into(COUNTRY),
-                            it.into(USER_FOLLOWS_ARTIST).userFollowsArtistUserProfileUid != null
+                            it.into(USER_FOLLOWS_ARTIST).userFollowsArtistUserProfileId != null
                         )
                     }.toList())
             }

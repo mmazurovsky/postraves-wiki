@@ -99,10 +99,6 @@ class PlaceServiceImpl(
         return super.enrichWithFollowersCalculationRequired(dto)
     }
 
-//    override fun findListByIds(ids: Set<Long>): List<PlaceShortDto> {
-//        return ratingsService.findListByIds(ids)
-//    }
-
     override fun findOverallRatingInCountryForCity(cityName: String, maxQuantity: Int): List<PlaceShortDto> {
         return ratingsService.findOverallRatingInCountryForCity(cityName, maxQuantity)
     }

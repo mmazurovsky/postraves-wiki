@@ -1,8 +1,6 @@
 package com.postraves.backend.postraveswiki.controller
 
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
-import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
+import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
@@ -46,21 +44,75 @@ class MyUserProfileController(
         return myUserProfileService.checkNicknameIsFree(nickname)
     }
 
-    @PostMapping("/myFollows/artist/{id}")
+    @PostMapping("/myFollowing/artist/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun followArtist(@PathVariable id: Long) {
         myUserProfileService.followArtist(id)
     }
 
-    @DeleteMapping("/myFollows/artist/{id}")
+    @PostMapping("/myFollowing/event/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun followEvent(@PathVariable id: Long) {
+        myUserProfileService.followEvent(id)
+    }
+
+    @PostMapping("/myFollowing/place/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun followPlace(@PathVariable id: Long) {
+        myUserProfileService.followPlace(id)
+    }
+
+    @PostMapping("/myFollowing/unity/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun followUnity(@PathVariable id: Long) {
+        myUserProfileService.followUnity(id)
+    }
+
+    @DeleteMapping("/myFollowing/artist/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun unfollowArtist(@PathVariable id: Long)  {
         myUserProfileService.unfollowArtist(id)
     }
 
-    @GetMapping("/myFollows/artist")
+    @DeleteMapping("/myFollowing/event/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun findMyFollowsArtist() : List<ArtistShortDto> {
-        return myUserProfileService.findMyFollowsArtist()
+    fun unfollowEvent(@PathVariable id: Long)  {
+        myUserProfileService.unfollowEvent(id)
+    }
+
+    @DeleteMapping("/myFollowing/place/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun unfollowPlace(@PathVariable id: Long)  {
+        myUserProfileService.unfollowPlace(id)
+    }
+
+    @DeleteMapping("/myFollowing/unity/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun unfollowUnity(@PathVariable id: Long)  {
+        myUserProfileService.unfollowUnity(id)
+    }
+
+    @GetMapping("/myFollowing/artist")
+    @ResponseStatus(HttpStatus.OK)
+    fun findMyFollowingArtist() : List<ArtistShortDto> {
+        return myUserProfileService.findMyFollowingArtists()
+    }
+
+    @GetMapping("/myFollowing/event")
+    @ResponseStatus(HttpStatus.OK)
+    fun findMyFollowingEvent() : List<EventShortDto> {
+        return myUserProfileService.findMyFollowingEvents()
+    }
+
+    @GetMapping("/myFollowing/place")
+    @ResponseStatus(HttpStatus.OK)
+    fun findMyFollowingPlace() : List<PlaceShortDto> {
+        return myUserProfileService.findMyFollowingPlaces()
+    }
+
+    @GetMapping("/myFollowing/unity")
+    @ResponseStatus(HttpStatus.OK)
+    fun findMyFollowingUnity() : List<UnityShortDto> {
+        return myUserProfileService.findMyFollowingUnities()
     }
 }
