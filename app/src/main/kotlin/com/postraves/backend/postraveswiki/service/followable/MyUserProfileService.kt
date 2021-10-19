@@ -74,7 +74,7 @@ class MyUserProfileServiceImpl(
     override fun unfollowArtist(id: Long) {
         val userId = getMyUserId()
         if (userId != null)
-            if (myUserProfileRepo.checkArtistIsFollowed(userId, id)) {
+            if (myUserProfileRepo.checkArtistIsFollowed(userId, id)) { //todo!!!!!!!!
                 myUserProfileRepo.unfollowArtist(userId, id)
                 artistService.decrementFollowers(id)
             } else {

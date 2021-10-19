@@ -16,6 +16,7 @@ import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
+import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePutRequest
@@ -189,15 +190,22 @@ class FollowingIntegrationTest(
 
     @Test
     @Order(1)
-    fun saveArtistAndFollowAndGetIt() {
+    fun saveArtistAndFollowAndGetItAndUnfollowAndGetIt() {
         Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val artistToSave = artistTestData
+        val artistToSaveWithIdThatCanBeSameAsUsersIdIfThisArtistIsFirstToSaveInDb = artistTestData
+
+        val artistIdRespJsonFirstId =
+            makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSaveWithIdThatCanBeSameAsUsersIdIfThisArtistIsFirstToSaveInDb), status().isCreated)
+        val artistIdFirstId = Json.decodeFromString<ArtistShortDto>(artistIdRespJsonFirstId).id
+
+        val artistToSave = artistTestData.copy(name = "AnotherArtist")
 
         val artistIdRespJson =
             makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
         val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
+
 
         val artistRespJson = makeGetRequest(mockMvc, "$artistEndpoint/public/$artistId", status().isOk)
         val savedArtist = Json.decodeFromString<ArtistFullDto>(artistRespJson)
@@ -214,9 +222,20 @@ class FollowingIntegrationTest(
         assertEquals(artistToSave.name, updatedArtist.name)
         assertEquals(1, updatedArtist.overallFollowers)
         assertEquals(1, updatedArtist.weeklyFollowers)
+        assertEquals(true, updatedArtist.isFollowed)
 
         assertEquals(1, artistsInOverallRating[updatedArtist.id])
         assertEquals(1, artistsInWeeklyRating[updatedArtist.id])
+
+        makeDeleteRequest(mockMvc, "/user/myFollowing/artist/${savedArtist.id}", status().isOk)
+        val updatedArtistJson2 = makeGetRequest(mockMvc, "$artistEndpoint/public/$artistId", status().isOk)
+        val updatedArtist2 = Json.decodeFromString<ArtistFullDto>(updatedArtistJson2)
+
+        assertEquals(updatedArtist.id, updatedArtist2.id)
+        assertEquals(artistToSave.name, updatedArtist2.name)
+        assertEquals(0, updatedArtist2.overallFollowers)
+        assertEquals(0, updatedArtist2.weeklyFollowers)
+        assertEquals(false, updatedArtist2.isFollowed)
     }
 
     @Test
