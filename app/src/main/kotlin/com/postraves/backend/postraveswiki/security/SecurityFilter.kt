@@ -53,7 +53,6 @@ class SecurityFilter(
             logger.info("Incoming token is not provided")
             return
         } else {
-            logger.info("Incoming token is provided")
             try {
                 if (sessionCookie != null) {
                     session = sessionCookie.value
@@ -77,6 +76,7 @@ class SecurityFilter(
             }
 
             val userProfile = convertFirebaseTokenToMyBackendUser(decodedTokenWithFirebaseCredentials)
+            logger.info("Token provided, userId is ${userProfile?.id}")
 
             val authentication =
                 UsernamePasswordAuthenticationToken(

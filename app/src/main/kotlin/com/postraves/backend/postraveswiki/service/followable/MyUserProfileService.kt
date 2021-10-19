@@ -92,7 +92,7 @@ class MyUserProfileServiceImpl(
         val authUid = getMyUserId()
         if (authUid != null)
             if (!myUserProfileRepo.checkEventIsFollowed(id, authUid)) {
-                myUserProfileRepo.followArtist(authUid, id)
+                myUserProfileRepo.followEvent(authUid, id)
                 eventService.incrementFollowers(id)
             } else {
                 logger.info("Trying to follow one same artist multiple times user: $authUid, artist: $id")
@@ -104,7 +104,7 @@ class MyUserProfileServiceImpl(
         val authUid = getMyUserId()
         if (authUid != null)
             if (myUserProfileRepo.checkEventIsFollowed(id, authUid)) {
-                myUserProfileRepo.unfollowArtist(authUid, id)
+                myUserProfileRepo.unfollowEvent(authUid, id)
                 eventService.decrementFollowers(id)
             } else {
                 logger.info("Trying to unfollow one same artist multiple times user: $authUid, artist: $id")
@@ -115,7 +115,7 @@ class MyUserProfileServiceImpl(
         val authUid = getMyUserId()
         if (authUid != null)
             if (!myUserProfileRepo.checkPlaceIsFollowed(id, authUid)) {
-                myUserProfileRepo.followArtist(authUid, id)
+                myUserProfileRepo.followPlace(authUid, id)
                 placeService.incrementFollowers(id)
             } else {
                 logger.info("Trying to follow one same artist multiple times user: $authUid, artist: $id")
@@ -127,8 +127,8 @@ class MyUserProfileServiceImpl(
         val authUid = getMyUserId()
         if (authUid != null)
             if (myUserProfileRepo.checkPlaceIsFollowed(id, authUid)) {
-                myUserProfileRepo.unfollowArtist(authUid, id)
-                artistService.decrementFollowers(id)
+                myUserProfileRepo.unfollowPlace(authUid, id)
+                placeService.decrementFollowers(id)
             } else {
                 logger.info("Trying to unfollow one same artist multiple times user: $authUid, artist: $id")
             }
@@ -138,7 +138,7 @@ class MyUserProfileServiceImpl(
         val authUid = getMyUserId()
         if (authUid != null)
             if (!myUserProfileRepo.checkUnityIsFollowed(id, authUid)) {
-                myUserProfileRepo.followArtist(authUid, id)
+                myUserProfileRepo.followUnity(authUid, id)
                 unityService.incrementFollowers(id)
             } else {
                 logger.info("Trying to follow one same artist multiple times user: $authUid, artist: $id")
@@ -150,8 +150,8 @@ class MyUserProfileServiceImpl(
         val authUid = getMyUserId()
         if (authUid != null)
             if (myUserProfileRepo.checkUnityIsFollowed(id, authUid)) {
-                myUserProfileRepo.unfollowArtist(authUid, id)
-                artistService.decrementFollowers(id)
+                myUserProfileRepo.unfollowUnity(authUid, id)
+                unityService.decrementFollowers(id)
             } else {
                 logger.info("Trying to unfollow one same artist multiple times user: $authUid, artist: $id")
             }
@@ -169,10 +169,10 @@ class MyUserProfileServiceImpl(
     }
 
     override fun findMyFollowingEvents(): List<EventShortDto> {
-        val authUid = getMyUserId()
-        return if (authUid != null) {
+        val userId = getMyUserId()
+        return if (userId != null) {
             val myFollows =
-                myUserProfileRepo.findMyFollowingEvents(authUid)
+                myUserProfileRepo.findMyFollowingEvents(userId)
             myFollows.map {
                 eventService.enrichWithFollowersCalculationRequired(it)
             }.toList()

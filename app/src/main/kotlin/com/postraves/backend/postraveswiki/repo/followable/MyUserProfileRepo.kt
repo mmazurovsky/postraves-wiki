@@ -254,7 +254,7 @@ class MyUserProfileRepoImpl(
         return dsl
             .select()
             .from(USER_FOLLOWS_EVENT)
-            .leftOuterJoin(EVENT).on(USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_EVENT_ID.eq(ARTIST.ARTIST_ID))
+            .leftOuterJoin(EVENT).on(USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_EVENT_ID.eq(EVENT.EVENT_ID))
             .joinEventLocation()
             .where(USER_FOLLOWS_EVENT.USER_FOLLOWS_EVENT_USER_PROFILE_ID.eq(userId))
             .fetch()
