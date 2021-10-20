@@ -33,8 +33,8 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
     }
 
     override fun findById(id: Long): FULLDTO {
-        val foundArtist = findByIdDependingOnUser(id)
-        return enrichWithFollowersCalculationRequired(foundArtist)
+        val found = findByIdDependingOnUser(id)
+        return enrichWithFollowersCalculationRequired(found)
     }
 
     private fun calculateFollowers(id: Long): Pair<Int, Int> {
