@@ -342,4 +342,33 @@ class FollowingIntegrationTest(
             }
         }
     }
+
+    @Test
+    @Order(4)
+    fun saveArtistAndSearchForIt() {
+        Mockito.doReturn(savedUserMimic).`when`(securityService).user
+        Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
+
+        val artistToSave = artistTestData
+
+        val artistIdRespJson =
+            makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
+        val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
+
+
+        val artistRespJson = makeGetRequest(mockMvc, "$artistEndpoint/public/$artistId", status().isOk)
+        val savedArtist = Json.decodeFromString<ArtistFullDto>(artistRespJson)
+
+        makePostRequest(mockMvc, "/user/myFollowing/artist/${savedArtist.id}", null, status().isOk)
+
+        val searchPhrase = artistToSave.name
+        val searchResults = makeGetRequest(mockMvc, "$artistEndpoint/public/search/$searchPhrase", status().isOk)
+        val searchResultsDecoded = Json.decodeFromString<List<ArtistShortDto>>(searchResults)
+
+        assertEquals(1, searchResultsDecoded.size)
+        assertEquals(artistToSave.name, searchResultsDecoded[0].name)
+        assertEquals(artistId, searchResultsDecoded[0].id)
+        assertEquals(1, searchResultsDecoded[0].overallFollowers)
+        assertEquals(1, searchResultsDecoded[0].weeklyFollowers)
+    }
 }

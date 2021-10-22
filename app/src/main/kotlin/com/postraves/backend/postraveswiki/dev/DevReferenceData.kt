@@ -610,7 +610,7 @@ class DevReferenceData(
             name = "Sanchez Thursdays",
             imageLink = "https://sun9-70.userapi.com/impf/HcGo_gSFS9emEUabJI130FcFGgDWxS5Sv-N5wQ/FojhJi2t3_4.jpg?size=807x424&quality=96&sign=4cc06a1cbe7a106e6a0b1bcdb7fb2da1&type=album",
             about = "Традиционные четверги Санчеза в «Пропаганде».В лайнапе: Sergey Sanchez, D.A.L.I. и Sapurra.",
-            ticketsLink = "google.com", // todo check it opens in app
+            ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow(),
             endDateTime = dateTimeProvider.getNow().plusHours(8),
             ticketPrices = listOf(
@@ -640,7 +640,7 @@ class DevReferenceData(
             name = "Applique: Golden Hits",
             imageLink = "https://sun9-6.userapi.com/impf/GTw48P6DtpHtoHwsfj4jIuLtrhvuqH7FskfsJw/QBjtlCNata0.jpg?size=807x423&quality=96&sign=b7f6613d28ffed9c8e80682f47d77f6b&type=album",
             about = "Весельчаки из команды Applique возвращаются с новой тусовкой Golden Hits. Название события говорящее — там будут звучать все хаус-гимны будущего и настоящего, а также полюбившиеся шлягеры прошлых вечеринок объединения. Золотую коллекцию на тусовке будут ставить 12 диджеев, выступления многих из которых стали традиционными для ивентов от Applique. Лайнап: дуэт «Ай-нэ-нэ!», Timur Omar, Kovyazin D, Hipushit, Adamov, Kirill Shapovalov, D.A.L.I., Mark S, Levandowskiy, Розовый человек, Natali F и LDR",
-            ticketsLink = "google.com", // todo check it opens in app
+            ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow(),
             endDateTime = dateTimeProvider.getNow().plusHours(8),
             ticketPrices = listOf(
@@ -670,7 +670,7 @@ class DevReferenceData(
             name = "Synchron",
             imageLink = "https://sun9-63.userapi.com/impf/1YN0U_HwapP6kQviE95Jg85obf41TdXsOFgPqQ/CKAql91bu94.jpg?size=807x422&quality=96&sign=ce58f9016e4f5a3fda579ad1834c995c&type=album",
             about = "Молодая столичная промокоманда Synchron покоряет новые вершины. На этот раз она объявляет вечеринку на трёх танцполах «Мутабора», где свои лайвы и сеты отыграют необычные локальные артисты из числа резидентов и друзей объединения. Лайнап мероприятия: SNS, DRIADA, Medhi Tourneur, Miroliubov & Glushkov, DBaldokhin, Salibatr Brastislavovich, Lidvall, Xandr.vasiliev, Vishnevskiy, Ratigar, Quiet Light, CPSL и многие другие имена",
-            ticketsLink = "google.com", // todo check it opens in app
+            ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(7),
             endDateTime = dateTimeProvider.getNow().plusDays(7).plusHours(5),
             ticketPrices = listOf(
@@ -695,7 +695,7 @@ class DevReferenceData(
             name = "Рабица х НИИ",
             imageLink = "https://sun9-17.userapi.com/impf/JfHbAwbSVcc_dvkeW9fQHfGrzlTfWmlHcIAslw/XNs0T_F2AHw.jpg?size=807x367&quality=96&sign=e305c479e13c39574d10472b2af61ad0&type=album",
             about = "В последнюю субботу сентября в «Мутаборе» объединятся одни из ключевых команд на тусовочной карте города — рабы «Рабицы» и научные сотрудники из почившего клуба «НИИ». Их совместная вечеринка пройдёт на трёх танцполах клуба, где в полном составе выступят резиденты обоих уважаемых объединений. Лайнап вечеринки-коллаборации: ADIL, Burago, Buttechno, Caspian, Sergey Golikov, HMOT, Humanoid Lyubovnik, John Rock, Khamn, Low 808, MILF, Nikita Bugaev, Ranishe Niyaak, Sariim, Vtgnike и другие артисты",
-            ticketsLink = "google.com", // todo check it opens in app
+            ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(8),
             endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(5),
             ticketPrices = listOf(
@@ -727,7 +727,7 @@ class DevReferenceData(
             name = "Ricardo Villalobos Mutabor",
             imageLink = "https://gotoparty.ru/public/img/upload/tmp/9053175909c4903cfa21a902b876620e.jpg",
             about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-            ticketsLink = "google.com", // todo check it opens in app
+            ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(1),
             endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(9),
             ticketPrices = listOf(
@@ -757,7 +757,7 @@ class DevReferenceData(
             name = "Monasterio Factory 2021",
             imageLink = "https://cdn.stayhappening.com/events5/banners/e01d1aecbc7639d37e3039cc073e6dc827de50c8f688a281e1faf9fbfec57603-rimg-w526-h296-gmir?v=1622124795",
             about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-            ticketsLink = "google.com", // todo check it opens in app
+            ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(10).plusHours(1),
             endDateTime = dateTimeProvider.getNow().plusDays(10).plusHours(9),
             ticketPrices = listOf(
@@ -788,7 +788,7 @@ class DevReferenceData(
             name = "PAX II w/ Amelie Lens",
             imageLink = "https://i.ibb.co/VVwZrK5/195177326-4190550444338857-1452351166020055900-n.jpg",
             about = null,
-            ticketsLink = "https://system108.com/pax", // todo check it opens in app
+            ticketsLink = "https://system108.com/pax",
             startDateTime = dateTimeProvider.getNow().minusHours(2),
             endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(10),
             ticketPrices = listOf(

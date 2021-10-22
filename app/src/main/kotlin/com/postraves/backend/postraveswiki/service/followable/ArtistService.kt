@@ -6,6 +6,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.exception.UpdateException
 import com.postraves.backend.postraveswiki.repo.followable.ArtistRepo
+import com.postraves.backend.postraveswiki.repo.followable.MyUserProfileRepo
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepoAbstract
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.*
@@ -27,6 +28,8 @@ interface ArtistService :
 class ArtistServiceImpl(
     @Lazy
     private val unityService: UnityService,
+    @Lazy
+    private val myUserProfileService: MyUserProfileService,
     private val thisRepo: ArtistRepo,
     @Qualifier("artistCountryQuickRepoImpl")
     private val artistCountryRepo: EntityCountryQuickRepoAbstract,
@@ -43,9 +46,9 @@ class ArtistServiceImpl(
         entityWeeklyFollowersQuickRepo = artistWeeklyFollowersQuickRepo,
     ) {
 
-    @Autowired
-    @Lazy
-    private lateinit var myUserProfileService: MyUserProfileService
+//    @Autowired
+//    @Lazy
+//    private lateinit var myUserProfileService: MyUserProfileService
 
     override fun checkLocationsAndRemoveFromLocationsQuickRepos(dto: ArtistFullDto) {
         val countryOfDtoToDelete = dto.country?.name
@@ -97,7 +100,14 @@ class ArtistServiceImpl(
     }
 
     override fun findBestOfTheWeekByCityInCountry(cityName: String): ArtistShortDto? {
-        return ratingsService.findBestOfTheWeekByCityInCountry(cityName)
+        val artistOfTheWeekWithOutdatedFollowersAndWithoutIsFollowed = ratingsService.findBestOfTheWeekByCityInCountry(cityName)
+        return if (artistOfTheWeekWithOutdatedFollowersAndWithoutIsFollowed == null)
+            null
+        else {
+            val artistIsFollowed = myUserProfileService.checkArtistIsFollowed(artistOfTheWeekWithOutdatedFollowersAndWithoutIsFollowed.id)
+            val artistOfTheWeekWithOutdatedFollowersAndWithIsFollowed = artistOfTheWeekWithOutdatedFollowersAndWithoutIsFollowed.copy(isFollowed = artistIsFollowed)
+            artistOfTheWeekWithOutdatedFollowersAndWithIsFollowed
+        }
     }
 
     override fun setBestOfTheWeekForAllCities() {

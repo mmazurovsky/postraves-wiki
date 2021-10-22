@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.service.followable
 
 import com.postraves.backend.postraveswiki.data.dto.*
+import com.postraves.backend.postraveswiki.exception.NotAuthenticated
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
@@ -94,7 +95,7 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
         if (myUserProfileService.getMyUserId() != null) {
             entityOverallFollowersQuickRepo.incrementFollowers(id)
             entityWeeklyFollowersQuickRepo.incrementFollowers(id)
-        } else throw TODO()
+        } else throw NotAuthenticated()
     }
 
     override fun incrementFollowersUnsafe(id: Long) {
@@ -113,10 +114,11 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
         return entityRepo.findAll()
     }
 
-    // todo not enriched with rating
     override fun findByPartOfName(namePart: String): List<SHORTDTO> {
         val authUid = myUserProfileService.getMyUserId()
-        return entityRepo.findFollowableByPartOfName(authUid, namePart)
+        val found = entityRepo.findFollowableByPartOfName(authUid, namePart)
+        val foundEnrichedWithFollowers = enrichListWithFollowersAndSortByOverallFollowers(found)
+        return foundEnrichedWithFollowers
     }
 
     override fun enrichListWithFollowersAndSortByOverallFollowers(list: List<SHORTDTO>): List<SHORTDTO> {

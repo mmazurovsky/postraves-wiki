@@ -89,7 +89,7 @@ jooq {
                     url = POSTGRES_URL
                     user = POSTGRES_USER
                     password = POSTGRES_PASSWORD
-                    // TODO I changed ssl value to false manually
+                    // INFO I changed ssl value to false manually
                     properties.add(org.jooq.meta.jaxb.Property().withKey("ssl").withValue("false"))
                 }
                 generator.apply {

@@ -15,10 +15,11 @@ class SecurityService(
     private val securityProps: SecurityProperties? = null
 ) {
 
+    // INFO this user has country and city in local language that could be changed afterwards
     val user: UserFullDto?
         get() {
             val securityContext = SecurityContextHolder.getContext()
-            val principal = securityContext.authentication?.principal //todo
+            val principal = securityContext.authentication?.principal
             return if (principal == null || principal == "anonymousUser") {
                 null
             } else {

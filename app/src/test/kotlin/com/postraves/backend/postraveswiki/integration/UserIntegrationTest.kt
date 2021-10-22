@@ -130,7 +130,7 @@ class UserIntegrationTest(
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
 
         myUserProfileService.save(userToSave)
-        val savedUserFromMethodForSecurityService = myUserProfileService.findByAuthUidForSecurityService("abc")
+        val savedUserFromMethodForSecurityService = myUserProfileService.getUserByAuthUidForSecurityService("abc")
 
         assertEquals(userToSave.name, savedUserFromMethodForSecurityService?.name)
         assertEquals(userToSave.currentCity, savedUserFromMethodForSecurityService?.currentCity?.name)

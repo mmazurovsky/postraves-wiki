@@ -90,6 +90,6 @@ class SecurityFilter(
     }
 
     private fun convertFirebaseTokenToMyBackendUser(decodedToken: FirebaseToken): UserFullDto? {
-        return myUserProfileService.findByAuthUidForSecurityService(decodedToken.uid)
+        return myUserProfileService.getUserByAuthUidForSecurityService(decodedToken.uid)
     }
 }

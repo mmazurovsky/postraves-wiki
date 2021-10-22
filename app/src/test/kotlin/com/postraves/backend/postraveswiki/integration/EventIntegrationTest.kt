@@ -1167,6 +1167,12 @@ class EventIntegrationTest(
             endDateTime = now.plusDays(100).plusHours(2)
         )
 
+        val event10 = event1.copy(
+            name = "Event10",
+            startDateTime = now.minusDays(3),
+            endDateTime = now.plusDays(3)
+        )
+
         val event1Json = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
         val event2Json = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event2), status().isCreated)
         val event3Json = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event3), status().isCreated)
@@ -1176,6 +1182,7 @@ class EventIntegrationTest(
         val event7Json = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event7), status().isCreated)
         val event8Json = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event8), status().isCreated)
         val event9Json = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event9), status().isCreated)
+        val event10Json = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event10), status().isCreated)
 
         val event1Id = Json.decodeFromString<EventShortDto>(event1Json).id
         val event2Id = Json.decodeFromString<EventShortDto>(event2Json).id
@@ -1186,6 +1193,7 @@ class EventIntegrationTest(
         val event7Id = Json.decodeFromString<EventShortDto>(event7Json).id
         val event8Id = Json.decodeFromString<EventShortDto>(event8Json).id
         val event9Id = Json.decodeFromString<EventShortDto>(event9Json).id
+        val event10Id = Json.decodeFromString<EventShortDto>(event10Json).id
 
         val cityName = place1.cityName
 
@@ -1196,25 +1204,32 @@ class EventIntegrationTest(
         )
         val relevantEventsByDate = Json.decodeFromString<List<EventsByDateDto>>(relevantEventsByDateJson)
 
-        assertEquals(4, relevantEventsByDate.size)
+        assertEquals(5, relevantEventsByDate.size)
 
         relevantEventsByDate.forEachIndexed { index, eventsByDateDto ->
             when (index) {
                 0 -> {
+                    assertEquals(event10.startDateTime.toLocalDate(), eventsByDateDto.date)
+                    assertEquals(1, eventsByDateDto.events.size)
+                    assertEquals(event10Id, eventsByDateDto.events[0].id)
+                    assertEquals(event10.name, eventsByDateDto.events[0].name)
+                    assertEquals(EventStatus.LIVE, eventsByDateDto.events[0].status)
+                }
+                1 -> {
                     assertEquals(event2.startDateTime.toLocalDate(), eventsByDateDto.date)
                     assertEquals(1, eventsByDateDto.events.size)
                     assertEquals(event2Id, eventsByDateDto.events[0].id)
                     assertEquals(event2.name, eventsByDateDto.events[0].name)
                     assertEquals(EventStatus.LIVE, eventsByDateDto.events[0].status)
                 }
-                1 -> {
+                2 -> {
                     assertEquals(event3.startDateTime.toLocalDate(), eventsByDateDto.date)
                     assertEquals(1, eventsByDateDto.events.size)
                     assertEquals(event3Id, eventsByDateDto.events[0].id)
                     assertEquals(event3.name, eventsByDateDto.events[0].name)
                     assertEquals(EventStatus.TODAY, eventsByDateDto.events[0].status)
                 }
-                2 -> {
+                3 -> {
                     assertEquals(event4.startDateTime.toLocalDate(), eventsByDateDto.date)
                     assertEquals(2, eventsByDateDto.events.size)
                     assertEquals(event4Id, eventsByDateDto.events[0].id)
@@ -1224,7 +1239,7 @@ class EventIntegrationTest(
                     assertEquals(event5.name, eventsByDateDto.events[1].name)
                     assertEquals(EventStatus.TOMORROW, eventsByDateDto.events[1].status)
                 }
-                3 -> {
+                4 -> {
                     assertEquals(event6.startDateTime.toLocalDate(), eventsByDateDto.date)
                     assertEquals(2, eventsByDateDto.events.size)
                     assertEquals(event6Id, eventsByDateDto.events[0].id)

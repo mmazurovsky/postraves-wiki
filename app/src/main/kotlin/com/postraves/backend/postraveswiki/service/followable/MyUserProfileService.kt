@@ -7,9 +7,11 @@ import com.postraves.backend.postraveswiki.exception.FollowingException
 import com.postraves.backend.postraveswiki.exception.NotAuthenticated
 import com.postraves.backend.postraveswiki.repo.followable.MyUserProfileRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
+import com.postraves.backend.postraveswiki.service.CityService
 import org.springframework.stereotype.Service
 
 interface MyUserProfileService {
+    fun getMyUserWithLocalizedData(): UserFullDto?
     fun getMyUserId(): Long?
     fun save(dto: UserWriteDto): UserShortDto
     fun update(dto: UserWriteDto)
@@ -26,8 +28,9 @@ interface MyUserProfileService {
     fun findMyFollowingEvents(): List<EventShortDto>
     fun findMyFollowingUnities(): List<UnityShortDto>
     fun findMyFollowingPlaces(): List<PlaceShortDto>
-    fun findByAuthUidForSecurityService(authUid: String): UserFullDto?
+    fun getUserByAuthUidForSecurityService(authUid: String): UserFullDto?
     fun checkNicknameIsFree(nickname: String): Boolean
+    fun checkArtistIsFollowed(artistId: Long): Boolean
 }
 
 @Service
@@ -38,7 +41,17 @@ class MyUserProfileServiceImpl(
     private val eventService: EventService,
     private val placeService: PlaceService,
     private val unityService: UnityService,
+    private val cityService: CityService,
 ) : MyUserProfileService {
+
+    override fun getMyUserWithLocalizedData(): UserFullDto? {
+        val user = securityService.user
+        return if (user == null) null
+        else {
+            val cityWithLocalizedData = cityService.findByName(user.currentCity.name)
+            user.copy(currentCity = cityWithLocalizedData)
+        }
+    }
 
     override fun getMyUserId(): Long? {
         return securityService.user?.id
@@ -52,6 +65,11 @@ class MyUserProfileServiceImpl(
 
     override fun checkNicknameIsFree(nickname: String): Boolean {
         return myUserProfileRepo.checkNicknameIsFree(nickname)
+    }
+
+    override fun checkArtistIsFollowed(artistId: Long): Boolean {
+        val userId = getMyUserId()
+        return if (userId == null) false else myUserProfileRepo.checkArtistIsFollowed(userId, artistId)
     }
 
     override fun followArtist(id: Long) {
@@ -74,7 +92,7 @@ class MyUserProfileServiceImpl(
     override fun unfollowArtist(id: Long) {
         val userId = getMyUserId()
         if (userId != null)
-            if (myUserProfileRepo.checkArtistIsFollowed(userId, id)) { //todo!!!!!!!!
+            if (myUserProfileRepo.checkArtistIsFollowed(userId, id)) {
                 myUserProfileRepo.unfollowArtist(userId, id)
                 artistService.decrementFollowers(id)
             } else {
@@ -95,8 +113,13 @@ class MyUserProfileServiceImpl(
                 myUserProfileRepo.followEvent(userId, id)
                 eventService.incrementFollowers(id)
             } else {
-                logger.info("Trying to follow one same artist multiple times user: $userId, artist: $id")
-//                throw TODO()
+                logger.info("Trying to follow one same event multiple times user: $userId, event: $id")
+                throw FollowingException(
+                    userId = userId,
+                    entity = "Event",
+                    entityId = id.toString(),
+                    message = "already followed"
+                )
             }
     }
 
@@ -107,7 +130,13 @@ class MyUserProfileServiceImpl(
                 myUserProfileRepo.unfollowEvent(userId, id)
                 eventService.decrementFollowers(id)
             } else {
-                logger.info("Trying to unfollow one same artist multiple times user: $userId, artist: $id")
+                logger.info("Trying to unfollow one same event multiple times user: $userId, event: $id")
+                throw FollowingException(
+                    userId = userId,
+                    entity = "Event",
+                    entityId = id.toString(),
+                    message = "already unfollowed"
+                )
             }
     }
 
@@ -118,8 +147,13 @@ class MyUserProfileServiceImpl(
                 myUserProfileRepo.followPlace(userId, id)
                 placeService.incrementFollowers(id)
             } else {
-                logger.info("Trying to follow one same artist multiple times user: $userId, artist: $id")
-//                throw TODO()
+                logger.info("Trying to follow one same place multiple times user: $userId, place: $id")
+                throw FollowingException(
+                    userId = userId,
+                    entity = "Place",
+                    entityId = id.toString(),
+                    message = "already followed"
+                )
             }
     }
 
@@ -130,7 +164,13 @@ class MyUserProfileServiceImpl(
                 myUserProfileRepo.unfollowPlace(userId, id)
                 placeService.decrementFollowers(id)
             } else {
-                logger.info("Trying to unfollow one same artist multiple times user: $userId, artist: $id")
+                logger.info("Trying to unfollow one same place multiple times user: $userId, place: $id")
+                throw FollowingException(
+                    userId = userId,
+                    entity = "Place",
+                    entityId = id.toString(),
+                    message = "already unfollowed"
+                )
             }
     }
 
@@ -141,8 +181,13 @@ class MyUserProfileServiceImpl(
                 myUserProfileRepo.followUnity(userId, id)
                 unityService.incrementFollowers(id)
             } else {
-                logger.info("Trying to follow one same artist multiple times user: $userId, artist: $id")
-//                throw TODO()
+                logger.info("Trying to follow one same unity multiple times user: $userId, unity: $id")
+                throw FollowingException(
+                    userId = userId,
+                    entity = "Unity",
+                    entityId = id.toString(),
+                    message = "already followed"
+                )
             }
     }
 
@@ -153,7 +198,13 @@ class MyUserProfileServiceImpl(
                 myUserProfileRepo.unfollowUnity(userId, id)
                 unityService.decrementFollowers(id)
             } else {
-                logger.info("Trying to unfollow one same artist multiple times user: $userId, artist: $id")
+                logger.info("Trying to unfollow one same unity multiple times user: $userId, unity: $id")
+                throw FollowingException(
+                    userId = userId,
+                    entity = "Unity",
+                    entityId = id.toString(),
+                    message = "already unfollowed"
+                )
             }
     }
 
@@ -201,7 +252,7 @@ class MyUserProfileServiceImpl(
         } else throw NotAuthenticated()
     }
 
-    override fun findByAuthUidForSecurityService(authUid: String): UserFullDto? {
+    override fun getUserByAuthUidForSecurityService(authUid: String): UserFullDto? {
         return myUserProfileRepo.findMyProfileByAuthUid(authUid)
     }
 

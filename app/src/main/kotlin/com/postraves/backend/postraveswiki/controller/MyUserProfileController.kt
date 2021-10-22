@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/user")
 class MyUserProfileController(
     private val myUserProfileService: MyUserProfileService,
-    private val securityService: SecurityService,
     ) {
 
     @GetMapping("/public/myProfile")
     @ResponseStatus(HttpStatus.OK)
     fun findMyProfile(): UserFullDto? {
-        return securityService.user
+        return myUserProfileService.getMyUserWithLocalizedData()
     }
 
     @PostMapping("/public/myProfile")

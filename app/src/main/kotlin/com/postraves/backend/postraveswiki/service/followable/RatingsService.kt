@@ -96,11 +96,11 @@ abstract class RatingsServiceAbstractImpl<FULLDTO : FollowableFullDto<FULLDTO>, 
         }
     }
 
+    // this returns isFollow that was set initially, not possible new value
     override fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTOCONVERTABLE? {
         val countryName = cityService.findByName(cityName).country.name
         val bestEntityAsMap = weeklyBestRepo.getWeeklyBestInCountry(countryName)
         return if (bestEntityAsMap != null) decodeShortDtoFromMap(bestEntityAsMap) else null
-        // todo returns isFollow that was set initially, not possible new value:(((((
     }
 
     override fun findOverallRatingInCountryForCity(cityName: String, maxQuantity: Int): List<SHORTDTOCONVERTABLE> {

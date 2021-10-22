@@ -98,7 +98,6 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
             .toList()
     }
 
-    //todo create new special simple dto for finding purposes??
     override fun findFollowableByPartOfName(userId: Long?, namePart: String): List<SHORTDTO> {
         return selectFromEntity()
             .joinLocation()

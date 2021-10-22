@@ -107,7 +107,7 @@ class EventConvertersImpl(
             }
         } else if (daysBetweenNowAndEventStartTime > 0) {
             return EventStatus.TOMORROW
-        } else if (daysBetweenNowAndEventStartTime == 0.toLong()) {
+        } else if (daysBetweenNowAndEventStartTime <= 0.toLong()) {
             return if ((nowDateTime.isEqual(startDateTime) || nowDateTime.isAfter(startDateTime)) && nowDateTime.isBefore(endDateTime)) {
                 EventStatus.LIVE
             } else if (nowDateTime.isBefore(startDateTime)) {
