@@ -259,7 +259,7 @@ class DevReferenceData(
 
     val artistAbelle = ArtistWriteDto(
         id = null,
-        name = "Abelle",
+        name = "AbelleAbelleAbelleAbelle AbelleAbelleAbelle",
         imageLink = "https://i1.sndcdn.com/avatars-000006616275-8t6obr-t500x500.jpg",
         countryName = "RU",
         about = null,
@@ -524,7 +524,7 @@ class DevReferenceData(
             ticketPrices = listOf(
                 TicketPriceDto(
                     name = "One",
-                    price = 1000.0,
+                    price = 10000.0,
                     currency = MoneyCurrency.RUB
                 )
             ),
@@ -791,18 +791,7 @@ class DevReferenceData(
             ticketsLink = "https://system108.com/pax",
             startDateTime = dateTimeProvider.getNow().minusHours(2),
             endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(10),
-            ticketPrices = listOf(
-                TicketPriceDto(
-                    name = "До 00:00",
-                    price = 500.0,
-                    currency = MoneyCurrency.RUB
-                ),
-                TicketPriceDto(
-                    name = "После 00:00",
-                    price = 1800.0,
-                    currency = MoneyCurrency.RUB
-                ),
-            ),
+            ticketPrices = null,
             placeId = placeMutaborSaved.id,
             organizers = setOf(
                 unitySystemSaved.id,

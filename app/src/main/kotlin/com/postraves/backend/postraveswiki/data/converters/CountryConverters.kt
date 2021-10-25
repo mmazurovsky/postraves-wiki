@@ -23,10 +23,10 @@ class CountryConvertersImpl(
             userLocale.language.equals(Locale("ru").language) -> {
                 countryRecord.countryNameRu
             }
-            userLocale.language.equals(Locale("de").language) -> {
+            userLocale.language.equals(Locale("de").language) && countryRecord.countryNameDe != null -> {
                 countryRecord.countryNameDe
             }
-            userLocale.language.equals(Locale("fr").language) -> {
+            userLocale.language.equals(Locale("fr").language) && countryRecord.countryNameFr != null -> {
                 countryRecord.countryNameFr
             }
             else -> {

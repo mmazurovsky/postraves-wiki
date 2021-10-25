@@ -8,8 +8,8 @@ data class CountryWriteDto(
     val name: String,
     val nameRu: String,
     val nameEn: String,
-    val nameDe: String,
-    val nameFr: String,
+    val nameDe: String?,
+    val nameFr: String?,
     val phoneCode: String,
 ) : BaseWriteDto
 

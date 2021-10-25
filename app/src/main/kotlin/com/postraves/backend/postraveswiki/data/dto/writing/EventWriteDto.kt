@@ -16,8 +16,8 @@ data class EventWriteDto(
     val startDateTime: OffsetDateTime,
     @Serializable(KOffsetDateTimeSerializer::class)
     val endDateTime: OffsetDateTime,
-    val ticketPrices: Collection<TicketPriceDto>,
-    val organizers: Set<Long>,
+    val ticketPrices: Collection<TicketPriceDto>? = null,
+    val organizers: Set<Long>? = null,
     val imageLink : String? = null,
     val about: String? = null,
     val ticketsLink: String? = null,

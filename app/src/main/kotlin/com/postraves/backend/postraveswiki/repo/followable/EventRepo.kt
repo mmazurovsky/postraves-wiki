@@ -181,13 +181,13 @@ class EventRepoImpl(
     }
 
     override fun postSaveProcessing(id: Long, dto: EventWriteDto) {
-        if (dto.ticketPrices.isNotEmpty()) saveTicketPrices(id, dto.ticketPrices)
-        if (dto.organizers.isNotEmpty()) addOrganizers(id, dto.organizers)
+        if (dto.ticketPrices != null && dto.ticketPrices.isNotEmpty()) saveTicketPrices(id, dto.ticketPrices)
+        if (dto.organizers != null && dto.organizers.isNotEmpty()) addOrganizers(id, dto.organizers)
     }
 
     override fun postUpdateProcessing(dto: EventWriteDto) {
         removeTicketPricesOfEvent(dto.id ?: throw TODO())
-        if (dto.ticketPrices.isNotEmpty()) saveTicketPrices(dto.id, dto.ticketPrices)
+        if (dto.ticketPrices != null && dto.ticketPrices.isNotEmpty()) saveTicketPrices(dto.id, dto.ticketPrices)
     }
 
     override fun preUpdateGetId(dto: EventWriteDto): Long {

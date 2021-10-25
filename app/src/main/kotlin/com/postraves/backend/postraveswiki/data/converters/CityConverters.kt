@@ -25,10 +25,10 @@ class CityConvertersImpl(
             userLocale.language.equals(Locale("ru").language) -> {
                 cityRecord.cityNameRu
             }
-            userLocale.language.equals(Locale("de").language) -> {
+            userLocale.language.equals(Locale("de").language) && cityRecord.cityNameDe != null -> {
                 cityRecord.cityNameDe
             }
-            userLocale.language.equals(Locale("fr").language) -> {
+            userLocale.language.equals(Locale("fr").language) && cityRecord.cityNameFr != null -> {
                 cityRecord.cityNameFr
             }
             else -> {
