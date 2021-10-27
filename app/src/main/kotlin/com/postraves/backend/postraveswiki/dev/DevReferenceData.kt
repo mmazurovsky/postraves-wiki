@@ -259,7 +259,7 @@ class DevReferenceData(
 
     val artistAbelle = ArtistWriteDto(
         id = null,
-        name = "AbelleAbelleAbelleAbelle AbelleAbelleAbelle",
+        name = "Abelle",
         imageLink = "https://i1.sndcdn.com/avatars-000006616275-8t6obr-t500x500.jpg",
         countryName = "RU",
         about = null,
@@ -513,28 +513,6 @@ class DevReferenceData(
             )
         )
 
-        val eventSystem = EventWriteDto(
-            id = null,
-            name = "System One Hundred Eight",
-            imageLink = "https://sun9-32.userapi.com/impf/6iUkR2dK_tKA_XrtK_uDC1S84Wi6A798V9F1sQ/5_vyoPxQnKI.jpg?size=807x422&quality=96&sign=d9392037eda29e1270fbce125735c89d&type=album",
-            about = "После длительного воздержания, лесных приключений и сайд-вечеринок, команда System 108 возвращается в стены любимого завода на Дубровке. В субботнюю ночь лайнап события составят резиденты объединения, а также их друзья с лайвами и сетами. В программе ивента четыре живых выступления, которые исполнят Kovyazin D, Mujuice, Pavel Afanasyev и Philipp Gorbachev. Помимо громких лайвов, ожидаем оскароносные сеты от Chronic Preview, Egor Holkin, Errortica, Fanick, Mashkov, Nastya Zimens, Odopt, Orange и Séxstasy.",
-            ticketsLink = "google.com",
-            startDateTime = dateTimeProvider.getNow().plusHours(1),
-            endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(12),
-            ticketPrices = listOf(
-                TicketPriceDto(
-                    name = "One",
-                    price = 10000.0,
-                    currency = MoneyCurrency.RUB
-                )
-            ),
-            placeId = placeMutaborSaved.id,
-            organizers = setOf(
-                unitySystemSaved.id,
-                unityArmaSaved.id,
-            )
-        )
-
         val eventRadost = EventWriteDto(
             id = null,
             name = "Радость осени",
@@ -591,15 +569,9 @@ class DevReferenceData(
             imageLink = null,
             about = "Фирменная вечеринка лейбла Hyperboloid в клубе Powerhouse. Лайнап мероприятия составили резиденты и уже знакомые многим имена локальных артистов, некоторые из которых не раз выступали на событиях импринта: Bad Zu, BOGUE x Василий Яковлев, Clear Cast, data drain, Fisky, KRBSS и zarya.",
             ticketsLink = null,
-            startDateTime = dateTimeProvider.getNow(),
-            endDateTime = dateTimeProvider.getNow().plusHours(8),
-            ticketPrices = listOf(
-                TicketPriceDto(
-                    name = "Free",
-                    price = 0.0,
-                    currency = MoneyCurrency.RUB
-                ),
-            ),
+            startDateTime = dateTimeProvider.getNow().plusDays(12),
+            endDateTime = dateTimeProvider.getNow().plusDays(12).plusHours(8),
+            ticketPrices = null,
             placeId = placePowerhouseSaved.id,
             organizers = setOf(
             )
@@ -611,8 +583,8 @@ class DevReferenceData(
             imageLink = "https://sun9-70.userapi.com/impf/HcGo_gSFS9emEUabJI130FcFGgDWxS5Sv-N5wQ/FojhJi2t3_4.jpg?size=807x424&quality=96&sign=4cc06a1cbe7a106e6a0b1bcdb7fb2da1&type=album",
             about = "Традиционные четверги Санчеза в «Пропаганде».В лайнапе: Sergey Sanchez, D.A.L.I. и Sapurra.",
             ticketsLink = "google.com",
-            startDateTime = dateTimeProvider.getNow(),
-            endDateTime = dateTimeProvider.getNow().plusHours(8),
+            startDateTime = dateTimeProvider.getNow().plusDays(8),
+            endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(8),
             ticketPrices = listOf(
                 TicketPriceDto(
                     name = "Free",
@@ -641,8 +613,8 @@ class DevReferenceData(
             imageLink = "https://sun9-6.userapi.com/impf/GTw48P6DtpHtoHwsfj4jIuLtrhvuqH7FskfsJw/QBjtlCNata0.jpg?size=807x423&quality=96&sign=b7f6613d28ffed9c8e80682f47d77f6b&type=album",
             about = "Весельчаки из команды Applique возвращаются с новой тусовкой Golden Hits. Название события говорящее — там будут звучать все хаус-гимны будущего и настоящего, а также полюбившиеся шлягеры прошлых вечеринок объединения. Золотую коллекцию на тусовке будут ставить 12 диджеев, выступления многих из которых стали традиционными для ивентов от Applique. Лайнап: дуэт «Ай-нэ-нэ!», Timur Omar, Kovyazin D, Hipushit, Adamov, Kirill Shapovalov, D.A.L.I., Mark S, Levandowskiy, Розовый человек, Natali F и LDR",
             ticketsLink = "google.com",
-            startDateTime = dateTimeProvider.getNow(),
-            endDateTime = dateTimeProvider.getNow().plusHours(8),
+            startDateTime = dateTimeProvider.getNow().plusDays(4),
+            endDateTime = dateTimeProvider.getNow().plusDays(5).plusHours(8),
             ticketPrices = listOf(
                 TicketPriceDto(
                     name = "До 00:00",
@@ -652,11 +624,6 @@ class DevReferenceData(
                 TicketPriceDto(
                     name = "После 00:00",
                     price = 12000.0,
-                    currency = MoneyCurrency.RUB
-                ),
-                TicketPriceDto(
-                    name = "После 6:00",
-                    price = 500.0,
                     currency = MoneyCurrency.RUB
                 ),
             ),
@@ -791,11 +758,49 @@ class DevReferenceData(
             ticketsLink = "https://system108.com/pax",
             startDateTime = dateTimeProvider.getNow().minusHours(2),
             endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(10),
-            ticketPrices = null,
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "До 00:00",
+                    price = 500.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 00:00",
+                    price = 1800.0,
+                    currency = MoneyCurrency.RUB
+                ),
+                TicketPriceDto(
+                    name = "После 08:00",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                ),
+            ),
             placeId = placeMutaborSaved.id,
             organizers = setOf(
                 unitySystemSaved.id,
                 unityLenskeSaved.id,
+            )
+        )
+
+        val eventSystem = EventWriteDto(
+            id = null,
+            name = "System One Hundred Eight",
+            imageLink = "https://sun9-32.userapi.com/impf/6iUkR2dK_tKA_XrtK_uDC1S84Wi6A798V9F1sQ/5_vyoPxQnKI.jpg?size=807x422&quality=96&sign=d9392037eda29e1270fbce125735c89d&type=album",
+            about = "После длительного воздержания, лесных приключений и сайд-вечеринок, команда System 108 возвращается в стены любимого завода на Дубровке. В субботнюю ночь лайнап события составят резиденты объединения, а также их друзья с лайвами и сетами. В программе ивента четыре живых выступления, которые исполнят Kovyazin D, Mujuice, Pavel Afanasyev и Philipp Gorbachev. Помимо громких лайвов, ожидаем оскароносные сеты от Chronic Preview, Egor Holkin, Errortica, Fanick, Mashkov, Nastya Zimens, Odopt, Orange и Séxstasy.",
+            ticketsLink = "google.com",
+            startDateTime = dateTimeProvider.getNow().plusHours(1),
+            endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(12),
+            ticketPrices = listOf(
+                TicketPriceDto(
+                    name = "One",
+                    price = 0.0,
+                    currency = MoneyCurrency.RUB
+                )
+            ),
+            placeId = placeMutaborSaved.id,
+            organizers = setOf(
+                unitySystemSaved.id,
+                unityArmaSaved.id,
             )
         )
 
@@ -820,40 +825,31 @@ class DevReferenceData(
             endingDateTime = null
         )
 
-        val performance2 = TimetablePerformanceWriteDto(
-            id = null,
-            sceneId = scenesMutaborSaved[0].id,
-            artistIds = setOf(artistBejenecSaved.id),
-            typeOfPerformance = "DJ SET",
-            startingDateTime = dateTimeProvider.getNow().minusHours(1),
-            endingDateTime = dateTimeProvider.getNow().minusMinutes(3)
-        )
-
         val performance3 = TimetablePerformanceWriteDto(
             id = null,
             sceneId = scenesMutaborSaved[0].id,
-            artistIds = setOf(artistAbelleSaved.id, artistAllienSaved.id, artistCuveSaved.id),
+            artistIds = setOf(artistAllienSaved.id, artistCuveSaved.id),
             typeOfPerformance = null,
-            startingDateTime = dateTimeProvider.getNow().minusHours(6),
+            startingDateTime = dateTimeProvider.getNow().minusHours(2),
             endingDateTime = dateTimeProvider.getNow().plusMinutes(1),
         )
 
         val performance4 = TimetablePerformanceWriteDto(
             id = null,
             sceneId = scenesMutaborSaved[0].id,
-            artistIds = setOf(artistAbelleSaved.id, artistChronicSaved.id),
+            artistIds = setOf(artistMashkovSaved.id),
             typeOfPerformance = null,
-            startingDateTime = dateTimeProvider.getNow().minusHours(8),
-            endingDateTime = dateTimeProvider.getNow().plusHours(9)
+            startingDateTime = dateTimeProvider.getNow().minusHours(4),
+            endingDateTime = dateTimeProvider.getNow().minusHours(2)
         )
 
         val performance5 = TimetablePerformanceWriteDto(
             id = null,
             sceneId = scenesMutaborSaved[0].id,
-            artistIds = setOf(artistGorbachevSaved.id),
+            artistIds = setOf(artistBejenecSaved.id),
             typeOfPerformance = null,
-            startingDateTime = dateTimeProvider.getNow(),
-            endingDateTime = dateTimeProvider.getNow().plusHours(9).plusMinutes(1)
+            startingDateTime = dateTimeProvider.getNow().plusMinutes(2),
+            endingDateTime = dateTimeProvider.getNow().plusHours(1)
         )
 
         val performance6 = TimetablePerformanceWriteDto(
@@ -895,7 +891,6 @@ class DevReferenceData(
         eventService.updateTimetableForEvent(
             eventSystemSaved.id, setOf(
                 performance1,
-                performance2,
                 performance3,
                 performance4,
                 performance5,
@@ -936,6 +931,12 @@ class DevReferenceData(
         }
 
         i = 0
+        while (i < 300) {
+            placeService.incrementFollowersUnsafe(placeMutaborSaved.id)
+            i++
+        }
+
+        i = 0
         while (i < 10) {
             artistService.incrementFollowersUnsafe(artistAbelleSaved.id)
             i++
@@ -948,8 +949,26 @@ class DevReferenceData(
         }
 
         i = 0
-        while (i < 15) {
+        while (i < 25) {
             artistService.incrementFollowersUnsafe(artistMashkovSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 35) {
+            artistService.incrementFollowersUnsafe(artistBejenecSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 84) {
+            artistService.incrementFollowersUnsafe(artistCuveSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 109) {
+            artistService.incrementFollowersUnsafe(artistAllienSaved.id)
             i++
         }
 
@@ -973,13 +992,13 @@ class DevReferenceData(
         eventWeeklyFollowersQuickRepo.returnAllValuesToInitial()
 
         i = 0
-        while (i < 63) {
+        while (i < 263) {
             eventService.incrementFollowersUnsafe(eventPaxSaved.id)
             i++
         }
 
         i = 0
-        while (i < 74) {
+        while (i < 174) {
             eventService.incrementFollowersUnsafe(eventSystemSaved.id)
             i++
         }
@@ -997,13 +1016,19 @@ class DevReferenceData(
         }
 
         i = 0
+        while (i < 31) {
+            placeService.incrementFollowersUnsafe(placeMutaborSaved.id)
+            i++
+        }
+
+        i = 0
         while (i < 8) {
             artistService.incrementFollowersUnsafe(artistAbelleSaved.id)
             i++
         }
 
         i = 0
-        while (i < 57) {
+        while (i < 55) {
             artistService.incrementFollowersUnsafe(artistMujuiceSaved.id)
             i++
         }
