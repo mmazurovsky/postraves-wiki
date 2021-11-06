@@ -36,7 +36,7 @@ class SecurityConfig(
     @Bean
     fun restAuthenticationEntryPoint(): AuthenticationEntryPoint {
         return AuthenticationEntryPoint { _: HttpServletRequest?, httpServletResponse: HttpServletResponse, e: AuthenticationException? ->
-            // if there is exception on the server side and it is not connected with authentication,
+            // todo if there is exception on the server side and it is not connected with authentication,
             //  it also returns the error described below
             val errorObject: MutableMap<String, Any> = HashMap()
             val errorCode = 401
@@ -52,14 +52,11 @@ class SecurityConfig(
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration()
-//        configuration.allowedOrigins = restSecProps!!.allowedOrigins
-//        configuration.allowedMethods = restSecProps.allowedMethods
-//        configuration.allowedHeaders = restSecProps.allowedHeaders
-//        configuration.allowCredentials = restSecProps.allowCredentials
-//        configuration.exposedHeaders = restSecProps.exposedHeaders
+        val config = CorsConfiguration()
+        config.allowedOriginPatterns = listOf("https://*.postraves.com", "http://localhost:[*]")
+        config.applyPermitDefaultValues()
         val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
+        source.registerCorsConfiguration("/**", config)
         return source
     }
 
@@ -68,7 +65,6 @@ class SecurityConfig(
             .httpBasic().disable().exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint())
             .and()
             .authorizeRequests()
-//            .anyRequest().permitAll()
             .antMatchers("/**/public/**").permitAll()
             .antMatchers("/**/actuator/**").permitAll()
             .antMatchers("/**").authenticated()
