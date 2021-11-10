@@ -114,7 +114,7 @@ class DevReferenceData(
         id = null,
         name = "Mutabor",
         cityName = cityMoscow.name,
-        imageLink = "https://mutabor.club/img/mutabor.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mutabor.jpeg?alt=media&token=e6a97df6-4469-4b71-bd88-c31638ce8943",
         streetAddress = "Sharikopodshipnikovskaya Ulitsa, 13, с32",
         coordinate = CoordinateDto(
             latitude = 55.719591,
@@ -129,7 +129,7 @@ class DevReferenceData(
         id = null,
         name = "Слёзы",
         cityName = cityMoscow.name,
-        imageLink = "https://gotoparty.ru/public/img/upload/page/4819/a4cf318f0783514426f29cb0d2e0650c_200x200.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_slezy.jpeg?alt=media&token=8f841c93-6c22-44c5-b820-c7abac8fd19f",
         streetAddress = "Костомаровский пер., 3",
         coordinate = CoordinateDto(
             latitude = 55.719591,
@@ -173,14 +173,14 @@ class DevReferenceData(
     val sceneMutaborMain = SceneDto(
         id = null,
         name = "Main",
-        imageLink = "https://www.restoclub.ru/uploads/place_thumbnail_big/7/a/4/c/7a4ccc935aa721cc69fce4d716c5a544.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mutabor_main.jpeg?alt=media&token=8a7e4df6-5742-40c5-85b3-566793ff79ce",
         priority = 3,
     )
 
     val sceneMutaborMedium = SceneDto(
         id = null,
         name = "Medium",
-        imageLink = "https://ra.co/images/features/2020/mutabor-scenes05.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mutabor_medium.jpeg?alt=media&token=80a232a0-0864-4d56-b3c4-9b3327af89af",
         priority = 2,
     )
 
@@ -194,7 +194,7 @@ class DevReferenceData(
     val unityLenske = UnityWriteDto(
         id = null,
         name = "Lenske Records",
-        imageLink = "https://i1.sndcdn.com/avatars-000349628618-0tza1o-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_lenske.jpeg?alt=media&token=80d2bf88-38a6-4983-a098-4de15581a0a9",
         countryName = "FR",
         soundcloudUsername = "lenskerecords",
         instagramUsername = null,
@@ -205,7 +205,7 @@ class DevReferenceData(
     val unitySystem = UnityWriteDto(
         id = null,
         name = "System 108",
-        imageLink = "https://www.residentadvisor.net/images/labels/system108.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_system.jpeg?alt=media&token=075cb18f-2d8a-4e66-b807-f1561365419d",
         countryName = "RU",
         soundcloudUsername = "system108",
         instagramUsername = "system108",
@@ -260,7 +260,7 @@ class DevReferenceData(
     val artistAbelle = ArtistWriteDto(
         id = null,
         name = "Abelle",
-        imageLink = "https://i1.sndcdn.com/avatars-000006616275-8t6obr-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_abelle.jpeg?alt=media&token=308b41e3-025c-4af0-ac5f-891f673c6554",
         countryName = "RU",
         about = null,
         instagramUsername = null,
@@ -270,7 +270,7 @@ class DevReferenceData(
     val artistMashkov = ArtistWriteDto(
         id = null,
         name = "Mashkov",
-        imageLink = "https://photos.bandsintown.com/thumb/8065761.jpeg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mashkov.png?alt=media&token=545f3b5b-c126-43c4-99d3-ca6735baea50",
         countryName = "RU",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         instagramUsername = "mashkov",
@@ -280,7 +280,7 @@ class DevReferenceData(
     val artistMujuice = ArtistWriteDto(
         id = null,
         name = "Mujuice",
-        imageLink = "https://i1.sndcdn.com/avatars-zubprYWZWJCMUPe7-Nlui4Q-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mujuice.jpeg?alt=media&token=1247bd99-20aa-420d-ad81-907ec60d2529",
         countryName = "RU",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         instagramUsername = "mujuice",
@@ -290,7 +290,7 @@ class DevReferenceData(
     val artistRodina = ArtistWriteDto(
         id = null,
         name = "Sofia Rodina",
-        imageLink = "https://i1.sndcdn.com/avatars-000114541978-sixgd1-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_rodina.jpeg?alt=media&token=b802b2a4-de1d-417b-bdf2-d5f0971b232a",
         countryName = "RU",
         about = null,
         instagramUsername = null,
@@ -300,7 +300,7 @@ class DevReferenceData(
     val artistAllien = ArtistWriteDto(
         id = null,
         name = "Ellen Allien",
-        imageLink = "https://geo-static.traxsource.com/files/artists/5349.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_allien.jpeg?alt=media&token=2af8d768-cceb-4f68-b340-0d79a60350e0",
         countryName = "DE",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         instagramUsername = "ellen.allien",
@@ -310,7 +310,7 @@ class DevReferenceData(
     val artistCuve = ArtistWriteDto(
         id = null,
         name = "Clara Cuvé",
-        imageLink = "https://geo-media.beatport.com/image_size/500x500/10a6d60c-098d-4497-b710-85fee4ec1d9c.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_cuve.jpeg?alt=media&token=24ac822b-6a07-49a7-b25f-d760aacfefae",
         countryName = "FR",
         about = null,
         instagramUsername = null,
@@ -320,7 +320,7 @@ class DevReferenceData(
     val artistModels = ArtistWriteDto(
         id = null,
         name = "I HATE MODELS",
-        imageLink = "https://ravemovement.com/wp-content/uploads/2020/01/i-hate-models-rave-movement.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_models.jpeg?alt=media&token=d1da6eeb-fe9d-4f2c-af53-475d81d30723",
         countryName = "FR",
         about = null,
         instagramUsername = null,
@@ -330,7 +330,7 @@ class DevReferenceData(
     val artistParfait = ArtistWriteDto(
         id = null,
         name = "Parfait",
-        imageLink = "https://i1.sndcdn.com/artworks-000105255737-c3bl9u-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_parfait.jpeg?alt=media&token=11b1e2fb-4255-4a31-a567-4179d4e6e920",
         countryName = "FR",
         about = null,
         instagramUsername = null,
@@ -340,7 +340,7 @@ class DevReferenceData(
     val artistLens = ArtistWriteDto(
         id = null,
         name = "Amelie Lens",
-        imageLink = "https://www.amsterdam-dance-event.nl/uploads/images/artists-speakers/_AUTOxAUTO_crop_center-center_none/13717210_1809902755895840_9030645021916190431_o_77261.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_lens.jpeg?alt=media&token=dd011453-dc28-4bd6-9fed-88dd0438d20a",
         countryName = "BE",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         instagramUsername = "amelie_lens",
@@ -350,7 +350,7 @@ class DevReferenceData(
     val artistFarrago = ArtistWriteDto(
         id = null,
         name = "Farrago",
-        imageLink = "https://i1.sndcdn.com/avatars-000650903115-zk4q63-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_farrago.jpeg?alt=media&token=e073cfb9-a322-4d94-9716-20bde719246b",
         countryName = "BE",
         about = null,
         instagramUsername = null,
@@ -360,7 +360,7 @@ class DevReferenceData(
     val artistBejenec = ArtistWriteDto(
         id = null,
         name = "BEJENEC",
-        imageLink = "https://f4.bcbits.com/img/a3619367416_2.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_bejenec.jpeg?alt=media&token=4a14bddf-3084-4460-8d9d-1a08f8d60574",
         countryName = "UA",
         about = null,
         instagramUsername = null,
@@ -370,7 +370,7 @@ class DevReferenceData(
     val artistKolosova = ArtistWriteDto(
         id = null,
         name = "Daria Kolosova",
-        imageLink = "https://i1.sndcdn.com/avatars-kvYrVE26X0kvpKQ2-qty6jA-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_kolosova.jpeg?alt=media&token=e3040889-e79b-42d8-ade8-3c4b0ce2e062",
         countryName = "UA",
         about = null,
         instagramUsername = null,
@@ -380,7 +380,7 @@ class DevReferenceData(
     val artistVillalobos = ArtistWriteDto(
         id = null,
         name = "Ricardo Villalobos",
-        imageLink = "https://mixmag.asia/assets/uploads/images/_full/Ricardo-Villalobos-sq.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_villalobos.jpeg?alt=media&token=f0078e7b-cfd4-46ef-b5bf-31957d53f8b6",
         countryName = "DE",
         about = null,
         instagramUsername = null,
@@ -390,7 +390,7 @@ class DevReferenceData(
     val artistGorbachev = ArtistWriteDto(
         id = null,
         name = "Philipp Gorbachev",
-        imageLink = "http://orchid-am.com/wp-content/uploads/2020/02/Philipp-Gorbachev-2019-%C2%A9-Camille-Blake-1-900x900.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_gorbachev.jpeg?alt=media&token=f67f1f71-2908-4541-ae75-703335a4bd02",
         countryName = "RU",
         about = null,
         instagramUsername = null,
@@ -400,7 +400,7 @@ class DevReferenceData(
     val artistZots = ArtistWriteDto(
         id = null,
         name = "Andrey Zots",
-        imageLink = "https://img.discogs.com/tsUcfpy11hvkPWZqoAbAZi2mFoU=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/A-995736-1597376234-9390.jpeg.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_zots.jpg?alt=media&token=92295ce3-e963-4af7-bcfa-f9f997a5b87d",
         countryName = "RU",
         about = null,
         instagramUsername = null,
@@ -410,7 +410,7 @@ class DevReferenceData(
     val artistChronic = ArtistWriteDto(
         id = null,
         name = "Chronic Preview",
-        imageLink = "https://i1.sndcdn.com/avatars-fzyLziCt2hJ6BqZs-AKsy9g-t500x500.jpg",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_chronic.jpeg?alt=media&token=5a3a7f48-52c5-4ea6-af72-04da0c9b2ed9",
         countryName = "RU",
         about = null,
         instagramUsername = null,
