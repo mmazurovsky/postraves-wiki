@@ -692,7 +692,7 @@ class DevReferenceData(
         val eventVillalobos = EventWriteDto(
             id = null,
             name = "Ricardo Villalobos Mutabor",
-            imageLink = "https://gotoparty.ru/public/img/upload/tmp/9053175909c4903cfa21a902b876620e.jpg",
+            imageLink = null,
             about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(1),
