@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TicketPriceDto (
-    private val name: String,
+    private val name: String?,
     private val price: Double,
     private val currency: MoneyCurrency
 ) {
