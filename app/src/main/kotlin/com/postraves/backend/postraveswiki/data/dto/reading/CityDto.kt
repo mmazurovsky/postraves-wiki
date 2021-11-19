@@ -10,4 +10,5 @@ data class CityDto(
     val name: String,
     val localName: String,
     val country: CountryDto,
+    val timeOffset: Int
 ) : BaseShortDto, BaseFullDto

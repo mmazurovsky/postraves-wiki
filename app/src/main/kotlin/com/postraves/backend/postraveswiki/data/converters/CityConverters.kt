@@ -41,7 +41,8 @@ class CityConvertersImpl(
         return CityDto(
             name = cityRecord.cityName ?: throw RecordFieldNullException("City Name"),
             localName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Local Name"),
-            country = countryConverters.createDtoFromRecord(countryRecord)
+            country = countryConverters.createDtoFromRecord(countryRecord),
+            timeOffset = cityRecord.cityTimeOffset ?: throw RecordFieldNullException("City time offset"),
         )
     }
 
