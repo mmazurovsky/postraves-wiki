@@ -68,8 +68,10 @@ class EventRatingIntegrationTest(
 
     @SpyBean
     private lateinit var dateTimeProvider: DateTimeProvider
+
     @SpyBean
     private lateinit var myUserProfileService: MyUserProfileService
+
     @MockBean
     private lateinit var securityService: SecurityService
 
@@ -87,6 +89,7 @@ class EventRatingIntegrationTest(
         currentCity = CityDto(
             name = "Bruges",
             localName = "Bruges",
+            timeOffset = 1,
             country = CountryDto(
                 name = "BE",
                 localName = "Belgium",
@@ -107,8 +110,8 @@ class EventRatingIntegrationTest(
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
-        
-    )
+
+        )
 
     private val countryTestData2 = countryTestData.copy(
         name = "RU",

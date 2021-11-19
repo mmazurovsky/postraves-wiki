@@ -77,6 +77,7 @@ class FollowingIntegrationTest(
 
     @SpyBean
     private lateinit var myUserProfileService: MyUserProfileService
+
     @MockBean
     private lateinit var securityService: SecurityService
 
@@ -96,8 +97,8 @@ class FollowingIntegrationTest(
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
-        
-    )
+
+        )
 
     private val city = CityWriteDto(
         name = "Bruges",
@@ -139,11 +140,11 @@ class FollowingIntegrationTest(
         currentCity = "Bruges"
     )
 
-    private var savedUserMimic
-    = UserFullDto(
+    private var savedUserMimic = UserFullDto(
         id = 0,
         name = userToSave.name,
         currentCity = CityDto(
+            timeOffset = 1,
             name = "Bruges",
             localName = "Bruges",
             country = CountryDto(
@@ -168,7 +169,8 @@ class FollowingIntegrationTest(
 
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(city), status().isCreated)
-        val userJson = makePostRequest(mockMvc, "/user/public/myProfile", Json.encodeToString(userToSave), status().isCreated)
+        val userJson =
+            makePostRequest(mockMvc, "/user/public/myProfile", Json.encodeToString(userToSave), status().isCreated)
         val userSaved = Json.decodeFromString<UserShortDto>(userJson)
         savedUserMimic = savedUserMimic.copy(id = userSaved.id)
     }
@@ -197,7 +199,12 @@ class FollowingIntegrationTest(
         val artistToSaveWithIdThatCanBeSameAsUsersIdIfThisArtistIsFirstToSaveInDb = artistTestData
 
         val artistIdRespJsonFirstId =
-            makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSaveWithIdThatCanBeSameAsUsersIdIfThisArtistIsFirstToSaveInDb), status().isCreated)
+            makePostRequest(
+                mockMvc,
+                artistEndpoint,
+                Json.encodeToString(artistToSaveWithIdThatCanBeSameAsUsersIdIfThisArtistIsFirstToSaveInDb),
+                status().isCreated
+            )
         val artistIdFirstId = Json.decodeFromString<ArtistShortDto>(artistIdRespJsonFirstId).id
 
         val artistToSave = artistTestData.copy(name = "AnotherArtist")

@@ -62,6 +62,7 @@ class ArtistRatingIntegrationTest(
         currentCity = CityDto(
             name = "Bruges",
             localName = "Bruges",
+            timeOffset = 1,
             country = CountryDto(
                 name = "BE",
                 localName = "Belgium",
@@ -96,8 +97,8 @@ class ArtistRatingIntegrationTest(
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+9",
-            
-        )
+
+            )
 
         val country3 = CountryWriteDto(
             name = "CA",
@@ -106,8 +107,8 @@ class ArtistRatingIntegrationTest(
             nameDe = "NameDe",
             nameFr = "NameFr",
             phoneCode = "+10",
-            
-        )
+
+            )
 
         val city1 = CityWriteDto(
             name = "Bruges",
