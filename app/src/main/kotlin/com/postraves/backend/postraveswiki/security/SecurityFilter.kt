@@ -50,7 +50,6 @@ class SecurityFilter(
         val token = securityService!!.getBearerToken(request)
 
         if (token == null || token.isEmpty() || token.equals("undefined", ignoreCase = true)) {
-            logger.info("Incoming token is not provided")
             return
         } else {
             try {
