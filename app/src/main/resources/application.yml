@@ -37,6 +37,18 @@ security:
       - Id-Token
     exposed-headers:
       - X-Xsrf-Token
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+    com:
+      postraves:
+        wiki:
+          postraves-wiki:
+            RequestLoggingFilter: DEBUG
 ---
 spring:
   config:
@@ -52,8 +64,8 @@ spring:
   redis:
     host: ${REDIS_HOST}
     port: 6379
-#    sentinel:
-#      master: mymaster
+  #    sentinel:
+  #      master: mymaster
   logging:
     level:
       org:

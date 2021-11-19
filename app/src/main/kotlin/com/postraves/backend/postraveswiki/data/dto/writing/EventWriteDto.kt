@@ -17,6 +17,7 @@ data class EventWriteDto(
     @Serializable(KOffsetDateTimeSerializer::class)
     val endDateTime: OffsetDateTime,
     val ticketPrices: Collection<TicketPriceDto>? = null,
+    // todo maybe delete because it is taken into account on save but is ignored on update
     val organizers: Set<Long>? = null,
     val imageLink : String? = null,
     val about: String? = null,

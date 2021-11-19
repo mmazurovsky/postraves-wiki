@@ -53,7 +53,7 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
-        config.allowedOriginPatterns = listOf("https://*.postraves.com", "http://localhost:[*]")
+        config.allowedOriginPatterns = listOf("https://*.postraves.com", "http://localhost:49257", "https://localhost:49257")
         config.applyPermitDefaultValues()
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
