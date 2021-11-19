@@ -37,18 +37,6 @@ security:
       - Id-Token
     exposed-headers:
       - X-Xsrf-Token
-logging:
-  level:
-    org:
-      springframework:
-        web:
-          filter:
-            CommonsRequestLoggingFilter: DEBUG
-    com:
-      postraves:
-        wiki:
-          postraves-wiki:
-            RequestLoggingFilter: DEBUG
 ---
 spring:
   config:

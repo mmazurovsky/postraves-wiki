@@ -16,7 +16,7 @@ services:
     ports:
       - '5432:5432'
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-U", "${POSTGRES_USERNAME}", "-d", "postraves" ]
+      test: [ "CMD", "pg_isready", "-q", "-U", "${POSTGRES_USER}", "-d", "postraves" ]
       interval: 5s
       timeout: 1s
       retries: 2
