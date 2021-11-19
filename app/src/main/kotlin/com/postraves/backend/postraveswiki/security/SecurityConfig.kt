@@ -54,6 +54,7 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
         config.allowedOriginPatterns = listOf("https://*.postraves.com", "http://localhost:49257", "https://localhost:49257")
+        config.allowedMethods = listOf("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         config.applyPermitDefaultValues()
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
