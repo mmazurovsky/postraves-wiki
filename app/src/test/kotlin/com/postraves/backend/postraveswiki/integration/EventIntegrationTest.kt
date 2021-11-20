@@ -1057,7 +1057,7 @@ class EventIntegrationTest(
         assertEquals(3, timetableUpdated.size)
         timetableUpdated.forEachIndexed { index, timetableForSceneDto ->
             if (index == 0) {
-                assertEquals(scene3.name, timetableForSceneDto.scene.name)
+                assertEquals(scene3.name, timetableForSceneDto.scene!!.name)
                 assertEquals(4, timetableForSceneDto.performances.size)
                 timetableForSceneDto.performances.forEachIndexed { indexPerformance, it ->
                     if (indexPerformance == 0) {
@@ -1083,7 +1083,7 @@ class EventIntegrationTest(
                     }
                 }
             } else if (index == 1) {
-                assertEquals(scene2.name, timetableForSceneDto.scene.name)
+                assertEquals(scene2.name, timetableForSceneDto.scene!!.name)
                 assertEquals(1, timetableForSceneDto.performances.size)
                 timetableForSceneDto.performances.forEachIndexed { indexPerformance, it ->
                     if (indexPerformance == 0) {
@@ -1094,7 +1094,7 @@ class EventIntegrationTest(
                     }
                 }
             } else if (index == 2) {
-                assertEquals(scene1.name, timetableForSceneDto.scene.name)
+                assertEquals(scene1.name, timetableForSceneDto.scene!!.name)
                 assertEquals(2, timetableForSceneDto.performances.size)
                 timetableForSceneDto.performances.forEachIndexed { indexPerformance, it ->
                     if (indexPerformance == 0) {
@@ -1334,7 +1334,7 @@ class EventIntegrationTest(
 
         timetableUpdated2.forEachIndexed { index, timetableForSceneDto ->
             if (index == 0) {
-                assertEquals(scene1.name, timetableForSceneDto.scene.name)
+                assertEquals(scene1.name, timetableForSceneDto.scene!!.name)
                 assertEquals(3, timetableForSceneDto.performances.size)
                 timetableForSceneDto.performances.forEachIndexed { indexPerformance, it ->
                     assertNotNull(it.id)
