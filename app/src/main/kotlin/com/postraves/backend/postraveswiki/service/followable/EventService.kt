@@ -28,7 +28,7 @@ interface EventService :
     fun getOrganizers(id: Long): List<UnityShortDto>
     fun updateOrganizers(id: Long, orgs: Set<Long>)
     fun getLineup(id: Long): List<ArtistShortDto>
-    fun getTimetableForEvent(id: Long): List<TimetableForSceneDto>
+    fun getTimetableForEvent(id: Long, isForAdmin: Boolean): List<TimetableForSceneDto>
     fun updateTimetableForEvent(id: Long, performances: Set<TimetablePerformanceWriteDto>)
 }
 
@@ -166,13 +166,13 @@ class EventServiceImpl(
         return artistService.enrichListWithFollowersAndSortByOverallFollowers(lineupWithoutFollowers)
     }
 
-    override fun getTimetableForEvent(id: Long): List<TimetableForSceneDto> {
+    override fun getTimetableForEvent(id: Long, isForAdmin: Boolean): List<TimetableForSceneDto> {
         val authUid = myUserProfileService.getMyUserId()
-        val timetableWithArtistsNotEnrichedWithFollowers = eventRepo.getTimetableForEvent(authUid, id)
-        return enrichTimetableArtistsWithFollowers(timetableWithArtistsNotEnrichedWithFollowers)
+        val timetableWithArtistsNotEnrichedWithFollowers = eventRepo.getTimetableForEvent(authUid, id, isForAdmin)
+        return enrichTimetableArtistsWithFollowersAndSort(timetableWithArtistsNotEnrichedWithFollowers)
     }
 
-    private fun enrichTimetableArtistsWithFollowers(timetable: List<TimetableForSceneDto>): List<TimetableForSceneDto> {
+    private fun enrichTimetableArtistsWithFollowersAndSort(timetable: List<TimetableForSceneDto>): List<TimetableForSceneDto> {
         return timetable.map { timetableForScene ->
             timetableForScene.copy(
                 performances = timetableForScene.performances.map {
@@ -180,7 +180,7 @@ class EventServiceImpl(
                         artists = artistService.enrichListWithFollowersAndSortByOverallFollowers(it.artists)
                     )
                 }
-                    .sortedBy { it.startingDateTime }
+                    .sortedWith(nullsFirst(compareBy { it.startingDateTime }))
                     .toList()
             )
         }.toList()

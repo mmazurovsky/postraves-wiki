@@ -13,7 +13,7 @@ import java.time.ZoneOffset
 
 interface TimetableConverters {
     fun createTimetableForSceneDto(
-        sceneRecord: SceneRecord,
+        sceneRecord: SceneRecord?,
         timetablePerformances: List<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>,
         offsetFromUtcForThePlace: Int,
     ): TimetableForSceneDto
@@ -38,12 +38,12 @@ class TimetableConvertersImpl(
     private val sceneConverters: SceneConverters,
 ) : TimetableConverters {
     override fun createTimetableForSceneDto(
-        sceneRecord: SceneRecord,
+        sceneRecord: SceneRecord?,
         timetablePerformances: List<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>,
         offsetFromUtcForThePlace: Int,
     ): TimetableForSceneDto {
         return TimetableForSceneDto(
-            scene = sceneConverters.createDtoFromRecord(sceneRecord),
+            scene = if (sceneRecord?.sceneId != null) sceneConverters.createDtoFromRecord(sceneRecord) else null,
             performances = timetablePerformances
                 .map {
                     createTimetablePerformanceDto(it.first, it.second, offsetFromUtcForThePlace)
@@ -57,8 +57,8 @@ class TimetableConvertersImpl(
         offsetFromUtcForThePlace: Int,
     ): TimetablePerformanceDto {
 
-        val startDateTimeWithTimeZone = timetableItemRecord.timetableItemStartingDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Timetable Performance starting datetime")
-        val endDateTimeWithTimeZone = timetableItemRecord.timetableItemEndingDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Timetable Performance ending datetime")
+        val startDateTimeWithTimeZone = timetableItemRecord.timetableItemStartingDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace))
+        val endDateTimeWithTimeZone = timetableItemRecord.timetableItemEndingDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace))
 
         return TimetablePerformanceDto(
             id = timetableItemRecord.timetableItemId ?: throw RecordFieldNullException("Timetable Performance Id"),

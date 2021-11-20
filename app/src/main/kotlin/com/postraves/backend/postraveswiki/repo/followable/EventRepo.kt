@@ -41,7 +41,7 @@ interface EventRepo :
     fun addOrganizers(id: Long, orgs: Set<Long>)
     fun removeOrganizers(id: Long, orgs: Set<Long>)
     fun getLineup(userId: Long?, id: Long): List<ArtistShortDto>
-    fun getTimetableForEvent(userId: Long?, id: Long): List<TimetableForSceneDto>
+    fun getTimetableForEvent(userId: Long?, id: Long, isForAdmin: Boolean): List<TimetableForSceneDto>
     fun getTimetableItemsForEvent(eventId: Long): Set<TimetablePerformanceWriteDto>
     fun addTimetablePerformances(id: Long, performances: Set<TimetablePerformanceWriteDto>)
     fun updateTimetablePerformancesNotTouchingArtists(id: Long, performances: Set<TimetablePerformanceWriteDto>)
@@ -350,7 +350,7 @@ class EventRepoImpl(
             .toList()
     }
 
-    override fun getTimetableForEvent(userId: Long?, id: Long): List<TimetableForSceneDto> {
+    override fun getTimetableForEvent(userId: Long?, id: Long, isForAdmin: Boolean): List<TimetableForSceneDto> {
 
         val cityOfEvent = dsl
             .select()
@@ -369,26 +369,28 @@ class EventRepoImpl(
             .where(TIMETABLE_ITEM.TIMETABLE_ITEM_EVENT_ID.eq(id))
             // todo needs testing
             .orderBy(
-                SCENE.SCENE_PRIORITY.desc().nullsLast(),
+                SCENE.SCENE_PRIORITY.desc().nullsFirst(),
                 TIMETABLE_ITEM.TIMETABLE_ITEM_STARTING_DATE_TIME.asc().nullsLast()
             )
             .fetch()
 
-        val mapOfScenePerformances: MutableMap<SceneRecord, MutableList<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>> =
+        val mapOfScenePerformances: MutableMap<SceneRecord?, MutableList<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>> =
             mutableMapOf()
 
         timetableItems.forEach { record ->
             val timetableItemRecord = record.into(TIMETABLE_ITEM)
             val sceneOfTimetableItem = record.into(SCENE)
 
-            if (
-                sceneOfTimetableItem.sceneId == null
-                ||
-                timetableItemRecord.timetableItemStartingDateTime == null
-                ||
-                timetableItemRecord.timetableItemEndingDateTime == null
-            ) {
-                return@forEach
+            if (!isForAdmin) {
+                if (
+                    sceneOfTimetableItem.sceneId == null
+                    ||
+                    timetableItemRecord.timetableItemStartingDateTime == null
+                    ||
+                    timetableItemRecord.timetableItemEndingDateTime == null
+                ) {
+                    return@forEach
+                }
             }
 
             val artistsForTimetableItem = dsl

@@ -10,7 +10,7 @@ data class TimetablePerformanceDto(
     val artists: List<ArtistShortDto>,
     val typeOfPerformance: String?,
     @Serializable(KOffsetDateTimeSerializer::class)
-    val startingDateTime: OffsetDateTime,
+    val startingDateTime: OffsetDateTime?,
     @Serializable(KOffsetDateTimeSerializer::class)
     val endingDateTime: OffsetDateTime?,
 )

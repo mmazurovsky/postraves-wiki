@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TimetableForSceneDto(
-    val scene: SceneDto,
+    val scene: SceneDto?,
     val performances: List<TimetablePerformanceDto>,
 )

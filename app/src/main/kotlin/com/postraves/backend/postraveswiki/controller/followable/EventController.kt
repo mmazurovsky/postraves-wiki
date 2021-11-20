@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/event")
-class EventController (
+class EventController(
     private val eventService: EventService
-    ) :
+) :
     BaseRequests<EventWriteDto, EventShortDto>,
     ByIdRequests<EventFullDto>,
     FindByNameRequests<EventShortDto> {
@@ -81,8 +81,11 @@ class EventController (
 
     @GetMapping("/public/{id}/timetable")
     @ResponseStatus(HttpStatus.OK)
-    fun getTimetable(@PathVariable id: Long): List<TimetableForSceneDto> {
-        return eventService.getTimetableForEvent(id)
+    fun getTimetable(
+        @PathVariable id: Long,
+        @RequestParam(required = false) isForAdmin: Boolean?
+    ): List<TimetableForSceneDto> {
+        return eventService.getTimetableForEvent(id, isForAdmin ?: false)
     }
 
     override fun saveBatch(list: List<EventWriteDto>): List<EventShortDto> {
