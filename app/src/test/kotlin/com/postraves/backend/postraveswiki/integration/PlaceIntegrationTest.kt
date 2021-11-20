@@ -100,7 +100,7 @@ class PlaceIntegrationTest(
     private val cityTest3 = cityTest1.copy(
         name = "Moscow",
         countryName = "RU",
-        timeOffset = 3
+        timeOffset = 0
     )
 
     private val placeTest = PlaceWriteDto(

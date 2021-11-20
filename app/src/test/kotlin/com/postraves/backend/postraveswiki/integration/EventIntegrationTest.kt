@@ -38,10 +38,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import redis.embedded.RedisServer
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 @SpringBootTest
 @ActiveProfiles(value = ["test"])
@@ -87,14 +84,14 @@ class EventIntegrationTest(
         nameDe = "NameDe",
         nameFr = "NameFr",
         phoneCode = "+7",
-        
-    )
+
+        )
 
     private val countryTestData2 = countryTestData.copy(
         name = "RU",
         phoneCode = "+8",
-        
-    )
+
+        )
 
     private val cityTest1 = CityWriteDto(
         name = "Bruges",
@@ -103,13 +100,13 @@ class EventIntegrationTest(
         nameDe = "NameDe",
         nameFr = "NameFr",
         countryName = "BE",
-        timeOffset = 3
+        timeOffset = 0
     )
 
     private val cityTest2 = cityTest1.copy(
         name = "Moscow",
         countryName = "RU",
-        timeOffset = 3
+        timeOffset = 0
     )
 
     private val place1 = PlaceWriteDto(
@@ -151,8 +148,8 @@ class EventIntegrationTest(
         imageLink = "image1",
         about = "About Event1",
         ticketsLink = "link1",
-        startDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
-        endDateTime = OffsetDateTime.of(2021, 8, 19, 6, 0, 0, 0, ZoneOffset.ofHours(3)),
+        startDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+        endDateTime = OffsetDateTime.of(2021, 8, 19, 6, 0, 0, 0, ZoneOffset.ofHours(0)),
         ticketPrices = emptyList(),
         // place id must be changed to real one of persisted place
         placeId = 1,
@@ -314,8 +311,8 @@ class EventIntegrationTest(
             name = "Event2",
             imageLink = "image2",
             about = "About2",
-            startDateTime = OffsetDateTime.of(2021, 8, 20, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endDateTime = OffsetDateTime.of(2021, 8, 20, 6, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startDateTime = OffsetDateTime.of(2021, 8, 20, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endDateTime = OffsetDateTime.of(2021, 8, 20, 6, 0, 0, 0, ZoneOffset.ofHours(0)),
             placeId = persistedPlace2Id
         )
 
@@ -323,8 +320,8 @@ class EventIntegrationTest(
             name = "Event3",
             imageLink = "image3",
             about = "About3",
-            startDateTime = OffsetDateTime.of(2021, 8, 21, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endDateTime = OffsetDateTime.of(2021, 8, 21, 6, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startDateTime = OffsetDateTime.of(2021, 8, 21, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endDateTime = OffsetDateTime.of(2021, 8, 21, 6, 0, 0, 0, ZoneOffset.ofHours(0)),
             placeId = persistedPlace2Id
         )
 
@@ -741,14 +738,22 @@ class EventIntegrationTest(
             ),
             sceneId = scene1Id,
             typeOfPerformance = "aaa",
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 45, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 45, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         makePutRequest(
             mockMvc,
             "$eventEndpoint/$eventSavedId/timetable",
-            Json.encodeToString(listOf(timetablePerformance1, timetablePerformance2, timetablePerformance3, timetablePerformance4, timetablePerformance5)),
+            Json.encodeToString(
+                listOf(
+                    timetablePerformance1,
+                    timetablePerformance2,
+                    timetablePerformance3,
+                    timetablePerformance4,
+                    timetablePerformance5
+                )
+            ),
             status().isOk
         )
 
@@ -964,8 +969,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene1Id,
             typeOfPerformance = "back 2 back",
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         val timetablePerformance2 = TimetablePerformanceWriteDto(
@@ -975,8 +980,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene1Id,
             typeOfPerformance = "dj set",
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         val timetablePerformance3 = TimetablePerformanceWriteDto(
@@ -986,8 +991,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene2Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 45, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 45, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         val timetablePerformance4 = TimetablePerformanceWriteDto(
@@ -997,8 +1002,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         val timetablePerformance5 = TimetablePerformanceWriteDto(
@@ -1008,8 +1013,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         val timetablePerformance6 = TimetablePerformanceWriteDto(
@@ -1019,8 +1024,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         val timetablePerformance7 = TimetablePerformanceWriteDto(
@@ -1030,8 +1035,8 @@ class EventIntegrationTest(
             ),
             sceneId = scene3Id,
             typeOfPerformance = null,
-            startingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.ofHours(3)),
-            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.ofHours(3)),
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 3, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 4, 0, 0, 0, ZoneOffset.ofHours(0)),
         )
 
         makePutRequest(
@@ -1109,8 +1114,255 @@ class EventIntegrationTest(
     }
 
     @Test
+    fun addTimetablePerformanceAndUpdateWithSameValue() {
+        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+
+        val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
+        val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
+
+        val scene1 = SceneDto(
+            id = null,
+            name = "Scene1",
+            imageLink = "sceneImage1",
+            priority = 1,
+        )
+
+        makePutRequest(
+            mockMvc,
+            "/place/$persistedPlace1Id/scenes",
+            Json.encodeToString(listOf(scene1)),
+            status().isOk
+        )
+        val savedScenesJson = makeGetRequest(mockMvc, "/place/public/$persistedPlace1Id/scenes", status().isOk)
+        val savedScenes = Json.decodeFromString<List<SceneDto>>(savedScenesJson)
+        val scene1Id = savedScenes.find { it.name == scene1.name }!!.id
+
+        val artist1 = ArtistWriteDto(
+            id = null,
+            name = "Amelie Lens",
+            imageLink = "image",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
+            about = "About Amelie",
+            countryName = countryTestData.name,
+        )
+
+        val artist1Json =
+            makePostRequest(mockMvc, "/artist", Json.encodeToString(artist1), status().isCreated)
+        val artist1Id = Json.decodeFromString<ArtistShortDto>(artist1Json).id
+
+        val timetablePerformance1 = TimetablePerformanceWriteDto(
+            id = null,
+            artistIds = setOf(
+                artist1Id
+            ),
+            sceneId = scene1Id,
+            typeOfPerformance = "back 2 back",
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
+        )
+
+        makePutRequest(
+            mockMvc, "$eventEndpoint/$eventSavedId/timetable",
+            Json.encodeToString(
+                listOf(
+                    timetablePerformance1
+                )
+            ),
+            status().isOk
+        )
+
+        val timetableUpdatedJson =
+            makeGetRequest(mockMvc, "$eventEndpoint/public/$eventSavedId/timetable", status().isOk)
+        val timetableUpdated = Json.decodeFromString<List<TimetableForSceneDto>>(timetableUpdatedJson)
+
+        assertEquals(1, timetableUpdated.size)
+
+        val timetablePerformance1Id =
+            timetableUpdated[0].performances.find { it.startingDateTime == timetablePerformance1.startingDateTime }!!.id
+
+        val timetablePerformance1Updated =
+            timetablePerformance1.copy(id = timetablePerformance1Id)
+
+        makePutRequest(
+            mockMvc, "$eventEndpoint/$eventSavedId/timetable",
+            Json.encodeToString(
+                listOf(
+                    timetablePerformance1Updated
+                )
+            ),
+            status().isOk
+        )
+
+        val timetableUpdated2Json =
+            makeGetRequest(mockMvc, "$eventEndpoint/public/$eventSavedId/timetable", status().isOk)
+        val timetableUpdated2 = Json.decodeFromString<List<TimetableForSceneDto>>(timetableUpdated2Json)
+
+        assertEquals(1, timetableUpdated2.size)
+        assertEquals(1, timetableUpdated2[0].performances.size)
+
+        assertEquals(timetablePerformance1Id, timetableUpdated2[0].performances[0].id)
+        assertEquals(timetablePerformance1.artistIds.size, timetableUpdated2[0].performances[0].artists.size)
+        assertEquals(timetablePerformance1.startingDateTime, timetableUpdated2[0].performances[0].startingDateTime)
+        assertEquals(timetablePerformance1.endingDateTime, timetableUpdated2[0].performances[0].endingDateTime)
+        assertEquals(timetablePerformance1.typeOfPerformance, timetableUpdated2[0].performances[0].typeOfPerformance)
+    }
+
+    @Test
+    fun addTimetablePerformancesAndUpdateTimetablePerformancesAndGetAgain() {
+        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+
+        val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
+        val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
+
+        val scene1 = SceneDto(
+            id = null,
+            name = "Scene1",
+            imageLink = "sceneImage1",
+            priority = 1,
+        )
+
+        makePutRequest(
+            mockMvc,
+            "/place/$persistedPlace1Id/scenes",
+            Json.encodeToString(listOf(scene1)),
+            status().isOk
+        )
+        val savedScenesJson = makeGetRequest(mockMvc, "/place/public/$persistedPlace1Id/scenes", status().isOk)
+        val savedScenes = Json.decodeFromString<List<SceneDto>>(savedScenesJson)
+        val scene1Id = savedScenes.find { it.name == scene1.name }!!.id
+
+        val artist1 = ArtistWriteDto(
+            id = null,
+            name = "Amelie Lens",
+            imageLink = "image",
+            soundcloudUsername = "soundcloud",
+            instagramUsername = "instagram",
+            about = "About Amelie",
+            countryName = countryTestData.name,
+        )
+
+        val artist2 = artist1.copy(
+            name = "Artist2"
+        )
+
+        val artist1Json =
+            makePostRequest(mockMvc, "/artist", Json.encodeToString(artist1), status().isCreated)
+        val artist2Json =
+            makePostRequest(mockMvc, "/artist", Json.encodeToString(artist2), status().isCreated)
+
+        val artist1Id = Json.decodeFromString<ArtistShortDto>(artist1Json).id
+        val artist2Id = Json.decodeFromString<ArtistShortDto>(artist2Json).id
+
+        val timetablePerformance1 = TimetablePerformanceWriteDto(
+            id = null,
+            artistIds = setOf(
+                artist1Id, artist2Id
+            ),
+            sceneId = scene1Id,
+            typeOfPerformance = "back 2 back",
+            startingDateTime = OffsetDateTime.of(2021, 8, 17, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 17, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
+        )
+
+        val timetablePerformance2 = TimetablePerformanceWriteDto(
+            id = null,
+            artistIds = setOf(
+                artist2Id
+            ),
+            sceneId = scene1Id,
+            typeOfPerformance = "dj set",
+            startingDateTime = OffsetDateTime.of(2021, 8, 18, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 18, 4, 0, 0, 0, ZoneOffset.ofHours(0)),
+        )
+
+        val timetablePerformance3 = TimetablePerformanceWriteDto(
+            id = null,
+            artistIds = setOf(
+                artist2Id
+            ),
+            sceneId = scene1Id,
+            typeOfPerformance = null,
+            startingDateTime = OffsetDateTime.of(2021, 8, 19, 1, 0, 0, 0, ZoneOffset.ofHours(0)),
+            endingDateTime = OffsetDateTime.of(2021, 8, 19, 2, 0, 0, 0, ZoneOffset.ofHours(0)),
+        )
+
+        makePutRequest(
+            mockMvc, "$eventEndpoint/$eventSavedId/timetable",
+            Json.encodeToString(
+                listOf(
+                    timetablePerformance1, timetablePerformance2, timetablePerformance3
+                )
+            ),
+            status().isOk
+        )
+
+        val timetableUpdatedJson =
+            makeGetRequest(mockMvc, "$eventEndpoint/public/$eventSavedId/timetable", status().isOk)
+        val timetableUpdated = Json.decodeFromString<List<TimetableForSceneDto>>(timetableUpdatedJson)
+
+        assertEquals(1, timetableUpdated.size)
+
+        val timetablePerformance1Id =
+            timetableUpdated[0].performances.find { it.startingDateTime == timetablePerformance1.startingDateTime }!!.id
+        val timetablePerformance2Id =
+            timetableUpdated[0].performances.find { it.startingDateTime == timetablePerformance2.startingDateTime }!!.id
+        val timetablePerformance3Id =
+            timetableUpdated[0].performances.find { it.startingDateTime == timetablePerformance3.startingDateTime }!!.id
+
+        val timetablePerformance1Updated =
+            timetablePerformance1.copy(id = timetablePerformance1Id)
+        val timetablePerformance2Updated =
+            timetablePerformance2.copy(id = timetablePerformance2Id, artistIds = setOf(artist1Id))
+        val timetablePerformance4New = timetablePerformance3.copy(artistIds = setOf(artist1Id, artist2Id))
+
+        makePutRequest(
+            mockMvc, "$eventEndpoint/$eventSavedId/timetable",
+            Json.encodeToString(
+                listOf(
+                    timetablePerformance1Updated, timetablePerformance2Updated, timetablePerformance4New
+                )
+            ),
+            status().isOk
+        )
+
+        val timetableUpdated2Json =
+            makeGetRequest(mockMvc, "$eventEndpoint/public/$eventSavedId/timetable", status().isOk)
+        val timetableUpdated2 = Json.decodeFromString<List<TimetableForSceneDto>>(timetableUpdated2Json)
+
+        assertEquals(1, timetableUpdated2.size)
+
+        timetableUpdated2.forEachIndexed { index, timetableForSceneDto ->
+            if (index == 0) {
+                assertEquals(scene1.name, timetableForSceneDto.scene.name)
+                assertEquals(3, timetableForSceneDto.performances.size)
+                timetableForSceneDto.performances.forEachIndexed { indexPerformance, it ->
+                    assertNotNull(it.id)
+                    if (indexPerformance == 0) {
+                        assertEquals(timetablePerformance1Updated.artistIds, it.artists.map { it.id }.toSet())
+                        assertEquals(timetablePerformance1Updated.startingDateTime, it.startingDateTime)
+                        assertEquals(timetablePerformance1Updated.endingDateTime, it.endingDateTime)
+                        assertEquals(timetablePerformance1Updated.typeOfPerformance, it.typeOfPerformance)
+                    } else if (indexPerformance == 1) {
+                        assertEquals(timetablePerformance2Updated.artistIds, it.artists.map { it.id }.toSet())
+                        assertEquals(timetablePerformance2Updated.startingDateTime, it.startingDateTime)
+                        assertEquals(timetablePerformance2Updated.endingDateTime, it.endingDateTime)
+                        assertEquals(timetablePerformance2Updated.typeOfPerformance, it.typeOfPerformance)
+                    } else if (indexPerformance == 2) {
+                        assertEquals(timetablePerformance4New.artistIds, it.artists.map { it.id }.toSet())
+                        assertEquals(timetablePerformance4New.startingDateTime, it.startingDateTime)
+                        assertEquals(timetablePerformance4New.endingDateTime, it.endingDateTime)
+                        assertEquals(timetablePerformance4New.typeOfPerformance, it.typeOfPerformance)
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Test
     fun getRelevantEventsByDate() {
-        val now = OffsetDateTime.now(ZoneOffset.ofHours(3)).withHour(0)
+        val now = OffsetDateTime.now(ZoneOffset.ofHours(0)).withHour(0)
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
         val event1 = eventTestData.copy(placeId = persistedPlace1Id)
@@ -1255,7 +1507,7 @@ class EventIntegrationTest(
 
     @Test
     fun getRelevantEventsOfArtist() {
-        val now = OffsetDateTime.now(ZoneOffset.ofHours(3)).withHour(0)
+        val now = OffsetDateTime.now(ZoneOffset.ofHours(0)).withHour(0)
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
         val event1 = eventTestData.copy(placeId = persistedPlace1Id)

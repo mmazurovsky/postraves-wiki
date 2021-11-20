@@ -8,8 +8,8 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 object KOffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("OffsetDateTime", PrimitiveKind.STRING)
@@ -23,7 +23,8 @@ object KOffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
 
     override fun deserialize(decoder: Decoder): OffsetDateTime {
         val string = decoder.decodeString()
-        return OffsetDateTime.parse(string)
+        val dateTimeWithUnclearOffset = OffsetDateTime.parse(string)
+        return dateTimeWithUnclearOffset.atZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime()
     }
 }
 

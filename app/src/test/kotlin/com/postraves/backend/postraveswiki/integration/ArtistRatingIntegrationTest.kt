@@ -117,7 +117,7 @@ class ArtistRatingIntegrationTest(
             nameDe = "NameDe",
             nameFr = "NameFr",
             countryName = "BE",
-            timeOffset = 3
+            timeOffset = 0
         )
 
         val city2 = CityWriteDto(
@@ -127,7 +127,7 @@ class ArtistRatingIntegrationTest(
             nameDe = "NameDe",
             nameFr = "NameFr",
             countryName = "RU",
-            timeOffset = 3
+            timeOffset = 0
         )
 
         val city3 = CityWriteDto(
@@ -137,7 +137,7 @@ class ArtistRatingIntegrationTest(
             nameDe = "NameDe",
             nameFr = "NameFr",
             countryName = "CA",
-            timeOffset = 3
+            timeOffset = 0
         )
 
         val countryJson1 = Json.encodeToString(country1)

@@ -99,10 +99,14 @@ class EventServiceImpl(
         return getRelevantEventsForEntity(func, unityId)
     }
 
-    private fun getRelevantEventsForEntity(func: (userId: Long?, entityId: Long) -> List<EventShortDto>, entityId: Long): List<EventShortDto> {
+    private fun getRelevantEventsForEntity(
+        func: (userId: Long?, entityId: Long) -> List<EventShortDto>,
+        entityId: Long
+    ): List<EventShortDto> {
         val userId = myUserProfileService.getMyUserId()
         val eventsWithoutFollowers = func(userId, entityId)
-        val eventsWithFollowers = eventsWithoutFollowers.map { this.enrichWithFollowersCalculationRequired(it) }.toList()
+        val eventsWithFollowers =
+            eventsWithoutFollowers.map { this.enrichWithFollowersCalculationRequired(it) }.toList()
         return eventsWithFollowers
     }
 
@@ -110,7 +114,8 @@ class EventServiceImpl(
         val authUid = myUserProfileService.getMyUserId()
         val startIntervalDateTime = dateTimeProvider.getNow()
         val endIntervalDateTime = startIntervalDateTime.plusDays(31)
-        val eventsWithoutFollowers = eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
+        val eventsWithoutFollowers =
+            eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
 
         val eventsWithFollowersSorted = this.enrichListWithFollowersAndSortByOverallFollowers(eventsWithoutFollowers)
 
@@ -132,7 +137,8 @@ class EventServiceImpl(
         val authUid = myUserProfileService.getMyUserId()
         val startIntervalDateTime = dateTimeProvider.getNow()
         val endIntervalDateTime = startIntervalDateTime.plusDays(31)
-        val eventsWithoutFollowers = eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
+        val eventsWithoutFollowers =
+            eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
         val eventsWithFollowersSorted = this.enrichListWithFollowersAndSortByOverallFollowers(eventsWithoutFollowers)
         return eventsWithFollowersSorted
     }
@@ -190,18 +196,24 @@ class EventServiceImpl(
         performances.forEach { incomingPerformance ->
             if (!persistedPerformances.contains(incomingPerformance)) {
                 if (incomingPerformance.id == null) {
+                    // once that are completely new
                     performancesToSave.add(incomingPerformance)
                 } else {
                     incomingPerformanceIds.add(incomingPerformance.id)
                     val outdatedPersistedPerformance =
                         persistedPerformances.find { it.id == incomingPerformance.id } ?: throw TODO()
                     if (outdatedPersistedPerformance.artistIds != incomingPerformance.artistIds) {
+                        // once that are old and have modified data that is performing artists get resaved with new id
                         outdatedPersistedPerformance.id?.let { performanceIdsToRemove.add(it) }
                         performancesToSave.add(incomingPerformance)
                     } else {
+                        // once that are old and have modified data that is not performing artists
                         performancesToUpdateNotTouchingArtists.add(incomingPerformance)
                     }
                 }
+            } else {
+                // ones that didn't change
+                incomingPerformanceIds.add(incomingPerformance.id!!)
             }
         }
 

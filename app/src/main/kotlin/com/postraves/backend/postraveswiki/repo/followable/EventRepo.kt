@@ -202,18 +202,19 @@ class EventRepoImpl(
         // todo too many joins here, better store event - artist relation in redis
 
         val nestedSelectUpcomingEventsOfArtist = select()
-                .distinctOn(EVENT.EVENT_ID)
-                .from(EVENT)
-                .joinLocation()
-                .leftOuterJoin(TIMETABLE_ITEM).on(TIMETABLE_ITEM.TIMETABLE_ITEM_EVENT_ID.eq(EVENT.EVENT_ID))
-                .leftOuterJoin(TIMETABLE_ITEM_PERFORMING_GROUP)
-                .on(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(TIMETABLE_ITEM.TIMETABLE_ITEM_ID))
-                .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
-                .apply {
-                    if (userId != null) joinUserFollow(userId)
-                }
-                .where(ARTIST.ARTIST_ID.eq(artistId).and(EVENT.EVENT_END_DATE_TIME.gt(dateTimeProvider.getNow())))
-                .asTable("nested")
+            .distinctOn(EVENT.EVENT_ID)
+            .from(EVENT)
+            .joinLocation()
+            .leftOuterJoin(TIMETABLE_ITEM).on(TIMETABLE_ITEM.TIMETABLE_ITEM_EVENT_ID.eq(EVENT.EVENT_ID))
+            .leftOuterJoin(TIMETABLE_ITEM_PERFORMING_GROUP)
+            .on(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(TIMETABLE_ITEM.TIMETABLE_ITEM_ID))
+            .leftOuterJoin(ARTIST)
+            .on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
+            .apply {
+                if (userId != null) joinUserFollow(userId)
+            }
+            .where(ARTIST.ARTIST_ID.eq(artistId).and(EVENT.EVENT_END_DATE_TIME.gt(dateTimeProvider.getNow())))
+            .asTable("nested")
 
         return dsl
             .selectFrom(
@@ -293,7 +294,10 @@ class EventRepoImpl(
             .leftOuterJoin(UNITY).on(UNITY.UNITY_ID.eq(UNITY_EVENT.UNITY_EVENT_UNITY_ID))
             .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(UNITY.UNITY_COUNTRY_NAME))
             .leftOuterJoin(USER_FOLLOWS_UNITY)
-            .on(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID.eq(UNITY.UNITY_ID), USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId))
+            .on(
+                USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID.eq(UNITY.UNITY_ID),
+                USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId)
+            )
             .where(UNITY_EVENT.UNITY_EVENT_EVENT_ID.eq(id))
             .fetch()
             .map {
@@ -330,10 +334,14 @@ class EventRepoImpl(
             .from(TIMETABLE_ITEM)
             .leftOuterJoin(TIMETABLE_ITEM_PERFORMING_GROUP)
             .on(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(TIMETABLE_ITEM.TIMETABLE_ITEM_ID))
-            .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
+            .leftOuterJoin(ARTIST)
+            .on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
             .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(ARTIST.ARTIST_COUNTRY_NAME))
             .leftOuterJoin(USER_FOLLOWS_ARTIST)
-            .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId))
+            .on(
+                ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID),
+                USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId)
+            )
             .where(TIMETABLE_ITEM.TIMETABLE_ITEM_EVENT_ID.eq(id))
             .fetch()
             .map {
@@ -360,7 +368,10 @@ class EventRepoImpl(
             .leftOuterJoin(SCENE).on(SCENE.SCENE_ID.eq(TIMETABLE_ITEM.TIMETABLE_ITEM_SCENE_ID))
             .where(TIMETABLE_ITEM.TIMETABLE_ITEM_EVENT_ID.eq(id))
             // todo needs testing
-            .orderBy(SCENE.SCENE_PRIORITY.desc().nullsLast(), TIMETABLE_ITEM.TIMETABLE_ITEM_STARTING_DATE_TIME.asc().nullsLast())
+            .orderBy(
+                SCENE.SCENE_PRIORITY.desc().nullsLast(),
+                TIMETABLE_ITEM.TIMETABLE_ITEM_STARTING_DATE_TIME.asc().nullsLast()
+            )
             .fetch()
 
         val mapOfScenePerformances: MutableMap<SceneRecord, MutableList<Pair<TimetableItemRecord, List<Triple<ArtistRecord, CountryRecord, Boolean>>>>> =
@@ -383,11 +394,19 @@ class EventRepoImpl(
             val artistsForTimetableItem = dsl
                 .select()
                 .from(TIMETABLE_ITEM_PERFORMING_GROUP)
-                .leftOuterJoin(ARTIST).on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
+                .leftOuterJoin(ARTIST)
+                .on(ARTIST.ARTIST_ID.eq(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_ARTIST_ID))
                 .leftOuterJoin(COUNTRY).on(COUNTRY.COUNTRY_NAME.eq(ARTIST.ARTIST_COUNTRY_NAME))
                 .leftOuterJoin(USER_FOLLOWS_ARTIST)
-                .on(ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID), USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId))
-                .where(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(timetableItemRecord.timetableItemId))
+                .on(
+                    ARTIST.ARTIST_ID.eq(USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_ARTIST_ID),
+                    USER_FOLLOWS_ARTIST.USER_FOLLOWS_ARTIST_USER_PROFILE_ID.eq(userId)
+                )
+                .where(
+                    TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(
+                        timetableItemRecord.timetableItemId
+                    )
+                )
                 .fetch()
 
             // todo equality of records is questionable
@@ -428,7 +447,11 @@ class EventRepoImpl(
                 val timetableItem = it.into(TIMETABLE_ITEM)
                 val artistIds = dsl
                     .selectFrom(TIMETABLE_ITEM_PERFORMING_GROUP)
-                    .where(TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(timetableItem.timetableItemId))
+                    .where(
+                        TIMETABLE_ITEM_PERFORMING_GROUP.TIMETABLE_ITEM_PERFORMING_GROUP_TIMETABLE_ITEM_ID.eq(
+                            timetableItem.timetableItemId
+                        )
+                    )
                     .fetch()
                     .map { performingGroup ->
                         performingGroup.into(TIMETABLE_ITEM_PERFORMING_GROUP)
