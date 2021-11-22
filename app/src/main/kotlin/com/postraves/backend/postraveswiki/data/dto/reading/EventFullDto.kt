@@ -1,11 +1,8 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.FollowableFullDto
-import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.enum.EventStatus
-import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import com.postraves.backend.postraveswiki.util.KOffsetDateTimeSerializer
-import jooq.tables.records.*
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime

@@ -1,6 +1,5 @@
 package com.postraves.backend.postraveswiki.data.converters
 
-import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.EventFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.EventShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.EventWriteDto
@@ -15,27 +14,59 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 interface EventConverters {
-    fun createShortDtoFromRecords(eventRecord: EventRecord, ticketPrices: List<TicketPriceRecord>, placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isPlaceFollowed: Boolean, isEventFollowed: Boolean): EventShortDto
-    fun createFullDtoFromRecords(eventRecord: EventRecord, ticketPrices: List<TicketPriceRecord>, placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isPlaceFollowed: Boolean, isEventFollowed: Boolean): EventFullDto
+    fun createShortDtoFromRecords(
+        eventRecord: EventRecord,
+        ticketPricesWithCurrencies: List<Pair<TicketPriceRecord, MoneyCurrencyRecord>>,
+        placeRecord: PlaceRecord,
+        cityRecord: CityRecord,
+        countryRecord: CountryRecord,
+        isPlaceFollowed: Boolean,
+        isEventFollowed: Boolean
+    ): EventShortDto
+
+    fun createFullDtoFromRecords(
+        eventRecord: EventRecord,
+        ticketPrices: List<Pair<TicketPriceRecord, MoneyCurrencyRecord>>,
+        placeRecord: PlaceRecord,
+        cityRecord: CityRecord,
+        countryRecord: CountryRecord,
+        isPlaceFollowed: Boolean,
+        isEventFollowed: Boolean
+    ): EventFullDto
+
     fun transferDataFromDtoToRecord(dto: EventWriteDto, record: EventRecord)
 }
 
 @Service
 class EventConvertersImpl(
     private val placeConverters: PlaceConverters,
+    private val ticketPriceConverters: TicketPriceConverters,
     private val dateTimeProvider: DateTimeProvider,
     private val placeService: PlaceService,
-    ) : EventConverters {
+) : EventConverters {
 
-    override fun createShortDtoFromRecords(eventRecord: EventRecord, ticketPrices: List<TicketPriceRecord>, placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isPlaceFollowed: Boolean, isEventFollowed: Boolean) : EventShortDto {
+    override fun createShortDtoFromRecords(
+        eventRecord: EventRecord,
+        ticketPricesWithCurrencies: List<Pair<TicketPriceRecord, MoneyCurrencyRecord>>,
+        placeRecord: PlaceRecord,
+        cityRecord: CityRecord,
+        countryRecord: CountryRecord,
+        isPlaceFollowed: Boolean,
+        isEventFollowed: Boolean
+    ): EventShortDto {
 
-        val placeOfEventWithoutFollowers = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed)
+        val placeOfEventWithoutFollowers =
+            placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed)
         val offsetFromUtcForThePlace = cityRecord.cityTimeOffset ?: throw RecordFieldNullException("City time offset")
-        val startDateTimeWithTimeZone = eventRecord.eventStartDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Event start date time")
+        val startDateTimeWithTimeZone =
+            eventRecord.eventStartDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace))
+                ?: throw RecordFieldNullException("Event start date time")
         val eventStatus = resolveEventStatus(eventRecord)
-        val ticketPricesDtos = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList()
+        val ticketPricesDtos =
+            ticketPricesWithCurrencies.map { ticketPriceConverters.createOutOfDbRecords(it.first, it.second) }.toList()
 
-        val placeOfEventWithFollowers = placeService.enrichWithFollowersCalculationRequired(placeOfEventWithoutFollowers)
+        val placeOfEventWithFollowers =
+            placeService.enrichWithFollowersCalculationRequired(placeOfEventWithoutFollowers)
 
         return EventShortDto(
             id = eventRecord.eventId ?: throw RecordFieldNullException("Event Id"),
@@ -49,16 +80,31 @@ class EventConvertersImpl(
         )
     }
 
-    override fun createFullDtoFromRecords(eventRecord: EventRecord, ticketPrices: List<TicketPriceRecord>, placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isPlaceFollowed: Boolean, isEventFollowed: Boolean) : EventFullDto {
+    override fun createFullDtoFromRecords(
+        eventRecord: EventRecord,
+        ticketPrices: List<Pair<TicketPriceRecord, MoneyCurrencyRecord>>,
+        placeRecord: PlaceRecord,
+        cityRecord: CityRecord,
+        countryRecord: CountryRecord,
+        isPlaceFollowed: Boolean,
+        isEventFollowed: Boolean
+    ): EventFullDto {
 
-        val placeOfEventWithoutFollowers = placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed)
+        val placeOfEventWithoutFollowers =
+            placeConverters.createShortDtoFromRecord(placeRecord, cityRecord, countryRecord, isPlaceFollowed)
         val offsetFromUtcForThePlace = cityRecord.cityTimeOffset ?: throw RecordFieldNullException("City time offset")
-        val startDateTimeWithTimeZone = eventRecord.eventStartDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Event start date time")
-        val endDateTimeWithTimeZone = eventRecord.eventEndDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace)) ?: throw RecordFieldNullException("Event end date time")
+        val startDateTimeWithTimeZone =
+            eventRecord.eventStartDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace))
+                ?: throw RecordFieldNullException("Event start date time")
+        val endDateTimeWithTimeZone =
+            eventRecord.eventEndDateTime?.toInstant()?.atOffset(ZoneOffset.ofHours(offsetFromUtcForThePlace))
+                ?: throw RecordFieldNullException("Event end date time")
         val eventStatus = resolveEventStatus(eventRecord)
-        val ticketPricesDtos = ticketPrices.map { TicketPriceDto.createOutOfDbRecords(it) }.toList()
+        val ticketPricesDtos =
+            ticketPrices.map { ticketPriceConverters.createOutOfDbRecords(it.first, it.second) }.toList()
 
-        val placeOfEventWithFollowers = placeService.enrichWithFollowersCalculationRequired(placeOfEventWithoutFollowers)
+        val placeOfEventWithFollowers =
+            placeService.enrichWithFollowersCalculationRequired(placeOfEventWithoutFollowers)
 
         return EventFullDto(
             id = eventRecord.eventId ?: throw RecordFieldNullException("Event Id"),
@@ -85,7 +131,7 @@ class EventConvertersImpl(
         record.eventPlaceId = dto.placeId
     }
 
-    private fun resolveEventStatus(eventRecord: EventRecord) : EventStatus {
+    private fun resolveEventStatus(eventRecord: EventRecord): EventStatus {
         val nowDateTime = dateTimeProvider.getNow()
         val startDateTime = eventRecord.eventStartDateTime ?: throw RecordFieldNullException("Event start date time")
         val endDateTime = eventRecord.eventEndDateTime ?: throw RecordFieldNullException("Event end date time")
@@ -95,7 +141,13 @@ class EventConvertersImpl(
         return resolveEventStatus(nowDateTime, startDateTime, endDateTime, isCancelled, ticketsLink)
     }
 
-    private fun resolveEventStatus(nowDateTime: OffsetDateTime, startDateTime: OffsetDateTime, endDateTime: OffsetDateTime, isEventCancelled: Boolean, ticketsLink: String?): EventStatus {
+    private fun resolveEventStatus(
+        nowDateTime: OffsetDateTime,
+        startDateTime: OffsetDateTime,
+        endDateTime: OffsetDateTime,
+        isEventCancelled: Boolean,
+        ticketsLink: String?
+    ): EventStatus {
         val daysBetweenNowAndEventStartTime = ChronoUnit.DAYS.between(nowDateTime, startDateTime)
         if (isEventCancelled) {
             return EventStatus.CANCELLED
@@ -108,7 +160,10 @@ class EventConvertersImpl(
         } else if (daysBetweenNowAndEventStartTime > 0) {
             return EventStatus.TOMORROW
         } else if (daysBetweenNowAndEventStartTime <= 0.toLong()) {
-            return if ((nowDateTime.isEqual(startDateTime) || nowDateTime.isAfter(startDateTime)) && nowDateTime.isBefore(endDateTime)) {
+            return if ((nowDateTime.isEqual(startDateTime) || nowDateTime.isAfter(startDateTime)) && nowDateTime.isBefore(
+                    endDateTime
+                )
+            ) {
                 EventStatus.LIVE
             } else if (nowDateTime.isBefore(startDateTime)) {
                 EventStatus.TODAY

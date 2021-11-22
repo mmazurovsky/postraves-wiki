@@ -1,12 +1,10 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.FollowableShortDto
-import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.enum.EventStatus
 import com.postraves.backend.postraveswiki.util.KOffsetDateTimeSerializer
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import java.time.OffsetDateTime
 
 @Serializable

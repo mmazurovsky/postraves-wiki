@@ -18,6 +18,11 @@ import org.jooq.impl.SQLDataType
 val ARTIST_ARTIST_ID_SEQ: Sequence<Long> = Internal.createSequence("artist_artist_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
 
 /**
+ * The sequence <code>public.brand_advertisement_brand_advertisement_id_seq</code>
+ */
+val BRAND_ADVERTISEMENT_BRAND_ADVERTISEMENT_ID_SEQ: Sequence<Long> = Internal.createSequence("brand_advertisement_brand_advertisement_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)
+
+/**
  * The sequence <code>public.event_event_id_seq</code>
  */
 val EVENT_EVENT_ID_SEQ: Sequence<Long> = Internal.createSequence("event_event_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null)

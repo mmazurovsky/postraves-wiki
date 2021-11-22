@@ -8,6 +8,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.WeeklyBestQuickRepo
 import com.postraves.backend.postraveswiki.service.CountryService
+import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired

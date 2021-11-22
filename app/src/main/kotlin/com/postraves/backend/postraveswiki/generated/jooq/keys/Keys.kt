@@ -5,10 +5,12 @@ package jooq.keys
 
 
 import jooq.tables.Artist
+import jooq.tables.BrandAdvertisement
 import jooq.tables.City
 import jooq.tables.Country
 import jooq.tables.Event
 import jooq.tables.FlywaySchemaHistory
+import jooq.tables.MoneyCurrency
 import jooq.tables.Place
 import jooq.tables.Scene
 import jooq.tables.TicketPrice
@@ -23,10 +25,12 @@ import jooq.tables.UserFollowsPlace
 import jooq.tables.UserFollowsUnity
 import jooq.tables.UserProfile
 import jooq.tables.records.ArtistRecord
+import jooq.tables.records.BrandAdvertisementRecord
 import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
 import jooq.tables.records.EventRecord
 import jooq.tables.records.FlywaySchemaHistoryRecord
+import jooq.tables.records.MoneyCurrencyRecord
 import jooq.tables.records.PlaceRecord
 import jooq.tables.records.SceneRecord
 import jooq.tables.records.TicketPriceRecord
@@ -54,6 +58,7 @@ import org.jooq.impl.Internal
 
 val ARTIST_ARTIST_NAME_KEY: UniqueKey<ArtistRecord> = Internal.createUniqueKey(Artist.ARTIST, DSL.name("artist_artist_name_key"), arrayOf(Artist.ARTIST.ARTIST_NAME), true)
 val ARTIST_PKEY: UniqueKey<ArtistRecord> = Internal.createUniqueKey(Artist.ARTIST, DSL.name("artist_pkey"), arrayOf(Artist.ARTIST.ARTIST_ID), true)
+val BRAND_ADVERTISEMENT_PKEY: UniqueKey<BrandAdvertisementRecord> = Internal.createUniqueKey(BrandAdvertisement.BRAND_ADVERTISEMENT, DSL.name("brand_advertisement_pkey"), arrayOf(BrandAdvertisement.BRAND_ADVERTISEMENT.BRAND_ADVERTISEMENT_ID), true)
 val CITY_PKEY: UniqueKey<CityRecord> = Internal.createUniqueKey(City.CITY, DSL.name("city_pkey"), arrayOf(City.CITY.CITY_NAME), true)
 val COUNTRY_COUNTRY_EMOJI_CODE_KEY: UniqueKey<CountryRecord> = Internal.createUniqueKey(Country.COUNTRY, DSL.name("country_country_emoji_code_key"), arrayOf(Country.COUNTRY.COUNTRY_EMOJI_CODE), true)
 val COUNTRY_COUNTRY_PHONE_CODE_KEY: UniqueKey<CountryRecord> = Internal.createUniqueKey(Country.COUNTRY, DSL.name("country_country_phone_code_key"), arrayOf(Country.COUNTRY.COUNTRY_PHONE_CODE), true)
@@ -61,6 +66,8 @@ val COUNTRY_PKEY: UniqueKey<CountryRecord> = Internal.createUniqueKey(Country.CO
 val EVENT_EVENT_NAME_KEY: UniqueKey<EventRecord> = Internal.createUniqueKey(Event.EVENT, DSL.name("event_event_name_key"), arrayOf(Event.EVENT.EVENT_NAME), true)
 val EVENT_PKEY: UniqueKey<EventRecord> = Internal.createUniqueKey(Event.EVENT, DSL.name("event_pkey"), arrayOf(Event.EVENT.EVENT_ID), true)
 val FLYWAY_SCHEMA_HISTORY_PK: UniqueKey<FlywaySchemaHistoryRecord> = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), arrayOf(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK), true)
+val MONEY_CURRENCY_MONEY_CURRENCY_SYMBOL_KEY: UniqueKey<MoneyCurrencyRecord> = Internal.createUniqueKey(MoneyCurrency.MONEY_CURRENCY, DSL.name("money_currency_money_currency_symbol_key"), arrayOf(MoneyCurrency.MONEY_CURRENCY.MONEY_CURRENCY_SYMBOL), true)
+val MONEY_CURRENCY_PKEY: UniqueKey<MoneyCurrencyRecord> = Internal.createUniqueKey(MoneyCurrency.MONEY_CURRENCY, DSL.name("money_currency_pkey"), arrayOf(MoneyCurrency.MONEY_CURRENCY.MONEY_CURRENCY_NAME), true)
 val PLACE_PKEY: UniqueKey<PlaceRecord> = Internal.createUniqueKey(Place.PLACE, DSL.name("place_pkey"), arrayOf(Place.PLACE.PLACE_ID), true)
 val PLACE_PLACE_NAME_KEY: UniqueKey<PlaceRecord> = Internal.createUniqueKey(Place.PLACE, DSL.name("place_place_name_key"), arrayOf(Place.PLACE.PLACE_NAME), true)
 val SCENE_PKEY: UniqueKey<SceneRecord> = Internal.createUniqueKey(Scene.SCENE, DSL.name("scene_pkey"), arrayOf(Scene.SCENE.SCENE_ID), true)
@@ -89,6 +96,7 @@ val CITY__CITY_CITY_COUNTRY_NAME_FKEY: ForeignKey<CityRecord, CountryRecord> = I
 val EVENT__EVENT_EVENT_PLACE_ID_FKEY: ForeignKey<EventRecord, PlaceRecord> = Internal.createForeignKey(Event.EVENT, DSL.name("event_event_place_id_fkey"), arrayOf(Event.EVENT.EVENT_PLACE_ID), jooq.keys.PLACE_PKEY, arrayOf(Place.PLACE.PLACE_ID), true)
 val PLACE__PLACE_PLACE_CITY_NAME_FKEY: ForeignKey<PlaceRecord, CityRecord> = Internal.createForeignKey(Place.PLACE, DSL.name("place_place_city_name_fkey"), arrayOf(Place.PLACE.PLACE_CITY_NAME), jooq.keys.CITY_PKEY, arrayOf(City.CITY.CITY_NAME), true)
 val SCENE__SCENE_SCENE_PLACE_ID_FKEY: ForeignKey<SceneRecord, PlaceRecord> = Internal.createForeignKey(Scene.SCENE, DSL.name("scene_scene_place_id_fkey"), arrayOf(Scene.SCENE.SCENE_PLACE_ID), jooq.keys.PLACE_PKEY, arrayOf(Place.PLACE.PLACE_ID), true)
+val TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_CURRENCY_FKEY: ForeignKey<TicketPriceRecord, MoneyCurrencyRecord> = Internal.createForeignKey(TicketPrice.TICKET_PRICE, DSL.name("ticket_price_ticket_price_currency_fkey"), arrayOf(TicketPrice.TICKET_PRICE.TICKET_PRICE_CURRENCY), jooq.keys.MONEY_CURRENCY_PKEY, arrayOf(MoneyCurrency.MONEY_CURRENCY.MONEY_CURRENCY_NAME), true)
 val TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY: ForeignKey<TicketPriceRecord, EventRecord> = Internal.createForeignKey(TicketPrice.TICKET_PRICE, DSL.name("ticket_price_ticket_price_event_id_fkey"), arrayOf(TicketPrice.TICKET_PRICE.TICKET_PRICE_EVENT_ID), jooq.keys.EVENT_PKEY, arrayOf(Event.EVENT.EVENT_ID), true)
 val TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_EVENT_ID_FKEY: ForeignKey<TimetableItemRecord, EventRecord> = Internal.createForeignKey(TimetableItem.TIMETABLE_ITEM, DSL.name("timetable_item_timetable_item_event_id_fkey"), arrayOf(TimetableItem.TIMETABLE_ITEM.TIMETABLE_ITEM_EVENT_ID), jooq.keys.EVENT_PKEY, arrayOf(Event.EVENT.EVENT_ID), true)
 val TIMETABLE_ITEM__TIMETABLE_ITEM_TIMETABLE_ITEM_SCENE_ID_FKEY: ForeignKey<TimetableItemRecord, SceneRecord> = Internal.createForeignKey(TimetableItem.TIMETABLE_ITEM, DSL.name("timetable_item_timetable_item_scene_id_fkey"), arrayOf(TimetableItem.TIMETABLE_ITEM.TIMETABLE_ITEM_SCENE_ID), jooq.keys.SCENE_PKEY, arrayOf(Scene.SCENE.SCENE_ID), true)

@@ -3,16 +3,17 @@ package com.postraves.backend.postraveswiki.integration
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
+import com.postraves.backend.postraveswiki.data.dto.MoneyCurrencyDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
-import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
+import com.postraves.backend.postraveswiki.data.dto.reading.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.data.enum.EventStatus
-import com.postraves.backend.postraveswiki.data.enum.MoneyCurrency
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
+import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
@@ -156,9 +157,31 @@ class EventIntegrationTest(
         organizers = emptySet(),
     )
 
+    val currencyRub = MoneyCurrencyDto(
+        name = "RUB",
+        symbol = "₽",
+    )
+
+    val currencyUsd = MoneyCurrencyDto(
+        name = "USD",
+        symbol = "$",
+    )
+
+    val currencyEur = MoneyCurrencyDto(
+        name = "EUR",
+        symbol = "€",
+    )
+
     @BeforeAll
     private fun createCountryForAssociations() {
         logger.info("Event Integration Test started")
+        listOf(
+            currencyRub,
+            currencyUsd,
+            currencyEur,
+        ).forEach {
+            makePostRequest(mockMvc, "/moneyCurrency", Json.encodeToString(it), status().isCreated)
+        }
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData2), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
@@ -237,15 +260,15 @@ class EventIntegrationTest(
             about = "About Amelie2",
             placeId = persistedPlace2Id,
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "Ticket1",
                     price = 200.5,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "Ticket2",
                     price = 300.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 )
             )
         )
@@ -265,7 +288,11 @@ class EventIntegrationTest(
         assertEquals(eventToUpdate.imageLink, updatedEvent.imageLink)
         assertEquals(eventToUpdate.about, updatedEvent.about)
         assertEquals(eventToUpdate.ticketsLink, updatedEvent.ticketsLink)
-        assertEquals(eventToUpdate.ticketPrices, updatedEvent.ticketPrices)
+        eventToUpdate.ticketPrices!!.forEachIndexed { index, ticketPriceWriteDto ->
+            assertEquals(eventToUpdate.ticketPrices!![index].name, updatedEvent.ticketPrices[index].name)
+            assertEquals(eventToUpdate.ticketPrices!![index].price, updatedEvent.ticketPrices[index].price)
+            assertEquals(eventToUpdate.ticketPrices!![index].currency, updatedEvent.ticketPrices[index].currency.name)
+        }
         assertEquals(eventToUpdate.startDateTime, updatedEvent.startDateTime)
         assertEquals(eventToUpdate.endDateTime, updatedEvent.endDateTime)
         assertEquals(EventStatus.PAST, updatedEvent.status)

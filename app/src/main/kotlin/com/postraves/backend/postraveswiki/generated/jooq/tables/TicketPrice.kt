@@ -8,6 +8,7 @@ import java.time.OffsetDateTime
 
 import jooq.Public
 import jooq.keys.TICKET_PRICE_PKEY
+import jooq.keys.TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_CURRENCY_FKEY
 import jooq.keys.TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY
 import jooq.tables.records.TicketPriceRecord
 
@@ -86,7 +87,7 @@ open class TicketPrice(
     /**
      * The column <code>public.ticket_price.ticket_price_currency</code>.
      */
-    val TICKET_PRICE_CURRENCY: TableField<TicketPriceRecord, String?> = createField(DSL.name("ticket_price_currency"), SQLDataType.CLOB.nullable(false), this, "")
+    val TICKET_PRICE_CURRENCY: TableField<TicketPriceRecord, String?> = createField(DSL.name("ticket_price_currency"), SQLDataType.VARCHAR(3), this, "")
 
     /**
      * The column <code>public.ticket_price.ticket_price_event_id</code>.
@@ -116,9 +117,16 @@ open class TicketPrice(
     override fun getIdentity(): Identity<TicketPriceRecord, Long?> = super.getIdentity() as Identity<TicketPriceRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<TicketPriceRecord> = TICKET_PRICE_PKEY
     override fun getKeys(): List<UniqueKey<TicketPriceRecord>> = listOf(TICKET_PRICE_PKEY)
-    override fun getReferences(): List<ForeignKey<TicketPriceRecord, *>> = listOf(TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY)
+    override fun getReferences(): List<ForeignKey<TicketPriceRecord, *>> = listOf(TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_CURRENCY_FKEY, TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY)
 
+    private lateinit var _moneyCurrency: MoneyCurrency
     private lateinit var _event: Event
+    fun moneyCurrency(): MoneyCurrency {
+        if (!this::_moneyCurrency.isInitialized)
+            _moneyCurrency = MoneyCurrency(this, TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_CURRENCY_FKEY)
+
+        return _moneyCurrency;
+    }
     fun event(): Event {
         if (!this::_event.isInitialized)
             _event = Event(this, TICKET_PRICE__TICKET_PRICE_TICKET_PRICE_EVENT_ID_FKEY)

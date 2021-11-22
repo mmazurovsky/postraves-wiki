@@ -14,8 +14,20 @@ import kotlinx.serialization.properties.decodeFromStringMap
 import org.springframework.stereotype.Service
 
 interface PlaceConverters {
-    fun createFullDtoFromRecord(placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : PlaceFullDto
-    fun createShortDtoFromRecord(placeRecord: PlaceRecord, cityRecord: CityRecord, countryRecord: CountryRecord, isFollowed: Boolean) : PlaceShortDto
+    fun createFullDtoFromRecord(
+        placeRecord: PlaceRecord,
+        cityRecord: CityRecord,
+        countryRecord: CountryRecord,
+        isFollowed: Boolean
+    ): PlaceFullDto
+
+    fun createShortDtoFromRecord(
+        placeRecord: PlaceRecord,
+        cityRecord: CityRecord,
+        countryRecord: CountryRecord,
+        isFollowed: Boolean
+    ): PlaceShortDto
+
     fun transferDataFromDtoToRecord(dto: PlaceWriteDto, record: PlaceRecord)
     fun createShortDtoFromMap(map: Map<String, String>): PlaceShortDto
 }
@@ -63,7 +75,8 @@ class PlaceConvertersImpl(
                 longitude = placeRecord.placeLongitude ?: throw RecordFieldNullException("Place Longitude")
             ),
             city = cityConverters.createDtoFromRecord(cityRecord, countryRecord),
-            isFollowed = isFollowed
+            isFollowed = isFollowed,
+            isJustCity = placeRecord.placeIsJustCity ?: throw RecordFieldNullException("Place Is Just City"),
         )
     }
 
@@ -77,6 +90,7 @@ class PlaceConvertersImpl(
         record.placeLatitude = dto.coordinate.latitude
         record.placeLongitude = dto.coordinate.longitude
         record.placeStreetAddress = dto.streetAddress
+        record.placeIsJustCity = dto.isJustCity
     }
 
     @ExperimentalSerializationApi

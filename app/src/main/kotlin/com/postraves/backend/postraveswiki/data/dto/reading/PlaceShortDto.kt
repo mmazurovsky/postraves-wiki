@@ -16,17 +16,18 @@ import kotlinx.serialization.properties.encodeToStringMap
 data class PlaceShortDto(
     override val id: Long,
     val name: String,
-    val imageLink : String?,
+    val imageLink: String?,
     val city: CityDto,
     val streetAddress: String,
     val coordinate: CoordinateDto,
+    val isJustCity: Boolean,
     @Required
     val isFollowed: Boolean = false,
     @Required
     override val overallFollowers: Int = 0,
     @Required
     override val weeklyFollowers: Int = 0,
-    ) : FollowableShortDto<PlaceShortDto>, ConvertableToMap {
+) : FollowableShortDto<PlaceShortDto>, ConvertableToMap {
 
     @ExperimentalSerializationApi
     override fun toMap(): Map<String, String> = Properties.encodeToStringMap(value = this)

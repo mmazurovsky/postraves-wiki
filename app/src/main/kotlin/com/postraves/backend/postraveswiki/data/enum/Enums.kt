@@ -21,7 +21,3 @@ enum class EventStatus {
     PAST,
     CANCELLED
 }
-
-enum class MoneyCurrency(val nameString: String) {
-    RUB(nameString = "RUB")
-}

@@ -1,10 +1,12 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
 import com.postraves.backend.postraveswiki.data.converters.EventConverters
+import com.postraves.backend.postraveswiki.data.converters.TicketPriceConverters
 import com.postraves.backend.postraveswiki.data.converters.TimetableConverters
-import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
+import com.postraves.backend.postraveswiki.data.dto.reading.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.EventWriteDto
+import com.postraves.backend.postraveswiki.data.dto.writing.TicketPriceWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.TimetablePerformanceWriteDto
 import com.postraves.backend.postraveswiki.data.enum.EntityType
 import com.postraves.backend.postraveswiki.exception.NotFoundException
@@ -37,6 +39,7 @@ interface EventRepo :
         startOfIntervalDateTime: OffsetDateTime,
         endOfIntervalDateTime: OffsetDateTime
     ): List<EventShortDto>
+
     fun getOrganizers(userId: Long?, id: Long): List<UnityShortDto>
     fun addOrganizers(id: Long, orgs: Set<Long>)
     fun removeOrganizers(id: Long, orgs: Set<Long>)
@@ -52,6 +55,7 @@ interface EventRepo :
 class EventRepoImpl(
     private val timetableConverters: TimetableConverters,
     private val eventConverters: EventConverters,
+    private val ticketPriceConverters: TicketPriceConverters,
     private val dateTimeProvider: DateTimeProvider,
     private val artistRepo: ArtistRepo,
     private val unityRepo: UnityRepo
@@ -87,11 +91,11 @@ class EventRepoImpl(
         return this.where(thisTable.EVENT_ID.eq(id))
     }
 
-    private fun saveTicketPrices(id: Long, ticketPrices: Collection<TicketPriceDto>) {
+    private fun saveTicketPrices(id: Long, ticketPrices: Collection<TicketPriceWriteDto>) {
         ticketPrices.forEach {
             val ticketPriceRecord = dsl.newRecord(TICKET_PRICE)
             ticketPriceRecord.apply {
-                it.transferDataToDbRecord(this)
+                ticketPriceConverters.transferDataToDbRecord(it, this)
                 this.ticketPriceCreatedDateTime = dateTimeProvider.getNow()
                 this.ticketPriceEventId = id
             }
@@ -106,11 +110,16 @@ class EventRepoImpl(
             .execute()
     }
 
-    private fun getTicketPrices(id: Long): List<TicketPriceRecord> {
+    private fun getTicketPricesWithCurrencies(id: Long): List<Pair<TicketPriceRecord, MoneyCurrencyRecord>> {
         return dsl
-            .selectFrom(TICKET_PRICE)
+            .select()
+            .from(TICKET_PRICE)
+            .leftOuterJoin(MONEY_CURRENCY).on(TICKET_PRICE.TICKET_PRICE_CURRENCY.eq(MONEY_CURRENCY.MONEY_CURRENCY_NAME))
             .where(TICKET_PRICE.TICKET_PRICE_EVENT_ID.eq(id))
             .fetch()
+            .map {
+                Pair(it.into(TICKET_PRICE), it.into(MONEY_CURRENCY))
+            }
             .toList()
     }
 
@@ -120,16 +129,16 @@ class EventRepoImpl(
         val isPlaceFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileId != null
 
         val eventRecord = record.into(thisTable)
-        val ticketPrices = getTicketPrices(
+        val ticketPricesWithCurrencies = getTicketPricesWithCurrencies(
             eventRecord.eventId ?: throw NotFoundException(
                 thisString,
-                "null id of event on trying to convert"
+                "null id of Event on trying to convert to short"
             )
         )
 
         return eventConverters.createShortDtoFromRecords(
             eventRecord = eventRecord,
-            ticketPrices = ticketPrices,
+            ticketPricesWithCurrencies = ticketPricesWithCurrencies,
             placeRecord = record.into(PLACE),
             cityRecord = record.into(CITY),
             countryRecord = record.into(COUNTRY),
@@ -144,7 +153,7 @@ class EventRepoImpl(
         val isPlaceFollowed = record.into(USER_FOLLOWS_PLACE).userFollowsPlaceUserProfileId != null
 
         val eventRecord = record.into(thisTable)
-        val ticketPrices = getTicketPrices(
+        val ticketPrices = getTicketPricesWithCurrencies(
             eventRecord.eventId ?: throw NotFoundException(
                 thisString,
                 "null id of event on trying to convert"

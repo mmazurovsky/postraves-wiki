@@ -5,10 +5,12 @@ package jooq.tables.references
 
 
 import jooq.tables.Artist
+import jooq.tables.BrandAdvertisement
 import jooq.tables.City
 import jooq.tables.Country
 import jooq.tables.Event
 import jooq.tables.FlywaySchemaHistory
+import jooq.tables.MoneyCurrency
 import jooq.tables.Place
 import jooq.tables.Scene
 import jooq.tables.TicketPrice
@@ -31,6 +33,11 @@ import jooq.tables.UserProfile
 val ARTIST = Artist.ARTIST
 
 /**
+ * The table <code>public.brand_advertisement</code>.
+ */
+val BRAND_ADVERTISEMENT = BrandAdvertisement.BRAND_ADVERTISEMENT
+
+/**
  * The table <code>public.city</code>.
  */
 val CITY = City.CITY
@@ -49,6 +56,11 @@ val EVENT = Event.EVENT
  * The table <code>public.flyway_schema_history</code>.
  */
 val FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY
+
+/**
+ * The table <code>public.money_currency</code>.
+ */
+val MONEY_CURRENCY = MoneyCurrency.MONEY_CURRENCY
 
 /**
  * The table <code>public.place</code>.

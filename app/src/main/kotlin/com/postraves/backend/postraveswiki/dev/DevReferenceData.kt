@@ -2,16 +2,16 @@ package com.postraves.backend.postraveswiki.dev
 
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
+import com.postraves.backend.postraveswiki.data.dto.MoneyCurrencyDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
-import com.postraves.backend.postraveswiki.data.dto.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.*
-import com.postraves.backend.postraveswiki.data.enum.MoneyCurrency
 import com.postraves.backend.postraveswiki.repo.followable.OtherUserRepo
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
+import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component
 @Component
 @Profile("dev")
 class DevReferenceData(
+    private val currencyMoneyService: MoneyCurrencyService,
     private val countryService: CountryService,
     private val cityService: CityService,
     private val placeService: PlaceService,
@@ -44,6 +45,21 @@ class DevReferenceData(
     @Qualifier("eventWeeklyFollowersQuickRepoImpl")
     private val eventWeeklyFollowersQuickRepo: FollowersQuickRepo,
 ) {
+
+    val currencyRub = MoneyCurrencyDto(
+        name = "RUB",
+        symbol = "₽",
+    )
+
+    val currencyUsd = MoneyCurrencyDto(
+        name = "USD",
+        symbol = "$",
+    )
+
+    val currencyEur = MoneyCurrencyDto(
+        name = "EUR",
+        symbol = "€",
+    )
 
     val countryRu = CountryWriteDto(
         name = "RU",
@@ -442,6 +458,14 @@ class DevReferenceData(
             )
         )
 
+        val savedCurrencies = currencyMoneyService.saveBatch(
+            listOf(
+                currencyRub,
+                currencyUsd,
+                currencyEur,
+            )
+        )
+
         val savedCities = cityService.saveBatch(
             listOf(
                 cityMoscow,
@@ -522,10 +546,10 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().minusDays(1),
             endDateTime = dateTimeProvider.getNow().minusDays(1).plusHours(5),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "One",
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 )
             ),
             placeId = placeMutaborSaved.id,
@@ -543,15 +567,15 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().minusDays(1).plusHours(5),
             endDateTime = dateTimeProvider.getNow().minusHours(5),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 20:00", // todo sort prices by value on GET
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "До 20:00",
                     price = 0.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeSlezySaved.id,
@@ -586,20 +610,20 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().plusDays(8),
             endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(8),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "Free",
                     price = 0.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1000.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 6:00",
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeGazgoldeSaved.id,
@@ -616,15 +640,15 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().plusDays(4),
             endDateTime = dateTimeProvider.getNow().plusDays(5).plusHours(8),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 10000.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 12000.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeGazgoldeSaved.id,
@@ -641,15 +665,15 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().plusDays(7),
             endDateTime = dateTimeProvider.getNow().plusDays(7).plusHours(5),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 800.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeMutaborSaved.id,
@@ -666,20 +690,20 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().plusDays(8),
             endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(5),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 800.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeMutaborSaved.id,
@@ -698,20 +722,20 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(1),
             endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(9),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1800.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeMutaborSaved.id,
@@ -728,20 +752,20 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().plusDays(10).plusHours(1),
             endDateTime = dateTimeProvider.getNow().plusDays(10).plusHours(9),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1800.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeMutaborSaved.id,
@@ -759,20 +783,20 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().minusHours(2),
             endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(10),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1800.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 ),
             ),
             placeId = placeMutaborSaved.id,
@@ -791,10 +815,10 @@ class DevReferenceData(
             startDateTime = dateTimeProvider.getNow().plusHours(1),
             endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(12),
             ticketPrices = listOf(
-                TicketPriceDto(
+                TicketPriceWriteDto(
                     name = "One",
                     price = 0.0,
-                    currency = MoneyCurrency.RUB
+                    currency = currencyRub.name
                 )
             ),
             placeId = placeMutaborSaved.id,

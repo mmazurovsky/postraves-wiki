@@ -19,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row11
+import org.jooq.Row12
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -119,6 +119,11 @@ open class Place(
      */
     val PLACE_SOUNDCLOUD_USERNAME: TableField<PlaceRecord, String?> = createField(DSL.name("place_soundcloud_username"), SQLDataType.CLOB, this, "")
 
+    /**
+     * The column <code>public.place.place_is_just_city</code>.
+     */
+    val PLACE_IS_JUST_CITY: TableField<PlaceRecord, Boolean?> = createField(DSL.name("place_is_just_city"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "")
+
     private constructor(alias: Name, aliased: Table<PlaceRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<PlaceRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -165,7 +170,7 @@ open class Place(
     override fun rename(name: Name): Place = Place(name, null)
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?> = super.fieldsRow() as Row11<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?>
+    override fun fieldsRow(): Row12<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?, Boolean?> = super.fieldsRow() as Row12<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?, Boolean?>
 }

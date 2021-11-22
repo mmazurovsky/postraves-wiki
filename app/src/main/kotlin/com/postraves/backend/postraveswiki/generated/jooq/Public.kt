@@ -5,6 +5,7 @@ package jooq
 
 
 import jooq.sequences.ARTIST_ARTIST_ID_SEQ
+import jooq.sequences.BRAND_ADVERTISEMENT_BRAND_ADVERTISEMENT_ID_SEQ
 import jooq.sequences.EVENT_EVENT_ID_SEQ
 import jooq.sequences.PLACE_PLACE_ID_SEQ
 import jooq.sequences.SCENE_SCENE_ID_SEQ
@@ -13,10 +14,12 @@ import jooq.sequences.TIMETABLE_ITEM_TIMETABLE_ITEM_ID_SEQ
 import jooq.sequences.UNITY_UNITY_ID_SEQ
 import jooq.sequences.USER_PROFILE_USER_PROFILE_ID_SEQ
 import jooq.tables.Artist
+import jooq.tables.BrandAdvertisement
 import jooq.tables.City
 import jooq.tables.Country
 import jooq.tables.Event
 import jooq.tables.FlywaySchemaHistory
+import jooq.tables.MoneyCurrency
 import jooq.tables.Place
 import jooq.tables.Scene
 import jooq.tables.TicketPrice
@@ -58,6 +61,11 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     val ARTIST get() = Artist.ARTIST
 
     /**
+     * The table <code>public.brand_advertisement</code>.
+     */
+    val BRAND_ADVERTISEMENT get() = BrandAdvertisement.BRAND_ADVERTISEMENT
+
+    /**
      * The table <code>public.city</code>.
      */
     val CITY get() = City.CITY
@@ -76,6 +84,11 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
      * The table <code>public.flyway_schema_history</code>.
      */
     val FLYWAY_SCHEMA_HISTORY get() = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY
+
+    /**
+     * The table <code>public.money_currency</code>.
+     */
+    val MONEY_CURRENCY get() = MoneyCurrency.MONEY_CURRENCY
 
     /**
      * The table <code>public.place</code>.
@@ -146,6 +159,7 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
 
     override fun getSequences(): List<Sequence<*>> = listOf(
         ARTIST_ARTIST_ID_SEQ,
+        BRAND_ADVERTISEMENT_BRAND_ADVERTISEMENT_ID_SEQ,
         EVENT_EVENT_ID_SEQ,
         PLACE_PLACE_ID_SEQ,
         SCENE_SCENE_ID_SEQ,
@@ -157,10 +171,12 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
 
     override fun getTables(): List<Table<*>> = listOf(
         Artist.ARTIST,
+        BrandAdvertisement.BRAND_ADVERTISEMENT,
         City.CITY,
         Country.COUNTRY,
         Event.EVENT,
         FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
+        MoneyCurrency.MONEY_CURRENCY,
         Place.PLACE,
         Scene.SCENE,
         TicketPrice.TICKET_PRICE,
