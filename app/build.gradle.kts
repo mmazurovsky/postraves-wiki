@@ -63,8 +63,7 @@ val POSTGRES_USER = System.getenv("POSTGRES_USER")
 val POSTGRES_PASSWORD = System.getenv("POSTGRES_PASSWORD")
 val POSTGRES_HOST =
     System.getenv("POSTGRES_HOST")
-val POSTGRES_URL =
-    "jdbc:postgresql://${POSTGRES_HOST}:5432/postraves"
+val POSTGRES_URL = "jdbc:postgresql://${POSTGRES_HOST}:5432/postraves"
 
 
 flyway {
