@@ -3,7 +3,6 @@ package com.postraves.backend.postraveswiki.dev
 import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
 import com.postraves.backend.postraveswiki.data.dto.MoneyCurrencyDto
-import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.repo.followable.OtherUserRepo
@@ -33,6 +32,7 @@ class DevReferenceData(
     private val unityService: UnityService,
     private val artistService: ArtistService,
     private val eventService: EventService,
+    private val moneyCurrencyService: MoneyCurrencyService,
     private val otherUserRepo: OtherUserRepo,
     private val dateTimeProvider: DateTimeProvider,
     private val quickRepoCleaner: CleaningQuickRepo,
@@ -443,6 +443,7 @@ class DevReferenceData(
         unityService.findAll().forEach { unityService.deleteById(it.id) }
         artistService.findAll().forEach { artistService.deleteById(it.id) }
         eventService.findAll().forEach { eventService.deleteById(it.id) }
+        moneyCurrencyService.findAll().forEach { moneyCurrencyService.deleteByName(it.name) }
 
         writeReferenceData()
     }
