@@ -25,8 +25,8 @@ class TicketPriceConvertersImpl(
         moneyCurrencyRecord: MoneyCurrencyRecord
     ): TicketPriceDto {
         return TicketPriceDto(
-            name = ticketPriceRecord.ticketPriceName ?: throw RecordFieldNullException("Ticket price"),
-            price = ticketPriceRecord.ticketPricePrice ?: throw RecordFieldNullException("Ticket price"),
+            name = ticketPriceRecord.ticketPriceName,
+            price = ticketPriceRecord.ticketPricePrice ?: throw RecordFieldNullException("Ticket price price"),
             currency = moneyCurrencyConverters.createDtoFromRecord(moneyCurrencyRecord),
         )
     }
