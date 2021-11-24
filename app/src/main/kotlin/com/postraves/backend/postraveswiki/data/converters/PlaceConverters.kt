@@ -56,6 +56,7 @@ class PlaceConvertersImpl(
             instagramUsername = placeRecord.placeInstagramUsername,
             about = placeRecord.placeAbout,
             isFollowed = isFollowed,
+            isJustCity = placeRecord.placeIsJustCity ?: throw RecordFieldNullException("Place Is Just City"),
         )
     }
 
