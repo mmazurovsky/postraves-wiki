@@ -71,7 +71,7 @@ class CountryImplRepo(
     override fun findByPartOfName(namePart: String): List<CountryDto> {
         val results = dsl
             .selectFrom(COUNTRY)
-            .where(DSL.lower(CITY.CITY_NAME).contains(namePart.lowercase()))
+            .where(DSL.lower(COUNTRY.COUNTRY_NAME).contains(namePart.lowercase()))
             .fetch()
             .map {
                 countryConverters.createDtoFromRecord(it.into(COUNTRY))
