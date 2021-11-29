@@ -18,7 +18,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row6
+import org.jooq.Row7
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -72,6 +72,11 @@ open class Scene(
      * The column <code>public.scene.scene_created_date_time</code>.
      */
     val SCENE_CREATED_DATE_TIME: TableField<SceneRecord, OffsetDateTime?> = createField(DSL.name("scene_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
+     * The column <code>public.scene.scene_updated_date_time</code>.
+     */
+    val SCENE_UPDATED_DATE_TIME: TableField<SceneRecord, OffsetDateTime?> = createField(DSL.name("scene_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
      * The column <code>public.scene.scene_name</code>.
@@ -139,7 +144,7 @@ open class Scene(
     override fun rename(name: Name): Scene = Scene(name, null)
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row6<Long?, OffsetDateTime?, String?, String?, Int?, Long?> = super.fieldsRow() as Row6<Long?, OffsetDateTime?, String?, String?, Int?, Long?>
+    override fun fieldsRow(): Row7<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, Int?, Long?> = super.fieldsRow() as Row7<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, Int?, Long?>
 }

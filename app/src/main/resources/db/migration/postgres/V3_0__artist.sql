@@ -2,6 +2,7 @@ CREATE TABLE artist
 (
     artist_id                       BIGSERIAL                UNIQUE NOT NULL,
     artist_created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
+    artist_updated_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
     artist_name                     VARCHAR(60)              UNIQUE NOT NULL,
     artist_image_link               TEXT,
     artist_about                    TEXT,

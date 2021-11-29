@@ -19,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row9
+import org.jooq.Row10
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -73,6 +73,11 @@ open class Unity(
      * The column <code>public.unity.unity_created_date_time</code>.
      */
     val UNITY_CREATED_DATE_TIME: TableField<UnityRecord, OffsetDateTime?> = createField(DSL.name("unity_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
+     * The column <code>public.unity.unity_updated_date_time</code>.
+     */
+    val UNITY_UPDATED_DATE_TIME: TableField<UnityRecord, OffsetDateTime?> = createField(DSL.name("unity_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
      * The column <code>public.unity.unity_name</code>.
@@ -155,7 +160,7 @@ open class Unity(
     override fun rename(name: Name): Unity = Unity(name, null)
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row9<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row9<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?>
+    override fun fieldsRow(): Row10<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row10<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?>
 }

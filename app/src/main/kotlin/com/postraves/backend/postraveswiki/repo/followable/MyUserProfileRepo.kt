@@ -89,6 +89,7 @@ class MyUserProfileRepoImpl(
         userConverters.transferDataFromDtoToRecord(dto, userToSave)
         userToSave.userProfileAuthUid = authUid
         userToSave.userProfileCreatedDateTime = dateTimeProvider.getNow()
+        userToSave.userProfileUpdatedDateTime = dateTimeProvider.getNow()
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
         return userConverters.createShortDtoFromRecord(
@@ -102,6 +103,7 @@ class MyUserProfileRepoImpl(
     override fun update(dto: UserWriteDto, userId: Long) {
         val userToUpdate = findByIdWithoutJoins(userId)
         userConverters.transferDataFromDtoToRecord(dto, userToUpdate)
+        userToUpdate.userProfileUpdatedDateTime = dateTimeProvider.getNow()
         userToUpdate.update()
     }
 

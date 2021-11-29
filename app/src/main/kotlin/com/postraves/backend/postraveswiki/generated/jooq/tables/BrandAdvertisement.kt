@@ -17,7 +17,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row8
+import org.jooq.Row10
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -93,6 +93,16 @@ open class BrandAdvertisement(
     val BRAND_ADVERTISEMENT_LINK: TableField<BrandAdvertisementRecord, String?> = createField(DSL.name("brand_advertisement_link"), SQLDataType.CLOB, this, "")
 
     /**
+     * The column <code>public.brand_advertisement.brand_advertisement_created_date_time</code>.
+     */
+    val BRAND_ADVERTISEMENT_CREATED_DATE_TIME: TableField<BrandAdvertisementRecord, OffsetDateTime?> = createField(DSL.name("brand_advertisement_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
+     * The column <code>public.brand_advertisement.brand_advertisement_updated_date_time</code>.
+     */
+    val BRAND_ADVERTISEMENT_UPDATED_DATE_TIME: TableField<BrandAdvertisementRecord, OffsetDateTime?> = createField(DSL.name("brand_advertisement_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
      * The column <code>public.brand_advertisement.brand_advertisement_start_date_time</code>.
      */
     val BRAND_ADVERTISEMENT_START_DATE_TIME: TableField<BrandAdvertisementRecord, OffsetDateTime?> = createField(DSL.name("brand_advertisement_start_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
@@ -139,7 +149,7 @@ open class BrandAdvertisement(
     override fun rename(name: Name): BrandAdvertisement = BrandAdvertisement(name, null)
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<Long?, String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?> = super.fieldsRow() as Row8<Long?, String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?>
+    override fun fieldsRow(): Row10<Long?, String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?> = super.fieldsRow() as Row10<Long?, String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?, OffsetDateTime?>
 }

@@ -19,12 +19,14 @@ interface FollowableRepo<SHORTDTO : BaseShortDto> {
 
 interface ByIdRepo<FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableShortDto<SHORTDTO>>{
     fun findById(userId: Long?, id: Long): FULLDTO
+    fun updateUpdatedDateTime(id: Long)
     fun deleteById(id: Long)
     fun findListByIds(userId: Long?, ids: Set<Long>): List<SHORTDTO>
 }
 
 interface ByNameRepo<FULLDTO : BaseFullDto> {
     fun findByName(name: String): FULLDTO
+    fun updateUpdatedDateTime(name: String)
     fun deleteByName(name: String)
     fun findByPartOfName(namePart: String): List<FULLDTO>
 }

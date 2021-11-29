@@ -7,7 +7,6 @@ import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.records.CountryRecord
-import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -23,7 +22,7 @@ interface CountryRepo :
 class CountryImplRepo(
     private val countryConverters: CountryConverters,
     private val dateTimeProvider: DateTimeProvider,
-    ) : CountryRepo {
+) : CountryRepo {
 
     @Autowired
     @Lazy
@@ -50,6 +49,7 @@ class CountryImplRepo(
     override fun update(dto: CountryWriteDto) {
         val countryToUpdate = findByNameWithoutJoins(dto.name)
         countryConverters.transferDataFromDtoToRecord(dto, countryToUpdate)
+        countryToUpdate.countryUpdatedDateTime = dateTimeProvider.getNow()
         countryToUpdate.update()
     }
 

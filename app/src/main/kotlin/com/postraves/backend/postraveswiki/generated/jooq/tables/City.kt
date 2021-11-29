@@ -17,7 +17,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row8
+import org.jooq.Row9
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -93,6 +93,11 @@ open class City(
     val CITY_CREATED_DATE_TIME: TableField<CityRecord, OffsetDateTime?> = createField(DSL.name("city_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
+     * The column <code>public.city.city_updated_date_time</code>.
+     */
+    val CITY_UPDATED_DATE_TIME: TableField<CityRecord, OffsetDateTime?> = createField(DSL.name("city_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
      * The column <code>public.city.city_time_offset</code>.
      */
     val CITY_TIME_OFFSET: TableField<CityRecord, Int?> = createField(DSL.name("city_time_offset"), SQLDataType.INTEGER.nullable(false), this, "")
@@ -147,7 +152,7 @@ open class City(
     override fun rename(name: Name): City = City(name, null)
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<String?, String?, String?, String?, String?, OffsetDateTime?, Int?, String?> = super.fieldsRow() as Row8<String?, String?, String?, String?, String?, OffsetDateTime?, Int?, String?>
+    override fun fieldsRow(): Row9<String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, Int?, String?> = super.fieldsRow() as Row9<String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, Int?, String?>
 }

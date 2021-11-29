@@ -1,6 +1,8 @@
 package com.postraves.backend.postraveswiki.repo.followable
 
-import com.postraves.backend.postraveswiki.data.dto.*
+import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
+import com.postraves.backend.postraveswiki.data.dto.FollowableFullDto
+import com.postraves.backend.postraveswiki.data.dto.FollowableShortDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
@@ -35,7 +37,7 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     abstract fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record>
     abstract fun prepareRecordBeforeSaving(record: R, dto: WRITEDTO)
     abstract fun postSaveGetId(record: R): Long
-    abstract fun preUpdateGetId(dto: WRITEDTO): Long
+    abstract fun preUpdateCheckId(dto: WRITEDTO): Long
     abstract fun prepareRecordBeforeUpdating(record: R, dto: WRITEDTO)
 
     private fun selectFromEntity(): SelectJoinStep<Record> {
@@ -60,8 +62,8 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
         val record =
             selectFromEntity()
                 .joinLocation()
-                .apply {if (joinOtherData() != null) joinOtherData()}
-                .apply {if (userId != null) joinUserFollow(userId)}
+                .apply { if (joinOtherData() != null) joinOtherData() }
+                .apply { if (userId != null) joinUserFollow(userId) }
                 .whereMatchingId(id)
                 .fetchOne()
         return record ?: throw NotFoundException(entityType, id.toString())
@@ -79,8 +81,8 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     override fun findListByIds(userId: Long?, ids: Set<Long>): List<SHORTDTO> {
         return selectFromEntity()
             .joinLocation()
-            .apply {if (joinOtherData() != null) joinOtherData()}
-            .apply {if (userId != null) joinUserFollow(userId)}
+            .apply { if (joinOtherData() != null) joinOtherData() }
+            .apply { if (userId != null) joinUserFollow(userId) }
             .whereIdIsInIds(ids)
             .fetch()
             .map { convertToShortDto(it) }
@@ -90,7 +92,7 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     override fun findAll(): List<SHORTDTO> {
         return selectFromEntity()
             .joinLocation()
-            .apply {if (joinOtherData() != null) joinOtherData()}
+            .apply { if (joinOtherData() != null) joinOtherData() }
             .fetch()
             .map {
                 convertToShortDto(it)
@@ -101,8 +103,8 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     override fun findFollowableByPartOfName(userId: Long?, namePart: String): List<SHORTDTO> {
         return selectFromEntity()
             .joinLocation()
-            .apply {if (joinOtherData() != null) joinOtherData()}
-            .apply {if (userId != null) joinUserFollow(userId)}
+            .apply { if (joinOtherData() != null) joinOtherData() }
+            .apply { if (userId != null) joinUserFollow(userId) }
             .whereNameIsLike(namePart)
             .fetch()
             .map { convertToShortDto(it) }
@@ -123,12 +125,20 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     }
 
     override fun update(dto: WRITEDTO) {
-        val id = preUpdateGetId(dto)
+        val id = preUpdateCheckId(dto)
         val recordToUpdate = findByIdWithoutJoins(id)
         prepareRecordBeforeUpdating(recordToUpdate, dto)
         recordToUpdate.update()
         postUpdateProcessing(dto)
     }
+
+    override fun updateUpdatedDateTime(id: Long) {
+        val recordToUpdate = findByIdWithoutJoins(id)
+        updateUpdatedDateTimeInRecord(recordToUpdate)
+        recordToUpdate.update()
+    }
+
+    abstract fun updateUpdatedDateTimeInRecord(recordToUpdate: R)
 
     protected open fun postUpdateProcessing(dto: WRITEDTO) {
     }

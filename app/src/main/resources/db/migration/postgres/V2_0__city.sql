@@ -6,6 +6,7 @@ CREATE TABLE city
     city_name_de           VARCHAR(40)              NOT NULL,
     city_name_fr           VARCHAR(40)              NOT NULL,
     city_created_date_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    city_updated_date_time TIMESTAMP WITH TIME ZONE NOT NULL,
     city_time_offset       INT                      NOT NULL,
     city_country_name      VARCHAR(3) REFERENCES country (country_name) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY (city_name)

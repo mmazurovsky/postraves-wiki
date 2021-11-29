@@ -26,11 +26,11 @@ interface PlaceRepo :
     BaseRepo<PlaceWriteDto, PlaceShortDto>,
     ByIdRepo<PlaceFullDto, PlaceShortDto>,
     FollowableRepo<PlaceShortDto> {
-        fun getAllScenes(): List<SceneDto>
-        fun getScenesOfPlace(id: Long): List<SceneDto>
-        fun addScenesToPlace(id: Long, scenes: Set<SceneDto>)
-        fun updateScenes(scenes: Set<SceneDto>)
-        fun removeScenes(scenes: Set<SceneDto>)
+    fun getAllScenes(): List<SceneDto>
+    fun getScenesOfPlace(id: Long): List<SceneDto>
+    fun addScenesToPlace(id: Long, scenes: Set<SceneDto>)
+    fun updateScenes(scenes: Set<SceneDto>)
+    fun removeScenes(scenes: Set<SceneDto>)
 }
 
 @Repository
@@ -38,7 +38,7 @@ class PlaceRepoImpl(
     private val placeConverters: PlaceConverters,
     private val sceneConverters: SceneConverters,
     private val dateTimeProvider: DateTimeProvider,
-    ) :
+) :
     PlaceRepo,
     AbstractRepo<PlaceWriteDto, PlaceFullDto, PlaceShortDto, PlaceRecord>(
         table = PLACE,
@@ -96,18 +96,20 @@ class PlaceRepoImpl(
     override fun prepareRecordBeforeSaving(record: PlaceRecord, dto: PlaceWriteDto) {
         placeConverters.transferDataFromDtoToRecord(dto, record)
         record.placeCreatedDateTime = dateTimeProvider.getNow()
+        record.placeUpdatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun postSaveGetId(record: PlaceRecord): Long {
         return record.placeId ?: throw SaveException("Place", record.placeName ?: "NULL")
     }
 
-    override fun preUpdateGetId(dto: PlaceWriteDto): Long {
+    override fun preUpdateCheckId(dto: PlaceWriteDto): Long {
         return dto.id ?: throw NotFoundException("Place", dto.id.toString())
     }
 
     override fun prepareRecordBeforeUpdating(record: PlaceRecord, dto: PlaceWriteDto) {
         placeConverters.transferDataFromDtoToRecord(dto, record)
+        record.placeUpdatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun getAllScenes(): List<SceneDto> {
@@ -136,17 +138,21 @@ class PlaceRepoImpl(
             val newSceneRecord = dsl.newRecord(SCENE)
             sceneConverters.transferDataFromDtoToRecord(it, newSceneRecord)
             newSceneRecord.sceneCreatedDateTime = dateTimeProvider.getNow()
+            newSceneRecord.sceneUpdatedDateTime = dateTimeProvider.getNow()
             newSceneRecord.scenePlaceId = id
             newSceneRecord.store()
         }
+        updateUpdatedDateTime(id)
     }
 
     override fun updateScenes(scenes: Set<SceneDto>) {
         scenes.forEach {
             val recordToUpdate = dsl.fetchOne(SCENE, SCENE.SCENE_ID.eq(it.id))!!
             sceneConverters.transferDataFromDtoToRecord(it, recordToUpdate)
+            recordToUpdate.sceneUpdatedDateTime = dateTimeProvider.getNow()
             recordToUpdate.update()
         }
+        updateUpdatedDateTime(scenes[0].scenePlaceId)
     }
 
     override fun removeScenes(scenes: Set<SceneDto>) {
@@ -156,5 +162,10 @@ class PlaceRepoImpl(
                 .where(SCENE.SCENE_ID.eq(it.id))
                 .execute()
         }
+        updateUpdatedDateTime(scenes[0].scenePlaceId)
+    }
+
+    override fun updateUpdatedDateTimeInRecord(recordToUpdate: PlaceRecord) {
+        recordToUpdate.placeUpdatedDateTime = dateTimeProvider.getNow()
     }
 }

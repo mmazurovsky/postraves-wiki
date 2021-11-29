@@ -70,6 +70,7 @@ class CityImplRepo(
     override fun update(dto: CityWriteDto) {
         val recordToUpdate = findByNameWithoutJoins(dto.name)
         cityConverters.transferDataFromDtoToRecord(dto, recordToUpdate)
+        recordToUpdate.cityUpdatedDateTime = dateTimeProvider.getNow()
         recordToUpdate.update()
     }
 

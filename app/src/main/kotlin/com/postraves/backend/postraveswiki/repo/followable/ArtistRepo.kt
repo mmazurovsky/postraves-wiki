@@ -26,7 +26,7 @@ interface ArtistRepo :
     ByIdRepo<ArtistFullDto, ArtistShortDto>,
     FollowableRepo<ArtistShortDto> {
     fun getUnitiesOfArtist(userId: Long?, id: Long): List<UnityShortDto>
-    }
+}
 
 @Repository
 class ArtistRepoImpl(
@@ -34,7 +34,7 @@ class ArtistRepoImpl(
     private val dateTimeProvider: DateTimeProvider,
     @Lazy
     private val unityRepo: UnityRepo,
-    ) :
+) :
     ArtistRepo,
     AbstractRepo<ArtistWriteDto, ArtistFullDto, ArtistShortDto, ArtistRecord>(
         table = ARTIST,
@@ -64,7 +64,10 @@ class ArtistRepoImpl(
 
     private fun SelectJoinStep<Record>.joinUserFollowUnity(userId: Long): SelectOnConditionStep<Record> {
         return this.leftOuterJoin(USER_FOLLOWS_UNITY)
-            .on(UNITY.UNITY_ID.eq(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID), USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId))
+            .on(
+                UNITY.UNITY_ID.eq(USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_UNITY_ID),
+                USER_FOLLOWS_UNITY.USER_FOLLOWS_UNITY_USER_PROFILE_ID.eq(userId)
+            )
     }
 
     override fun getUnitiesOfArtist(userId: Long?, id: Long): List<UnityShortDto> {
@@ -101,17 +104,23 @@ class ArtistRepoImpl(
     override fun prepareRecordBeforeSaving(record: ArtistRecord, dto: ArtistWriteDto) {
         artistConverters.transferDataFromDtoToRecord(dto, record)
         record.artistCreatedDateTime = dateTimeProvider.getNow()
+        record.artistUpdatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun postSaveGetId(record: ArtistRecord): Long {
         return record.artistId ?: throw SaveException("Artist", record.artistName ?: "NULL")
     }
 
-    override fun preUpdateGetId(dto: ArtistWriteDto): Long {
+    override fun preUpdateCheckId(dto: ArtistWriteDto): Long {
         return dto.id ?: throw NotFoundException("Artist", dto.id.toString())
     }
 
     override fun prepareRecordBeforeUpdating(record: ArtistRecord, dto: ArtistWriteDto) {
         artistConverters.transferDataFromDtoToRecord(dto, record)
+        record.artistUpdatedDateTime = dateTimeProvider.getNow()
+    }
+
+    override fun updateUpdatedDateTimeInRecord(recordToUpdate: ArtistRecord) {
+        recordToUpdate.artistUpdatedDateTime = dateTimeProvider.getNow()
     }
 }

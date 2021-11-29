@@ -182,6 +182,7 @@ class EventRepoImpl(
     override fun prepareRecordBeforeSaving(record: EventRecord, dto: EventWriteDto) {
         eventConverters.transferDataFromDtoToRecord(dto, record)
         record.eventCreatedDateTime = dateTimeProvider.getNow()
+        record.eventUpdatedDateTime = dateTimeProvider.getNow()
         record.eventIsCancelled = false
     }
 
@@ -199,12 +200,13 @@ class EventRepoImpl(
         if (dto.ticketPrices != null && dto.ticketPrices.isNotEmpty()) saveTicketPrices(dto.id, dto.ticketPrices)
     }
 
-    override fun preUpdateGetId(dto: EventWriteDto): Long {
+    override fun preUpdateCheckId(dto: EventWriteDto): Long {
         return dto.id ?: throw NotFoundException(thisString, dto.id.toString())
     }
 
     override fun prepareRecordBeforeUpdating(record: EventRecord, dto: EventWriteDto) {
         eventConverters.transferDataFromDtoToRecord(dto, record)
+        record.eventUpdatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun getRelevantEventsForArtist(userId: Long?, artistId: Long): List<EventShortDto> {
@@ -325,6 +327,7 @@ class EventRepoImpl(
                 }
                 .store()
         }
+        updateUpdatedDateTime(id)
     }
 
     override fun removeOrganizers(id: Long, orgs: Set<Long>) {
@@ -334,6 +337,7 @@ class EventRepoImpl(
                 .where(UNITY_EVENT.UNITY_EVENT_UNITY_ID.eq(it), UNITY_EVENT.UNITY_EVENT_EVENT_ID.eq(id))
                 .execute()
         }
+        updateUpdatedDateTime(id)
     }
 
     override fun getLineup(userId: Long?, id: Long): List<ArtistShortDto> {
@@ -496,6 +500,7 @@ class EventRepoImpl(
                     .store()
             }
         }
+        updateUpdatedDateTime(id)
     }
 
     override fun updateTimetablePerformancesNotTouchingArtists(
@@ -513,6 +518,7 @@ class EventRepoImpl(
                 }
                 .update()
         }
+        updateUpdatedDateTime(id)
     }
 
     override fun removeTimetablePerformances(ids: Set<Long>) {
@@ -522,5 +528,9 @@ class EventRepoImpl(
                 .where(TIMETABLE_ITEM.TIMETABLE_ITEM_ID.eq(it))
                 .execute()
         }
+    }
+
+    override fun updateUpdatedDateTimeInRecord(recordToUpdate: EventRecord) {
+        recordToUpdate.eventUpdatedDateTime = dateTimeProvider.getNow()
     }
 }

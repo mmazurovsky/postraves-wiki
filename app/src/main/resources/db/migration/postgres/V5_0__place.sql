@@ -2,6 +2,7 @@ CREATE TABLE place
 (
     place_id                  BIGSERIAL UNIQUE         NOT NULL,
     place_created_date_time   TIMESTAMP WITH TIME ZONE NOT NULL,
+    place_updated_date_time   TIMESTAMP WITH TIME ZONE NOT NULL,
     place_name                VARCHAR(60) UNIQUE       NOT NULL,
     place_image_link          TEXT,
     place_about               TEXT,

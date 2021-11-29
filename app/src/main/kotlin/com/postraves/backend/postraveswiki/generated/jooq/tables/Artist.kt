@@ -19,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row8
+import org.jooq.Row9
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -73,6 +73,11 @@ open class Artist(
      * The column <code>public.artist.artist_created_date_time</code>.
      */
     val ARTIST_CREATED_DATE_TIME: TableField<ArtistRecord, OffsetDateTime?> = createField(DSL.name("artist_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
+     * The column <code>public.artist.artist_updated_date_time</code>.
+     */
+    val ARTIST_UPDATED_DATE_TIME: TableField<ArtistRecord, OffsetDateTime?> = createField(DSL.name("artist_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
      * The column <code>public.artist.artist_name</code>.
@@ -150,7 +155,7 @@ open class Artist(
     override fun rename(name: Name): Artist = Artist(name, null)
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row8<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, String?>
+    override fun fieldsRow(): Row9<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row9<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?>
 }

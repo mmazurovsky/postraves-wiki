@@ -19,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row12
+import org.jooq.Row13
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -73,6 +73,11 @@ open class Place(
      * The column <code>public.place.place_created_date_time</code>.
      */
     val PLACE_CREATED_DATE_TIME: TableField<PlaceRecord, OffsetDateTime?> = createField(DSL.name("place_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
+     * The column <code>public.place.place_updated_date_time</code>.
+     */
+    val PLACE_UPDATED_DATE_TIME: TableField<PlaceRecord, OffsetDateTime?> = createField(DSL.name("place_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
      * The column <code>public.place.place_name</code>.
@@ -170,7 +175,7 @@ open class Place(
     override fun rename(name: Name): Place = Place(name, null)
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row12<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?, Boolean?> = super.fieldsRow() as Row12<Long?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?, Boolean?>
+    override fun fieldsRow(): Row13<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?, Boolean?> = super.fieldsRow() as Row13<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, Double?, Double?, String?, String?, Boolean?>
 }

@@ -19,7 +19,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row10
+import org.jooq.Row11
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -73,6 +73,11 @@ open class Event(
      * The column <code>public.event.event_created_date_time</code>.
      */
     val EVENT_CREATED_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("event_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
+     * The column <code>public.event.event_updated_date_time</code>.
+     */
+    val EVENT_UPDATED_DATE_TIME: TableField<EventRecord, OffsetDateTime?> = createField(DSL.name("event_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
      * The column <code>public.event.event_name</code>.
@@ -160,7 +165,7 @@ open class Event(
     override fun rename(name: Name): Event = Event(name, null)
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row10<Long?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?> = super.fieldsRow() as Row10<Long?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?>
+    override fun fieldsRow(): Row11<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?> = super.fieldsRow() as Row11<Long?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, Boolean?, OffsetDateTime?, OffsetDateTime?, String?, Long?>
 }

@@ -2,6 +2,7 @@ CREATE TABLE unity
 (
     unity_id                       BIGSERIAL                UNIQUE NOT NULL,
     unity_created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
+    unity_updated_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
     unity_name                     VARCHAR(60)              UNIQUE NOT NULL,
     unity_image_link               TEXT,
     unity_about                    TEXT,

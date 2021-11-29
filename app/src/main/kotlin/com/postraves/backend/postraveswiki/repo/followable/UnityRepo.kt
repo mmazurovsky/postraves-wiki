@@ -34,7 +34,7 @@ class UnityRepoImpl(
     private val unityConverters: UnityConverters,
     private val dateTimeProvider: DateTimeProvider,
     private val artistRepo: ArtistRepo
-    ) :
+) :
     UnityRepo,
     AbstractRepo<UnityWriteDto, UnityFullDto, UnityShortDto, UnityRecord>(
         table = UNITY,
@@ -86,18 +86,20 @@ class UnityRepoImpl(
     override fun prepareRecordBeforeSaving(record: UnityRecord, dto: UnityWriteDto) {
         unityConverters.transferDataFromDtoToRecord(dto, record)
         record.unityCreatedDateTime = dateTimeProvider.getNow()
+        record.unityUpdatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun postSaveGetId(record: UnityRecord): Long {
         return record.unityId ?: throw SaveException(thisString, record.unityName ?: "NULL")
     }
 
-    override fun preUpdateGetId(dto: UnityWriteDto): Long {
+    override fun preUpdateCheckId(dto: UnityWriteDto): Long {
         return dto.id ?: throw NotFoundException(thisString, dto.id.toString())
     }
 
     override fun prepareRecordBeforeUpdating(record: UnityRecord, dto: UnityWriteDto) {
         unityConverters.transferDataFromDtoToRecord(dto, record)
+        record.unityUpdatedDateTime = dateTimeProvider.getNow()
     }
 
     override fun getArtistsOfUnity(userId: Long?, id: Long): List<ArtistShortDto> {
@@ -133,5 +135,10 @@ class UnityRepoImpl(
                 .where(UNITY_ARTIST.UNITY_ARTIST_UNITY_ID.eq(id), UNITY_ARTIST.UNITY_ARTIST_ARTIST_ID.eq(it))
                 .execute()
         }
+        updateUpdated
+    }
+
+    override fun updateUpdatedDateTimeInRecord(recordToUpdate: UnityRecord) {
+        recordToUpdate.unityUpdatedDateTime = dateTimeProvider.getNow()
     }
 }

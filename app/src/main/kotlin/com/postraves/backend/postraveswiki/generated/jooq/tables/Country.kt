@@ -18,7 +18,7 @@ import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row8
+import org.jooq.Row9
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -94,6 +94,11 @@ open class Country(
     val COUNTRY_CREATED_DATE_TIME: TableField<CountryRecord, OffsetDateTime?> = createField(DSL.name("country_created_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
 
     /**
+     * The column <code>public.country.country_updated_date_time</code>.
+     */
+    val COUNTRY_UPDATED_DATE_TIME: TableField<CountryRecord, OffsetDateTime?> = createField(DSL.name("country_updated_date_time"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "")
+
+    /**
      * The column <code>public.country.country_phone_code</code>.
      */
     val COUNTRY_PHONE_CODE: TableField<CountryRecord, String?> = createField(DSL.name("country_phone_code"), SQLDataType.VARCHAR(15).nullable(false), this, "")
@@ -139,7 +144,7 @@ open class Country(
     override fun rename(name: Name): Country = Country(name, null)
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?> = super.fieldsRow() as Row8<String?, String?, String?, String?, String?, OffsetDateTime?, String?, String?>
+    override fun fieldsRow(): Row9<String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, String?, String?> = super.fieldsRow() as Row9<String?, String?, String?, String?, String?, OffsetDateTime?, OffsetDateTime?, String?, String?>
 }

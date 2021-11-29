@@ -2,6 +2,7 @@ CREATE TABLE event
 (
     event_id                       BIGSERIAL                UNIQUE NOT NULL,
     event_created_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
+    event_updated_date_time        TIMESTAMP                WITH TIME ZONE NOT NULL,
     event_name                     VARCHAR(80)              UNIQUE NOT NULL,
     event_image_link               TEXT,
     event_about                    TEXT,
