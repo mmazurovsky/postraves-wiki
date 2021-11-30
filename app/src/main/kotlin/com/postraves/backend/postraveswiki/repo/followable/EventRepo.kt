@@ -3,7 +3,6 @@ package com.postraves.backend.postraveswiki.repo.followable
 import com.postraves.backend.postraveswiki.data.converters.EventConverters
 import com.postraves.backend.postraveswiki.data.converters.TicketPriceConverters
 import com.postraves.backend.postraveswiki.data.converters.TimetableConverters
-import com.postraves.backend.postraveswiki.data.dto.reading.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.EventWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.TicketPriceWriteDto
@@ -532,5 +531,13 @@ class EventRepoImpl(
 
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: EventRecord) {
         recordToUpdate.eventUpdatedDateTime = dateTimeProvider.getNow()
+    }
+
+//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
+//        return list.sortedWith(compareBy { it.into(EVENT).eventUpdatedDateTime })
+//    }
+
+    override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
+        return EVENT.EVENT_UPDATED_DATE_TIME.asc()
     }
 }

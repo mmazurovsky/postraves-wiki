@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.serialization") version "1.5.20"
     id("nu.studer.jooq") version "5.2.1"
     id("org.flywaydb.flyway") version "7.11.1"
+    id("co.uzzu.dotenv.gradle") version "1.2.0"
 }
 
 group = "com.postraves.wiki" //changed from com.postraves.backend
@@ -25,11 +26,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework:spring-jdbc:5.3.9")
     implementation("org.projectlombok:lombok:1.18.18")
-    implementation ("com.google.firebase:firebase-admin:8.0.1")
+    implementation("com.google.firebase:firebase-admin:8.0.1")
     implementation("org.jooq:jooq:3.14.14")
 //    jooqGenerator("org.jooq:jooq-meta-extensions:3.14.14")
     jooqGenerator("org.postgresql:postgresql:42.2.18")
-    runtimeOnly ("org.postgresql:postgresql:42.2.18")
+    runtimeOnly("org.postgresql:postgresql:42.2.18")
     implementation("org.flywaydb:flyway-core:7.1.1")
     implementation("io.lettuce:lettuce-core:6.1.3.RELEASE")
     testImplementation("it.ozimov:embedded-redis:0.7.3") {
@@ -52,7 +53,13 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "11"
+//        languageVersion = "1.4"
     }
+}
+
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    languageVersion = "1.4"
 }
 
 tasks.test {
@@ -61,10 +68,20 @@ tasks.test {
 
 val POSTGRES_USER = System.getenv("POSTGRES_USER")
 val POSTGRES_PASSWORD = System.getenv("POSTGRES_PASSWORD")
-val POSTGRES_HOST =
-    System.getenv("POSTGRES_HOST")
+val POSTGRES_HOST = System.getenv("POSTGRES_HOST")
 val POSTGRES_URL = "jdbc:postgresql://${POSTGRES_HOST}:5432/postraves"
 
+//tasks.register("envvars", type = JavaExec::class) {
+//    env.allVariables.forEach { environment(it.key, it.value) }
+//}
+
+//tasks.named("flywayMigrate") {
+//    dependsOn()
+//}
+
+//tasks.named<nu.studer.gradle.jooq.JooqGenerate>("generateJooq") {
+//    dependsOn(":envvars")
+//}
 
 flyway {
     url = POSTGRES_URL
@@ -136,8 +153,3 @@ jooq {
 //    // make jOOQ task participate in build caching
 //    outputs.cacheIf { true }
 //}
-
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    languageVersion = "1.4"
-}

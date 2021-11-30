@@ -20,6 +20,7 @@ import org.jooq.impl.DSL.lower
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
+import java.time.OffsetDateTime
 
 
 interface PlaceRepo :
@@ -152,7 +153,7 @@ class PlaceRepoImpl(
             recordToUpdate.sceneUpdatedDateTime = dateTimeProvider.getNow()
             recordToUpdate.update()
         }
-        updateUpdatedDateTime(scenes[0].scenePlaceId)
+//        updateUpdatedDateTime() TODO
     }
 
     override fun removeScenes(scenes: Set<SceneDto>) {
@@ -162,10 +163,18 @@ class PlaceRepoImpl(
                 .where(SCENE.SCENE_ID.eq(it.id))
                 .execute()
         }
-        updateUpdatedDateTime(scenes[0].scenePlaceId)
+//        updateUpdatedDateTime() TODO
     }
 
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: PlaceRecord) {
         recordToUpdate.placeUpdatedDateTime = dateTimeProvider.getNow()
+    }
+
+//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
+//        return list.sortedWith(compareBy { it.into(PLACE).placeUpdatedDateTime })
+//    }
+
+    override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
+        return PLACE.PLACE_UPDATED_DATE_TIME.asc()
     }
 }

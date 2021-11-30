@@ -12,6 +12,7 @@ import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
+import jooq.tables.Artist
 import jooq.tables.records.ArtistRecord
 import jooq.tables.references.*
 import org.jooq.*
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
+import java.time.OffsetDateTime
 
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
@@ -122,5 +124,13 @@ class ArtistRepoImpl(
 
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: ArtistRecord) {
         recordToUpdate.artistUpdatedDateTime = dateTimeProvider.getNow()
+    }
+
+//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
+//        return list.sortedWith(compareBy { it.into(ARTIST).artistUpdatedDateTime })
+//    }
+
+    override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
+        return ARTIST.ARTIST_UPDATED_DATE_TIME.asc()
     }
 }

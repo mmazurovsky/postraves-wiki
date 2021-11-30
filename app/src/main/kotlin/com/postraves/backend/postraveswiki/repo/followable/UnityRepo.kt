@@ -19,6 +19,7 @@ import org.jooq.impl.DSL.lower
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
+import java.time.OffsetDateTime
 
 interface UnityRepo :
     BaseRepo<UnityWriteDto, UnityShortDto>,
@@ -125,6 +126,7 @@ class UnityRepoImpl(
                 }
                 .store()
         }
+        updateUpdatedDateTime(id)
     }
 
 
@@ -135,10 +137,18 @@ class UnityRepoImpl(
                 .where(UNITY_ARTIST.UNITY_ARTIST_UNITY_ID.eq(id), UNITY_ARTIST.UNITY_ARTIST_ARTIST_ID.eq(it))
                 .execute()
         }
-        updateUpdated
+        updateUpdatedDateTime(id)
     }
 
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: UnityRecord) {
         recordToUpdate.unityUpdatedDateTime = dateTimeProvider.getNow()
+    }
+
+//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
+//        return list.sortedWith(compareBy { it.into(UNITY).unityUpdatedDateTime })
+//    }
+
+    override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
+        return UNITY.UNITY_UPDATED_DATE_TIME.asc()
     }
 }

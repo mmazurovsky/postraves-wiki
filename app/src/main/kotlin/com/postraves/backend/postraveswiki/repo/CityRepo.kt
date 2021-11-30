@@ -9,6 +9,7 @@ import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.records.CityRecord
 import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
+import jooq.tables.references.UNITY
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.SelectWhereStep
@@ -63,6 +64,7 @@ class CityImplRepo(
         val recordToSave = dsl.newRecord(CITY)
         cityConverters.transferDataFromDtoToRecord(dto, recordToSave)
         recordToSave.cityCreatedDateTime = dateTimeProvider.getNow()
+        recordToSave.cityUpdatedDateTime = dateTimeProvider.getNow()
         recordToSave.store()
         return findByName(recordToSave.cityName ?: throw SaveException("City", dto.name))
     }
@@ -81,6 +83,7 @@ class CityImplRepo(
     override fun findAll(): List<CityDto> {
         val results = dsl
             .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME)))
+            .orderBy(CITY.CITY_UPDATED_DATE_TIME.asc())
             .fetch()
             .map {
                 cityConverters.createDtoFromRecord(it.into(CITY), it.into(COUNTRY))

@@ -12,6 +12,7 @@ import org.jooq.impl.TableImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Lazy
+import java.time.OffsetDateTime
 
 abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableShortDto<SHORTDTO>, R>(
     val table: TableImpl<R>,
@@ -93,12 +94,15 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
         return selectFromEntity()
             .joinLocation()
             .apply { if (joinOtherData() != null) joinOtherData() }
+            .orderBy(getUpdatedDateTimeOrderField())
             .fetch()
             .map {
                 convertToShortDto(it)
             }
             .toList()
     }
+
+    abstract fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?>
 
     override fun findFollowableByPartOfName(userId: Long?, namePart: String): List<SHORTDTO> {
         return selectFromEntity()

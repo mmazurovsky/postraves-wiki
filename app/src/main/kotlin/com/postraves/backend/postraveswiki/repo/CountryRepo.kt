@@ -7,6 +7,7 @@ import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.records.CountryRecord
+import jooq.tables.references.CITY
 import jooq.tables.references.COUNTRY
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -42,6 +43,7 @@ class CountryImplRepo(
         val countryToSave = dsl.newRecord(COUNTRY)
         countryConverters.transferDataFromDtoToRecord(dto, countryToSave)
         countryToSave.countryCreatedDateTime = dateTimeProvider.getNow()
+        countryToSave.countryUpdatedDateTime = dateTimeProvider.getNow()
         countryToSave.store()
         return findByName(countryToSave.countryName ?: throw SaveException("Country", dto.name))
     }
@@ -60,6 +62,7 @@ class CountryImplRepo(
     override fun findAll(): List<CountryDto> {
         val results = dsl
             .selectFrom(COUNTRY)
+            .orderBy(COUNTRY.COUNTRY_UPDATED_DATE_TIME.asc())
             .fetch()
             .map {
                 countryConverters.createDtoFromRecord(it.into(COUNTRY))

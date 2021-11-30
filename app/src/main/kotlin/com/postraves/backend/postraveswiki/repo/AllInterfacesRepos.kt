@@ -26,7 +26,6 @@ interface ByIdRepo<FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableSh
 
 interface ByNameRepo<FULLDTO : BaseFullDto> {
     fun findByName(name: String): FULLDTO
-    fun updateUpdatedDateTime(name: String)
     fun deleteByName(name: String)
     fun findByPartOfName(namePart: String): List<FULLDTO>
 }
