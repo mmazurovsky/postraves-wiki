@@ -34,6 +34,7 @@ interface RatingsService<FULLDTO: FollowableFullDto<FULLDTO>, SHORTDTO: Followab
     fun findWeeklyRatingInCountryForCity(cityName: String, maxQuantity: Int): List<SHORTDTO>
     fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTO?
     fun setBestOfTheWeekForAllCities()
+    fun removeBestOfTheWeekByCityInCountry(cityName: String)
 }
 
 interface ServiceByName<FULLDTO : BaseFullDto> {

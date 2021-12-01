@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -36,7 +39,11 @@ class WeeklyBestQuickRepoTest(
     private val countryService: CountryService,
 ) : AbstractPostgresTest() {
 
-    private val redisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
@@ -50,7 +57,6 @@ class WeeklyBestQuickRepoTest(
 
     @BeforeAll
     private fun clearAllData() {
-        logger.info("Weekly Best Unit Test started")
         quickRepoCleaning.clearAllData()
     }
 
@@ -59,7 +65,6 @@ class WeeklyBestQuickRepoTest(
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         quickRepoCleaning.clearAllData()
         redisServer.stop()
-        logger.info("Weekly Best Unit Test ended")
     }
 
     @ExperimentalSerializationApi

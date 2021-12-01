@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository
 interface WeeklyBestQuickRepo {
     fun setWeeklyBestInCountry(countryName: String, entity: Map<String, String>)
     fun getWeeklyBestInCountry(countryName: String): Map<String, String>?
+    fun removeWeeklyBestInCountry(countryName: String)
 }
 
 abstract class WeeklyBestQuickRepoAbstract(
@@ -26,6 +27,10 @@ abstract class WeeklyBestQuickRepoAbstract(
     override fun getWeeklyBestInCountry(countryName: String): Map<String, String>? {
         val weeklyBestInCountry = redisClient.hgetall("$entityType:${countryName.lowercase()}:weeklyBest").get()
         return if (weeklyBestInCountry.isEmpty()) null else weeklyBestInCountry
+    }
+
+    override fun removeWeeklyBestInCountry(countryName: String) {
+        redisClient.del("$entityType:${countryName.lowercase()}:weeklyBest")
     }
 }
 

@@ -36,7 +36,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -85,7 +88,11 @@ class FollowingIntegrationTest(
     private val artistEndpoint: String = "/artist"
     private val unityEndpoint: String = "/unity"
 
-    private val redisServer: RedisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
@@ -163,7 +170,6 @@ class FollowingIntegrationTest(
 
     @BeforeAll
     private fun prepare() {
-        logger.info("Following Integration Test started")
 
         Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
@@ -184,11 +190,11 @@ class FollowingIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
+        artistService.findAll().forEach { artistService.deleteById(it.id) }
+        unityService.findAll().forEach { unityService.deleteById(it.id) }
         userProfileService.deleteMyProfile()
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
-        cityService.findAll().forEach { cityService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("Following Integration Test ended")
     }
 
     @Test

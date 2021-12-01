@@ -21,7 +21,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -39,7 +42,11 @@ class CountryIntegrationTest(
     ) : AbstractPostgresTest() {
 
     private val countryEndpoint: String = "/country"
-    private val redisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     private val countryTestData = CountryWriteDto(
         name = "BE",
@@ -52,7 +59,6 @@ class CountryIntegrationTest(
     )
 
     init {
-        logger.info("Country Integration Test started")
         redisServer.start()
     }
 
@@ -63,7 +69,6 @@ class CountryIntegrationTest(
     private fun cleanUp() {
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("Country Integration Test ended")
     }
 
     @Test

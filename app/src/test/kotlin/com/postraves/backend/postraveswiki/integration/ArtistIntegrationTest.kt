@@ -27,7 +27,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -53,8 +56,12 @@ class ArtistIntegrationTest(
     private val artistWeeklyFollowersQuickRepoImpl: FollowersQuickRepo,
 ) : AbstractPostgresTest() {
 
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
     private val artistEndpoint: String = "/artist"
-    private val redisServer = RedisServer(redisPort)
 
     init {
         redisServer.start()
@@ -81,7 +88,6 @@ class ArtistIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
-        logger.info("Artist Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
     }
 
@@ -90,9 +96,9 @@ class ArtistIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
+        artistService.findAll().forEach { artistService.deleteById(it.id) }
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("Artist Integration Test ended")
     }
 
     @Test
@@ -289,10 +295,12 @@ class ArtistIntegrationTest(
 
         assertEquals(4, searchResultsDecoded.size)
         searchResultsDecoded.forEach {
-            assert(it.name == artist2.name ||
-                    it.name == artist3.name ||
-                    it.name == artist4.name ||
-                    it.name == artist5.name)
+            assert(
+                it.name == artist2.name ||
+                        it.name == artist3.name ||
+                        it.name == artist4.name ||
+                        it.name == artist5.name
+            )
         }
     }
     // todo check update country to another one in redis repo

@@ -53,13 +53,13 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "11"
-//        languageVersion = "1.4"
     }
 }
 
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     languageVersion = "1.4"
+    jvmTarget = "11"
 }
 
 tasks.test {

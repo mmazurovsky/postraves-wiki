@@ -28,7 +28,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -49,7 +52,11 @@ class UserIntegrationTest(
     private val redisPort: Int,
 ) : AbstractPostgresTest() {
 
-    private val redisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
@@ -66,8 +73,6 @@ class UserIntegrationTest(
 
     @BeforeAll
     private fun createCountryAndCityForAssociations() {
-
-        logger.info("User Integration Test started")
 
         val country1 = CountryWriteDto(
             name = "BE",
@@ -103,10 +108,10 @@ class UserIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
+        artistService.findAll().forEach { artistService.deleteById(it.id) }
         cityService.findAll().forEach { cityService.deleteByName(it.name) }
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("User Integration Test ended")
     }
 
     @Test

@@ -31,7 +31,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -60,7 +63,11 @@ class PlaceIntegrationTest(
 ) : AbstractPostgresTest() {
 
     private val placeEndpoint: String = "/place"
-    private val redisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
@@ -128,7 +135,6 @@ class PlaceIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
-        logger.info("Place Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTest1), status().isCreated)
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTest2), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
@@ -141,10 +147,9 @@ class PlaceIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
+        placeService.findAll().forEach { placeService.deleteById(it.id) }
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
-        cityService.findAll().forEach { cityService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("Place Integration Test ended")
     }
 
     @Test

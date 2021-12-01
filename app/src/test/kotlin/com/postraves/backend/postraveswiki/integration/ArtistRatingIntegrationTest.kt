@@ -9,6 +9,8 @@ import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
+import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
+import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
@@ -20,6 +22,7 @@ import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.*
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -27,7 +30,10 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -35,6 +41,7 @@ import kotlin.test.assertNull
 @ActiveProfiles(value = ["test"])
 @AutoConfigureMockMvc(addFilters = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class ArtistRatingIntegrationTest(
     @Autowired
     private val artistService: ArtistService,
@@ -42,6 +49,12 @@ class ArtistRatingIntegrationTest(
     private val countryService: CountryService,
     @Autowired
     private val mockMvc: MockMvc,
+    @Qualifier("artistCountryQuickRepoImpl")
+    private val artistCountryQuickRepoImpl: EntityCountryQuickRepo,
+    @Qualifier("artistOverallFollowersQuickRepoImpl")
+    private val artistOverallFollowersQuickRepoImpl: FollowersQuickRepo,
+    @Qualifier("artistWeeklyFollowersQuickRepoImpl")
+    private val artistWeeklyFollowersQuickRepoImpl: FollowersQuickRepo,
     @Value("\${spring.redis.port}")
     private val redisPort: Int,
 ) : AbstractPostgresTest() {
@@ -50,7 +63,11 @@ class ArtistRatingIntegrationTest(
     private lateinit var securityService: SecurityService
 
     private val artistEndpoint: String = "/artist"
-    private val redisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
 
     init {
@@ -77,10 +94,38 @@ class ArtistRatingIntegrationTest(
         telegramUsername = null,
     )
 
+    private val city1 = CityWriteDto(
+        name = "Bruges",
+        nameRu = "NameRu",
+        nameEn = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
+        countryName = "BE",
+        timeOffset = 0
+    )
+
+    private val city2 = CityWriteDto(
+        name = "Moscow",
+        nameRu = "NameRu",
+        nameEn = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
+        countryName = "RU",
+        timeOffset = 0
+    )
+
+    private val city3 = CityWriteDto(
+        name = "Toronto",
+        nameRu = "NameRu",
+        nameEn = "NameUk",
+        nameDe = "NameDe",
+        nameFr = "NameFr",
+        countryName = "CA",
+        timeOffset = 0
+    )
+
     @BeforeAll
     private fun createCountryAndCityForAssociations() {
-
-        logger.info("Artist Rating Integration Test started")
 
         val country1 = CountryWriteDto(
             name = "BE",
@@ -111,36 +156,6 @@ class ArtistRatingIntegrationTest(
 
             )
 
-        val city1 = CityWriteDto(
-            name = "Bruges",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            countryName = "BE",
-            timeOffset = 0
-        )
-
-        val city2 = CityWriteDto(
-            name = "Moscow",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            countryName = "RU",
-            timeOffset = 0
-        )
-
-        val city3 = CityWriteDto(
-            name = "Toronto",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            countryName = "CA",
-            timeOffset = 0
-        )
-
         val countryJson1 = Json.encodeToString(country1)
         val countryJson2 = Json.encodeToString(country2)
         val countryJson3 = Json.encodeToString(country3)
@@ -154,6 +169,10 @@ class ArtistRatingIntegrationTest(
         Requests.makePostRequest(mockMvc, "/city", cityJson1, MockMvcResultMatchers.status().isCreated)
         Requests.makePostRequest(mockMvc, "/city", cityJson2, MockMvcResultMatchers.status().isCreated)
         Requests.makePostRequest(mockMvc, "/city", cityJson3, MockMvcResultMatchers.status().isCreated)
+
+        artistService.removeBestOfTheWeekByCityInCountry(city1.name)
+        artistService.removeBestOfTheWeekByCityInCountry(city2.name)
+        artistService.removeBestOfTheWeekByCityInCountry(city3.name)
     }
 
     @AfterEach
@@ -161,12 +180,16 @@ class ArtistRatingIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
+        artistService.removeBestOfTheWeekByCityInCountry(city1.name)
+        artistService.removeBestOfTheWeekByCityInCountry(city2.name)
+        artistService.removeBestOfTheWeekByCityInCountry(city3.name)
+
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("Artist Rating Integration Test ended")
     }
 
     @Test
+    @Order(1)
     fun saveArtistsAndIncrementFollowersAndFindOverallRating() {
         Mockito.doReturn(testUser).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
@@ -287,6 +310,7 @@ class ArtistRatingIntegrationTest(
     }
 
     @Test
+    @Order(2)
     fun saveArtistsAndIncrementFollowersAndFindWeeklyRating() {
         Mockito.doReturn(testUser).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
@@ -413,6 +437,7 @@ class ArtistRatingIntegrationTest(
     }
 
     @Test
+    @Order(3)
     fun saveArtistsAndIncrementFollowersAndChangeCountriesOfArtistsAndGetOverallRating() {
         Mockito.doReturn(testUser).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
@@ -605,6 +630,7 @@ class ArtistRatingIntegrationTest(
     }
 
     @Test
+    @Order(4)
     fun saveArtistsAndIncrementFollowersAndChangeCountriesOfArtistsAndGetWeeklyRating() {
         Mockito.doReturn(testUser).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
@@ -796,6 +822,24 @@ class ArtistRatingIntegrationTest(
     }
 
     @Test
+    @Order(5)
+    fun getBestOfTheWeekWhenItIsNotSet() {
+        val artistOfTheWeek = artistService.findBestOfTheWeekByCityInCountry("Bruges")
+        val artistsInCountryRedisBE = artistCountryQuickRepoImpl.getAllIdsByCountry("BE")
+        val artistsInCountryRedisRU = artistCountryQuickRepoImpl.getAllIdsByCountry("RU")
+        val artistsInCountryRedisCA = artistCountryQuickRepoImpl.getAllIdsByCountry("CA")
+        val artistsOverallTopRedis = artistOverallFollowersQuickRepoImpl.findTop(-1)
+        val artistsWeeklyTopRedis = artistWeeklyFollowersQuickRepoImpl.findTop(-1)
+        assertEquals(0, artistsInCountryRedisBE.size)
+        assertEquals(0, artistsInCountryRedisRU.size)
+        assertEquals(0, artistsInCountryRedisCA.size)
+        assertEquals(0, artistsOverallTopRedis.size)
+        assertEquals(0, artistsWeeklyTopRedis.size)
+        assertNull(artistOfTheWeek)
+    }
+
+    @Test
+    @Order(6)
     fun saveArtistsAndSetWeeklyBestAndGetWeeklyBest() {
         Mockito.doReturn(testUser).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
@@ -886,11 +930,5 @@ class ArtistRatingIntegrationTest(
         assertEquals(artist1Id, artistOfTheWeek!!.id)
         assertEquals(artist1.name, artistOfTheWeek.name)
         assertEquals(artist1.countryName, artistOfTheWeek.country!!.name)
-    }
-
-    @Test
-    fun getBestOfTheWeekWhenItIsNotSet() {
-        val artistOfTheWeek = artistService.findBestOfTheWeekByCityInCountry("Bruges")
-        assertNull(artistOfTheWeek)
     }
 }

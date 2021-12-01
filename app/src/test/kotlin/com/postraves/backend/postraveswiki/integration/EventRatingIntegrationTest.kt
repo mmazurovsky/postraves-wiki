@@ -34,7 +34,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
@@ -78,7 +81,11 @@ class EventRatingIntegrationTest(
 
 
     private val eventEndpoint: String = "/event"
-    private val redisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
@@ -184,7 +191,6 @@ class EventRatingIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
-        logger.info("Event Rating Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData2), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
@@ -206,11 +212,11 @@ class EventRatingIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
-        countryService.findAll().forEach { countryService.deleteByName(it.name) }
-        cityService.findAll().forEach { cityService.deleteByName(it.name) }
+        eventService.findAll().forEach { eventService.deleteById(it.id) }
+        artistService.findAll().forEach { artistService.deleteById(it.id) }
         placeService.findAll().forEach { placeService.deleteById(it.id) }
+        countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("Event Rating Integration Test ended")
     }
 
     @Test

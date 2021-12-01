@@ -30,7 +30,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
+import redis.embedded.util.Architecture
+import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -61,7 +64,11 @@ class UnityIntegrationTest(
 
     private val unityEndpoint: String = "/unity"
     private val artistEndpoint: String = "/artist"
-    private val redisServer = RedisServer(redisPort)
+    private val customRedisProvider: RedisExecProvider =
+        RedisExecProvider.defaultProvider()
+            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
+    private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
@@ -90,7 +97,6 @@ class UnityIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
-        logger.info("Unity Integration Test started")
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
     }
 
@@ -102,9 +108,10 @@ class UnityIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
+        unityService.findAll().forEach { unityService.deleteById(it.id) }
+        artistService.findAll().forEach { artistService.deleteById(it.id) }
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
-        logger.info("Unity Integration Test ended")
     }
 
     @Test

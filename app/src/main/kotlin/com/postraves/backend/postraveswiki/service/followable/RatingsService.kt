@@ -96,6 +96,11 @@ abstract class RatingsServiceAbstractImpl<FULLDTO : FollowableFullDto<FULLDTO>, 
         }
     }
 
+    override fun removeBestOfTheWeekByCityInCountry(cityName: String) {
+        val countryName = cityService.findByName(cityName).country.name
+        weeklyBestRepo.removeWeeklyBestInCountry(countryName)
+    }
+
     // this returns isFollow that was set initially, not possible new value
     override fun findBestOfTheWeekByCityInCountry(cityName: String): SHORTDTOCONVERTABLE? {
         val countryName = cityService.findByName(cityName).country.name

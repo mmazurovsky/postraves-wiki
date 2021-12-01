@@ -125,4 +125,8 @@ class UnityServiceImpl(
     override fun setBestOfTheWeekForAllCities() {
         ratingsService.setBestOfTheWeekForAllCities()
     }
+
+    override fun removeBestOfTheWeekByCityInCountry(cityName: String) {
+        ratingsService.removeBestOfTheWeekByCityInCountry(cityName)
+    }
 }
