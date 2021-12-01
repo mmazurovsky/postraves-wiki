@@ -175,6 +175,6 @@ class PlaceRepoImpl(
 //    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
-        return PLACE.PLACE_UPDATED_DATE_TIME.asc()
+        return PLACE.PLACE_UPDATED_DATE_TIME.desc()
     }
 }

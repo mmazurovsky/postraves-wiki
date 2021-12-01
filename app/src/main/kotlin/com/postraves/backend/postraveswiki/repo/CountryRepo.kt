@@ -62,7 +62,7 @@ class CountryImplRepo(
     override fun findAll(): List<CountryDto> {
         val results = dsl
             .selectFrom(COUNTRY)
-            .orderBy(COUNTRY.COUNTRY_UPDATED_DATE_TIME.asc())
+            .orderBy(COUNTRY.COUNTRY_UPDATED_DATE_TIME.desc())
             .fetch()
             .map {
                 countryConverters.createDtoFromRecord(it.into(COUNTRY))

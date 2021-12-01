@@ -131,6 +131,6 @@ class ArtistRepoImpl(
 //    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
-        return ARTIST.ARTIST_UPDATED_DATE_TIME.asc()
+        return ARTIST.ARTIST_UPDATED_DATE_TIME.desc()
     }
 }

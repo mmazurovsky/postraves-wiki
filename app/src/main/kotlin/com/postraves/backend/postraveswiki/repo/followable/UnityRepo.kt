@@ -149,6 +149,6 @@ class UnityRepoImpl(
 //    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
-        return UNITY.UNITY_UPDATED_DATE_TIME.asc()
+        return UNITY.UNITY_UPDATED_DATE_TIME.desc()
     }
 }

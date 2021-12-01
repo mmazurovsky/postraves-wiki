@@ -83,7 +83,7 @@ class CityImplRepo(
     override fun findAll(): List<CityDto> {
         val results = dsl
             .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME)))
-            .orderBy(CITY.CITY_UPDATED_DATE_TIME.asc())
+            .orderBy(CITY.CITY_UPDATED_DATE_TIME.desc())
             .fetch()
             .map {
                 cityConverters.createDtoFromRecord(it.into(CITY), it.into(COUNTRY))

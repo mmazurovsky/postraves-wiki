@@ -538,6 +538,6 @@ class EventRepoImpl(
 //    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
-        return EVENT.EVENT_UPDATED_DATE_TIME.asc()
+        return EVENT.EVENT_UPDATED_DATE_TIME.desc()
     }
 }
