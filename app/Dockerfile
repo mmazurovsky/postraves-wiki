@@ -11,7 +11,7 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle bootJar -i --stacktrace
 
-FROM adoptopenjdk/openjdk11:alpine AS final
+FROM --platform=linux/amd64 adoptopenjdk/openjdk11:alpine AS final
 EXPOSE 8080
 VOLUME /tmp
 WORKDIR /app
