@@ -99,7 +99,7 @@ class ArtistRepoImpl(
         return this.where(ARTIST.ARTIST_ID.`in`(ids))
     }
 
-    override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
+    override fun SelectWhereStep<Record>.whereNameIsLikeAndOtherConditions(namePart: String): SelectConditionStep<Record> {
         return this.where(lower(ARTIST.ARTIST_NAME).contains(namePart.lowercase()))
     }
 
@@ -125,10 +125,6 @@ class ArtistRepoImpl(
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: ArtistRecord) {
         recordToUpdate.artistUpdatedDateTime = dateTimeProvider.getNow()
     }
-
-//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
-//        return list.sortedWith(compareBy { it.into(ARTIST).artistUpdatedDateTime })
-//    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
         return ARTIST.ARTIST_UPDATED_DATE_TIME.desc()

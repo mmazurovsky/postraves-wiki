@@ -90,8 +90,8 @@ class PlaceRepoImpl(
         return this.where(PLACE.PLACE_ID.`in`(ids))
     }
 
-    override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
-        return this.where(lower(PLACE.PLACE_NAME).contains(namePart.lowercase()))
+    override fun SelectWhereStep<Record>.whereNameIsLikeAndOtherConditions(namePart: String): SelectConditionStep<Record> {
+        return this.where(lower(PLACE.PLACE_NAME).contains(namePart.lowercase()).and(PLACE.PLACE_IS_JUST_CITY.equal(false)))
     }
 
     override fun prepareRecordBeforeSaving(record: PlaceRecord, dto: PlaceWriteDto) {
@@ -169,10 +169,6 @@ class PlaceRepoImpl(
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: PlaceRecord) {
         recordToUpdate.placeUpdatedDateTime = dateTimeProvider.getNow()
     }
-
-//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
-//        return list.sortedWith(compareBy { it.into(PLACE).placeUpdatedDateTime })
-//    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
         return PLACE.PLACE_UPDATED_DATE_TIME.desc()

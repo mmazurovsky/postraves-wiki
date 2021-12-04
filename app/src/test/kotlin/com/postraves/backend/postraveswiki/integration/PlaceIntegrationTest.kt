@@ -325,6 +325,8 @@ class PlaceIntegrationTest(
 
         val place5 = place1.copy(
             name = "tiS",
+            // INFO: Attention here
+            isJustCity = true,
         )
 
         val place6 = place1.copy(
@@ -347,12 +349,11 @@ class PlaceIntegrationTest(
         val searchResults = makeGetRequest(mockMvc, "$placeEndpoint/public/search/$searchPhrase", status().isOk)
         val searchResultsDecoded = Json.decodeFromString<List<PlaceShortDto>>(searchResults)
 
-        assertEquals(4, searchResultsDecoded.size)
+        assertEquals(3, searchResultsDecoded.size)
         searchResultsDecoded.forEach {
             assert(it.name == place2.name ||
                     it.name == place3.name ||
-                    it.name == place4.name ||
-                    it.name == place5.name)
+                    it.name == place4.name)
         }
     }
 

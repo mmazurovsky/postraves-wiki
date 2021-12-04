@@ -174,7 +174,7 @@ class EventRepoImpl(
         return this.where(thisTable.EVENT_ID.`in`(ids))
     }
 
-    override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
+    override fun SelectWhereStep<Record>.whereNameIsLikeAndOtherConditions(namePart: String): SelectConditionStep<Record> {
         return this.where(lower(thisTable.EVENT_NAME).contains(namePart.lowercase()))
     }
 
@@ -532,10 +532,6 @@ class EventRepoImpl(
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: EventRecord) {
         recordToUpdate.eventUpdatedDateTime = dateTimeProvider.getNow()
     }
-
-//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
-//        return list.sortedWith(compareBy { it.into(EVENT).eventUpdatedDateTime })
-//    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
         return EVENT.EVENT_UPDATED_DATE_TIME.desc()

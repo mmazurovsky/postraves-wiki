@@ -35,7 +35,7 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     abstract override fun convertToShortDto(record: Record): SHORTDTO
     protected abstract fun convertToFullDto(record: Record): FULLDTO
     abstract fun SelectWhereStep<Record>.whereIdIsInIds(ids: Set<Long>): SelectConditionStep<Record>
-    abstract fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record>
+    abstract fun SelectWhereStep<Record>.whereNameIsLikeAndOtherConditions(namePart: String): SelectConditionStep<Record>
     abstract fun prepareRecordBeforeSaving(record: R, dto: WRITEDTO)
     abstract fun postSaveGetId(record: R): Long
     abstract fun preUpdateCheckId(dto: WRITEDTO): Long
@@ -109,7 +109,7 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
             .joinLocation()
             .apply { if (joinOtherData() != null) joinOtherData() }
             .apply { if (userId != null) joinUserFollow(userId) }
-            .whereNameIsLike(namePart)
+            .whereNameIsLikeAndOtherConditions(namePart)
             .fetch()
             .map { convertToShortDto(it) }
             .toList()

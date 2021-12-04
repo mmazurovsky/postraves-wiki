@@ -80,7 +80,7 @@ class UnityRepoImpl(
         return this.where(thisTable.UNITY_ID.`in`(ids))
     }
 
-    override fun SelectWhereStep<Record>.whereNameIsLike(namePart: String): SelectConditionStep<Record> {
+    override fun SelectWhereStep<Record>.whereNameIsLikeAndOtherConditions(namePart: String): SelectConditionStep<Record> {
         return this.where(lower(thisTable.UNITY_NAME).contains(namePart.lowercase()))
     }
 
@@ -143,10 +143,6 @@ class UnityRepoImpl(
     override fun updateUpdatedDateTimeInRecord(recordToUpdate: UnityRecord) {
         recordToUpdate.unityUpdatedDateTime = dateTimeProvider.getNow()
     }
-
-//    override fun sortByUpdatedDateTime(list: SelectOnConditionStep<Record>): List<Record> {
-//        return list.sortedWith(compareBy { it.into(UNITY).unityUpdatedDateTime })
-//    }
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
         return UNITY.UNITY_UPDATED_DATE_TIME.desc()
