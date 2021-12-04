@@ -8,6 +8,7 @@ import org.springframework.web.util.WebUtils
 import javax.servlet.http.Cookie
 
 @Service
+//todo it is a mess class
 class CookieUtils(
     private val httpServletRequest: HttpServletRequest? = null,
     private val httpServletResponse: HttpServletResponse? = null,

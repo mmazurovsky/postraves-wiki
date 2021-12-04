@@ -16,32 +16,32 @@ security:
       secure: true
       domain: ${DOMAIN}
       path: /
-    allow-credentials: true
-    allowed-origins:
-      - https://${DOMAIN}
-      - http://localhost:3000
-    allowed-headers:
-      - Authorization
-      - Origin
-      - Content-Type
-      - Accept
-      - Accept-Encoding
-      - Accept-Language
-      - Access-Control-Allow-Origin
-      - Access-Control-Allow-Headers
-      - Access-Control-Request-Method
-      - X-Requested-With
-      - X-Auth-Token
-      - X-Xsrf-Token
-      - Cache-Control
-      - Id-Token
-    exposed-headers:
-      - X-Xsrf-Token
+#    allow-credentials: true
+#    allowed-origins:
+#      - https://${DOMAIN}
+#      - http://localhost:3000
+#    allowed-headers:
+#      - Authorization
+#      - Origin
+#      - Content-Type
+#      - Accept
+#      - Accept-Encoding
+#      - Accept-Language
+#      - Access-Control-Allow-Origin
+#      - Access-Control-Allow-Headers
+#      - Access-Control-Request-Method
+#      - X-Requested-With
+#      - X-Auth-Token
+#      - X-Xsrf-Token
+#      - Cache-Control
+#      - Id-Token
+#    exposed-headers:
+#      - X-Xsrf-Token
 ---
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: dev, prod
   datasource:
     driverClassName: org.postgresql.Driver
     password: ${POSTGRES_PASSWORD}
@@ -52,8 +52,6 @@ spring:
   redis:
     host: ${REDIS_HOST}
     port: 6379
-  #    sentinel:
-  #      master: mymaster
   logging:
     level:
       org:

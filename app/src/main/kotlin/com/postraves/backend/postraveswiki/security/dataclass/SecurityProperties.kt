@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component
 data class SecurityProperties (
     var cookieProps: CookieProperties? = null,
     var firebaseProps: FirebaseProperties? = null,
-    var allowCredentials: Boolean = false,
-    var allowedOrigins: List<String>? = null,
-    var allowedHeaders: List<String>? = null,
-    var exposedHeaders: List<String>? = null,
+//    var allowCredentials: Boolean = false,
+//    var allowedOrigins: List<String>? = null,
+//    var allowedHeaders: List<String>? = null,
+//    var exposedHeaders: List<String>? = null,
 )

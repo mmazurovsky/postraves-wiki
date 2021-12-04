@@ -19,12 +19,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 import java.io.IOException
 
 @Component
 @Slf4j
 class SecurityFilter(
-    private val securityService: SecurityService? = null,
     private val cookieUtils: CookieUtils? = null,
     private val securityProps: SecurityProperties? = null,
     private val myUserProfileService: MyUserProfileService
@@ -47,7 +47,7 @@ class SecurityFilter(
 
         val strictServerSessionEnabled = securityProps!!.firebaseProps!!.enableStrictServerSession
         val sessionCookie = cookieUtils!!.getCookie("session")
-        val token = securityService!!.getBearerToken(request)
+        val token = getBearerToken(request)
 
         if (token == null || token.isEmpty() || token.equals("undefined", ignoreCase = true)) {
             return
@@ -63,7 +63,6 @@ class SecurityFilter(
                 } else if (!strictServerSessionEnabled) {
                     decodedTokenWithFirebaseCredentials = FirebaseAuth.getInstance().verifyIdToken(token)
                     type = CredentialType.ID_TOKEN
-
                 }
             } catch (e: FirebaseAuthException) {
                 logger.error("Firebase Exception: " + e.localizedMessage)
@@ -90,5 +89,14 @@ class SecurityFilter(
 
     private fun convertFirebaseTokenToMyBackendUser(decodedToken: FirebaseToken): UserFullDto? {
         return myUserProfileService.getUserByAuthUidForSecurityService(decodedToken.uid)
+    }
+
+    private fun getBearerToken(request: HttpServletRequest): String? {
+        var bearerToken: String? = null
+        val authorization = request.getHeader("Authorization")
+        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
+            bearerToken = authorization.substring(7)
+        }
+        return bearerToken
     }
 }
