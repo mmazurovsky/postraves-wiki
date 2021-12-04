@@ -840,7 +840,7 @@ class ArtistRatingIntegrationTest(
 
     @Test
     @Order(6)
-    fun saveArtistsAndSetWeeklyBestAndGetWeeklyBest() {
+    fun saveArtistsAndSetWeeklyBestAndGetWeeklyBestAndSetAgainAndGetAgain() {
         Mockito.doReturn(testUser).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
@@ -930,5 +930,16 @@ class ArtistRatingIntegrationTest(
         assertEquals(artist1Id, artistOfTheWeek!!.id)
         assertEquals(artist1.name, artistOfTheWeek.name)
         assertEquals(artist1.countryName, artistOfTheWeek.country!!.name)
+
+        artistService.incrementFollowers(artist2Id)
+        artistService.incrementFollowers(artist2Id)
+
+        artistService.setBestOfTheWeekForAllCities()
+        Thread.sleep(2_000)
+        val artistOfTheWeekNew = artistService.findBestOfTheWeekByCityInCountry("Bruges")
+
+        assertEquals(artist2Id, artistOfTheWeekNew!!.id)
+        assertEquals(artist2.name, artistOfTheWeekNew!!.name)
+        assertEquals(artist2.countryName, artistOfTheWeekNew!!.country!!.name)
     }
 }
