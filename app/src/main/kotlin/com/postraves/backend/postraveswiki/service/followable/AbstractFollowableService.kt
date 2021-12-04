@@ -126,4 +126,9 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
             .sortedByDescending { it.overallFollowers }
             .toList()
     }
+
+    override fun enrichListWithFollowers(list: List<SHORTDTO>): List<SHORTDTO> {
+        return list.map { this.enrichWithFollowersCalculationRequired(it) }
+            .toList()
+    }
 }

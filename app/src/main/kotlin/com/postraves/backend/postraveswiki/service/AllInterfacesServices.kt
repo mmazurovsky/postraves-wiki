@@ -26,6 +26,7 @@ interface FollowableService<FULLDTO: FollowableFullDto<FULLDTO>, SHORTDTO: Follo
     fun enrichWithFollowersCalculationRequired(dto: SHORTDTO): SHORTDTO
     fun enrichWithFollowersCalculationRequired(dto: FULLDTO): FULLDTO
     fun enrichListWithFollowersAndSortByOverallFollowers(list: List<SHORTDTO>): List<SHORTDTO>
+    fun enrichListWithFollowers(list: List<SHORTDTO>): List<SHORTDTO>
 }
 
 interface RatingsService<FULLDTO: FollowableFullDto<FULLDTO>, SHORTDTO: FollowableShortDto<SHORTDTO>> {

@@ -23,7 +23,7 @@ interface EventService :
     fun getRelevantEventsForArtist(artistId: Long): List<EventShortDto>
     fun getRelevantEventsForPlace(placeId: Long): List<EventShortDto>
     fun getRelevantEventsForUnity(unityId: Long): List<EventShortDto>
-    fun getEventsByDate(cityName: String): List<EventsByDateDto>
+    fun getEventsByDate(cityName: String): List<EventShortDto>
     fun getEventsByRating(cityName: String): List<EventShortDto>
     fun getOrganizers(id: Long): List<UnityShortDto>
     fun updateOrganizers(id: Long, orgs: Set<Long>)
@@ -55,6 +55,10 @@ class EventServiceImpl(
     @Autowired
     @Lazy
     private lateinit var myUserProfileService: MyUserProfileService
+
+    companion object {
+        private const val timeFrameRelevant: Long = 90
+    }
 
     override fun preProcessBeforeSaving(dto: EventWriteDto) {
         if (dto.id != null) throw TODO()
@@ -110,33 +114,22 @@ class EventServiceImpl(
         return eventsWithFollowers
     }
 
-    override fun getEventsByDate(cityName: String): List<EventsByDateDto> {
+    override fun getEventsByDate(cityName: String): List<EventShortDto> {
         val authUid = myUserProfileService.getMyUserId()
         val startIntervalDateTime = dateTimeProvider.getNow()
-        val endIntervalDateTime = startIntervalDateTime.plusDays(31)
+        val endIntervalDateTime = startIntervalDateTime.plusDays(timeFrameRelevant)
         val eventsWithoutFollowers =
             eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
 
-        val eventsWithFollowersSorted = this.enrichListWithFollowersAndSortByOverallFollowers(eventsWithoutFollowers)
+        val eventsWithFollowersSorted = this.enrichListWithFollowers(eventsWithoutFollowers)
 
-        val eventsByDate = mutableMapOf<LocalDate, EventsByDateDto>()
-        eventsWithFollowersSorted.forEach {
-            val localDateTimeOfEvent = it.startDateTime.toLocalDate()
-            if (eventsByDate.containsKey(localDateTimeOfEvent)) {
-                eventsByDate[localDateTimeOfEvent]?.events?.add(it) ?: throw TODO()
-            } else {
-                eventsByDate[localDateTimeOfEvent] = EventsByDateDto(localDateTimeOfEvent, mutableListOf(it))
-            }
-        }
-
-        val eventsByDateWithFollowersSorted = eventsByDate.values.sortedBy { it.date }.toList()
-        return eventsByDateWithFollowersSorted
+        return eventsWithFollowersSorted
     }
 
     override fun getEventsByRating(cityName: String): List<EventShortDto> {
         val authUid = myUserProfileService.getMyUserId()
         val startIntervalDateTime = dateTimeProvider.getNow()
-        val endIntervalDateTime = startIntervalDateTime.plusDays(31)
+        val endIntervalDateTime = startIntervalDateTime.plusDays(timeFrameRelevant)
         val eventsWithoutFollowers =
             eventRepo.getEventsByCityAndTimeInterval(authUid, cityName, startIntervalDateTime, endIntervalDateTime)
         val eventsWithFollowersSorted = this.enrichListWithFollowersAndSortByOverallFollowers(eventsWithoutFollowers)

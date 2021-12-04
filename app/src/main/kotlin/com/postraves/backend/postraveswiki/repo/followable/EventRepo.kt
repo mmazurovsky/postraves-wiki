@@ -285,7 +285,10 @@ class EventRepoImpl(
             // offset datetime now is with what offset
             .where(
                 PLACE.PLACE_CITY_NAME.eq(cityName)
-                    .and(EVENT.EVENT_END_DATE_TIME.between(startOfIntervalDateTime, endOfIntervalDateTime))
+                    .and(
+                        EVENT.EVENT_END_DATE_TIME.between(startOfIntervalDateTime, endOfIntervalDateTime)
+                            .or(EVENT.EVENT_START_DATE_TIME.between(startOfIntervalDateTime, endOfIntervalDateTime))
+                    )
             )
             .orderBy(EVENT.EVENT_START_DATE_TIME.asc())
             .fetch()

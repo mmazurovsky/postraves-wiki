@@ -45,7 +45,7 @@ class EventController(
 
     @GetMapping("/public/relevantByDate")
     @ResponseStatus(HttpStatus.OK)
-    fun getEventsForCitySortedByDate(@RequestParam cityName: String): List<EventsByDateDto> {
+    fun getEventsForCitySortedByDate(@RequestParam cityName: String): List<EventShortDto> {
         return eventService.getEventsByDate(cityName)
     }
 

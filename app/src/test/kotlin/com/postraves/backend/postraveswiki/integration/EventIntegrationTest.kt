@@ -1418,7 +1418,6 @@ class EventIntegrationTest(
             name = "Event4",
             startDateTime = now.plusDays(1),
             endDateTime = now.plusDays(1).plusHours(2)
-//            OffsetDateTime.parse("20-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME)
         )
 
         val event5 = event1.copy(
@@ -1429,29 +1428,29 @@ class EventIntegrationTest(
 
         val event6 = event1.copy(
             name = "Event6",
-            startDateTime = now.plusDays(25),
-            endDateTime = now.plusDays(25).plusHours(2)
+            startDateTime = now.plusDays(85),
+            endDateTime = now.plusDays(85).plusHours(2)
         )
 
         val event7 = event1.copy(
             name = "Event7",
             ticketsLink = null,
-            startDateTime = now.plusDays(25).plusHours(1),
-            endDateTime = now.plusDays(25).plusHours(2)
+            startDateTime = now.plusDays(89).plusHours(23),
+            endDateTime = now.plusDays(91).plusHours(2)
         )
 
         val event8 = event1.copy(
             name = "Event8",
             ticketsLink = null,
-            startDateTime = now.plusDays(25).plusHours(1),
-            endDateTime = now.plusDays(25).plusHours(2),
+            startDateTime = now.plusDays(90).plusHours(1),
+            endDateTime = now.plusDays(104).plusHours(2),
             placeId = persistedPlace2Id
         )
 
         val event9 = event1.copy(
             name = "Event9",
-            startDateTime = now.plusDays(100),
-            endDateTime = now.plusDays(100).plusHours(2)
+            startDateTime = now.plusDays(120),
+            endDateTime = now.plusDays(121).plusHours(2)
         )
 
         val event10 = event1.copy(
@@ -1489,56 +1488,58 @@ class EventIntegrationTest(
             "$eventEndpoint/public/relevantByDate?cityName=$cityName",
             status().isOk
         )
-        val relevantEventsByDate = Json.decodeFromString<List<EventsByDateDto>>(relevantEventsByDateJson)
+        val relevantEventsByDate = Json.decodeFromString<List<EventShortDto>>(relevantEventsByDateJson)
 
-        assertEquals(5, relevantEventsByDate.size)
+        assertEquals(7, relevantEventsByDate.size)
 
-        relevantEventsByDate.forEachIndexed { index, eventsByDateDto ->
+        relevantEventsByDate.forEachIndexed { index, event ->
             when (index) {
                 0 -> {
-                    assertEquals(event10.startDateTime.toLocalDate(), eventsByDateDto.date)
-                    assertEquals(1, eventsByDateDto.events.size)
-                    assertEquals(event10Id, eventsByDateDto.events[0].id)
-                    assertEquals(event10.name, eventsByDateDto.events[0].name)
-                    assertEquals(EventStatus.LIVE, eventsByDateDto.events[0].status)
+                    assertEquals(event10Id, event.id)
+                    assertEquals(event10.name, event.name)
+                    assertEquals(EventStatus.LIVE, event.status)
+                    assertEquals(event10.startDateTime.toLocalDateTime(), event.startDateTime.toLocalDateTime())
                 }
                 1 -> {
-                    assertEquals(event2.startDateTime.toLocalDate(), eventsByDateDto.date)
-                    assertEquals(1, eventsByDateDto.events.size)
-                    assertEquals(event2Id, eventsByDateDto.events[0].id)
-                    assertEquals(event2.name, eventsByDateDto.events[0].name)
-                    assertEquals(EventStatus.LIVE, eventsByDateDto.events[0].status)
+                    assertEquals(event2Id, event.id)
+                    assertEquals(event2.name, event.name)
+                    assertEquals(EventStatus.LIVE, event.status)
+                    assertEquals(event2.startDateTime.toLocalDateTime(), event.startDateTime.toLocalDateTime())
                 }
                 2 -> {
-                    assertEquals(event3.startDateTime.toLocalDate(), eventsByDateDto.date)
-                    assertEquals(1, eventsByDateDto.events.size)
-                    assertEquals(event3Id, eventsByDateDto.events[0].id)
-                    assertEquals(event3.name, eventsByDateDto.events[0].name)
-                    assertEquals(EventStatus.TODAY, eventsByDateDto.events[0].status)
+                    assertEquals(event3Id, event.id)
+                    assertEquals(event3.name, event.name)
+                    assertEquals(EventStatus.TODAY, event.status)
+                    assertEquals(event3.startDateTime.toLocalDateTime(), event.startDateTime.toLocalDateTime())
                 }
                 3 -> {
-                    assertEquals(event4.startDateTime.toLocalDate(), eventsByDateDto.date)
-                    assertEquals(2, eventsByDateDto.events.size)
-                    assertEquals(event4Id, eventsByDateDto.events[0].id)
-                    assertEquals(event4.name, eventsByDateDto.events[0].name)
-                    assertEquals(EventStatus.TOMORROW, eventsByDateDto.events[0].status)
-                    assertEquals(event5Id, eventsByDateDto.events[1].id)
-                    assertEquals(event5.name, eventsByDateDto.events[1].name)
-                    assertEquals(EventStatus.TOMORROW, eventsByDateDto.events[1].status)
+                    assertEquals(event4Id, event.id)
+                    assertEquals(event4.name, event.name)
+                    assertEquals(EventStatus.TOMORROW, event.status)
+                    assertEquals(event4.startDateTime.toLocalDateTime(), event.startDateTime.toLocalDateTime())
                 }
                 4 -> {
-                    assertEquals(event6.startDateTime.toLocalDate(), eventsByDateDto.date)
-                    assertEquals(2, eventsByDateDto.events.size)
-                    assertEquals(event6Id, eventsByDateDto.events[0].id)
-                    assertEquals(event6.name, eventsByDateDto.events[0].name)
-                    assertEquals(EventStatus.PRESALE, eventsByDateDto.events[0].status)
-                    assertEquals(event7Id, eventsByDateDto.events[1].id)
-                    assertEquals(event7.name, eventsByDateDto.events[1].name)
-                    assertEquals(EventStatus.UPCOMING, eventsByDateDto.events[1].status)
+                    assertEquals(event5Id, event.id)
+                    assertEquals(event5.name, event.name)
+                    assertEquals(EventStatus.TOMORROW, event.status)
+                    assertEquals(event5.startDateTime.toLocalDateTime(), event.startDateTime.toLocalDateTime())
+                }
+                5 -> {
+                    assertEquals(event6Id, event.id)
+                    assertEquals(event6.name, event.name)
+                    assertEquals(EventStatus.PRESALE, event.status)
+                    assertEquals(event6.startDateTime.toLocalDateTime(), event.startDateTime.toLocalDateTime())
+                }
+                6 -> {
+                    assertEquals(event7Id, event.id)
+                    assertEquals(event7.name, event.name)
+                    assertEquals(EventStatus.UPCOMING, event.status)
+                    assertEquals(event7.startDateTime.toLocalDateTime(), event.startDateTime.toLocalDateTime())
                 }
             }
         }
     }
+
 
     @Test
     fun getRelevantEventsOfArtist() {
@@ -1767,8 +1768,8 @@ class EventIntegrationTest(
         }
     }
 
-    // todo test place's events
+// todo test place's events
 
-    // todo test unity's events
+// todo test unity's events
 
 }
