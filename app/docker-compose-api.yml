@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: final
-    env_file:
-      - ../.env
+#    env_file:
+#      - ../.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
