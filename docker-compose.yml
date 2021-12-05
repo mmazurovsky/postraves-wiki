@@ -10,5 +10,3 @@ services:
   api:
     image: "mmazurovsky/postraves-wiki-api"
     hostname: api
-    env_file:
-      - .env
