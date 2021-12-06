@@ -16,4 +16,4 @@ EXPOSE 8080
 VOLUME /tmp
 WORKDIR /app
 COPY --from=builderrr /home/gradle/src/build/libs/*.jar /app/app.jar
-ENTRYPOINT ["java","-Dspring.profiles.active=dev","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=${SPRING_PROFILE_ACTIVE}","-jar","/app/app.jar"]

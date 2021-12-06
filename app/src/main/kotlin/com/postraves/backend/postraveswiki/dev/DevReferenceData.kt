@@ -1076,6 +1076,6 @@ class DevReferenceData(
             i++
         }
 
-        logger.info("Reference data is written")
+        logger.info("Reference data is written MARKER")
     }
 }
