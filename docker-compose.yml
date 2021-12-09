@@ -1,14 +1,14 @@
 version: '3.4'
 services:
   nginx:
-    image: "mmazurovsky/postraves-nginx"
+    image: "mmazurovsky/postraves-nginx-prod"
     hostname: nginx
     ports:
       - "80:80"
     depends_on:
       - api
   api:
-    image: "mmazurovsky/postraves-wiki-api"
+    image: "mmazurovsky/postraves-wiki-api-prod"
     hostname: api
     env_file:
       - .env
