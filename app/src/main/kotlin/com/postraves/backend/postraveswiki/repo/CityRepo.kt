@@ -20,7 +20,10 @@ import org.springframework.stereotype.Repository
 
 interface CityRepo :
     BaseRepo<CityWriteDto, CityDto>,
-    ByNameRepo<CityDto>
+    ByNameRepo<CityDto> {
+    fun findAllInternal(): List<CityWriteDto>
+    fun findByNameInternal(name: String): CityWriteDto
+}
 
 @Repository
 class CityImplRepo(
@@ -60,6 +63,23 @@ class CityImplRepo(
         return cityConverters.createDtoFromRecord(selectedRecord.into(CITY), selectedRecord.into(COUNTRY))
     }
 
+    override fun findAllInternal(): List<CityWriteDto> {
+        val results = dsl
+            .selectFrom(CITY)
+            .orderBy(CITY.CITY_UPDATED_DATE_TIME.desc())
+            .fetch()
+            .map {
+                cityConverters.createWriteDtoFromRecord(it.into(CITY))
+            }
+            .toList()
+        return results
+    }
+
+    override fun findByNameInternal(name: String): CityWriteDto {
+        val record = findByNameWithoutJoins(name)
+        return cityConverters.createWriteDtoFromRecord(record)
+    }
+
     override fun save(dto: CityWriteDto): CityDto {
         val recordToSave = dsl.newRecord(CITY)
         cityConverters.transferDataFromDtoToRecord(dto, recordToSave)
@@ -83,7 +103,7 @@ class CityImplRepo(
     override fun findAll(): List<CityDto> {
         val results = dsl
             .selectFrom(CITY.leftOuterJoin(COUNTRY).on(CITY.CITY_COUNTRY_NAME.eq(COUNTRY.COUNTRY_NAME)))
-            .orderBy(CITY.CITY_UPDATED_DATE_TIME.desc())
+            .orderBy(CITY.CITY_COUNTRY_NAME.asc(), CITY.CITY_NAME.asc())
             .fetch()
             .map {
                 cityConverters.createDtoFromRecord(it.into(CITY), it.into(COUNTRY))

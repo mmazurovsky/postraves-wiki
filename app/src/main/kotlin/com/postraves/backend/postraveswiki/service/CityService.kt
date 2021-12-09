@@ -4,11 +4,15 @@ import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.repo.CityRepo
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.PathVariable
 
 interface CityService :
     BaseService<CityWriteDto, CityDto>,
     ServiceByName<CityDto>,
-    FindByName<CityDto>
+    FindByName<CityDto> {
+    fun findAllInternal(): List<CityWriteDto>
+    fun findByNameInternal(name: String): CityWriteDto
+}
 
 @Service
 class CityServiceImpl(
@@ -17,6 +21,14 @@ class CityServiceImpl(
 
     override fun findByName(name: String): CityDto {
         return cityRepo.findByName(name)
+    }
+
+    override fun findAllInternal(): List<CityWriteDto> {
+        return cityRepo.findAllInternal()
+    }
+
+    override fun findByNameInternal(name: String): CityWriteDto {
+        return cityRepo.findByNameInternal(name)
     }
 
     override fun save(dto: CityWriteDto): CityDto {
