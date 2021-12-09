@@ -10,6 +10,7 @@ import java.util.*
 
 interface CountryConverters {
     fun createDtoFromRecord(countryRecord: CountryRecord): CountryDto
+    fun createWriteDtoFromRecord(countryRecord: CountryRecord): CountryWriteDto
     fun transferDataFromDtoToRecord(dto: CountryWriteDto, record: CountryRecord)
 }
 
@@ -41,6 +42,17 @@ class CountryConvertersImpl(
             localName = resolveLocalizedName(countryRecord) ?: throw RecordFieldNullException("Country Name"),
             phoneCode = countryRecord.countryPhoneCode ?: throw RecordFieldNullException("Country phone code"),
             emojiCode = countryRecord.countryEmojiCode ?: throw RecordFieldNullException("Country emoji code"),
+        )
+    }
+
+    override fun createWriteDtoFromRecord(countryRecord: CountryRecord): CountryWriteDto {
+        return CountryWriteDto(
+            name = countryRecord.countryName ?: throw RecordFieldNullException("Country Name"),
+            nameEn = countryRecord.countryNameEn ?: throw RecordFieldNullException("Country Name En"),
+            nameDe = countryRecord.countryNameDe ?: throw RecordFieldNullException("Country Name De"),
+            nameFr = countryRecord.countryNameFr ?: throw RecordFieldNullException("Country Name Fr"),
+            nameRu = countryRecord.countryNameRu ?: throw RecordFieldNullException("Country Name Ru"),
+            phoneCode = countryRecord.countryPhoneCode ?: throw RecordFieldNullException("Country phone code"),
         )
     }
 

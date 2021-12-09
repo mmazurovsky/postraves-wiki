@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.service
 
 import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.repo.CountryRepo
 import org.springframework.stereotype.Service
@@ -8,7 +9,10 @@ import org.springframework.stereotype.Service
 interface CountryService :
     BaseService<CountryWriteDto, CountryDto>,
     ServiceByName<CountryDto>,
-    FindByName<CountryDto>
+    FindByName<CountryDto> {
+    fun findAllInternal(): List<CountryWriteDto>
+    fun findByNameInternal(name: String): CountryWriteDto
+}
 
 @Service
 class CountryServiceImpl(
@@ -17,6 +21,14 @@ class CountryServiceImpl(
 
     override fun findByName(name: String): CountryDto {
         return countryRepo.findByName(name)
+    }
+
+    override fun findAllInternal(): List<CountryWriteDto> {
+        return countryRepo.findAllInternal()
+    }
+
+    override fun findByNameInternal(name: String): CountryWriteDto {
+        return countryRepo.findByNameInternal(name)
     }
 
     override fun save(dto: CountryWriteDto): CountryDto {

@@ -11,6 +11,7 @@ import java.util.*
 
 interface CityConverters {
     fun createDtoFromRecord(cityRecord: CityRecord, countryRecord: CountryRecord): CityDto
+    fun createWriteDtoFromRecord(cityRecord: CityRecord): CityWriteDto
     fun transferDataFromDtoToRecord(dto: CityWriteDto, record: CityRecord)
 }
 
@@ -42,6 +43,18 @@ class CityConvertersImpl(
             name = cityRecord.cityName ?: throw RecordFieldNullException("City Name"),
             localName = resolveLocalizedName(cityRecord) ?: throw RecordFieldNullException("City Local Name"),
             country = countryConverters.createDtoFromRecord(countryRecord),
+            timeOffset = cityRecord.cityTimeOffset ?: throw RecordFieldNullException("City time offset"),
+        )
+    }
+
+    override fun createWriteDtoFromRecord(cityRecord: CityRecord): CityWriteDto {
+        return CityWriteDto(
+            name = cityRecord.cityName ?: throw RecordFieldNullException("City Name"),
+            nameEn = cityRecord.cityNameEn ?: throw RecordFieldNullException("City Name En"),
+            nameDe = cityRecord.cityNameDe ?: throw RecordFieldNullException("City Name De"),
+            nameFr = cityRecord.cityNameFr ?: throw RecordFieldNullException("City Name Fr"),
+            nameRu = cityRecord.cityNameRu ?: throw RecordFieldNullException("City Name Ru"),
+            countryName = cityRecord.cityCountryName ?: throw RecordFieldNullException("City Country Name"),
             timeOffset = cityRecord.cityTimeOffset ?: throw RecordFieldNullException("City time offset"),
         )
     }
