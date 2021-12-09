@@ -2,6 +2,7 @@ package com.postraves.backend.postraveswiki.repo
 
 import com.postraves.backend.postraveswiki.data.converters.CountryConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
+import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
@@ -17,7 +18,11 @@ import org.springframework.stereotype.Repository
 
 interface CountryRepo :
     BaseRepo<CountryWriteDto, CountryDto>,
-    ByNameRepo<CountryDto>
+    ByNameRepo<CountryDto> {
+    fun findAllInternal(): List<CountryWriteDto>
+    fun findByNameInternal(name: String): CountryWriteDto
+
+}
 
 @Repository
 class CountryImplRepo(
@@ -37,6 +42,23 @@ class CountryImplRepo(
     override fun findByName(name: String): CountryDto {
         val found = findByNameWithoutJoins(name)
         return countryConverters.createDtoFromRecord(found.into(COUNTRY))
+    }
+
+    override fun findAllInternal(): List<CountryWriteDto> {
+        val results = dsl
+            .selectFrom(COUNTRY)
+            .orderBy(COUNTRY.COUNTRY_UPDATED_DATE_TIME.desc())
+            .fetch()
+            .map {
+                countryConverters.createWriteDtoFromRecord(it.into(COUNTRY))
+            }
+            .toList()
+        return results
+    }
+
+    override fun findByNameInternal(name: String): CountryWriteDto {
+        val record = findByNameWithoutJoins(name)
+        return countryConverters.createWriteDtoFromRecord(record)
     }
 
     override fun save(dto: CountryWriteDto): CountryDto {
@@ -62,7 +84,7 @@ class CountryImplRepo(
     override fun findAll(): List<CountryDto> {
         val results = dsl
             .selectFrom(COUNTRY)
-            .orderBy(COUNTRY.COUNTRY_UPDATED_DATE_TIME.desc())
+            .orderBy(COUNTRY.COUNTRY_NAME.asc())
             .fetch()
             .map {
                 countryConverters.createDtoFromRecord(it.into(COUNTRY))
