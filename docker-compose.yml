@@ -1,5 +1,12 @@
 version: '3.4'
 services:
+  flyway:
+    image: 'flyway/flyway:latest'
+    env_file:
+      - .env
+    command: -url=jdbc:postgresql://${POSTGRES_HOST}:5432/postraves -schemas=public -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} migrate
+    volumes:
+      - ./app/src/main/resources/db/migration/postgres:/flyway/sql
   nginx:
     image: "mmazurovsky/postraves-nginx"
     hostname: nginx
@@ -7,8 +14,11 @@ services:
       - "80:80"
     depends_on:
       - api
+      - flyway
   api:
     image: "mmazurovsky/postraves-wiki-api"
     hostname: api
     env_file:
       - .env
+    depends_on:
+      - flyway
