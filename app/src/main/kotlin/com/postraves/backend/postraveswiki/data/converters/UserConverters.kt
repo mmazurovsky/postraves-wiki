@@ -3,6 +3,7 @@ package com.postraves.backend.postraveswiki.data.converters
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
+import com.postraves.backend.postraveswiki.data.enum.UserProfileRole
 import com.postraves.backend.postraveswiki.exception.RecordFieldNullException
 import jooq.tables.records.CityRecord
 import jooq.tables.records.CountryRecord
@@ -42,6 +43,7 @@ class UserConvertersImpl(
             telegramUsername = userRecord.userProfileTelegramUsername,
             instagramUsername = userRecord.userProfileInstagramUsername,
             about = userRecord.userProfileAbout,
+            role = UserProfileRole.valueOf(userRecord.userProfileRole?.uppercase() ?: throw RecordFieldNullException("User Role")),
         )
     }
 

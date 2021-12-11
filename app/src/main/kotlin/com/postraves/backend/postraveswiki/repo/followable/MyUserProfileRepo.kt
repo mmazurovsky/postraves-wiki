@@ -4,6 +4,7 @@ import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.converters.UserConverters
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
+import com.postraves.backend.postraveswiki.data.enum.UserProfileRole
 import com.postraves.backend.postraveswiki.exception.FollowingException
 import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.exception.SaveException
@@ -21,6 +22,7 @@ interface MyUserProfileRepo {
     fun findMyProfileByAuthUid(authUid: String): UserFullDto?
     fun checkNicknameIsFree(nickname: String): Boolean
     fun save(dto: UserWriteDto, authUid: String): UserShortDto
+    fun saveWithSpecialRole(role: UserProfileRole, dto: UserWriteDto, authUid: String): UserShortDto
     fun update(dto: UserWriteDto, userId: Long)
     fun deleteMyProfile(authUid: String)
     fun checkArtistIsFollowed(userId: Long, id: Long): Boolean
@@ -90,6 +92,23 @@ class MyUserProfileRepoImpl(
         userToSave.userProfileAuthUid = authUid
         userToSave.userProfileCreatedDateTime = dateTimeProvider.getNow()
         userToSave.userProfileUpdatedDateTime = dateTimeProvider.getNow()
+        userToSave.store()
+        val record = findByAuthUidWithJoins(authUid)
+        return userConverters.createShortDtoFromRecord(
+            record?.into(USER_PROFILE) ?: throw SaveException(
+                "User",
+                dto.name
+            )
+        )
+    }
+
+    override fun saveWithSpecialRole(role: UserProfileRole, dto: UserWriteDto, authUid: String): UserShortDto {
+        val userToSave = dsl.newRecord(thisTable)
+        userConverters.transferDataFromDtoToRecord(dto, userToSave)
+        userToSave.userProfileAuthUid = authUid
+        userToSave.userProfileCreatedDateTime = dateTimeProvider.getNow()
+        userToSave.userProfileUpdatedDateTime = dateTimeProvider.getNow()
+        userToSave.userProfileRole = role.name
         userToSave.store()
         val record = findByAuthUidWithJoins(authUid)
         return userConverters.createShortDtoFromRecord(

@@ -21,7 +21,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
-import org.jooq.Row10
+import org.jooq.Row11
 import org.jooq.Schema
 import org.jooq.Table
 import org.jooq.TableField
@@ -116,6 +116,11 @@ open class UserProfile(
      */
     val USER_PROFILE_TELEGRAM_USERNAME: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_telegram_username"), SQLDataType.CLOB, this, "")
 
+    /**
+     * The column <code>public.user_profile.user_profile_role</code>.
+     */
+    val USER_PROFILE_ROLE: TableField<UserProfileRecord, String?> = createField(DSL.name("user_profile_role"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field("'USER'::text", SQLDataType.CLOB)), this, "")
+
     private constructor(alias: Name, aliased: Table<UserProfileRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<UserProfileRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
@@ -162,7 +167,7 @@ open class UserProfile(
     override fun rename(name: Name): UserProfile = UserProfile(name, null)
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row10<Long?, String?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row10<Long?, String?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?>
+    override fun fieldsRow(): Row11<Long?, String?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?> = super.fieldsRow() as Row11<Long?, String?, OffsetDateTime?, OffsetDateTime?, String?, String?, String?, String?, String?, String?, String?>
 }

@@ -5,6 +5,7 @@ import com.postraves.backend.postraveswiki.data.dto.BaseShortDto
 import com.postraves.backend.postraveswiki.data.dto.BaseWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.EventShortDto
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/default")
@@ -12,18 +13,22 @@ interface BaseRequests<WRITEDTO : BaseWriteDto, SHORTDTO : BaseShortDto> {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun save(@RequestBody dto: WRITEDTO): SHORTDTO
 
     @PostMapping("batchSave")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun saveBatch(@RequestBody list: List<WRITEDTO>): List<SHORTDTO>
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun update(@RequestBody dto: WRITEDTO)
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun findAll(): List<SHORTDTO>
 }
 
@@ -36,6 +41,7 @@ interface ByIdRequests<FULLDTO : BaseFullDto> {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun deleteById(@PathVariable id: Long)
 }
 
@@ -48,6 +54,7 @@ interface ByNameRequests<FULLDTO : BaseFullDto> {
 
     @DeleteMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun deleteByName(@PathVariable name: String)
 }
 

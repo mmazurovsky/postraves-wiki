@@ -4,6 +4,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.CityDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.service.CityService
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -28,6 +29,7 @@ class CityController(
     }
 
     @GetMapping("/public/all")
+    @PreAuthorize("permitAll()")
     override fun findAll(): List<CityDto> {
         return cityService.findAll()
     }

@@ -21,3 +21,8 @@ enum class EventStatus {
     PAST,
     CANCELLED
 }
+
+enum class UserProfileRole {
+    USER,
+    ADMIN
+}

@@ -9,6 +9,7 @@ import com.postraves.backend.postraveswiki.data.dto.writing.PlaceWriteDto
 import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -61,6 +62,7 @@ class PlaceController (
 
     @PutMapping("/{id}/scenes")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun updateScenesOfPlace(@PathVariable id: Long, @RequestBody scenes: List<SceneDto>) {
         placeService.updateScenesOfPlace(id, scenes)
     }

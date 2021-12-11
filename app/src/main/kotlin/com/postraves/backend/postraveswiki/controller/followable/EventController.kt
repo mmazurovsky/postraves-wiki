@@ -8,6 +8,7 @@ import com.postraves.backend.postraveswiki.data.dto.writing.EventWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.TimetablePerformanceWriteDto
 import com.postraves.backend.postraveswiki.service.followable.EventService
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -57,6 +58,7 @@ class EventController(
 
     @PutMapping("/{id}/organizers")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun updateOrganizers(@PathVariable id: Long, @RequestBody orgs: Set<Long>) {
         eventService.updateOrganizers(id, orgs)
     }
@@ -69,6 +71,7 @@ class EventController(
 
     @PutMapping("/{id}/timetable")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun updateTimetable(@PathVariable id: Long, @RequestBody performances: Set<TimetablePerformanceWriteDto>) {
         eventService.updateTimetableForEvent(id, performances)
     }
