@@ -42,12 +42,12 @@ out/
 /app/src/main/resources/keystore/
 /terraform/
 /.env-dev
+/export-env.sh
+/.env-prod
+/.env-local
 
 # Elastic Beanstalk Files
 #.elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
-/.env-dev
-/export-env.sh
-/.env-prod
-/.env-local
+
