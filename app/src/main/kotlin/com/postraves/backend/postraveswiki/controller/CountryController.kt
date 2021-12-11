@@ -6,13 +6,14 @@ import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/country")
-class CountryController (
+class CountryController(
     private val countryService: CountryService
-    ) :
+) :
     BaseRequests<CountryWriteDto, CountryDto>,
     ByNameRequests<CountryDto>,
     FindByNameRequests<CountryDto> {
@@ -30,6 +31,7 @@ class CountryController (
     }
 
     @GetMapping("/public/all")
+    @PreAuthorize("permitAll()")
     override fun findAll(): List<CountryDto> {
         return countryService.findAll()
     }

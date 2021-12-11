@@ -1,6 +1,7 @@
 package com.postraves.backend.postraveswiki.data.dto.reading
 
 import com.postraves.backend.postraveswiki.data.dto.FollowableFullDto
+import com.postraves.backend.postraveswiki.data.enum.UserProfileRole
 import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 
@@ -13,6 +14,7 @@ data class UserFullDto(
     val about: String?,
     val telegramUsername: String?,
     val instagramUsername: String?,
+    val role: UserProfileRole,
     @Required
     override val overallFollowers: Int = 0,
     @Required

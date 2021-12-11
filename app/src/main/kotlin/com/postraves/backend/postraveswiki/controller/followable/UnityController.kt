@@ -9,6 +9,7 @@ import com.postraves.backend.postraveswiki.data.dto.writing.UnityWriteDto
 import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -61,6 +62,7 @@ class UnityController (
 
     @PutMapping("/{id}/artists")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ADMIN')")
     fun updateArtistsOfUnity(@PathVariable id: Long, @RequestBody artists: Set<Long>) {
         return thisService.updateArtistsOfUnity(id, artists)
     }

@@ -16,6 +16,7 @@ import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.security.dataclass.Credentials
 import com.postraves.backend.postraveswiki.security.dataclass.SecurityProperties
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
@@ -29,6 +30,9 @@ class SecurityFilter(
     private val securityProps: SecurityProperties? = null,
     private val myUserProfileService: MyUserProfileService
 ) : OncePerRequestFilter() {
+    companion object {
+        private const val ROLE_PREFIX = "ROLE_"
+    }
 
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
@@ -80,7 +84,7 @@ class SecurityFilter(
                 UsernamePasswordAuthenticationToken(
                     userProfile,
                     Credentials(type, decodedTokenWithFirebaseCredentials, token, session),
-                    null
+                    if (userProfile != null) mutableListOf(SimpleGrantedAuthority("${ROLE_PREFIX}${userProfile.role}")) else null,
                 )
             authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
