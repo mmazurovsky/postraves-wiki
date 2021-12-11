@@ -5,6 +5,8 @@ import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
 import com.postraves.backend.postraveswiki.data.dto.MoneyCurrencyDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
 import com.postraves.backend.postraveswiki.data.dto.writing.*
+import com.postraves.backend.postraveswiki.data.enum.UserProfileRole
+import com.postraves.backend.postraveswiki.repo.followable.MyUserProfileRepo
 import com.postraves.backend.postraveswiki.repo.followable.OtherUserRepo
 import com.postraves.backend.postraveswiki.repo.quick.CleaningQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
@@ -17,6 +19,7 @@ import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
@@ -34,6 +37,7 @@ class DevReferenceData(
     private val eventService: EventService,
     private val moneyCurrencyService: MoneyCurrencyService,
     private val otherUserRepo: OtherUserRepo,
+    private val myUserRepo: MyUserProfileRepo,
     private val dateTimeProvider: DateTimeProvider,
     private val quickRepoCleaner: CleaningQuickRepo,
     @Qualifier("artistWeeklyFollowersQuickRepoImpl")
@@ -44,7 +48,21 @@ class DevReferenceData(
     private val placeWeeklyFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("eventWeeklyFollowersQuickRepoImpl")
     private val eventWeeklyFollowersQuickRepo: FollowersQuickRepo,
+    @Value("\${DEV_ADMIN_1_AUTH_UID}")
+    private val admin1AuthUid: String,
+    @Value("\${DEV_ADMIN_2_AUTH_UID}")
+    private val admin2AuthUid: String,
 ) {
+
+    val admin1 = UserWriteDto(
+        name = "mmazurovsky",
+        currentCity = "RU_Moscow"
+    )
+
+    val admin2 = UserWriteDto(
+        name = "vibe",
+        currentCity = "RU_Moscow"
+    )
 
     val currencyRub = MoneyCurrencyDto(
         name = "RUB",
@@ -473,6 +491,9 @@ class DevReferenceData(
                 cityPetersburg
             )
         )
+
+        val savedAdminM = myUserRepo.saveWithSpecialRole(UserProfileRole.ADMIN, admin1, admin1AuthUid)
+        val savedAdminVibe = myUserRepo.saveWithSpecialRole(UserProfileRole.ADMIN, admin2, admin2AuthUid)
 
         val placeMutaborSaved = placeService.save(placeMutabor)
         val placeGazgoldeSaved = placeService.save(placeGazgolder)
