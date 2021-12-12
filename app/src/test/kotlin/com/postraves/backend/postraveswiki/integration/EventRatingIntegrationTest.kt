@@ -1,9 +1,6 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
-import com.postraves.backend.postraveswiki.config.logger
-import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
-import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
@@ -11,14 +8,20 @@ import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.Endpoints.eventEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.placeBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.userTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -31,13 +34,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
-import redis.embedded.util.Architecture
-import redis.embedded.util.OS
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
@@ -79,96 +80,25 @@ class EventRatingIntegrationTest(
     @MockBean
     private lateinit var securityService: SecurityService
 
-
-    private val eventEndpoint: String = "/event"
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
     }
 
-    private val testUser = UserFullDto(
-        id = 69,
-        name = "abc",
-        currentCity = CityDto(
-            name = "Bruges",
-            localName = "Bruges",
-            timeOffset = 1,
-            country = CountryDto(
-                name = "BE",
-                localName = "Belgium",
-                emojiCode = "",
-                phoneCode = "",
-            )
-        ),
-        about = null,
-        imageLink = null,
-        instagramUsername = null,
-        telegramUsername = null,
-    )
-
-    private val countryTestData = CountryWriteDto(
-        name = "BE",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        phoneCode = "+7",
-
-        )
-
-    private val countryTestData2 = countryTestData.copy(
+    private val countryTestData2 = countryBeTest.copy(
         name = "RU",
         phoneCode = "+8",
     )
 
-    private val cityTest1 = CityWriteDto(
-        name = "Bruges",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "BE",
-        timeOffset = -3
-    )
-
-    private val cityTest2 = cityTest1.copy(
+    private val cityTest2 = cityBrugesTest.copy(
         name = "Moscow",
         countryName = "RU",
         timeOffset = 0
     )
 
-    private val placeTest = PlaceWriteDto(
-        id = null,
-        name = "Club1",
-        imageLink = "image1",
-        soundcloudUsername = "soundcloud1",
-        instagramUsername = "instagram1",
-        about = "About club1",
-        streetAddress = "Street address1",
-        coordinate = CoordinateDto(
-            latitude = 0.0,
-            longitude = 0.0
-        ),
-        cityName = "Bruges"
-    )
-
-    private val placeTest2 = PlaceWriteDto(
-        id = null,
+    private val placeTest2 = placeBrugesTest.copy(
         name = "Club2",
-        imageLink = "image2",
-        soundcloudUsername = "soundcloud2",
-        instagramUsername = "instagram2",
-        about = "About club2",
-        streetAddress = "Street address2",
-        coordinate = CoordinateDto(
-            latitude = 0.0,
-            longitude = 0.0
-        ),
         cityName = "Moscow"
     )
 
@@ -191,11 +121,13 @@ class EventRatingIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
-        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
+        SecurityContextHolder.getContext().authentication = MockAuthentication.authAdminTest
+
+        makePostRequest(mockMvc, "/country", Json.encodeToString(countryBeTest), status().isCreated)
         makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData2), status().isCreated)
-        makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
+        makePostRequest(mockMvc, "/city", Json.encodeToString(cityBrugesTest), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest2), status().isCreated)
-        val persistedPlaceJson = makePostRequest(mockMvc, "/place", Json.encodeToString(placeTest), status().isCreated)
+        val persistedPlaceJson = makePostRequest(mockMvc, "/place", Json.encodeToString(placeBrugesTest), status().isCreated)
         val persistedPlace = Json.decodeFromString<PlaceShortDto>(persistedPlaceJson)
         persistedPlaceId = persistedPlace.id
         val persistedPlace2Json =
@@ -223,7 +155,7 @@ class EventRatingIntegrationTest(
     fun getRelevantEventsByRating() {
         val now = OffsetDateTime.now(UTC).withHour(0)
 
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(userTest).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
@@ -350,7 +282,7 @@ class EventRatingIntegrationTest(
             i++
         }
 
-        val cityName = placeTest.cityName
+        val cityName = placeBrugesTest.cityName
 
         val relevantEventsByRatingJson = makeGetRequest(
             mockMvc,

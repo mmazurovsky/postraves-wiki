@@ -1,23 +1,26 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
-import com.postraves.backend.postraveswiki.config.logger
-import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UnityShortDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.data.dto.writing.UnityWriteDto
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.Endpoints.artistEndpoint
+import com.postraves.backend.postraveswiki.utils.Endpoints.unityEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePutRequest
+import com.postraves.backend.postraveswiki.utils.TestEntity.artistBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.unityBeTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -27,13 +30,11 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
-import redis.embedded.util.Architecture
-import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -62,42 +63,16 @@ class UnityIntegrationTest(
     private val unityWeeklyFollowersQuickRepoImpl: FollowersQuickRepo,
 ) : AbstractPostgresTest() {
 
-    private val unityEndpoint: String = "/unity"
-    private val artistEndpoint: String = "/artist"
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
-
     init {
         redisServer.start()
     }
 
-    private val countryTestData = CountryWriteDto(
-        name = "BE",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        phoneCode = "+7",
-        
-    )
-
-    private val unityTestData = UnityWriteDto(
-        id = null,
-        name = "Unity 1",
-        imageLink = "image 1",
-        soundcloudUsername = "soundcloud 1",
-        instagramUsername = "instagram 1",
-        bandcampUsername = "bandcamp 1",
-        about = "About 1",
-        countryName = countryTestData.name,
-    )
-
     @BeforeAll
     private fun createCountryForAssociations() {
-        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
+        SecurityContextHolder.getContext().authentication = MockAuthentication.authAdminTest
+
+        makePostRequest(mockMvc, "/country", Json.encodeToString(countryBeTest), status().isCreated)
     }
 
     @AfterEach
@@ -117,7 +92,7 @@ class UnityIntegrationTest(
     @Test
     fun saveUnityWithCountryAssociation() {
 
-        val unityToSave = unityTestData
+        val unityToSave = unityBeTest
 
         val unityIdRespJson =
             makePostRequest(mockMvc, unityEndpoint, Json.encodeToString(unityToSave), status().isCreated)
@@ -126,7 +101,7 @@ class UnityIntegrationTest(
         val unityRespJson = makeGetRequest(mockMvc, "$unityEndpoint/public/$unityId", status().isOk)
         val savedUnity = Json.decodeFromString<UnityFullDto>(unityRespJson)
 
-        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val unitysInOverallRating = unityOverallFollowersQuickRepoImpl.findTop(-1)
         val unitysInWeeklyRating = unityWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -140,7 +115,7 @@ class UnityIntegrationTest(
         assertEquals(unityToSave.bandcampUsername, savedUnity.bandcampUsername)
         assertEquals(unityToSave.about, savedUnity.about)
         assertEquals(unityToSave.countryName, savedUnity.country?.name)
-        assertEquals(countryTestData.phoneCode, savedUnity.country?.phoneCode)
+        assertEquals(countryBeTest.phoneCode, savedUnity.country?.phoneCode)
         assertNotNull(savedUnity.country?.emojiCode)
 
         assert(countryUnitysInQuickRepo.contains(savedUnity.id))
@@ -151,7 +126,7 @@ class UnityIntegrationTest(
     @Test
     fun updateUnityAndDeleteCountryAssociation() {
 
-        val unityToSave = unityTestData
+        val unityToSave = unityBeTest
 
         val responseSavedUnity =
             makePostRequest(mockMvc, unityEndpoint, Json.encodeToString(unityToSave), status().isCreated)
@@ -173,7 +148,7 @@ class UnityIntegrationTest(
         val updatedJson = makeGetRequest(mockMvc, "$unityEndpoint/public/$savedId", status().isOk)
         val updatedUnity = Json.decodeFromString<UnityFullDto>(updatedJson)
 
-        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val unitysInOverallRating = unityOverallFollowersQuickRepoImpl.findTop(-1)
         val unitysInWeeklyRating = unityWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -196,7 +171,7 @@ class UnityIntegrationTest(
     @Test
     fun deleteUnityById() {
 
-        val unityToSave = unityTestData
+        val unityToSave = unityBeTest
 
         val responseSavedUnity =
             makePostRequest(mockMvc, unityEndpoint, Json.encodeToString(unityToSave), status().isCreated)
@@ -207,7 +182,7 @@ class UnityIntegrationTest(
         val responseFindUnityJson = makeGetRequest(mockMvc, unityEndpoint, status().isOk)
         val responseFindUnity = Json.decodeFromString<List<UnityShortDto>>(responseFindUnityJson)
 
-        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val unitysInOverallRating = unityOverallFollowersQuickRepoImpl.findTop(-1)
         val unitysInWeeklyRating = unityWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -220,7 +195,7 @@ class UnityIntegrationTest(
 
     @Test
     fun saveMultipleUnitysAndFindAll() {
-        val unity1 = unityTestData
+        val unity1 = unityBeTest
 
         val unity2 = unity1.copy(
             name = "Unity2",
@@ -247,7 +222,7 @@ class UnityIntegrationTest(
         val responseUnitysJson = makeGetRequest(mockMvc, unityEndpoint, status().isOk)
         val responseUnitys = Json.decodeFromString<List<UnityShortDto>>(responseUnitysJson)
 
-        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val countryUnitysInQuickRepo = unityCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val unitysInOverallRating = unityOverallFollowersQuickRepoImpl.findTop(-1)
         val unitysInWeeklyRating = unityWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -270,7 +245,7 @@ class UnityIntegrationTest(
 
     @Test
     fun saveMultipleAndFindByName() {
-        val unity1 = unityTestData
+        val unity1 = unityBeTest
 
         val unity2 = unity1.copy(
             name = "Unity2",
@@ -322,7 +297,7 @@ class UnityIntegrationTest(
     @Test
     fun getArtistsOfUnityAndAddThemAndGetThemAgain() {
 
-        val unity1 = unityTestData
+        val unity1 = unityBeTest
 
         val unitySavedJson = makePostRequest(mockMvc, unityEndpoint, Json.encodeToString(unity1), status().isCreated)
         val unitySavedId = Json.decodeFromString<UnityShortDto>(unitySavedJson).id
@@ -332,17 +307,7 @@ class UnityIntegrationTest(
 
         assertTrue(artistsOfUnity.isEmpty())
 
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Amelie Lens",
-            imageLink = "image",
-            soundcloudUsername = "soundcloud",
-            instagramUsername = "instagram",
-            about = "About Amelie",
-            countryName = countryTestData.name,
-        )
-
-        val artist2 = artist1.copy(
+        val artist2 = artistBeTest.copy(
             name = "Artist2",
             imageLink = "image2",
             countryName = null,
@@ -351,7 +316,7 @@ class UnityIntegrationTest(
             soundcloudUsername = "soundcloud2",
         )
 
-        val artist3 = artist1.copy(
+        val artist3 = artistBeTest.copy(
             name = "Artist3",
             imageLink = "image3",
             countryName = null,
@@ -360,7 +325,7 @@ class UnityIntegrationTest(
             soundcloudUsername = "soundcloud3",
         )
 
-        val savedArtist1Json = makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist1), status().isCreated)
+        val savedArtist1Json = makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistBeTest), status().isCreated)
         val savedArtist2Json = makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist2), status().isCreated)
         val savedArtist3Json = makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artist3), status().isCreated)
 
@@ -378,9 +343,9 @@ class UnityIntegrationTest(
             assert(setOf(savedArtist1Id, savedArtist2Id, savedArtist3Id).contains(it.id))
             when (it.id) {
                 savedArtist1Id -> {
-                    assertEquals(artist1.name, it.name)
-                    assertEquals(artist1.imageLink, it.imageLink)
-                    assertEquals(artist1.countryName, it.country!!.name)
+                    assertEquals(artistBeTest.name, it.name)
+                    assertEquals(artistBeTest.imageLink, it.imageLink)
+                    assertEquals(artistBeTest.countryName, it.country!!.name)
                     assertEquals(0, it.overallFollowers)
                     assertEquals(0, it.weeklyFollowers)
                 }
@@ -405,7 +370,7 @@ class UnityIntegrationTest(
     @Test
     fun addArtistsToUnityAndUpdateArtistsOfUnityAndGetThem() {
 
-        val unity1 = unityTestData
+        val unity1 = unityBeTest
 
         val unitySavedJson = makePostRequest(mockMvc, unityEndpoint, Json.encodeToString(unity1), status().isCreated)
         val unitySavedId = Json.decodeFromString<UnityShortDto>(unitySavedJson).id
@@ -417,7 +382,7 @@ class UnityIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist2 = artist1.copy(

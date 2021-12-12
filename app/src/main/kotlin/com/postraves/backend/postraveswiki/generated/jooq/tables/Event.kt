@@ -7,7 +7,7 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.EVENT_EVENT_NAME_KEY
+import jooq.indexes.EVENT_EVENT_NAME_INDEX
 import jooq.keys.EVENT_PKEY
 import jooq.keys.EVENT__EVENT_EVENT_PLACE_ID_FKEY
 import jooq.tables.records.EventRecord
@@ -17,6 +17,7 @@ import kotlin.collections.List
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Identity
+import org.jooq.Index
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row11
@@ -139,9 +140,10 @@ open class Event(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, EventRecord>): this(Internal.createPathAlias(child, key), child, key, EVENT, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIndexes(): List<Index> = listOf(EVENT_EVENT_NAME_INDEX)
     override fun getIdentity(): Identity<EventRecord, Long?> = super.getIdentity() as Identity<EventRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<EventRecord> = EVENT_PKEY
-    override fun getKeys(): List<UniqueKey<EventRecord>> = listOf(EVENT_PKEY, EVENT_EVENT_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<EventRecord>> = listOf(EVENT_PKEY)
     override fun getReferences(): List<ForeignKey<EventRecord, *>> = listOf(EVENT__EVENT_EVENT_PLACE_ID_FKEY)
 
     private lateinit var _place: Place

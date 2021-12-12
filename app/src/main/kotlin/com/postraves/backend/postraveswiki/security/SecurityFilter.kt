@@ -31,7 +31,7 @@ class SecurityFilter(
     private val myUserProfileService: MyUserProfileService
 ) : OncePerRequestFilter() {
     companion object {
-        private const val ROLE_PREFIX = "ROLE_"
+        const val ROLE_PREFIX = "ROLE_"
     }
 
     @Throws(ServletException::class, IOException::class)
@@ -91,7 +91,7 @@ class SecurityFilter(
         }
     }
 
-    private fun convertFirebaseTokenToMyBackendUser(decodedToken: FirebaseToken): UserFullDto? {
+    fun convertFirebaseTokenToMyBackendUser(decodedToken: FirebaseToken): UserFullDto? {
         return myUserProfileService.getUserByAuthUidForSecurityService(decodedToken.uid)
     }
 

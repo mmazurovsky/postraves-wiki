@@ -45,7 +45,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.2.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
     implementation("io.github.microutils:kotlin-logging:1.12.5")
-    testImplementation("org.mockito:mockito-inline:3.11.2")
+//    testImplementation("org.mockito:mockito-inline:3.11.2")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 

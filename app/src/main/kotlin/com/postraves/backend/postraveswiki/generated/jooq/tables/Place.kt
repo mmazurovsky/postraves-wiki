@@ -7,8 +7,8 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
+import jooq.indexes.PLACE_PLACE_NAME_INDEX
 import jooq.keys.PLACE_PKEY
-import jooq.keys.PLACE_PLACE_NAME_KEY
 import jooq.keys.PLACE__PLACE_PLACE_CITY_NAME_FKEY
 import jooq.tables.records.PlaceRecord
 
@@ -17,6 +17,7 @@ import kotlin.collections.List
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Identity
+import org.jooq.Index
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row13
@@ -149,9 +150,10 @@ open class Place(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlaceRecord>): this(Internal.createPathAlias(child, key), child, key, PLACE, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIndexes(): List<Index> = listOf(PLACE_PLACE_NAME_INDEX)
     override fun getIdentity(): Identity<PlaceRecord, Long?> = super.getIdentity() as Identity<PlaceRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<PlaceRecord> = PLACE_PKEY
-    override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY, PLACE_PLACE_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<PlaceRecord>> = listOf(PLACE_PKEY)
     override fun getReferences(): List<ForeignKey<PlaceRecord, *>> = listOf(PLACE__PLACE_PLACE_CITY_NAME_FKEY)
 
     private lateinit var _city: City

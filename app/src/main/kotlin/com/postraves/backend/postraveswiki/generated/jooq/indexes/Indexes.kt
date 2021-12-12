@@ -4,7 +4,11 @@
 package jooq.indexes
 
 
+import jooq.tables.Artist
+import jooq.tables.Event
 import jooq.tables.FlywaySchemaHistory
+import jooq.tables.Place
+import jooq.tables.Unity
 
 import org.jooq.Index
 import org.jooq.impl.DSL
@@ -16,4 +20,8 @@ import org.jooq.impl.Internal
 // INDEX definitions
 // -------------------------------------------------------------------------
 
+val ARTIST_ARTIST_NAME_INDEX: Index = Internal.createIndex(DSL.name("artist_artist_name_index"), Artist.ARTIST, arrayOf(Artist.ARTIST.ARTIST_NAME), false)
+val EVENT_EVENT_NAME_INDEX: Index = Internal.createIndex(DSL.name("event_event_name_index"), Event.EVENT, arrayOf(Event.EVENT.EVENT_NAME), false)
 val FLYWAY_SCHEMA_HISTORY_S_IDX: Index = Internal.createIndex(DSL.name("flyway_schema_history_s_idx"), FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, arrayOf(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS), false)
+val PLACE_PLACE_NAME_INDEX: Index = Internal.createIndex(DSL.name("place_place_name_index"), Place.PLACE, arrayOf(Place.PLACE.PLACE_NAME), false)
+val UNITY_UNITY_NAME_INDEX: Index = Internal.createIndex(DSL.name("unity_unity_name_index"), Unity.UNITY, arrayOf(Unity.UNITY.UNITY_NAME), false)

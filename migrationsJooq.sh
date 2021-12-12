@@ -2,4 +2,4 @@
 
 cd ./app
 gradle flywayMigrate
-gralde jooqGenerate
+gradle generateJooq

@@ -9,13 +9,28 @@ import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.reading.UserFullDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
+import com.postraves.backend.postraveswiki.data.enum.UserProfileRole
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
+import com.postraves.backend.postraveswiki.security.SecurityFilter
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
+import com.postraves.backend.postraveswiki.utils.Components
+import com.postraves.backend.postraveswiki.utils.Endpoints.artistEndpoint
+import com.postraves.backend.postraveswiki.utils.Endpoints.cityEndpoint
+import com.postraves.backend.postraveswiki.utils.Endpoints.countryEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication.authAdminTest
 import com.postraves.backend.postraveswiki.utils.Requests
+import com.postraves.backend.postraveswiki.utils.TestEntity.artistBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityMoscowTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityTorontoTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryCaTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryRuTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.userTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -27,6 +42,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -62,117 +80,33 @@ class ArtistRatingIntegrationTest(
     @MockBean
     private lateinit var securityService: SecurityService
 
-    private val artistEndpoint: String = "/artist"
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-    private val redisServer = RedisServer(customRedisProvider, redisPort)
-
-
+    private val redisServer = RedisServer(Components.customRedisProvider, redisPort)
     init {
         redisServer.start()
     }
-
-    private val testUser = UserFullDto(
-        id = 69,
-        name = "abc",
-        currentCity = CityDto(
-            name = "Bruges",
-            localName = "Bruges",
-            timeOffset = 1,
-            country = CountryDto(
-                name = "BE",
-                localName = "Belgium",
-                emojiCode = "",
-                phoneCode = "",
-            )
-        ),
-        about = null,
-        imageLink = null,
-        instagramUsername = null,
-        telegramUsername = null,
-    )
-
-    private val city1 = CityWriteDto(
-        name = "Bruges",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "BE",
-        timeOffset = 0
-    )
-
-    private val city2 = CityWriteDto(
-        name = "Moscow",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "RU",
-        timeOffset = 0
-    )
-
-    private val city3 = CityWriteDto(
-        name = "Toronto",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "CA",
-        timeOffset = 0
-    )
-
+    
     @BeforeAll
     private fun createCountryAndCityForAssociations() {
 
-        val country1 = CountryWriteDto(
-            name = "BE",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            phoneCode = "+7",
-        )
+        SecurityContextHolder.getContext().authentication = authAdminTest
+        
+        val countryJson1 = Json.encodeToString(countryBeTest)
+        val countryJson2 = Json.encodeToString(countryRuTest)
+        val countryJson3 = Json.encodeToString(countryCaTest)
+        val cityJson1 = Json.encodeToString(cityBrugesTest)
+        val cityJson2 = Json.encodeToString(cityMoscowTest)
+        val cityJson3 = Json.encodeToString(cityTorontoTest)
 
-        val country2 = CountryWriteDto(
-            name = "RU",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            phoneCode = "+9",
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson1, MockMvcResultMatchers.status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson2, MockMvcResultMatchers.status().isCreated)
+        Requests.makePostRequest(mockMvc, countryEndpoint, countryJson3, MockMvcResultMatchers.status().isCreated)
+        Requests.makePostRequest(mockMvc, cityEndpoint, cityJson1, MockMvcResultMatchers.status().isCreated)
+        Requests.makePostRequest(mockMvc, cityEndpoint, cityJson2, MockMvcResultMatchers.status().isCreated)
+        Requests.makePostRequest(mockMvc, cityEndpoint, cityJson3, MockMvcResultMatchers.status().isCreated)
 
-            )
-
-        val country3 = CountryWriteDto(
-            name = "CA",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            phoneCode = "+10",
-
-            )
-
-        val countryJson1 = Json.encodeToString(country1)
-        val countryJson2 = Json.encodeToString(country2)
-        val countryJson3 = Json.encodeToString(country3)
-        val cityJson1 = Json.encodeToString(city1)
-        val cityJson2 = Json.encodeToString(city2)
-        val cityJson3 = Json.encodeToString(city3)
-
-        Requests.makePostRequest(mockMvc, "/country", countryJson1, MockMvcResultMatchers.status().isCreated)
-        Requests.makePostRequest(mockMvc, "/country", countryJson2, MockMvcResultMatchers.status().isCreated)
-        Requests.makePostRequest(mockMvc, "/country", countryJson3, MockMvcResultMatchers.status().isCreated)
-        Requests.makePostRequest(mockMvc, "/city", cityJson1, MockMvcResultMatchers.status().isCreated)
-        Requests.makePostRequest(mockMvc, "/city", cityJson2, MockMvcResultMatchers.status().isCreated)
-        Requests.makePostRequest(mockMvc, "/city", cityJson3, MockMvcResultMatchers.status().isCreated)
-
-        artistService.removeBestOfTheWeekByCityInCountry(city1.name)
-        artistService.removeBestOfTheWeekByCityInCountry(city2.name)
-        artistService.removeBestOfTheWeekByCityInCountry(city3.name)
+        artistService.removeBestOfTheWeekByCityInCountry(cityBrugesTest.name)
+        artistService.removeBestOfTheWeekByCityInCountry(cityMoscowTest.name)
+        artistService.removeBestOfTheWeekByCityInCountry(cityTorontoTest.name)
     }
 
     @AfterEach
@@ -180,9 +114,9 @@ class ArtistRatingIntegrationTest(
 
     @AfterAll
     private fun cleanUp() {
-        artistService.removeBestOfTheWeekByCityInCountry(city1.name)
-        artistService.removeBestOfTheWeekByCityInCountry(city2.name)
-        artistService.removeBestOfTheWeekByCityInCountry(city3.name)
+        artistService.removeBestOfTheWeekByCityInCountry(cityBrugesTest.name)
+        artistService.removeBestOfTheWeekByCityInCountry(cityMoscowTest.name)
+        artistService.removeBestOfTheWeekByCityInCountry(cityTorontoTest.name)
 
         countryService.findAll().forEach { countryService.deleteByName(it.name) }
         redisServer.stop()
@@ -191,48 +125,13 @@ class ArtistRatingIntegrationTest(
     @Test
     @Order(1)
     fun saveArtistsAndIncrementFollowersAndFindOverallRating() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(userTest).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Artist1",
-            imageLink = "image1",
-            countryName = "BE",
-            about = "About1",
-            instagramUsername = "instagram1",
-            soundcloudUsername = "soundcloud1",
-        )
-
-        val artist2 = ArtistWriteDto(
-            id = null,
-            name = "Artist2",
-            imageLink = "image2",
-            countryName = "BE",
-            about = "About2",
-            instagramUsername = "instagram2",
-            soundcloudUsername = "soundcloud2",
-        )
-
-        val artist3 = ArtistWriteDto(
-            id = null,
-            name = "Artist3",
-            imageLink = "image3",
-            countryName = "BE",
-            about = "About3",
-            instagramUsername = "instagram3",
-            soundcloudUsername = "soundcloud3",
-        )
-
-        val artist4 = ArtistWriteDto(
-            id = null,
-            name = "Artist4",
-            imageLink = "image4",
-            countryName = "BE",
-            about = "About4",
-            instagramUsername = "instagram4",
-            soundcloudUsername = "soundcloud4",
-        )
+        val artist1 = artistBeTest
+        val artist2 = artist1.copy(name = "Artist2")
+        val artist3 = artist1.copy(name = "Artist3")
+        val artist4 = artist1.copy(name = "Artist4")
 
         val response1 = Requests.makePostRequest(
             mockMvc,
@@ -312,48 +211,13 @@ class ArtistRatingIntegrationTest(
     @Test
     @Order(2)
     fun saveArtistsAndIncrementFollowersAndFindWeeklyRating() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(userTest).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Artist1",
-            imageLink = "image1",
-            countryName = "BE",
-            about = "About1",
-            instagramUsername = "instagram1",
-            soundcloudUsername = "soundcloud1",
-        )
-
-        val artist2 = ArtistWriteDto(
-            id = null,
-            name = "Artist2",
-            imageLink = "image2",
-            countryName = "BE",
-            about = "About2",
-            instagramUsername = "instagram2",
-            soundcloudUsername = "soundcloud2",
-        )
-
-        val artist3 = ArtistWriteDto(
-            id = null,
-            name = "Artist3",
-            imageLink = "image3",
-            countryName = "BE",
-            about = "About3",
-            instagramUsername = "instagram3",
-            soundcloudUsername = "soundcloud3",
-        )
-
-        val artist4 = ArtistWriteDto(
-            id = null,
-            name = "Artist4",
-            imageLink = "image4",
-            countryName = "BE",
-            about = "About4",
-            instagramUsername = "instagram4",
-            soundcloudUsername = "soundcloud4",
-        )
+        val artist1 = artistBeTest
+        val artist2 = artist1.copy(name = "Artist2")
+        val artist3 = artist1.copy(name = "Artist3")
+        val artist4 = artist1.copy(name = "Artist4")
 
         val response1 = Requests.makePostRequest(
             mockMvc,
@@ -439,49 +303,13 @@ class ArtistRatingIntegrationTest(
     @Test
     @Order(3)
     fun saveArtistsAndIncrementFollowersAndChangeCountriesOfArtistsAndGetOverallRating() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(userTest).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Artist1",
-            imageLink = "image1",
-            countryName = "BE",
-            about = "About1",
-            instagramUsername = "instagram1",
-            soundcloudUsername = "soundcloud1",
-        )
-
-        val artist2 = ArtistWriteDto(
-            id = null,
-            name = "Artist2",
-            imageLink = "image2",
-            countryName = "BE",
-            about = "About2",
-            instagramUsername = "instagram2",
-            soundcloudUsername = "soundcloud2",
-        )
-
-        val artist3 = ArtistWriteDto(
-            id = null,
-            name = "Artist3",
-            imageLink = "image3",
-            countryName = "BE",
-            about = "About3",
-            instagramUsername = "instagram3",
-            soundcloudUsername = "soundcloud3",
-        )
-
-        val artist4 = ArtistWriteDto(
-            id = null,
-            name = "Artist4",
-            imageLink = "image4",
-            countryName = "BE",
-            about = "About4",
-            instagramUsername = "instagram4",
-            soundcloudUsername = "soundcloud4",
-        )
+        val artist1 = artistBeTest
+        val artist2 = artist1.copy(name = "Artist2")
+        val artist3 = artist1.copy(name = "Artist3")
+        val artist4 = artist1.copy(name = "Artist4")
 
         val response1 = Requests.makePostRequest(
             mockMvc,
@@ -632,48 +460,13 @@ class ArtistRatingIntegrationTest(
     @Test
     @Order(4)
     fun saveArtistsAndIncrementFollowersAndChangeCountriesOfArtistsAndGetWeeklyRating() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(userTest).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Artist1",
-            imageLink = "image1",
-            countryName = "BE",
-            about = "About1",
-            instagramUsername = "instagram1",
-            soundcloudUsername = "soundcloud1",
-        )
-
-        val artist2 = ArtistWriteDto(
-            id = null,
-            name = "Artist2",
-            imageLink = "image2",
-            countryName = "BE",
-            about = "About2",
-            instagramUsername = "instagram2",
-            soundcloudUsername = "soundcloud2",
-        )
-
-        val artist3 = ArtistWriteDto(
-            id = null,
-            name = "Artist3",
-            imageLink = "image3",
-            countryName = "BE",
-            about = "About3",
-            instagramUsername = "instagram3",
-            soundcloudUsername = "soundcloud3",
-        )
-
-        val artist4 = ArtistWriteDto(
-            id = null,
-            name = "Artist4",
-            imageLink = "image4",
-            countryName = "BE",
-            about = "About4",
-            instagramUsername = "instagram4",
-            soundcloudUsername = "soundcloud4",
-        )
+        val artist1 = artistBeTest
+        val artist2 = artist1.copy(name = "Artist2")
+        val artist3 = artist1.copy(name = "Artist3")
+        val artist4 = artist1.copy(name = "Artist4")
 
         val response1 = Requests.makePostRequest(
             mockMvc,
@@ -841,48 +634,13 @@ class ArtistRatingIntegrationTest(
     @Test
     @Order(6)
     fun saveArtistsAndSetWeeklyBestAndGetWeeklyBestAndSetAgainAndGetAgain() {
-        Mockito.doReturn(testUser).`when`(securityService).user
+        Mockito.doReturn(userTest).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val artist1 = ArtistWriteDto(
-            id = null,
-            name = "Artist1",
-            imageLink = "image1",
-            countryName = "BE",
-            about = "About1",
-            instagramUsername = "instagram1",
-            soundcloudUsername = "soundcloud1",
-        )
-
-        val artist2 = ArtistWriteDto(
-            id = null,
-            name = "Artist2",
-            imageLink = "image2",
-            countryName = "BE",
-            about = "About2",
-            instagramUsername = "instagram2",
-            soundcloudUsername = "soundcloud2",
-        )
-
-        val artist3 = ArtistWriteDto(
-            id = null,
-            name = "Artist3",
-            imageLink = "image3",
-            countryName = "BE",
-            about = "About3",
-            instagramUsername = "instagram3",
-            soundcloudUsername = "soundcloud3",
-        )
-
-        val artist4 = ArtistWriteDto(
-            id = null,
-            name = "Artist4",
-            imageLink = "image4",
-            countryName = "BE",
-            about = "About4",
-            instagramUsername = "instagram4",
-            soundcloudUsername = "soundcloud4",
-        )
+        val artist1 = artistBeTest
+        val artist2 = artist1.copy(name = "Artist2")
+        val artist3 = artist1.copy(name = "Artist3")
+        val artist4 = artist1.copy(name = "Artist4")
 
         val response1 = Requests.makePostRequest(
             mockMvc,

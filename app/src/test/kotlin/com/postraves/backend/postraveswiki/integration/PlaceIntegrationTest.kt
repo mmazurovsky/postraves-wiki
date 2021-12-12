@@ -1,9 +1,7 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
-import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
-import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceFullDto
 import com.postraves.backend.postraveswiki.data.dto.reading.PlaceShortDto
 import com.postraves.backend.postraveswiki.data.dto.reading.SceneDto
@@ -14,11 +12,18 @@ import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
-import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.Endpoints.cityEndpoint
+import com.postraves.backend.postraveswiki.utils.Endpoints.countryEndpoint
+import com.postraves.backend.postraveswiki.utils.Endpoints.placeEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePutRequest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.placeBrugesTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -28,13 +33,11 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
-import redis.embedded.util.Architecture
-import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -62,68 +65,27 @@ class PlaceIntegrationTest(
     private val placeWeeklyFollowersQuickRepoImpl: FollowersQuickRepo,
 ) : AbstractPostgresTest() {
 
-    private val placeEndpoint: String = "/place"
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
-
     init {
         redisServer.start()
     }
 
-    private val countryTest1 = CountryWriteDto(
-        name = "BE",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
+    private val countryTest2 = countryBeTest.copy(
+        name = "RU",
         phoneCode = "+7",
         
     )
 
-    private val countryTest2 = countryTest1.copy(
-        name = "RU",
-        phoneCode = "+9",
-        
-    )
-
-    private val cityTest1 = CityWriteDto(
-        name = "Bruges",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "BE",
-        timeOffset = -3
-    )
-
-    private val cityTest2 = cityTest1.copy(
+    private val cityTest2 = cityBrugesTest.copy(
         name = "Antwerp",
         countryName = "BE",
         timeOffset = -3
     )
 
-    private val cityTest3 = cityTest1.copy(
+    private val cityTest3 = cityBrugesTest.copy(
         name = "Moscow",
         countryName = "RU",
         timeOffset = 0
-    )
-
-    private val placeTest = PlaceWriteDto(
-        id = null,
-        name = "Club1",
-        imageLink = "image1",
-        soundcloudUsername = "soundcloud1",
-        instagramUsername = "instagram1",
-        about = "About club1",
-        streetAddress = "Street address1",
-        coordinate = CoordinateDto(
-            latitude = 0.0,
-            longitude = 0.0
-        ),
-        cityName = "Bruges"
     )
 
     private val sceneTest = SceneDto(
@@ -135,11 +97,13 @@ class PlaceIntegrationTest(
 
     @BeforeAll
     private fun createCountryForAssociations() {
-        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTest1), status().isCreated)
-        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTest2), status().isCreated)
-        makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
-        makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest2), status().isCreated)
-        makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest3), status().isCreated)
+        SecurityContextHolder.getContext().authentication = MockAuthentication.authAdminTest
+
+        makePostRequest(mockMvc, countryEndpoint, Json.encodeToString(countryBeTest), status().isCreated)
+        makePostRequest(mockMvc, countryEndpoint, Json.encodeToString(countryTest2), status().isCreated)
+        makePostRequest(mockMvc, cityEndpoint, Json.encodeToString(cityBrugesTest), status().isCreated)
+        makePostRequest(mockMvc, cityEndpoint, Json.encodeToString(cityTest2), status().isCreated)
+        makePostRequest(mockMvc, cityEndpoint, Json.encodeToString(cityTest3), status().isCreated)
     }
 
     @AfterEach
@@ -155,7 +119,7 @@ class PlaceIntegrationTest(
     @Test
     fun savePlaceWithCityAssociation() {
 
-        val placeToSave = placeTest
+        val placeToSave = placeBrugesTest
 
         val placeToSaveResponse =
             makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(placeToSave), status().isCreated)
@@ -164,7 +128,7 @@ class PlaceIntegrationTest(
         val placeSavedJson = makeGetRequest(mockMvc, "$placeEndpoint/public/$placeId", status().isOk)
         val placeSaved = Json.decodeFromString<PlaceFullDto>(placeSavedJson)
 
-        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest1.name)
+        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val placesInOverallRating = placeOverallFollowersQuickRepoImpl.findTop(-1)
         val placesInWeeklyRating = placeWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -177,8 +141,8 @@ class PlaceIntegrationTest(
         assertEquals(placeToSave.instagramUsername, placeSaved.instagramUsername)
         assertEquals(placeToSave.about, placeSaved.about)
         assertEquals(placeToSave.cityName, placeSaved.city.name)
-        assertEquals(countryTest1.name, placeSaved.city.country.name)
-        assertEquals(countryTest1.phoneCode, placeSaved.city.country.phoneCode)
+        assertEquals(countryBeTest.name, placeSaved.city.country.name)
+        assertEquals(countryBeTest.phoneCode, placeSaved.city.country.phoneCode)
         assertNotNull(placeSaved.city.country.emojiCode)
 
         assert(placesInCountryQuickRepo.contains(placeSaved.id))
@@ -189,7 +153,7 @@ class PlaceIntegrationTest(
     @Test
     fun updatePlaceAndCityAssociation() {
 
-        val placeToSave = placeTest
+        val placeToSave = placeBrugesTest
 
         val responseSavedPlace =
             makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(placeToSave), status().isCreated)
@@ -210,7 +174,7 @@ class PlaceIntegrationTest(
         val updatedJson = makeGetRequest(mockMvc, "$placeEndpoint/public/$savedId", status().isOk)
         val updatedPlace = Json.decodeFromString<PlaceFullDto>(updatedJson)
 
-        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest1.name)
+        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val placesInOverallRating = placeOverallFollowersQuickRepoImpl.findTop(-1)
         val placesInWeeklyRating = placeWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -223,8 +187,8 @@ class PlaceIntegrationTest(
         assertEquals(placeToUpdate.instagramUsername, updatedPlace.instagramUsername)
         assertEquals(placeToUpdate.about, updatedPlace.about)
         assertEquals(cityTest2.name, updatedPlace.city.name)
-        assertEquals(countryTest1.name, updatedPlace.city.country.name)
-        assertEquals(countryTest1.phoneCode, updatedPlace.city.country.phoneCode)
+        assertEquals(countryBeTest.name, updatedPlace.city.country.name)
+        assertEquals(countryBeTest.phoneCode, updatedPlace.city.country.phoneCode)
         assertNotNull(updatedPlace.city.country.emojiCode)
 
         assert(placesInCountryQuickRepo.contains(updatedPlace.id))
@@ -235,7 +199,7 @@ class PlaceIntegrationTest(
     @Test
     fun deletePlaceById() {
 
-        val placeToSave = placeTest
+        val placeToSave = placeBrugesTest
 
         val responseSaved =
             makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(placeToSave), status().isCreated)
@@ -246,7 +210,7 @@ class PlaceIntegrationTest(
         val responseFindAllPlacesJson = makeGetRequest(mockMvc, placeEndpoint, status().isOk)
         val responseFindAllPlaces = Json.decodeFromString<List<PlaceShortDto>>(responseFindAllPlacesJson)
 
-        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest1.name)
+        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val placesInOverallRating = placeOverallFollowersQuickRepoImpl.findTop(-1)
         val placesInWeeklyRating = placeWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -259,7 +223,7 @@ class PlaceIntegrationTest(
 
     @Test
     fun saveMultiplePlacesAndFindAll() {
-        val place1 = placeTest
+        val place1 = placeBrugesTest
 
         val place2 = place1.copy(
             name = "Place2",
@@ -286,7 +250,7 @@ class PlaceIntegrationTest(
         val responseAllPlacesJson = makeGetRequest(mockMvc, placeEndpoint, status().isOk)
         val responsePlaces = Json.decodeFromString<List<PlaceShortDto>>(responseAllPlacesJson)
 
-        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest1.name)
+        val placesInCountryQuickRepo = placeCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val placesInOverallRating = placeOverallFollowersQuickRepoImpl.findTop(-1)
         val placesInWeeklyRating = placeWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -309,7 +273,7 @@ class PlaceIntegrationTest(
 
     @Test
     fun saveMultipleAndFindByName() {
-        val place1 = placeTest
+        val place1 = placeBrugesTest
 
         val place2 = place1.copy(
             name = "Place2tis",
@@ -360,7 +324,7 @@ class PlaceIntegrationTest(
     // todo check update country to another one in redis repo
     @Test
     fun updateCityOfAnotherCountryForPlace() {
-        val placeToSave = placeTest
+        val placeToSave = placeBrugesTest
 
         val responseSavedPlace =
             makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(placeToSave), status().isCreated)
@@ -381,7 +345,7 @@ class PlaceIntegrationTest(
         val updatedJson = makeGetRequest(mockMvc, "$placeEndpoint/public/$savedId", status().isOk)
         val updatedPlace = Json.decodeFromString<PlaceFullDto>(updatedJson)
 
-        val placesInCountryQuickRepoCountry1 = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest1.name)
+        val placesInCountryQuickRepoCountry1 = placeCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val placesInCountryQuickRepoCountry2 = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest2.name)
         val placesInOverallRating = placeOverallFollowersQuickRepoImpl.findTop(-1)
         val placesInWeeklyRating = placeWeeklyFollowersQuickRepoImpl.findTop(-1)
@@ -404,7 +368,7 @@ class PlaceIntegrationTest(
         val responseFindAllPlaces = Json.decodeFromString<List<PlaceShortDto>>(responseFindAllPlacesJson)
         assertEquals(0, responseFindAllPlaces.size)
 
-        val placesInCountryQuickRepoCountry1 = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest1.name)
+        val placesInCountryQuickRepoCountry1 = placeCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val placesInCountryQuickRepoCountry2 = placeCountryQuickRepoImpl.getAllIdsByCountry(countryTest2.name)
         val placesInOverallRating = placeOverallFollowersQuickRepoImpl.findTop(-1)
         val placesInWeeklyRating = placeWeeklyFollowersQuickRepoImpl.findTop(-1)
@@ -417,7 +381,7 @@ class PlaceIntegrationTest(
 
     @Test
     fun savePlaceAndAddScenesToItAndGetAllScenesOfThePlace() {
-        val placeToSave = placeTest
+        val placeToSave = placeBrugesTest
 
         val placeToSaveResponse =
             makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(placeToSave), status().isCreated)
@@ -452,7 +416,7 @@ class PlaceIntegrationTest(
 
     @Test
     fun savePlaceAndAddScenesToItAndDeletePlaceAndGetAllScenes() {
-        val placeToSave = placeTest
+        val placeToSave = placeBrugesTest
 
         val placeToSaveResponse =
             makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(placeToSave), status().isCreated)
@@ -478,7 +442,7 @@ class PlaceIntegrationTest(
 
     @Test
     fun savePlaceAndAddScenesToItAndUpdateScenesAndGetScenes() {
-        val placeToSave = placeTest
+        val placeToSave = placeBrugesTest
 
         val placeToSaveResponse =
             makePostRequest(mockMvc, placeEndpoint, Json.encodeToString(placeToSave), status().isCreated)
