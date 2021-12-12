@@ -7,7 +7,7 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
-import jooq.keys.ARTIST_ARTIST_NAME_KEY
+import jooq.indexes.ARTIST_ARTIST_NAME_INDEX
 import jooq.keys.ARTIST_PKEY
 import jooq.keys.ARTIST__ARTIST_ARTIST_COUNTRY_NAME_FKEY
 import jooq.tables.records.ArtistRecord
@@ -17,6 +17,7 @@ import kotlin.collections.List
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Identity
+import org.jooq.Index
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row9
@@ -129,9 +130,10 @@ open class Artist(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, ArtistRecord>): this(Internal.createPathAlias(child, key), child, key, ARTIST, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIndexes(): List<Index> = listOf(ARTIST_ARTIST_NAME_INDEX)
     override fun getIdentity(): Identity<ArtistRecord, Long?> = super.getIdentity() as Identity<ArtistRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<ArtistRecord> = ARTIST_PKEY
-    override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY, ARTIST_ARTIST_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<ArtistRecord>> = listOf(ARTIST_PKEY)
     override fun getReferences(): List<ForeignKey<ArtistRecord, *>> = listOf(ARTIST__ARTIST_ARTIST_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country

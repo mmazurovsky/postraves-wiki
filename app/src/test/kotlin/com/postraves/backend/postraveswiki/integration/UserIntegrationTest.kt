@@ -1,11 +1,6 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
-import com.postraves.backend.postraveswiki.config.logger
-import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
-import com.postraves.backend.postraveswiki.data.dto.reading.ArtistShortDto
-import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
 import com.postraves.backend.postraveswiki.exception.FollowingException
 import com.postraves.backend.postraveswiki.repo.followable.MyUserProfileRepo
@@ -13,10 +8,14 @@ import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.*
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
-import com.postraves.backend.postraveswiki.utils.Requests
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
+import com.postraves.backend.postraveswiki.utils.MockAuthentication.createAuthByUser
+import com.postraves.backend.postraveswiki.utils.TestEntity.artistBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.userTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.userToSaveTest
 import org.junit.jupiter.api.*
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -25,13 +24,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
-import redis.embedded.util.Architecture
-import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -52,12 +48,7 @@ class UserIntegrationTest(
     private val redisPort: Int,
 ) : AbstractPostgresTest() {
 
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
-
     init {
         redisServer.start()
     }
@@ -73,30 +64,10 @@ class UserIntegrationTest(
 
     @BeforeAll
     private fun createCountryAndCityForAssociations() {
+        SecurityContextHolder.getContext().authentication = createAuthByUser(null)
 
-        val country1 = CountryWriteDto(
-            name = "BE",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            phoneCode = "+7",
-
-            )
-        val countryJson1 = Json.encodeToString(country1)
-        Requests.makePostRequest(mockMvc, "/country", countryJson1, MockMvcResultMatchers.status().isCreated)
-
-        val city = CityWriteDto(
-            name = "Bruges",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            countryName = "BE",
-            timeOffset = -3
-        )
-        val cityJson = Json.encodeToString(city)
-        Requests.makePostRequest(mockMvc, "/city", cityJson, MockMvcResultMatchers.status().isCreated)
+        countryService.save(countryBeTest)
+        cityService.save(cityBrugesTest)
     }
 
     @AfterEach
@@ -123,56 +94,24 @@ class UserIntegrationTest(
 
     @Test
     fun saveUserAndFindIt() {
-        val userToSave = UserWriteDto(
-            name = "Mika",
-            imageLink = null,
-            about = null,
-            instagramUsername = null,
-            telegramUsername = null,
-            currentCity = "Bruges"
-        )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
 
-        myUserProfileService.save(userToSave)
+        myUserProfileService.save(userToSaveTest)
         val savedUserFromMethodForSecurityService = myUserProfileService.getUserByAuthUidForSecurityService("abc")
 
-        assertEquals(userToSave.name, savedUserFromMethodForSecurityService?.name)
-        assertEquals(userToSave.currentCity, savedUserFromMethodForSecurityService?.currentCity?.name)
+        assertEquals(userToSaveTest.name, savedUserFromMethodForSecurityService?.name)
+        assertEquals(userToSaveTest.currentCity, savedUserFromMethodForSecurityService?.currentCity?.name)
     }
 
     @Test
     fun followArtistAndGetFollows() {
-        val userToSave = UserWriteDto(
-            name = "Mika",
-            imageLink = null,
-            about = null,
-            instagramUsername = null,
-            telegramUsername = null,
-            currentCity = "Bruges"
-        )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
-        val savedUserId = myUserProfileService.save(userToSave).id
+        val savedUserId = myUserProfileService.save(userToSaveTest).id
         Mockito.doReturn(savedUserId).`when`(myUserProfileService).getMyUserId()
-//        `when`(myUserProfileService.getMyUserId()).thenReturn(savedUserId)
 
-        val artistToSave = ArtistWriteDto(
-            id = null,
-            name = "Amelie Lens",
-            imageLink = "image",
-            soundcloudUsername = "soundcloud",
-            instagramUsername = "instagram",
-            about = "About Amelie",
-            countryName = "BE",
-        )
-        val artistIdRespJson = Requests.makePostRequest(
-            mockMvc,
-            "/artist",
-            Json.encodeToString(artistToSave),
-            MockMvcResultMatchers.status().isCreated
-        )
-        val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
+        val artistId = artistService.save(artistBeTest).id
 
         myUserProfileService.followArtist(artistId)
 
@@ -180,52 +119,29 @@ class UserIntegrationTest(
 
         assertEquals(1, followed.size)
         assertEquals(artistId, followed[0].id)
-        assertEquals(artistToSave.name, followed[0].name)
-        assertEquals(artistToSave.imageLink, followed[0].imageLink)
-        assertEquals(artistToSave.countryName, followed[0].country!!.name)
+        assertEquals(artistBeTest.name, followed[0].name)
+        assertEquals(artistBeTest.imageLink, followed[0].imageLink)
+        assertEquals(artistBeTest.countryName, followed[0].country!!.name)
         assertEquals(1, followed[0].overallFollowers)
         assertEquals(1, followed[0].weeklyFollowers)
     }
 
     @Test
     fun getIsFollowedAndFollowArtistAndAgainGetIsFollowed() {
-        val userToSave = UserWriteDto(
-            name = "Mika",
-            imageLink = null,
-            about = null,
-            instagramUsername = null,
-            telegramUsername = null,
-            currentCity = "Bruges"
-        )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
-        val savedUserId = myUserProfileService.save(userToSave).id
+        val savedUserId = myUserProfileService.save(userToSaveTest).id
         Mockito.doReturn(savedUserId).`when`(myUserProfileService).getMyUserId()
 //        `when`(myUserProfileService.getMyUserId()).thenReturn(savedUserId)
 
-        val artistToSave = ArtistWriteDto(
-            id = null,
-            name = "Amelie Lens",
-            imageLink = "image",
-            soundcloudUsername = "soundcloud",
-            instagramUsername = "instagram",
-            about = "About Amelie",
-            countryName = "BE",
-        )
-        val artistIdRespJson = Requests.makePostRequest(
-            mockMvc,
-            "/artist",
-            Json.encodeToString(artistToSave),
-            MockMvcResultMatchers.status().isCreated
-        )
-        val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
+        val artistId = artistService.save(artistBeTest).id
 
         val artistNotFollowed = artistService.findById(artistId)
 
         assertEquals(artistId, artistNotFollowed.id)
-        assertEquals(artistToSave.name, artistNotFollowed.name)
-        assertEquals(artistToSave.imageLink, artistNotFollowed.imageLink)
-        assertEquals(artistToSave.countryName, artistNotFollowed.country!!.name)
+        assertEquals(artistBeTest.name, artistNotFollowed.name)
+        assertEquals(artistBeTest.imageLink, artistNotFollowed.imageLink)
+        assertEquals(artistBeTest.countryName, artistNotFollowed.country!!.name)
         assertEquals(false, artistNotFollowed.isFollowed)
         assertEquals(0, artistNotFollowed.overallFollowers)
         assertEquals(0, artistNotFollowed.weeklyFollowers)
@@ -235,9 +151,9 @@ class UserIntegrationTest(
         val artistFollowed = artistService.findById(artistId)
 
         assertEquals(artistId, artistFollowed.id)
-        assertEquals(artistToSave.name, artistFollowed.name)
-        assertEquals(artistToSave.imageLink, artistFollowed.imageLink)
-        assertEquals(artistToSave.countryName, artistFollowed.country!!.name)
+        assertEquals(artistBeTest.name, artistFollowed.name)
+        assertEquals(artistBeTest.imageLink, artistFollowed.imageLink)
+        assertEquals(artistBeTest.countryName, artistFollowed.country!!.name)
         assertEquals(true, artistFollowed.isFollowed)
         assertEquals(1, artistFollowed.overallFollowers)
         assertEquals(1, artistFollowed.weeklyFollowers)
@@ -245,35 +161,12 @@ class UserIntegrationTest(
 
     @Test
     fun tryToFollowAndUnfollowSameArtistMultipleTimes() {
-        val userToSave = UserWriteDto(
-            name = "Mika",
-            imageLink = null,
-            about = null,
-            instagramUsername = null,
-            telegramUsername = null,
-            currentCity = "Bruges"
-        )
 
         `when`(securityService.firebaseAuthUid).thenReturn("abc")
-        val savedUserId = myUserProfileService.save(userToSave).id
+        val savedUserId = myUserProfileService.save(userToSaveTest).id
         Mockito.doReturn(savedUserId).`when`(myUserProfileService).getMyUserId()
 
-        val artistToSave = ArtistWriteDto(
-            id = null,
-            name = "Amelie Lens",
-            imageLink = "image",
-            soundcloudUsername = "soundcloud",
-            instagramUsername = "instagram",
-            about = "About Amelie",
-            countryName = "BE",
-        )
-        val artistIdRespJson = Requests.makePostRequest(
-            mockMvc,
-            "/artist",
-            Json.encodeToString(artistToSave),
-            MockMvcResultMatchers.status().isCreated
-        )
-        val artistId = Json.decodeFromString<ArtistShortDto>(artistIdRespJson).id
+        val artistId = artistService.save(artistBeTest).id
 
         val isFollowed1 = myUserProfileRepo.checkArtistIsFollowed(savedUserId, artistId)
         myUserProfileService.followArtist(artistId)

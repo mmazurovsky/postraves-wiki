@@ -7,8 +7,8 @@ package jooq.tables
 import java.time.OffsetDateTime
 
 import jooq.Public
+import jooq.indexes.UNITY_UNITY_NAME_INDEX
 import jooq.keys.UNITY_PKEY
-import jooq.keys.UNITY_UNITY_NAME_KEY
 import jooq.keys.UNITY__UNITY_UNITY_COUNTRY_NAME_FKEY
 import jooq.tables.records.UnityRecord
 
@@ -17,6 +17,7 @@ import kotlin.collections.List
 import org.jooq.Field
 import org.jooq.ForeignKey
 import org.jooq.Identity
+import org.jooq.Index
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Row10
@@ -134,9 +135,10 @@ open class Unity(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, UnityRecord>): this(Internal.createPathAlias(child, key), child, key, UNITY, null)
     override fun getSchema(): Schema = Public.PUBLIC
+    override fun getIndexes(): List<Index> = listOf(UNITY_UNITY_NAME_INDEX)
     override fun getIdentity(): Identity<UnityRecord, Long?> = super.getIdentity() as Identity<UnityRecord, Long?>
     override fun getPrimaryKey(): UniqueKey<UnityRecord> = UNITY_PKEY
-    override fun getKeys(): List<UniqueKey<UnityRecord>> = listOf(UNITY_PKEY, UNITY_UNITY_NAME_KEY)
+    override fun getKeys(): List<UniqueKey<UnityRecord>> = listOf(UNITY_PKEY)
     override fun getReferences(): List<ForeignKey<UnityRecord, *>> = listOf(UNITY__UNITY_UNITY_COUNTRY_NAME_FKEY)
 
     private lateinit var _country: Country

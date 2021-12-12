@@ -1,26 +1,31 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
-import com.postraves.backend.postraveswiki.config.logger
 import com.postraves.backend.postraveswiki.data.dto.reading.*
-import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.ArtistWriteDto
-import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UnityWriteDto
 import com.postraves.backend.postraveswiki.data.dto.writing.UserWriteDto
+import com.postraves.backend.postraveswiki.data.enum.UserProfileRole
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.security.SecurityService
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.MyUserProfileService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.Endpoints.artistEndpoint
+import com.postraves.backend.postraveswiki.utils.Endpoints.unityEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePutRequest
+import com.postraves.backend.postraveswiki.utils.TestEntity.artistBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.unityBeTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -33,13 +38,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
-import redis.embedded.util.Architecture
-import redis.embedded.util.OS
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -85,59 +88,11 @@ class FollowingIntegrationTest(
     @MockBean
     private lateinit var securityService: SecurityService
 
-    private val artistEndpoint: String = "/artist"
-    private val unityEndpoint: String = "/unity"
-
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
     }
-
-    private val countryTestData = CountryWriteDto(
-        name = "BE",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        phoneCode = "+7",
-
-        )
-
-    private val city = CityWriteDto(
-        name = "Bruges",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "BE",
-        timeOffset = -3
-    )
-
-    private val artistTestData = ArtistWriteDto(
-        id = null,
-        name = "Amelie Lens",
-        imageLink = "image",
-        soundcloudUsername = "soundcloud",
-        instagramUsername = "instagram",
-        about = "About Amelie",
-        countryName = countryTestData.name,
-    )
-
-    private val unityTestData = UnityWriteDto(
-        id = null,
-        name = "Unity 1",
-        imageLink = "image 1",
-        soundcloudUsername = "soundcloud 1",
-        instagramUsername = "instagram 1",
-        bandcampUsername = "bandcamp 1",
-        about = "About 1",
-        countryName = countryTestData.name,
-    )
 
     private val userToSave = UserWriteDto(
         name = "Mika",
@@ -166,16 +121,19 @@ class FollowingIntegrationTest(
         imageLink = null,
         instagramUsername = null,
         telegramUsername = null,
+        role = UserProfileRole.USER,
     )
 
     @BeforeAll
     private fun prepare() {
 
+        SecurityContextHolder.getContext().authentication = MockAuthentication.authAdminTest
+
         Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
-        makePostRequest(mockMvc, "/city", Json.encodeToString(city), status().isCreated)
+        makePostRequest(mockMvc, "/country", Json.encodeToString(countryBeTest), status().isCreated)
+        makePostRequest(mockMvc, "/city", Json.encodeToString(cityBrugesTest), status().isCreated)
         val userJson =
             makePostRequest(mockMvc, "/user/public/myProfile", Json.encodeToString(userToSave), status().isCreated)
         val userSaved = Json.decodeFromString<UserShortDto>(userJson)
@@ -203,7 +161,7 @@ class FollowingIntegrationTest(
         Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val artistToSaveWithIdThatCanBeSameAsUsersIdIfThisArtistIsFirstToSaveInDb = artistTestData
+        val artistToSaveWithIdThatCanBeSameAsUsersIdIfThisArtistIsFirstToSaveInDb = artistBeTest
 
         val artistIdRespJsonFirstId =
             makePostRequest(
@@ -214,7 +172,7 @@ class FollowingIntegrationTest(
             )
         val artistIdFirstId = Json.decodeFromString<ArtistShortDto>(artistIdRespJsonFirstId).id
 
-        val artistToSave = artistTestData.copy(name = "AnotherArtist")
+        val artistToSave = artistBeTest.copy(name = "AnotherArtist")
 
         val artistIdRespJson =
             makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)
@@ -281,7 +239,7 @@ class FollowingIntegrationTest(
         Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val unity1 = unityTestData
+        val unity1 = unityBeTest
 
         val unitySavedJson = makePostRequest(mockMvc, unityEndpoint, Json.encodeToString(unity1), status().isCreated)
         val unitySavedId = Json.decodeFromString<UnityShortDto>(unitySavedJson).id
@@ -293,7 +251,7 @@ class FollowingIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist2 = artist1.copy(
@@ -363,7 +321,7 @@ class FollowingIntegrationTest(
         Mockito.doReturn(savedUserMimic).`when`(securityService).user
         Mockito.doReturn("abc").`when`(securityService).firebaseAuthUid
 
-        val artistToSave = artistTestData
+        val artistToSave = artistBeTest
 
         val artistIdRespJson =
             makePostRequest(mockMvc, artistEndpoint, Json.encodeToString(artistToSave), status().isCreated)

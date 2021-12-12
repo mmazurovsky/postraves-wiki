@@ -6,18 +6,20 @@ import com.postraves.backend.postraveswiki.data.dto.reading.CountryDto
 import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.Endpoints.countryEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
 import com.postraves.backend.postraveswiki.utils.Requests
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -39,27 +41,17 @@ class CountryIntegrationTest(
     private val mockMvc: MockMvc,
     @Value("\${spring.redis.port}")
     private val redisPort: Int,
-    ) : AbstractPostgresTest() {
+) : AbstractPostgresTest() {
 
-    private val countryEndpoint: String = "/country"
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
-
-    private val countryTestData = CountryWriteDto(
-        name = "BE",
-        nameRu = "NameRu",
-        nameEn = "NameEn",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        phoneCode = "+7",
-        
-    )
 
     init {
         redisServer.start()
+    }
+
+    @BeforeAll
+    private fun initAuth() {
+        SecurityContextHolder.getContext().setAuthentication(MockAuthentication.authAdminTest)
     }
 
     @AfterEach
@@ -74,12 +66,12 @@ class CountryIntegrationTest(
     @Test
     fun saveCountry() {
 
-        val countryToSave = countryTestData
+        val countryToSave = countryBeTest
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/BE", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/${countryToSave.name}", status().isOk)
         val responseCountry = Json.decodeFromString<CountryDto>(response)
 
         assertEquals(countryToSave.name, responseCountry.name)
@@ -90,16 +82,16 @@ class CountryIntegrationTest(
     @Test
     fun saveAndUpdateCountry() {
 
-        val countryToSave = countryTestData
+        val countryToSave = countryBeTest
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        val countryToUpdate = countryToSave.copy(phoneCode = "+8", )
+        val countryToUpdate = countryToSave.copy(phoneCode = "+8")
         val countryUpdateJson = Json.encodeToString(countryToUpdate)
         Requests.makePutRequest(mockMvc, countryEndpoint, countryUpdateJson, status().isOk)
 
-        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/BE", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/${countryToSave.name}", status().isOk)
         val responseCountry = Json.decodeFromString<CountryDto>(response)
 
         assertEquals(countryToUpdate.name, responseCountry.name)
@@ -110,12 +102,12 @@ class CountryIntegrationTest(
     @Test
     fun saveAndFindByName() {
 
-        val countryToSave = countryTestData
+        val countryToSave = countryBeTest
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/BE", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/${countryToSave.name}", status().isOk)
         val responseCountry = Json.decodeFromString<CountryDto>(response)
 
         assertEquals(countryToSave.name, responseCountry.name)
@@ -126,12 +118,12 @@ class CountryIntegrationTest(
     @Test
     fun saveAndDeleteByName() {
 
-        val countryToSave = countryTestData
+        val countryToSave = countryBeTest
 
         val countryJson = Json.encodeToString(countryToSave)
         Requests.makePostRequest(mockMvc, countryEndpoint, countryJson, status().isCreated)
 
-        Requests.makeDeleteRequest(mockMvc, "$countryEndpoint/BE", status().isOk)
+        Requests.makeDeleteRequest(mockMvc, "$countryEndpoint/${countryToSave.name}", status().isOk)
         val response = Requests.makeGetRequest(mockMvc, "$countryEndpoint/public/all", status().isOk)
         val responseDecoded = Json.decodeFromString<List<CountryDto>>(response)
         assertEquals(0, responseDecoded.size)
@@ -140,18 +132,16 @@ class CountryIntegrationTest(
     @Test
     fun saveMultipleAndFindAll() {
 
-        val countryToSave1 = countryTestData
+        val countryToSave1 = countryBeTest
 
         val countryToSave2 = countryToSave1.copy(
             name = "NI",
             phoneCode = "+8",
-            
         )
 
         val countryToSave3 = countryToSave1.copy(
             name = "LUX",
-            phoneCode = "+9",
-            
+            phoneCode = "+10",
         )
 
         val countryJson1 = Json.encodeToString(countryToSave1)

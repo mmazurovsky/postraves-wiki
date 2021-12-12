@@ -8,7 +8,13 @@ import com.postraves.backend.postraveswiki.data.dto.writing.CityWriteDto
 import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
 import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.Endpoints.cityEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
 import com.postraves.backend.postraveswiki.utils.Requests
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryRuTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -17,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -39,54 +46,49 @@ class CityIntegrationTest(
     private val mockMvc: MockMvc,
     @Value("\${spring.redis.port}")
     private val redisPort: Int,
-    ) : AbstractPostgresTest() {
+) : AbstractPostgresTest() {
 
-    private val cityEndpoint: String = "/city"
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
-
     init {
         redisServer.start()
     }
 
-    private val cityTestData = CityWriteDto(
-        name = "Bruges",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "BE",
-        timeOffset = -3
-    )
+//    private val cityTestData = CityWriteDto(
+//        name = "Bruges",
+//        nameRu = "NameRu",
+//        nameEn = "NameUk",
+//        nameDe = "NameDe",
+//        nameFr = "NameFr",
+//        countryName = "BE",
+//        timeOffset = -3
+//    )
 
     @BeforeAll
     private fun createCountriesForAssociations() {
 
-        val country1 = CountryWriteDto(
-            name = "BE",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            phoneCode = "+7",
-            
-        )
+//        val countryBe = CountryWriteDto(
+//            name = "BE",
+//            nameRu = "NameRu",
+//            nameEn = "NameUk",
+//            nameDe = "NameDe",
+//            nameFr = "NameFr",
+//            phoneCode = "+7",
+//            
+//        )
+//
+//        val countryRu = CountryWriteDto(
+//            name = countryRuTest.name,
+//            nameRu = "NameRu",
+//            nameEn = "NameUk",
+//            nameDe = "NameDe",
+//            nameFr = "NameFr",
+//            phoneCode = "+9",
+//            
+//        )
+        SecurityContextHolder.getContext().setAuthentication(MockAuthentication.authAdminTest)
 
-        val country2 = CountryWriteDto(
-            name = "CHE",
-            nameRu = "NameRu",
-            nameEn = "NameUk",
-            nameDe = "NameDe",
-            nameFr = "NameFr",
-            phoneCode = "+9",
-            
-        )
-
-        val countryJson1 = Json.encodeToString(country1)
-        val countryJson2 = Json.encodeToString(country2)
+        val countryJson1 = Json.encodeToString(countryBeTest)
+        val countryJson2 = Json.encodeToString(countryRuTest)
 
         Requests.makePostRequest(mockMvc, "/country", countryJson1, status().isCreated)
         Requests.makePostRequest(mockMvc, "/country", countryJson2, status().isCreated)
@@ -107,13 +109,13 @@ class CityIntegrationTest(
     @Test
     fun saveCityWithCountryAssociation() {
 
-        val city = cityTestData
+        val city = cityBrugesTest
 
         val cityJson = Json.encodeToString(city)
 
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isCreated)
 
-        val response = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/Bruges", status().isOk)
+        val response = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/${city.name}", status().isOk)
         val responseDecoded = Json.decodeFromString<CityDto>(response)
 
         assertEquals(city.name, responseDecoded.name)
@@ -123,32 +125,30 @@ class CityIntegrationTest(
     @Test
     fun updateCityWithNewCountryAssociation() {
 
-        val city = cityTestData
+        val city = cityBrugesTest
 
-        val cityJson = Json.encodeToString(city)
-        Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isCreated)
+        Requests.makePostRequest(mockMvc, cityEndpoint, Json.encodeToString(city), status().isCreated)
 
-        val cityUpdated = city.copy(countryName = "CHE")
-        val cityUpdJson = Json.encodeToString(cityUpdated)
-        Requests.makePutRequest(mockMvc, "/city", cityUpdJson, status().isOk)
+        val cityUpdated = city.copy(countryName = countryRuTest.name)
+        Requests.makePutRequest(mockMvc, "/city", Json.encodeToString(cityUpdated), status().isOk)
 
-        val cityFinal = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/Bruges", status().isOk)
+        val cityFinal = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/${city.name}", status().isOk)
         val cityFinalDecoded = Json.decodeFromString<CityDto>(cityFinal)
 
         assertEquals(cityUpdated.name, cityFinalDecoded.name)
         assertEquals(cityUpdated.countryName, cityFinalDecoded.country.name)
-        assertEquals("+9", cityFinalDecoded.country.phoneCode)
+        assertEquals(countryRuTest.phoneCode, cityFinalDecoded.country.phoneCode)
     }
 
     @Test
     fun saveCityAndDeleteByName() {
 
-        val city = cityTestData
+        val city = cityBrugesTest
 
         val cityJson = Json.encodeToString(city)
         Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isCreated)
 
-        Requests.makeDeleteRequest(mockMvc, "$cityEndpoint/Bruges", status().isOk)
+        Requests.makeDeleteRequest(mockMvc, "$cityEndpoint/${city.name}", status().isOk)
 
         val cityListJson = Requests.makeGetRequest(mockMvc, "$cityEndpoint/public/all", status().isOk)
         val cityListDecoded = Json.decodeFromString<List<CityDto>>(cityListJson)
@@ -159,17 +159,17 @@ class CityIntegrationTest(
     @Test
     fun saveMultipleAndFindAll() {
 
-        val city1 = cityTestData
+        val city1 = cityBrugesTest
 
         val city2 = city1.copy(
             name = "Ant",
-            countryName = "CHE",
+            countryName = countryRuTest.name,
             timeOffset = -1
         )
 
         val city3 = city1.copy(
             name = "Amst",
-            countryName = "CHE",
+            countryName = countryRuTest.name,
             timeOffset = -1
         )
 
@@ -185,22 +185,5 @@ class CityIntegrationTest(
         val cityListPublicEndpointDecoded = Json.decodeFromString<List<CityDto>>(cityListPublicEndpointJson)
 
         assertEquals(3, cityListPublicEndpointDecoded.size)
-    }
-
-    @Test
-    fun tryToSaveCityWithoutCountryRefShouldBeBadRequest() {
-
-        val city = mapOf(
-            "name" to "Bruges",
-            "timeOffset" to "-1"
-        )
-
-        val cityJson = Json.encodeToString(city)
-
-        Requests.makePostRequest(mockMvc, cityEndpoint, cityJson, status().isBadRequest)
-
-//        assertThrows<ArithmeticException> {
-//            Requests.makePostRequest(mockMvc, "/city", cityJson, status().isBadRequest)
-//        }
     }
 }

@@ -1,28 +1,32 @@
 package com.postraves.backend.postraveswiki.integration
 
 import com.postraves.backend.postraveswiki.AbstractPostgresTest
-import com.postraves.backend.postraveswiki.config.logger
-import com.postraves.backend.postraveswiki.data.dto.CoordinateDto
-import com.postraves.backend.postraveswiki.data.dto.MoneyCurrencyDto
-import com.postraves.backend.postraveswiki.data.dto.writing.CountryWriteDto
-import com.postraves.backend.postraveswiki.data.dto.reading.TicketPriceDto
 import com.postraves.backend.postraveswiki.data.dto.reading.*
 import com.postraves.backend.postraveswiki.data.dto.writing.*
 import com.postraves.backend.postraveswiki.data.enum.EventStatus
 import com.postraves.backend.postraveswiki.repo.quick.EntityCountryQuickRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
-import com.postraves.backend.postraveswiki.service.CityService
 import com.postraves.backend.postraveswiki.service.CountryService
-import com.postraves.backend.postraveswiki.service.MoneyCurrencyService
 import com.postraves.backend.postraveswiki.service.followable.ArtistService
 import com.postraves.backend.postraveswiki.service.followable.EventService
 import com.postraves.backend.postraveswiki.service.followable.PlaceService
 import com.postraves.backend.postraveswiki.service.followable.UnityService
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
+import com.postraves.backend.postraveswiki.utils.Components.customRedisProvider
+import com.postraves.backend.postraveswiki.utils.Endpoints
+import com.postraves.backend.postraveswiki.utils.Endpoints.eventEndpoint
+import com.postraves.backend.postraveswiki.utils.MockAuthentication
 import com.postraves.backend.postraveswiki.utils.Requests.makeDeleteRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makeGetRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePostRequest
 import com.postraves.backend.postraveswiki.utils.Requests.makePutRequest
+import com.postraves.backend.postraveswiki.utils.TestEntity.cityBrugesTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.countryBeTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.currencyEurTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.currencyRubTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.currencyUsdTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.eventTest
+import com.postraves.backend.postraveswiki.utils.TestEntity.placeBrugesTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -34,13 +38,11 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import redis.embedded.RedisExecProvider
 import redis.embedded.RedisServer
-import redis.embedded.util.Architecture
-import redis.embedded.util.OS
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import kotlin.test.*
@@ -75,123 +77,47 @@ class EventIntegrationTest(
     @SpyBean
     private lateinit var dateTimeProvider: DateTimeProvider
 
-    private val eventEndpoint: String = "/event"
-    private val customRedisProvider: RedisExecProvider =
-        RedisExecProvider.defaultProvider()
-            .override(OS.MAC_OS_X, Architecture.x86_64, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
-            .override(OS.MAC_OS_X, Architecture.x86, "/Users/mmazurovsky/Code/Redis/redis-6.2.6/src/redis-server")
     private val redisServer = RedisServer(customRedisProvider, redisPort)
 
     init {
         redisServer.start()
     }
 
-    private val countryTestData = CountryWriteDto(
-        name = "BE",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        phoneCode = "+7",
-
-        )
-
-    private val countryTestData2 = countryTestData.copy(
+    private val countryBeTest2 = countryBeTest.copy(
         name = "RU",
         phoneCode = "+8",
-
-        )
-
-    private val cityTest1 = CityWriteDto(
-        name = "Bruges",
-        nameRu = "NameRu",
-        nameEn = "NameUk",
-        nameDe = "NameDe",
-        nameFr = "NameFr",
-        countryName = "BE",
-        timeOffset = 0
     )
 
-    private val cityTest2 = cityTest1.copy(
+    private val cityTest2 = cityBrugesTest.copy(
         name = "Moscow",
         countryName = "RU",
         timeOffset = 0
     )
 
-    private val place1 = PlaceWriteDto(
-        id = null,
-        name = "Club1",
-        imageLink = "image1",
-        soundcloudUsername = "soundcloud1",
-        instagramUsername = "instagram1",
-        about = "About club1",
-        streetAddress = "Street address1",
-        coordinate = CoordinateDto(
-            latitude = 0.0,
-            longitude = 0.0
-        ),
-        cityName = "Bruges"
-    )
+    private val place1 = placeBrugesTest
 
-    private val place2 = PlaceWriteDto(
-        id = null,
+    private val place2 = placeBrugesTest.copy(
         name = "Club2",
-        imageLink = "image2",
-        soundcloudUsername = "soundcloud2",
-        instagramUsername = "instagram2",
-        about = "About club2",
-        streetAddress = "Street address2",
-        coordinate = CoordinateDto(
-            latitude = 0.0,
-            longitude = 0.0
-        ),
         cityName = "Moscow"
     )
 
     var persistedPlace1Id: Long = 1
     var persistedPlace2Id: Long = 2
-
-    private val eventTestData = EventWriteDto(
-        id = null,
-        name = "Event1",
-        imageLink = "image1",
-        about = "About Event1",
-        ticketsLink = "link1",
-        startDateTime = OffsetDateTime.of(2021, 8, 19, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
-        endDateTime = OffsetDateTime.of(2021, 8, 19, 6, 0, 0, 0, ZoneOffset.ofHours(0)),
-        ticketPrices = emptyList(),
-        // place id must be changed to real one of persisted place
-        placeId = 1,
-        organizers = emptySet(),
-    )
-
-    val currencyRub = MoneyCurrencyDto(
-        name = "RUB",
-        symbol = "₽",
-    )
-
-    val currencyUsd = MoneyCurrencyDto(
-        name = "USD",
-        symbol = "$",
-    )
-
-    val currencyEur = MoneyCurrencyDto(
-        name = "EUR",
-        symbol = "€",
-    )
-
+    
     @BeforeAll
     private fun createCountryForAssociations() {
+        SecurityContextHolder.getContext().setAuthentication(MockAuthentication.authAdminTest)
+
         listOf(
-            currencyRub,
-            currencyUsd,
-            currencyEur,
+            currencyRubTest,
+            currencyUsdTest,
+            currencyEurTest,
         ).forEach {
             makePostRequest(mockMvc, "/moneyCurrency", Json.encodeToString(it), status().isCreated)
         }
-        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData), status().isCreated)
-        makePostRequest(mockMvc, "/country", Json.encodeToString(countryTestData2), status().isCreated)
-        makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest1), status().isCreated)
+        makePostRequest(mockMvc, "/country", Json.encodeToString(countryBeTest), status().isCreated)
+        makePostRequest(mockMvc, "/country", Json.encodeToString(countryBeTest2), status().isCreated)
+        makePostRequest(mockMvc, "/city", Json.encodeToString(cityBrugesTest), status().isCreated)
         makePostRequest(mockMvc, "/city", Json.encodeToString(cityTest2), status().isCreated)
         val persistedPlaceJson = makePostRequest(mockMvc, "/place", Json.encodeToString(place1), status().isCreated)
         val persistedPlace = Json.decodeFromString<PlaceShortDto>(persistedPlaceJson)
@@ -221,7 +147,7 @@ class EventIntegrationTest(
     @Test
     fun saveEvent() {
 
-        val eventToSave = eventTestData.copy(placeId = persistedPlace1Id)
+        val eventToSave = eventTest.copy(placeId = persistedPlace1Id)
 
         val eventIdRespJson =
             makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(eventToSave), status().isCreated)
@@ -230,7 +156,7 @@ class EventIntegrationTest(
         val eventRespJson = makeGetRequest(mockMvc, "$eventEndpoint/public/$eventId", status().isOk)
         val savedEvent = Json.decodeFromString<EventFullDto>(eventRespJson)
 
-        val countryEventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val countryEventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
 
         assertNotNull(savedEvent.id)
         assertEquals(eventToSave.name, savedEvent.name)
@@ -246,15 +172,40 @@ class EventIntegrationTest(
         assertEquals(place1.name, savedEvent.place.name)
         assertEquals(place1.imageLink, savedEvent.place.imageLink)
         assertEquals(place1.cityName, savedEvent.place.city.name)
-        assertEquals(countryTestData.name, savedEvent.place.city.country.name)
+        assertEquals(countryBeTest.name, savedEvent.place.city.country.name)
 
         assert(countryEventsInQuickRepo.contains(savedEvent.id))
     }
 
     @Test
+    fun saveEventWithSameNameMultipleTimes() {
+
+        val eventToSave = eventTest.copy(placeId = persistedPlace1Id)
+        val eventIdRespJson =
+            makePostRequest(mockMvc, Endpoints.eventEndpoint, Json.encodeToString(eventToSave), status().isCreated)
+        val eventId = Json.decodeFromString<EventShortDto>(eventIdRespJson).id
+
+        val eventToSave2 = eventToSave.copy(imageLink = "image2")
+        val eventIdRespJson2 =
+            makePostRequest(mockMvc, Endpoints.eventEndpoint, Json.encodeToString(eventToSave2), status().isCreated)
+        val eventId2 = Json.decodeFromString<EventShortDto>(eventIdRespJson2).id
+
+        val eventRespJson1 = makeGetRequest(mockMvc, "${Endpoints.eventEndpoint}/public/$eventId", status().isOk)
+        val savedEvent1 = Json.decodeFromString<EventFullDto>(eventRespJson1)
+
+        val eventRespJson2 = makeGetRequest(mockMvc, "${Endpoints.eventEndpoint}/public/$eventId2", status().isOk)
+        val savedEvent2 = Json.decodeFromString<EventFullDto>(eventRespJson2)
+
+        assertNotNull(savedEvent1.id)
+        assertNotNull(savedEvent2.id)
+        assertEquals(savedEvent1.name, savedEvent2.name)
+        assertNotEquals(savedEvent1, savedEvent2)
+    }
+
+    @Test
     fun updateEventAndItsPlaceAndTicketPrices() {
 
-        val eventToSave = eventTestData.copy(placeId = persistedPlace1Id)
+        val eventToSave = eventTest.copy(placeId = persistedPlace1Id)
 
         val responseSavedEvent =
             makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(eventToSave), status().isCreated)
@@ -271,12 +222,12 @@ class EventIntegrationTest(
                 TicketPriceWriteDto(
                     name = "Ticket1",
                     price = 200.5,
-                    currency = currencyRub.name
+                    currency = currencyRubTest.name
                 ),
                 TicketPriceWriteDto(
                     name = "Ticket2",
                     price = 300.0,
-                    currency = currencyRub.name
+                    currency = currencyRubTest.name
                 )
             )
         )
@@ -286,8 +237,8 @@ class EventIntegrationTest(
         val updatedJson = makeGetRequest(mockMvc, "$eventEndpoint/public/$savedId", status().isOk)
         val updatedEvent = Json.decodeFromString<EventFullDto>(updatedJson)
 
-        val country1EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
-        val country2EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryTestData2.name)
+        val country1EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
+        val country2EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest2.name)
 
         assertEquals(eventToUpdate.id, updatedEvent.id)
         assertEquals(eventToUpdate.name, updatedEvent.name)
@@ -307,7 +258,7 @@ class EventIntegrationTest(
         assertEquals(place2.name, updatedEvent.place.name)
         assertEquals(place2.imageLink, updatedEvent.place.imageLink)
         assertEquals(place2.cityName, updatedEvent.place.city.name)
-        assertEquals(countryTestData2.name, updatedEvent.place.city.country.name)
+        assertEquals(countryBeTest2.name, updatedEvent.place.city.country.name)
 
         assert(!country1EventsInQuickRepo.contains(updatedEvent.id))
         assert(country2EventsInQuickRepo.contains(updatedEvent.id))
@@ -316,7 +267,7 @@ class EventIntegrationTest(
     @Test
     fun deleteEventById() {
 
-        val eventToSave = eventTestData.copy(placeId = persistedPlace1Id)
+        val eventToSave = eventTest.copy(placeId = persistedPlace1Id)
 
         val responseSavedEvent =
             makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(eventToSave), status().isCreated)
@@ -327,7 +278,7 @@ class EventIntegrationTest(
         val responseFindEventJson = makeGetRequest(mockMvc, eventEndpoint, status().isOk)
         val responseFindEvent = Json.decodeFromString<List<EventShortDto>>(responseFindEventJson)
 
-        val countryEventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
+        val countryEventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
         val eventsInOverallRating = eventOverallFollowersQuickRepoImpl.findTop(-1)
         val eventsInWeeklyRating = eventWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -340,7 +291,7 @@ class EventIntegrationTest(
 
     @Test
     fun saveMultipleEventsAndFindAll() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val event2 = event1.copy(
             name = "Event2",
@@ -367,8 +318,8 @@ class EventIntegrationTest(
         val responseEventsJson = makeGetRequest(mockMvc, eventEndpoint, status().isOk)
         val responseEvents = Json.decodeFromString<List<EventShortDto>>(responseEventsJson)
 
-        val country1EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryTestData.name)
-        val country2EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryTestData2.name)
+        val country1EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest.name)
+        val country2EventsInQuickRepo = eventCountryQuickRepoImpl.getAllIdsByCountry(countryBeTest2.name)
         val eventsInOverallRating = eventOverallFollowersQuickRepoImpl.findTop(-1)
         val eventsInWeeklyRating = eventWeeklyFollowersQuickRepoImpl.findTop(-1)
 
@@ -399,7 +350,7 @@ class EventIntegrationTest(
 
     @Test
     fun saveMultipleAndFindByName() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val event2 = event1.copy(
             name = "Event2",
@@ -448,7 +399,7 @@ class EventIntegrationTest(
 
     @Test
     fun getOrganizersAndUpdateOrganizersAndGetAgain() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
         val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
@@ -466,7 +417,7 @@ class EventIntegrationTest(
             instagramUsername = "instagram 1",
             bandcampUsername = "bandcamp 1",
             about = "About 1",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val unity2 = unity1.copy(
@@ -538,7 +489,7 @@ class EventIntegrationTest(
 
     @Test
     fun getLineupAndAddTimetablePerformancesAndGetLineupAgain() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
         val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
@@ -555,7 +506,7 @@ class EventIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist2 = artist1.copy(
@@ -660,7 +611,7 @@ class EventIntegrationTest(
 
     @Test
     fun getLineupWhenThereIsOneSameArtistInTimetable() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val scene1 = SceneDto(
             id = null,
@@ -695,7 +646,7 @@ class EventIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist2 = artist1.copy(
@@ -831,7 +782,7 @@ class EventIntegrationTest(
 
     @Test
     fun getTimetableAndAddTimetablePerformancesWithoutSceneAndDateTimesAndGetTimetableAgain() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
         val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
@@ -848,7 +799,7 @@ class EventIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist2 = artist1.copy(
@@ -924,7 +875,7 @@ class EventIntegrationTest(
 
     @Test
     fun addTimetablePerformancesAndGetFilledTimetable() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
         val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
@@ -970,7 +921,7 @@ class EventIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist2 = artist1.copy(
@@ -1150,7 +1101,7 @@ class EventIntegrationTest(
 
     @Test
     fun addTimetablePerformanceAndUpdateWithSameValue() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
         val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
@@ -1179,7 +1130,7 @@ class EventIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist1Json =
@@ -1245,7 +1196,7 @@ class EventIntegrationTest(
 
     @Test
     fun addTimetablePerformancesAndUpdateTimetablePerformancesAndGetAgain() {
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val eventJson = makePostRequest(mockMvc, eventEndpoint, Json.encodeToString(event1), status().isCreated)
         val eventSavedId = Json.decodeFromString<EventShortDto>(eventJson).id
@@ -1274,7 +1225,7 @@ class EventIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist2 = artist1.copy(
@@ -1400,7 +1351,7 @@ class EventIntegrationTest(
         val now = OffsetDateTime.now(ZoneOffset.ofHours(0)).withHour(0)
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val event2 = event1.copy(
             name = "Event2",
@@ -1546,7 +1497,7 @@ class EventIntegrationTest(
         val now = OffsetDateTime.now(ZoneOffset.ofHours(0)).withHour(0)
         Mockito.doReturn(now).`when`(dateTimeProvider).getNow()
 
-        val event1 = eventTestData.copy(placeId = persistedPlace1Id)
+        val event1 = eventTest.copy(placeId = persistedPlace1Id)
 
         val event2 = event1.copy(
             name = "Event2",
@@ -1626,7 +1577,7 @@ class EventIntegrationTest(
             soundcloudUsername = "soundcloud",
             instagramUsername = "instagram",
             about = "About Amelie",
-            countryName = countryTestData.name,
+            countryName = countryBeTest.name,
         )
 
         val artist1Json =
