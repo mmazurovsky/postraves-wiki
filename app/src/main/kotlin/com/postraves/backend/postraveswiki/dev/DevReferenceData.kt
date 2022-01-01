@@ -60,7 +60,7 @@ class DevReferenceData(
     )
 
     val admin2 = UserWriteDto(
-        name = "vibe",
+        name = "admin2",
         currentCity = "RU_Moscow"
     )
 
@@ -106,6 +106,15 @@ class DevReferenceData(
         phoneCode = "+32",
     )
 
+    val countryNl = CountryWriteDto(
+        name = "NL",
+        nameRu = "Нидерланды",
+        nameEn = "Netherlands",
+        nameDe = "Netherlands2",
+        nameFr = "Netherlands3",
+        phoneCode = "+31",
+    )
+
     val countryDe = CountryWriteDto(
         name = "DE",
         nameRu = "Германия",
@@ -124,6 +133,24 @@ class DevReferenceData(
         phoneCode = "+33",
     )
 
+    val countryUs = CountryWriteDto(
+        name = "US",
+        nameRu = "США",
+        nameEn = "USA",
+        nameDe = "USA2",
+        nameFr = "USA3",
+        phoneCode = "+1",
+    )
+
+    val countryUk = CountryWriteDto(
+        name = "UK",
+        nameRu = "Великобритания",
+        nameEn = "UK",
+        nameDe = "UK2",
+        nameFr = "UK3",
+        phoneCode = "+44",
+    )
+
     val cityMoscow = CityWriteDto(
         name = "RU_Moscow",
         countryName = "RU",
@@ -134,14 +161,37 @@ class DevReferenceData(
         timeOffset = 3
     )
 
-    val cityPetersburg = CityWriteDto(
-        name = "RU_Petersburg",
-        countryName = "RU",
-        nameRu = "Санкт-Петербург",
-        nameEn = "Saint-Petersburg",
-        nameDe = "Saint-Petersburg2",
-        nameFr = "Saint-Petersburg3",
-        timeOffset = 3
+    //todo
+    val cityNewYork = CityWriteDto(
+        name = "US_Newyork",
+        countryName = "US",
+        nameRu = "Нью Йорк",
+        nameEn = "New York",
+        nameDe = "New York2",
+        nameFr = "New York3",
+        timeOffset = -5
+    )
+
+    //todo
+    val cityBerlin = CityWriteDto(
+        name = "DE_Berlin",
+        countryName = "DE",
+        nameRu = "Берлин",
+        nameEn = "Berlin",
+        nameDe = "Berlin2",
+        nameFr = "Berlin3",
+        timeOffset = 1
+    )
+
+    //todo
+    val cityAmsterdam = CityWriteDto(
+        name = "NL_Amsterdam",
+        countryName = "NL",
+        nameRu = "Амстердам",
+        nameEn = "Amsterdam",
+        nameDe = "Amsterdam2",
+        nameFr = "Amsterdam3",
+        timeOffset = 1
     )
 
     val placeMutabor = PlaceWriteDto(
@@ -204,21 +254,99 @@ class DevReferenceData(
         about = "about Gazgolder",
     )
 
-    val sceneMutaborMain = SceneDto(
+    //todo
+    val placeBerghain = PlaceWriteDto(
+        id = null,
+        name = "Berghain",
+        cityName = cityBerlin.name,
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_berghain.png?alt=media&token=0f58794f-8228-4311-8efb-2558e26c55af",
+        streetAddress = "Am Wriezener Bahnhof",
+        coordinate = CoordinateDto(
+            latitude = 52.5107083,
+            longitude = 13.4345184,
+        ),
+        soundcloudUsername = "berghain",
+        instagramUsername = "berghain_ostgut",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    //todo
+    val placeTresor = PlaceWriteDto(
+        id = null,
+        name = "Tresor",
+        cityName = cityBerlin.name,
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_tresor.png?alt=media&token=b9ff3b02-b723-4c18-b336-240465ac7663",
+        streetAddress = "Köpenicker Str. 70",
+        coordinate = CoordinateDto(
+            latitude = 52.5109923,
+            longitude = 13.4182732,
+        ),
+        soundcloudUsername = "tresorberlin",
+        instagramUsername = "tresorberlin",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    //todo
+    val placeAnomalie = PlaceWriteDto(
+        id = null,
+        name = "Anomalie Art Club",
+        cityName = cityBerlin.name,
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_anomalie.jpeg?alt=media&token=0ed88e07-8285-4c17-9a4f-5139ad6d6c22",
+        streetAddress = "Storkower Str. 123",
+        coordinate = CoordinateDto(
+            latitude = 52.5354221,
+            longitude = 13.4530659,
+        ),
+        soundcloudUsername = "anomalieartclubberlin",
+        instagramUsername = "anomalieartclub",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    val placeOt301 = PlaceWriteDto(
+        id = null,
+        name = "OT301",
+        cityName = cityAmsterdam.name,
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_ot301.jpeg?alt=media&token=1b750ee3-2ea9-4a2d-974f-ffb826f16902",
+        streetAddress = "Overtoom 301",
+        coordinate = CoordinateDto(
+            latitude = 52.3600834,
+            longitude = 4.8656877,
+        ),
+        soundcloudUsername = null,
+        instagramUsername = "ot301adam",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    val placeRadion = PlaceWriteDto(
+        id = null,
+        name = "Radion",
+        cityName = cityAmsterdam.name,
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_radion.jpeg?alt=media&token=bee86fb3-9444-49af-aef9-9c722dcbdb4e",
+        streetAddress = "Louwesweg 1",
+        coordinate = CoordinateDto(
+            latitude = 52.3455842,
+            longitude = 4.82565,
+        ),
+        soundcloudUsername = null,
+        instagramUsername = "radionamsterdam",
+        about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    )
+
+    val sceneBerghainMain = SceneDto(
         id = null,
         name = "Main",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mutabor_main.jpeg?alt=media&token=8a7e4df6-5742-40c5-85b3-566793ff79ce",
         priority = 3,
     )
 
-    val sceneMutaborMedium = SceneDto(
+    val sceneBerghainMedium = SceneDto(
         id = null,
         name = "Medium",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mutabor_medium.jpeg?alt=media&token=80a232a0-0864-4d56-b3c4-9b3327af89af",
         priority = 2,
     )
 
-    val sceneMutaborGarden = SceneDto(
+    val sceneBerghainGarden = SceneDto(
         id = null,
         name = "Garden",
         imageLink = null,
@@ -301,11 +429,11 @@ class DevReferenceData(
         soundcloudUsername = null,
     )
 
-    val artistMashkov = ArtistWriteDto(
+    val artistMash = ArtistWriteDto(
         id = null,
-        name = "Mashkov",
+        name = "Mash",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_mashkov.png?alt=media&token=545f3b5b-c126-43c4-99d3-ca6735baea50",
-        countryName = "RU",
+        countryName = "DE",
         about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
         instagramUsername = "mashkov",
         soundcloudUsername = "mashkov",
@@ -323,9 +451,9 @@ class DevReferenceData(
 
     val artistRodina = ArtistWriteDto(
         id = null,
-        name = "Sofia Rodina",
+        name = "Sofia",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_rodina.jpeg?alt=media&token=b802b2a4-de1d-417b-bdf2-d5f0971b232a",
-        countryName = "RU",
+        countryName = "DE",
         about = null,
         instagramUsername = null,
         soundcloudUsername = null,
@@ -423,9 +551,9 @@ class DevReferenceData(
 
     val artistGorbachev = ArtistWriteDto(
         id = null,
-        name = "Philipp Gorbachev",
+        name = "Philipp",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_gorbachev.jpeg?alt=media&token=f67f1f71-2908-4541-ae75-703335a4bd02",
-        countryName = "RU",
+        countryName = "NL",
         about = null,
         instagramUsername = null,
         soundcloudUsername = null,
@@ -433,9 +561,9 @@ class DevReferenceData(
 
     val artistZots = ArtistWriteDto(
         id = null,
-        name = "Andrey Zots",
+        name = "Zots",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_zots.jpg?alt=media&token=92295ce3-e963-4af7-bcfa-f9f997a5b87d",
-        countryName = "RU",
+        countryName = "DE",
         about = null,
         instagramUsername = null,
         soundcloudUsername = null,
@@ -443,9 +571,39 @@ class DevReferenceData(
 
     val artistChronic = ArtistWriteDto(
         id = null,
-        name = "Chronic Preview",
+        name = "Chronic",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Ftest_chronic.jpeg?alt=media&token=5a3a7f48-52c5-4ea6-af72-04da0c9b2ed9",
-        countryName = "RU",
+        countryName = "DE",
+        about = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
+    )
+
+    val artistWitte = ArtistWriteDto(
+        id = null,
+        name = "Charlotte De Witte",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_witte.jpeg?alt=media&token=33501902-8229-449f-90a5-2d4e7bb2e466",
+        countryName = "BE",
+        about = null,
+        instagramUsername = "charlottedewittemusic",
+        soundcloudUsername = "charlottedewittemusic",
+    )
+
+    val artistCox = ArtistWriteDto(
+        id = null,
+        name = "Carl Cox",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_cox.jpeg?alt=media&token=2582bfda-4c7e-408b-9c60-d6d51112a327",
+        countryName = "UK",
+        about = null,
+        instagramUsername = null,
+        soundcloudUsername = null,
+    )
+
+    val artistZabelin = ArtistWriteDto(
+        id = null,
+        name = "NZ666",
+        imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_zabelin.jpeg?alt=media&token=ae08ba32-880b-4c30-bb2b-e8d3f8def041",
+        countryName = "NL",
         about = null,
         instagramUsername = null,
         soundcloudUsername = null,
@@ -473,7 +631,10 @@ class DevReferenceData(
                 countryUa,
                 countryBe,
                 countryDe,
-                countryFr
+                countryFr,
+                countryUs,
+                countryNl,
+                countryUk,
             )
         )
 
@@ -488,7 +649,9 @@ class DevReferenceData(
         val savedCities = cityService.saveBatch(
             listOf(
                 cityMoscow,
-                cityPetersburg
+                cityNewYork,
+                cityBerlin,
+                cityAmsterdam,
             )
         )
 
@@ -499,17 +662,22 @@ class DevReferenceData(
         val placeGazgoldeSaved = placeService.save(placeGazgolder)
         val placePowerhouseSaved = placeService.save(placePowerhouse)
         val placeSlezySaved = placeService.save(placeSlezy)
+        val placeBerghainSaved = placeService.save(placeBerghain)
+        val placeTresorSaved = placeService.save(placeTresor)
+        val placeAnomalieSaved = placeService.save(placeAnomalie)
+        val placeOt301Saved = placeService.save(placeOt301)
+        val placeRadionSaved = placeService.save(placeRadion)
 
         placeService.updateScenesOfPlace(
-            placeMutaborSaved.id,
+            placeBerghainSaved.id,
             listOf(
-                sceneMutaborMain,
-                sceneMutaborMedium,
-                sceneMutaborGarden
+                sceneBerghainMain,
+                sceneBerghainMedium,
+                sceneBerghainGarden
             )
         )
 
-        val scenesMutaborSaved = placeService.getAllScenes()
+        val scenesBerghainSaved = placeService.getAllScenes()
 
         val unityLenskeSaved = unityService.save(unityLenske)
         val unitySystemSaved = unityService.save(unitySystem)
@@ -527,13 +695,16 @@ class DevReferenceData(
         val artistGorbachevSaved = artistService.save(artistGorbachev)
         val artistKolosovaSaved = artistService.save(artistKolosova)
         val artistLensSaved = artistService.save(artistLens)
-        val artistMashkovSaved = artistService.save(artistMashkov)
+        val artistMashkovSaved = artistService.save(artistMash)
         val artistModelsSaved = artistService.save(artistModels)
         val artistMujuiceSaved = artistService.save(artistMujuice)
         val artistParfaitSaved = artistService.save(artistParfait)
         val artistRodinaSaved = artistService.save(artistRodina)
         val artistVillalobosSaved = artistService.save(artistVillalobos)
         val artistZotsSaved = artistService.save(artistZots)
+        val artistWitteSaved = artistService.save(artistWitte)
+        val artistCoxSaved = artistService.save(artistCox)
+        val artistZabelinSaved = artistService.save(artistZabelin)
 
         unityService.updateArtistsOfUnity(
             unityLenskeSaved.id, setOf(
@@ -561,20 +732,20 @@ class DevReferenceData(
 
         val eventRadost = EventWriteDto(
             id = null,
-            name = "Радость осени",
+            name = "Autumn pleasure",
             imageLink = "https://sun9-3.userapi.com/impf/6fhybramftz3iKZyjnMYWEkuOWwGGbRlNyWjAA/YbeX05dtrnI.jpg?size=807x422&quality=96&sign=334eeab97e92f0957467dc2d6ae0bee3&type=album",
-            about = "Дневная вечеринка в «Мутаборе», в рамках которой, помимо музыки, пройдут перформансы, маркет локальных дизайнеров, выставка картин и тату-сеансы. За электронное сопровождение ответят диджеи Schulz b2b Ginger, Sofia Rodina, Roman Ptashenko, Adil и GLS, а с лайвами предстанут Rat’s Eyes, Dubrovsky и Fathers sins.",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = null,
             startDateTime = dateTimeProvider.getNow().minusDays(1),
             endDateTime = dateTimeProvider.getNow().minusDays(1).plusHours(5),
             ticketPrices = listOf(
                 TicketPriceWriteDto(
                     name = "One",
-                    price = 500.0,
-                    currency = currencyRub.name
+                    price = 20.0,
+                    currency = currencyEur.name
                 )
             ),
-            placeId = placeMutaborSaved.id,
+            placeId = placeBerghainSaved.id,
             organizers = setOf(
                 unityArmaSaved.id
             )
@@ -582,25 +753,25 @@ class DevReferenceData(
 
         val eventCombo = EventWriteDto(
             id = null,
-            name = "Комбо",
+            name = "Combo",
             imageLink = "https://sun9-44.userapi.com/impf/DKGPcayeA1sy1mQZS1HSudF0qBAkNLRiPuMGAA/nnkC0XLby-0.jpg?size=807x436&quality=96&sign=259845352f55d8d9cb02caebb8126d0f&type=album",
-            about = "Субботняя тусовка в баре «Слёзы» ознаменуется ломовейшим локальным лайнапом. Отмечать наступление осени на одной из самых популярных веранд города будем под музыкальное сопровождение от Poima, Act x Protosoniq, Low808, Hipushit, Karolina BNV и Sofia Rodina.",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = null,
             startDateTime = dateTimeProvider.getNow().minusDays(1).plusHours(5),
             endDateTime = dateTimeProvider.getNow().minusHours(5),
             ticketPrices = listOf(
                 TicketPriceWriteDto(
                     name = "После 20:00", // todo sort prices by value on GET
-                    price = 500.0,
-                    currency = currencyRub.name
+                    price = 100.0,
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "До 20:00",
                     price = 0.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
             ),
-            placeId = placeSlezySaved.id,
+            placeId = placeAnomalieSaved.id,
             organizers = setOf(
                 unityMonasterioSaved.id,
                 unityNiiSaved.id,
@@ -613,21 +784,21 @@ class DevReferenceData(
             id = null,
             name = "Hyperboloid Night One Two Three Four Five Six Seven Eight Nine Ten",
             imageLink = null,
-            about = "Фирменная вечеринка лейбла Hyperboloid в клубе Powerhouse. Лайнап мероприятия составили резиденты и уже знакомые многим имена локальных артистов, некоторые из которых не раз выступали на событиях импринта: Bad Zu, BOGUE x Василий Яковлев, Clear Cast, data drain, Fisky, KRBSS и zarya.",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = null,
             startDateTime = dateTimeProvider.getNow().plusDays(12),
             endDateTime = dateTimeProvider.getNow().plusDays(12).plusHours(8),
             ticketPrices = null,
-            placeId = placePowerhouseSaved.id,
+            placeId = placeTresorSaved.id,
             organizers = setOf(
             )
         )
 
         val eventSanchez = EventWriteDto(
             id = null,
-            name = "Sanchez Thursdays",
+            name = "Sanchez Fiesta",
             imageLink = "https://sun9-70.userapi.com/impf/HcGo_gSFS9emEUabJI130FcFGgDWxS5Sv-N5wQ/FojhJi2t3_4.jpg?size=807x424&quality=96&sign=4cc06a1cbe7a106e6a0b1bcdb7fb2da1&type=album",
-            about = "Традиционные четверги Санчеза в «Пропаганде».В лайнапе: Sergey Sanchez, D.A.L.I. и Sapurra.",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(8),
             endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(8),
@@ -635,20 +806,20 @@ class DevReferenceData(
                 TicketPriceWriteDto(
                     name = "Free",
                     price = 0.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1000.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 6:00",
                     price = 500.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
             ),
-            placeId = placeGazgoldeSaved.id,
+            placeId = placeTresorSaved.id,
             organizers = setOf(
             )
         )
@@ -657,7 +828,7 @@ class DevReferenceData(
             id = null,
             name = "Applique: Golden Hits",
             imageLink = "https://sun9-6.userapi.com/impf/GTw48P6DtpHtoHwsfj4jIuLtrhvuqH7FskfsJw/QBjtlCNata0.jpg?size=807x423&quality=96&sign=b7f6613d28ffed9c8e80682f47d77f6b&type=album",
-            about = "Весельчаки из команды Applique возвращаются с новой тусовкой Golden Hits. Название события говорящее — там будут звучать все хаус-гимны будущего и настоящего, а также полюбившиеся шлягеры прошлых вечеринок объединения. Золотую коллекцию на тусовке будут ставить 12 диджеев, выступления многих из которых стали традиционными для ивентов от Applique. Лайнап: дуэт «Ай-нэ-нэ!», Timur Omar, Kovyazin D, Hipushit, Adamov, Kirill Shapovalov, D.A.L.I., Mark S, Levandowskiy, Розовый человек, Natali F и LDR",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(4),
             endDateTime = dateTimeProvider.getNow().plusDays(5).plusHours(8),
@@ -665,15 +836,15 @@ class DevReferenceData(
                 TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 10000.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 12000.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
             ),
-            placeId = placeGazgoldeSaved.id,
+            placeId = placeAnomalieSaved.id,
             organizers = setOf(
             )
         )
@@ -682,23 +853,23 @@ class DevReferenceData(
             id = null,
             name = "Synchron",
             imageLink = "https://sun9-63.userapi.com/impf/1YN0U_HwapP6kQviE95Jg85obf41TdXsOFgPqQ/CKAql91bu94.jpg?size=807x422&quality=96&sign=ce58f9016e4f5a3fda579ad1834c995c&type=album",
-            about = "Молодая столичная промокоманда Synchron покоряет новые вершины. На этот раз она объявляет вечеринку на трёх танцполах «Мутабора», где свои лайвы и сеты отыграют необычные локальные артисты из числа резидентов и друзей объединения. Лайнап мероприятия: SNS, DRIADA, Medhi Tourneur, Miroliubov & Glushkov, DBaldokhin, Salibatr Brastislavovich, Lidvall, Xandr.vasiliev, Vishnevskiy, Ratigar, Quiet Light, CPSL и многие другие имена",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(7),
             endDateTime = dateTimeProvider.getNow().plusDays(7).plusHours(5),
             ticketPrices = listOf(
                 TicketPriceWriteDto(
                     name = "До 00:00",
-                    price = 500.0,
-                    currency = currencyRub.name
+                    price = 50.0,
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 00:00",
-                    price = 800.0,
-                    currency = currencyRub.name
+                    price = 80.0,
+                    currency = currencyEur.name
                 ),
             ),
-            placeId = placeMutaborSaved.id,
+            placeId = placeBerghainSaved.id,
             organizers = setOf(
             )
         )
@@ -707,25 +878,25 @@ class DevReferenceData(
             id = null,
             name = "Рабица х НИИ",
             imageLink = "https://sun9-17.userapi.com/impf/JfHbAwbSVcc_dvkeW9fQHfGrzlTfWmlHcIAslw/XNs0T_F2AHw.jpg?size=807x367&quality=96&sign=e305c479e13c39574d10472b2af61ad0&type=album",
-            about = "В последнюю субботу сентября в «Мутаборе» объединятся одни из ключевых команд на тусовочной карте города — рабы «Рабицы» и научные сотрудники из почившего клуба «НИИ». Их совместная вечеринка пройдёт на трёх танцполах клуба, где в полном составе выступят резиденты обоих уважаемых объединений. Лайнап вечеринки-коллаборации: ADIL, Burago, Buttechno, Caspian, Sergey Golikov, HMOT, Humanoid Lyubovnik, John Rock, Khamn, Low 808, MILF, Nikita Bugaev, Ranishe Niyaak, Sariim, Vtgnike и другие артисты",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusDays(8),
             endDateTime = dateTimeProvider.getNow().plusDays(8).plusHours(5),
             ticketPrices = listOf(
                 TicketPriceWriteDto(
                     name = "До 00:00",
-                    price = 500.0,
-                    currency = currencyRub.name
+                    price = 10.0,
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 00:00",
-                    price = 800.0,
-                    currency = currencyRub.name
+                    price = 23.0,
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
             ),
             placeId = placeMutaborSaved.id,
@@ -737,7 +908,7 @@ class DevReferenceData(
 
         val eventVillalobos = EventWriteDto(
             id = null,
-            name = "Ricardo Villalobos Mutabor",
+            name = "Ricardo Villalobos",
             imageLink = null,
             about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = "google.com",
@@ -747,20 +918,20 @@ class DevReferenceData(
                 TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1800.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
             ),
-            placeId = placeMutaborSaved.id,
+            placeId = placeBerghainSaved.id,
             organizers = setOf(
             )
         )
@@ -777,20 +948,20 @@ class DevReferenceData(
                 TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1800.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
             ),
-            placeId = placeMutaborSaved.id,
+            placeId = placeOt301Saved.id,
             organizers = setOf(
                 unityMonasterioSaved.id
             )
@@ -808,20 +979,20 @@ class DevReferenceData(
                 TicketPriceWriteDto(
                     name = "До 00:00",
                     price = 500.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 00:00",
                     price = 1800.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
                 TicketPriceWriteDto(
                     name = "После 08:00",
                     price = 0.0,
-                    currency = currencyRub.name
+                    currency = currencyEur.name
                 ),
             ),
-            placeId = placeMutaborSaved.id,
+            placeId = placeRadionSaved.id,
             organizers = setOf(
                 unitySystemSaved.id,
                 unityLenskeSaved.id,
@@ -832,7 +1003,7 @@ class DevReferenceData(
             id = null,
             name = "System One Hundred Eight",
             imageLink = "https://sun9-32.userapi.com/impf/6iUkR2dK_tKA_XrtK_uDC1S84Wi6A798V9F1sQ/5_vyoPxQnKI.jpg?size=807x422&quality=96&sign=d9392037eda29e1270fbce125735c89d&type=album",
-            about = "После длительного воздержания, лесных приключений и сайд-вечеринок, команда System 108 возвращается в стены любимого завода на Дубровке. В субботнюю ночь лайнап события составят резиденты объединения, а также их друзья с лайвами и сетами. В программе ивента четыре живых выступления, которые исполнят Kovyazin D, Mujuice, Pavel Afanasyev и Philipp Gorbachev. Помимо громких лайвов, ожидаем оскароносные сеты от Chronic Preview, Egor Holkin, Errortica, Fanick, Mashkov, Nastya Zimens, Odopt, Orange и Séxstasy.",
+            about = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             ticketsLink = "google.com",
             startDateTime = dateTimeProvider.getNow().plusHours(1),
             endDateTime = dateTimeProvider.getNow().plusDays(3).plusHours(12),
@@ -843,7 +1014,7 @@ class DevReferenceData(
                     currency = currencyRub.name
                 )
             ),
-            placeId = placeMutaborSaved.id,
+            placeId = placeBerghainSaved.id,
             organizers = setOf(
                 unitySystemSaved.id,
                 unityArmaSaved.id,
@@ -873,7 +1044,7 @@ class DevReferenceData(
 
         val performance3 = TimetablePerformanceWriteDto(
             id = null,
-            sceneId = scenesMutaborSaved[0].id,
+            sceneId = scenesBerghainSaved[0].id,
             artistIds = setOf(artistAllienSaved.id, artistCuveSaved.id),
             typeOfPerformance = null,
             startingDateTime = dateTimeProvider.getNow().minusHours(2),
@@ -882,7 +1053,7 @@ class DevReferenceData(
 
         val performance4 = TimetablePerformanceWriteDto(
             id = null,
-            sceneId = scenesMutaborSaved[0].id,
+            sceneId = scenesBerghainSaved[0].id,
             artistIds = setOf(artistMashkovSaved.id),
             typeOfPerformance = null,
             startingDateTime = dateTimeProvider.getNow().minusHours(4),
@@ -891,7 +1062,7 @@ class DevReferenceData(
 
         val performance5 = TimetablePerformanceWriteDto(
             id = null,
-            sceneId = scenesMutaborSaved[0].id,
+            sceneId = scenesBerghainSaved[0].id,
             artistIds = setOf(artistBejenecSaved.id),
             typeOfPerformance = null,
             startingDateTime = dateTimeProvider.getNow().plusMinutes(2),
@@ -900,7 +1071,7 @@ class DevReferenceData(
 
         val performance6 = TimetablePerformanceWriteDto(
             id = null,
-            sceneId = scenesMutaborSaved[1].id,
+            sceneId = scenesBerghainSaved[1].id,
             artistIds = setOf(artistGorbachevSaved.id),
             typeOfPerformance = null,
             startingDateTime = dateTimeProvider.getNow().minusHours(9),
@@ -909,7 +1080,7 @@ class DevReferenceData(
 
         val performance7 = TimetablePerformanceWriteDto(
             id = null,
-            sceneId = scenesMutaborSaved[1].id,
+            sceneId = scenesBerghainSaved[1].id,
             artistIds = setOf(artistMashkovSaved.id),
             typeOfPerformance = "Trance music",
             startingDateTime = dateTimeProvider.getNow().plusHours(1),
@@ -918,7 +1089,7 @@ class DevReferenceData(
 
         val performance8 = TimetablePerformanceWriteDto(
             id = null,
-            sceneId = scenesMutaborSaved[1].id,
+            sceneId = scenesBerghainSaved[1].id,
             artistIds = setOf(artistLensSaved.id),
             typeOfPerformance = null,
             startingDateTime = null,
@@ -927,7 +1098,7 @@ class DevReferenceData(
 
         val performance9 = TimetablePerformanceWriteDto(
             id = null,
-            sceneId = scenesMutaborSaved[1].id,
+            sceneId = scenesBerghainSaved[1].id,
             artistIds = setOf(artistFarragoSaved.id),
             typeOfPerformance = null,
             startingDateTime = null,
@@ -1030,6 +1201,24 @@ class DevReferenceData(
             i++
         }
 
+        i = 0
+        while (i < 32) {
+            artistService.incrementFollowersUnsafe(artistZabelinSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 99) {
+            artistService.incrementFollowersUnsafe(artistCoxSaved.id)
+            i++
+        }
+
+        i = 0
+        while (i < 123) {
+            artistService.incrementFollowersUnsafe(artistWitteSaved.id)
+            i++
+        }
+
         artistService.setBestOfTheWeekForAllCities()
 
         artistWeeklyFollowersQuickRepo.returnAllValuesToInitial()
@@ -1074,14 +1263,14 @@ class DevReferenceData(
         }
 
         i = 0
-        while (i < 55) {
-            artistService.incrementFollowersUnsafe(artistMujuiceSaved.id)
+        while (i < 2) {
+            artistService.decrementFollowersUnsafe(artistMujuiceSaved.id)
             i++
         }
 
         i = 0
-        while (i < 25) {
-            artistService.incrementFollowersUnsafe(artistMashkovSaved.id)
+        while (i < 5) {
+            artistService.decrementFollowersUnsafe(artistMashkovSaved.id)
             i++
         }
 
@@ -1097,6 +1286,6 @@ class DevReferenceData(
             i++
         }
 
-        logger.info("Reference data is written MARKER")
+        logger.info("Reference data is written")
     }
 }
