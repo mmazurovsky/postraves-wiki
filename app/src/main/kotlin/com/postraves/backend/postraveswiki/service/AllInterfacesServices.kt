@@ -23,6 +23,7 @@ interface FollowableService<FULLDTO: FollowableFullDto<FULLDTO>, SHORTDTO: Follo
     fun incrementFollowers(id: Long)
     fun decrementFollowers(id: Long)
     fun incrementFollowersUnsafe(id: Long)
+    fun decrementFollowersUnsafe(id: Long)
     fun enrichWithFollowersCalculationRequired(dto: SHORTDTO): SHORTDTO
     fun enrichWithFollowersCalculationRequired(dto: FULLDTO): FULLDTO
     fun enrichListWithFollowersAndSortByOverallFollowers(list: List<SHORTDTO>): List<SHORTDTO>

@@ -77,7 +77,7 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
 
     override fun saveBatch(list: List<WRITEDTO>): List<SHORTDTO> {
         return list.map {
-            entityRepo.save(it)
+            save(it)
         }.toList()
     }
 
@@ -101,6 +101,11 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
     override fun incrementFollowersUnsafe(id: Long) {
         entityOverallFollowersQuickRepo.incrementFollowers(id)
         entityWeeklyFollowersQuickRepo.incrementFollowers(id)
+    }
+
+    override fun decrementFollowersUnsafe(id: Long) {
+        entityOverallFollowersQuickRepo.decrementFollowers(id)
+        entityWeeklyFollowersQuickRepo.decrementFollowers(id)
     }
 
     override fun decrementFollowers(id: Long) {
