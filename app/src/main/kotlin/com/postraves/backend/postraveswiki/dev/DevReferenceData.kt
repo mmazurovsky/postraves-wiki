@@ -143,11 +143,11 @@ class DevReferenceData(
     )
 
     val countryUk = CountryWriteDto(
-        name = "UK",
+        name = "GB",
         nameRu = "Великобритания",
-        nameEn = "UK",
-        nameDe = "UK2",
-        nameFr = "UK3",
+        nameEn = "GB",
+        nameDe = "GB2",
+        nameFr = "GB3",
         phoneCode = "+44",
     )
 
