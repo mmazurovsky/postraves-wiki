@@ -8,7 +8,7 @@ services:
     volumes:
       - ./app/src/main/resources/db/migration/postgres:/flyway/sql
   nginx:
-    image: "${NGINX_IMAGE}"
+    image: "${NGINX_IMAGE}:latest"
     hostname: nginx
     ports:
       - "80:80"
@@ -16,7 +16,7 @@ services:
       - api
       - flyway
   api:
-    image: "${WIKI_API_IMAGE}"
+    image: "${WIKI_API_IMAGE}:latest"
     hostname: api
     env_file:
       - .env

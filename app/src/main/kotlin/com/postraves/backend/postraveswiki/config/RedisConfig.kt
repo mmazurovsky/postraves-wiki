@@ -15,17 +15,32 @@ class RedisConfig {
 
     @Value("\${spring.redis.host}")
     val redisHost: String? = null
+
     @Value("\${spring.redis.port}")
     val redisPort: Int? = null
 
-    @Lazy @Bean
+    @Value("\${spring.redis.username}")
+    val redisUsername: String? = null
+
+    @Value("\${spring.redis.password}")
+    val redisPassword: String? = null
+
+    @Lazy
+    @Bean
     fun getRedisClient(): RedisAsyncCommands<String, String> {
         val client: RedisClient = RedisClient
-            .create(RedisURI.Builder.redis(
-                redisHost ?: throw RedisInitializationException(),
-                redisPort ?: throw RedisInitializationException(),
+            .create(
+                RedisURI.Builder.redis(
+                    redisHost ?: throw RedisInitializationException(),
+                ).withPort(
+                    redisPort ?: throw RedisInitializationException(),
+                ).withClientName(
+                    redisUsername ?: throw RedisInitializationException(),
+                ).withPassword(
+                    redisPassword?.toCharArray() ?: throw RedisInitializationException(),
+                )
+                    .build()
             )
-                .build())
         val connection = client.connect()
         return connection.async()
     }
