@@ -38,7 +38,7 @@ class RedisConfig {
                     redisUsername ?: throw RedisInitializationException(),
                 ).withPassword(
                     redisPassword?.toCharArray() ?: throw RedisInitializationException(),
-                )
+                ).withStartTls(true)
                     .build()
             )
         val connection = client.connect()
