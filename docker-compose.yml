@@ -4,7 +4,7 @@ services:
     image: 'flyway/flyway:latest'
     env_file:
       - .env
-    command: -url=jdbc:postgresql://${POSTGRES_HOST}:5432/postraves -schemas=public -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} migrate
+    command: -url=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB} -schemas=public -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} migrate
     volumes:
       - ./app/src/main/resources/db/migration/postgres:/flyway/sql
   nginx:

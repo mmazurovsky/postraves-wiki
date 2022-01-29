@@ -1,8 +1,7 @@
 #!/bin/sh
 
 set -e
-docker buildx build --platform=linux/amd64 -t mmazurovsky/postraves-nginx ./nginx --no-cache
-docker push mmazurovsky/postraves-nginx
+docker buildx build --platform=linux/amd64 -t registry.digitalocean.com/postraves-registry/postraves-nginx-dev ./nginx --no-cache
+docker push registry.digitalocean.com/postraves-registry/postraves-nginx-dev
 docker-compose -f ./app/docker-compose-api.yml --env-file .env-dev build
-docker push mmazurovsky/postraves-wiki-api
-eb deploy
+docker push registry.digitalocean.com/postraves-registry/postraves-wiki-api-dev

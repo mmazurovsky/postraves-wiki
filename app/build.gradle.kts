@@ -69,9 +69,11 @@ tasks.test {
 
 val POSTGRES_USER = System.getenv("POSTGRES_USER")
 val POSTGRES_PASSWORD = System.getenv("POSTGRES_PASSWORD")
+val POSTGRES_PORT = System.getenv("POSTGRES_PORT")
+val POSTGRES_DB = System.getenv("POSTGRES_DB")
 val POSTGRES_HOST =
     System.getenv("POSTGRES_HOST")
-val POSTGRES_URL = "jdbc:postgresql://${POSTGRES_HOST}:5432/postraves"
+val POSTGRES_URL = "jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
 
 //tasks.register("envvars", type = JavaExec::class) {
 //    env.allVariables.forEach { environment(it.key, it.value) }
