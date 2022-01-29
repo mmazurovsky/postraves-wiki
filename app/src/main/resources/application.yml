@@ -54,6 +54,7 @@ spring:
     port: ${REDIS_PORT}
     username: ${REDIS_USERNAME}
     password: ${REDIS_PASSWORD}
+    ssl: true
   logging:
     level:
       org:
