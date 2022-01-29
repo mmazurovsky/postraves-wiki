@@ -38,6 +38,8 @@ class RedisConfig {
                     redisUsername ?: throw RedisInitializationException(),
                 ).withPassword(
                     redisPassword?.toCharArray() ?: throw RedisInitializationException(),
+                ).withSsl(
+                    true
                 ).withStartTls(true)
                     .build()
             )
