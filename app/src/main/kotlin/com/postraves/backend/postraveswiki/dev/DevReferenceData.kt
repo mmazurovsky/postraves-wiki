@@ -48,9 +48,9 @@ class DevReferenceData(
     private val placeWeeklyFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("eventWeeklyFollowersQuickRepoImpl")
     private val eventWeeklyFollowersQuickRepo: FollowersQuickRepo,
-    @Value("\${DEV_ADMIN_1_AUTH_UID}")
+    @Value("\${env.DEV_ADMIN_1_AUTH_UID}")
     private val admin1AuthUid: String,
-    @Value("\${DEV_ADMIN_2_AUTH_UID}")
+    @Value("\${env.DEV_ADMIN_2_AUTH_UID}")
     private val admin2AuthUid: String,
 ) {
 
@@ -142,7 +142,7 @@ class DevReferenceData(
         phoneCode = "+1",
     )
 
-    val countryUk = CountryWriteDto(
+    val countryGb = CountryWriteDto(
         name = "GB",
         nameRu = "Великобритания",
         nameEn = "GB",
@@ -593,7 +593,7 @@ class DevReferenceData(
         id = null,
         name = "Carl Cox",
         imageLink = "https://firebasestorage.googleapis.com/v0/b/postraves.appspot.com/o/test%2Fimages%2Freference%2Ftest_cox.jpeg?alt=media&token=2582bfda-4c7e-408b-9c60-d6d51112a327",
-        countryName = "UK",
+        countryName = "GB",
         about = null,
         instagramUsername = null,
         soundcloudUsername = null,
@@ -634,7 +634,7 @@ class DevReferenceData(
                 countryFr,
                 countryUs,
                 countryNl,
-                countryUk,
+                countryGb,
             )
         )
 

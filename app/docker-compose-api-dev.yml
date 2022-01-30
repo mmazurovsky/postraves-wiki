@@ -1,10 +1,12 @@
 version: '3.4'
 services:
   api:
-    image: "${WIKI_API_IMAGE}"
+    image: "registry.digitalocean.com/postraves-registry/postraves-wiki-api-dev"
     build:
       context: .
       dockerfile: Dockerfile
       target: final
+    env_file:
+      - ../.env-dev
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

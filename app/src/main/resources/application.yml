@@ -37,6 +37,12 @@ security:
 #      - Id-Token
 #    exposed-headers:
 #      - X-Xsrf-Token
+spring:
+  config:
+    activate:
+      on-profile: dev
+.env:
+  filename: .env-dev
 ---
 spring:
   config:
@@ -44,16 +50,16 @@ spring:
       on-profile: dev, prod
   datasource:
     driverClassName: org.postgresql.Driver
-    password: ${POSTGRES_PASSWORD}
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
+    password: ${env.POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}
+    username: ${env.POSTGRES_USER}
   flyway:
     locations: classpath:/db/migration/postgres
   redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    username: ${REDIS_USERNAME}
-    password: ${REDIS_PASSWORD}
+    host: ${env.REDIS_HOST}
+    port: ${env.REDIS_PORT}
+    username: ${env.REDIS_USERNAME}
+    password: ${env.REDIS_PASSWORD}
     ssl: true
   logging:
     level:
@@ -72,7 +78,7 @@ spring:
       on-profile: test
   datasource:
     driverClassName: org.postgresql.Driver
-    password: ${POSTGRES_PASSWORD}
+    password: ${env.POSTGRES_PASSWORD}
     url: jdbc:postgresql://localhost:5432/postraves
     username: mmazurovsky
   flyway:

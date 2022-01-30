@@ -16,25 +16,25 @@ import org.springframework.context.annotation.DependsOn
 @Configuration
 class FirebaseConfig {
 
-    @Value("\${FIREBASE_TYPE}")
+    @Value("\${env.FIREBASE_TYPE}")
     val firebaseType: String? = null
-    @Value("\${FIREBASE_PROJECT_ID}")
+    @Value("\${env.FIREBASE_PROJECT_ID}")
     val firebaseProjectId: String? = null
-    @Value("\${FIREBASE_PRIVATE_KEY_ID}")
+    @Value("\${env.FIREBASE_PRIVATE_KEY_ID}")
     val firebasePrivateKeyId: String? = null
-    @Value("\${FIREBASE_PRIVATE_KEY}")
+    @Value("\${env.FIREBASE_PRIVATE_KEY}")
     val firebasePrivateKey: String? = null
-    @Value("\${FIREBASE_CLIENT_EMAIL}")
+    @Value("\${env.FIREBASE_CLIENT_EMAIL}")
     val firebaseClientEmail: String? = null
-    @Value("\${FIREBASE_CLIENT_ID}")
+    @Value("\${env.FIREBASE_CLIENT_ID}")
     val firebaseClientId: String? = null
-    @Value("\${FIREBASE_AUTH_URI}")
+    @Value("\${env.FIREBASE_AUTH_URI}")
     val firebaseAuthUri: String? = null
-    @Value("\${FIREBASE_TOKEN_URI}")
+    @Value("\${env.FIREBASE_TOKEN_URI}")
     val firebaseTokenUri: String? = null
-    @Value("\${FIREBASE_AUTH_CERT_URL}")
+    @Value("\${env.FIREBASE_AUTH_CERT_URL}")
     val firebaseAuthProviderX509CertUrl: String? = null
-    @Value("\${FIREBASE_CLIENT_CERT_URL}")
+    @Value("\${env.FIREBASE_CLIENT_CERT_URL}")
     val clientX509CertUrl: String? = null
 
     @Bean

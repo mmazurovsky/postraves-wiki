@@ -48,6 +48,7 @@ dependencies {
 //    testImplementation("org.mockito:mockito-inline:3.11.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("me.paulschwarz:spring-dotenv:2.4.1")
 }
 
 tasks.withType<KotlinCompile> {

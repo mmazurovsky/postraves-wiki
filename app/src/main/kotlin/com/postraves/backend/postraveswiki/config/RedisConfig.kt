@@ -40,7 +40,7 @@ class RedisConfig {
                     redisPassword?.toCharArray() ?: throw RedisInitializationException(),
                 ).withSsl(
                     true
-                ).withStartTls(true)
+                )
                     .build()
             )
         val connection = client.connect()

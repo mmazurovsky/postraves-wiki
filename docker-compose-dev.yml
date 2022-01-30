@@ -3,12 +3,12 @@ services:
   flyway:
     image: 'flyway/flyway:latest'
     env_file:
-      - .env
+      - .env-dev
     command: -url=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB} -schemas=public -user=${POSTGRES_USER} -password=${POSTGRES_PASSWORD} migrate
     volumes:
       - ./app/src/main/resources/db/migration/postgres:/flyway/sql
   nginx:
-    image: "${NGINX_IMAGE}:latest"
+    image: "registry.digitalocean.com/postraves-registry/postraves-nginx-dev:latest"
     hostname: nginx
     ports:
       - "80:80"
@@ -16,9 +16,9 @@ services:
       - api
       - flyway
   api:
-    image: "${WIKI_API_IMAGE}:latest"
+    image: "registry.digitalocean.com/postraves-registry/postraves-wiki-api-dev:latest"
     hostname: api
     env_file:
-      - .env
+      - .env-dev
     depends_on:
       - flyway
