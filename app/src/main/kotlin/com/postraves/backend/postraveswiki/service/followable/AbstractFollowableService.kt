@@ -5,6 +5,7 @@ import com.postraves.backend.postraveswiki.exception.NotAuthenticated
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
+import com.postraves.backend.postraveswiki.repo.FollowableWikiRepo
 import com.postraves.backend.postraveswiki.repo.quick.FollowersQuickRepo
 import com.postraves.backend.postraveswiki.service.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,11 +19,13 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
     private val entityWeeklyFollowersQuickRepo: FollowersQuickRepo,
     private val entityOverallFollowersQuickRepo: FollowersQuickRepo,
     private val entityRepo: REPO,
+    private val imageUploader: ImageUploaderAbstract,
 ) : BaseService<WRITEDTO, SHORTDTO>, FindByName<SHORTDTO>, ByIdService<FULLDTO, SHORTDTO>,
-    FollowableService<FULLDTO, SHORTDTO>
+    FollowableService<FULLDTO, SHORTDTO>, FollowableWikiService
         where REPO : BaseRepo<WRITEDTO, SHORTDTO>,
               REPO : ByIdRepo<FULLDTO, SHORTDTO>,
-              REPO : FollowableRepo<SHORTDTO> {
+              REPO : FollowableRepo<SHORTDTO>,
+              REPO : FollowableWikiRepo {
 
     @Autowired
     @Lazy
@@ -87,6 +90,11 @@ abstract class AbstractFollowableService<WRITEDTO : BaseWriteDto,
         // check country change and delete+add if necessary
         checkLocationsAndAddAndRemoveFromLocationsQuickRepos(dto)
         entityRepo.update(dto)
+    }
+
+    override fun updateImageLink(id: Long, imageBytes: ByteArray) {
+        val imageLink = imageUploader.uploadImage(imageBytes)
+        entityRepo.updateImageLink(id, imageLink)
     }
 
     abstract fun checkLocationsAndAddAndRemoveFromLocationsQuickRepos(dto: WRITEDTO)

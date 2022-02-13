@@ -45,11 +45,14 @@ class EventServiceImpl(
     private val eventWeeklyFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("eventOverallFollowersQuickRepoImpl")
     private val eventOverallFollowersQuickRepo: FollowersQuickRepo,
-) : EventService,
+    @Qualifier("eventImageUploader")
+    private val eventImageUploader: ImageUploaderAbstract,
+    ) : EventService,
     AbstractFollowableService<EventWriteDto, EventFullDto, EventShortDto, EventRepo>(
         entityRepo = eventRepo,
         entityOverallFollowersQuickRepo = eventOverallFollowersQuickRepo,
         entityWeeklyFollowersQuickRepo = eventWeeklyFollowersQuickRepo,
+        imageUploader = eventImageUploader
     ) {
 
     @Autowired

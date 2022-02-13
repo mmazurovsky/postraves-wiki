@@ -3,8 +3,10 @@ package com.postraves.backend.postraveswiki.config
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.cloud.StorageClient
 import com.google.firebase.messaging.FirebaseMessaging
 import com.postraves.backend.postraveswiki.exception.FirebaseMessagingInitializationException
+import com.postraves.backend.postraveswiki.exception.FirebaseStorageInitializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.beans.factory.annotation.Autowired
@@ -86,5 +88,13 @@ class FirebaseConfig {
         @Autowired firebaseApp: FirebaseApp
     ): FirebaseMessaging {
         return FirebaseMessaging.getInstance(firebaseApp) ?: throw FirebaseMessagingInitializationException()
+    }
+
+    @Bean
+    @DependsOn("initFirebaseApp")
+    fun initFirebaseStorage(
+        @Autowired firebaseApp: FirebaseApp
+    ): StorageClient {
+        return StorageClient.getInstance(firebaseApp) ?: throw FirebaseStorageInitializationException()
     }
 }

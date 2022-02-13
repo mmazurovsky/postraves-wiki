@@ -7,6 +7,7 @@ import com.postraves.backend.postraveswiki.exception.NotFoundException
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
+import com.postraves.backend.postraveswiki.repo.FollowableWikiRepo
 import org.jooq.*
 import org.jooq.impl.TableImpl
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,7 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     val entityType: String,
 ) : BaseRepo<WRITEDTO, SHORTDTO>,
     ByIdRepo<FULLDTO, SHORTDTO>,
+    FollowableWikiRepo,
     FollowableRepo<SHORTDTO>
         where R : Record,
               R : UpdatableRecord<R> {
@@ -40,6 +42,7 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
     abstract fun postSaveGetId(record: R): Long
     abstract fun preUpdateCheckId(dto: WRITEDTO): Long
     abstract fun prepareRecordBeforeUpdating(record: R, dto: WRITEDTO)
+    abstract fun prepareRecordBeforeImageLinkUpdating(record: R, imageLink: String)
 
     private fun selectFromEntity(): SelectJoinStep<Record> {
         return dsl
@@ -134,6 +137,12 @@ abstract class AbstractRepo<WRITEDTO : BaseWriteDto, FULLDTO : FollowableFullDto
         prepareRecordBeforeUpdating(recordToUpdate, dto)
         recordToUpdate.update()
         postUpdateProcessing(dto)
+    }
+
+    override fun updateImageLink(id: Long, imageLink: String) {
+        val recordToUpdate = findByIdWithoutJoins(id)
+        prepareRecordBeforeImageLinkUpdating(recordToUpdate, imageLink)
+        recordToUpdate.update()
     }
 
     override fun updateUpdatedDateTime(id: Long) {

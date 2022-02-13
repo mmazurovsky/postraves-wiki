@@ -17,6 +17,10 @@ interface FollowableRepo<SHORTDTO : BaseShortDto> {
     fun convertToShortDto(record: Record): SHORTDTO
 }
 
+interface FollowableWikiRepo {
+    fun updateImageLink(id: Long, imageLink: String)
+}
+
 interface ByIdRepo<FULLDTO : FollowableFullDto<FULLDTO>, SHORTDTO : FollowableShortDto<SHORTDTO>>{
     fun findById(userId: Long?, id: Long): FULLDTO
     fun updateUpdatedDateTime(id: Long)
@@ -29,5 +33,3 @@ interface ByNameRepo<FULLDTO : BaseFullDto> {
     fun deleteByName(name: String)
     fun findByPartOfName(namePart: String): List<FULLDTO>
 }
-
-

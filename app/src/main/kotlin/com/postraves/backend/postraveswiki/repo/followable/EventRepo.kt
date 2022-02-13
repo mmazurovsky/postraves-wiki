@@ -13,6 +13,7 @@ import com.postraves.backend.postraveswiki.exception.SaveException
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
+import com.postraves.backend.postraveswiki.repo.FollowableWikiRepo
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.records.*
 import jooq.tables.references.*
@@ -28,7 +29,7 @@ import java.time.OffsetDateTime
 interface EventRepo :
     BaseRepo<EventWriteDto, EventShortDto>,
     ByIdRepo<EventFullDto, EventShortDto>,
-    FollowableRepo<EventShortDto> {
+    FollowableRepo<EventShortDto>, FollowableWikiRepo {
     fun getRelevantEventsForArtist(userId: Long?, artistId: Long): List<EventShortDto>
     fun getRelevantEventsForPlace(userId: Long?, placeId: Long): List<EventShortDto>
     fun getRelevantEventsForUnity(userId: Long?, unityId: Long): List<EventShortDto>
@@ -38,7 +39,6 @@ interface EventRepo :
         startOfIntervalDateTime: OffsetDateTime,
         endOfIntervalDateTime: OffsetDateTime
     ): List<EventShortDto>
-
     fun getOrganizers(userId: Long?, id: Long): List<UnityShortDto>
     fun addOrganizers(id: Long, orgs: Set<Long>)
     fun removeOrganizers(id: Long, orgs: Set<Long>)
@@ -538,5 +538,9 @@ class EventRepoImpl(
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
         return EVENT.EVENT_UPDATED_DATE_TIME.desc()
+    }
+
+    override fun prepareRecordBeforeImageLinkUpdating(record: EventRecord, imageLink: String) {
+        record.eventImageLink = imageLink
     }
 }

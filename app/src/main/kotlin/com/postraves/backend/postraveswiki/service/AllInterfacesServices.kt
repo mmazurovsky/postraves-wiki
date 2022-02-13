@@ -30,6 +30,10 @@ interface FollowableService<FULLDTO: FollowableFullDto<FULLDTO>, SHORTDTO: Follo
     fun enrichListWithFollowers(list: List<SHORTDTO>): List<SHORTDTO>
 }
 
+interface FollowableWikiService {
+    fun updateImageLink(id: Long, imageBytes: ByteArray)
+}
+
 interface RatingsService<FULLDTO: FollowableFullDto<FULLDTO>, SHORTDTO: FollowableShortDto<SHORTDTO>> {
 //    fun findListByIds(ids: Set<Long>): List<SHORTDTO>
     fun findOverallRatingInCountryForCity(cityName: String, maxQuantity: Int): List<SHORTDTO>

@@ -11,6 +11,7 @@ import com.postraves.backend.postraveswiki.exception.SaveException
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
+import com.postraves.backend.postraveswiki.repo.FollowableWikiRepo
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.Artist
 import jooq.tables.records.ArtistRecord
@@ -26,7 +27,7 @@ import java.time.OffsetDateTime
 interface ArtistRepo :
     BaseRepo<ArtistWriteDto, ArtistShortDto>,
     ByIdRepo<ArtistFullDto, ArtistShortDto>,
-    FollowableRepo<ArtistShortDto> {
+    FollowableRepo<ArtistShortDto>, FollowableWikiRepo {
     fun getUnitiesOfArtist(userId: Long?, id: Long): List<UnityShortDto>
 }
 
@@ -128,5 +129,9 @@ class ArtistRepoImpl(
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
         return ARTIST.ARTIST_UPDATED_DATE_TIME.desc()
+    }
+
+    override fun prepareRecordBeforeImageLinkUpdating(record: ArtistRecord, imageLink: String) {
+        record.artistImageLink = imageLink
     }
 }

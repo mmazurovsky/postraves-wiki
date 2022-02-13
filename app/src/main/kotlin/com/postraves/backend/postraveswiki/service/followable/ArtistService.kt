@@ -37,6 +37,8 @@ class ArtistServiceImpl(
     private val artistWeeklyFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("artistOverallFollowersQuickRepoImpl")
     private val artistOverallFollowersQuickRepo: FollowersQuickRepo,
+    @Qualifier("artistImageUploader")
+    private val artistImageUploader: ImageUploaderAbstract,
     @Qualifier("artistRatingsServiceImpl")
     private val ratingsService: RatingsService<ArtistFullDto, ArtistShortDto>
 ) : ArtistService,
@@ -44,6 +46,7 @@ class ArtistServiceImpl(
         entityRepo = thisRepo,
         entityOverallFollowersQuickRepo = artistOverallFollowersQuickRepo,
         entityWeeklyFollowersQuickRepo = artistWeeklyFollowersQuickRepo,
+        imageUploader = artistImageUploader,
     ) {
 
 //    @Autowired

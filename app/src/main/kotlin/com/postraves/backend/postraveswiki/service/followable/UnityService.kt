@@ -38,12 +38,15 @@ class UnityServiceImpl(
     @Qualifier("unityOverallFollowersQuickRepoImpl")
     private val thisOverallFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("unityRatingsServiceImpl")
-    private val ratingsService: RatingsService<UnityFullDto, UnityShortDto>
-) : UnityService,
+    private val ratingsService: RatingsService<UnityFullDto, UnityShortDto>,
+    @Qualifier("unityImageUploader")
+    private val unityImageUploader: ImageUploaderAbstract,
+    ) : UnityService,
     AbstractFollowableService<UnityWriteDto, UnityFullDto, UnityShortDto, UnityRepo>(
         entityRepo = thisRepo,
         entityOverallFollowersQuickRepo = thisOverallFollowersQuickRepo,
         entityWeeklyFollowersQuickRepo = thisWeeklyFollowersQuickRepo,
+        imageUploader = unityImageUploader,
     ) {
 
     @Autowired

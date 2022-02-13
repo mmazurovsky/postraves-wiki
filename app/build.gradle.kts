@@ -49,6 +49,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("me.paulschwarz:spring-dotenv:2.4.1")
+    implementation("com.google.cloud:google-cloud-storage:2.4.2")
 }
 
 tasks.withType<KotlinCompile> {

@@ -12,6 +12,7 @@ import com.postraves.backend.postraveswiki.exception.SaveException
 import com.postraves.backend.postraveswiki.repo.BaseRepo
 import com.postraves.backend.postraveswiki.repo.ByIdRepo
 import com.postraves.backend.postraveswiki.repo.FollowableRepo
+import com.postraves.backend.postraveswiki.repo.FollowableWikiRepo
 import com.postraves.backend.postraveswiki.util.DateTimeProvider
 import jooq.tables.records.PlaceRecord
 import jooq.tables.references.*
@@ -26,7 +27,7 @@ import java.time.OffsetDateTime
 interface PlaceRepo :
     BaseRepo<PlaceWriteDto, PlaceShortDto>,
     ByIdRepo<PlaceFullDto, PlaceShortDto>,
-    FollowableRepo<PlaceShortDto> {
+    FollowableRepo<PlaceShortDto>, FollowableWikiRepo {
     fun getAllScenes(): List<SceneDto>
     fun getScenesOfPlace(id: Long): List<SceneDto>
     fun addScenesToPlace(id: Long, scenes: Set<SceneDto>)
@@ -172,5 +173,9 @@ class PlaceRepoImpl(
 
     override fun getUpdatedDateTimeOrderField(): SortField<OffsetDateTime?> {
         return PLACE.PLACE_UPDATED_DATE_TIME.desc()
+    }
+
+    override fun prepareRecordBeforeImageLinkUpdating(record: PlaceRecord, imageLink: String) {
+        record.placeImageLink = imageLink
     }
 }

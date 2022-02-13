@@ -17,10 +17,10 @@ interface PlaceService :
     FollowableService<PlaceFullDto, PlaceShortDto>,
     RatingsService<PlaceFullDto, PlaceShortDto>,
     FindByName<PlaceShortDto> {
-        fun getAllScenes(): List<SceneDto>
-        fun getScenesOfPlace(id: Long): List<SceneDto>
-        fun updateScenesOfPlace(id: Long, incomingScenes: List<SceneDto>)
-    }
+    fun getAllScenes(): List<SceneDto>
+    fun getScenesOfPlace(id: Long): List<SceneDto>
+    fun updateScenesOfPlace(id: Long, incomingScenes: List<SceneDto>)
+}
 
 @Service
 class PlaceServiceImpl(
@@ -33,17 +33,20 @@ class PlaceServiceImpl(
     @Qualifier("placeOverallFollowersQuickRepoImpl")
     private val placeOverallFollowersQuickRepo: FollowersQuickRepo,
     @Qualifier("placeRatingsServiceImpl")
-    private val ratingsService: RatingsService<PlaceFullDto, PlaceShortDto>
-) : PlaceService,
+    private val ratingsService: RatingsService<PlaceFullDto, PlaceShortDto>,
+    @Qualifier("placeImageUploader")
+    private val placeImageUploader: ImageUploaderAbstract,
+    ) : PlaceService,
     AbstractFollowableService<PlaceWriteDto, PlaceFullDto, PlaceShortDto, PlaceRepo>(
         entityRepo = placeRepo,
         entityOverallFollowersQuickRepo = placeOverallFollowersQuickRepo,
         entityWeeklyFollowersQuickRepo = placeWeeklyFollowersQuickRepo,
+        imageUploader = placeImageUploader
     ) {
 
     override fun checkLocationsAndRemoveFromLocationsQuickRepos(dto: PlaceFullDto) {
         val countryOfDtoToDelete = dto.city.country.name
-            placeCountryRepo.removeOneIdFromSet(countryOfDtoToDelete, dto.id)
+        placeCountryRepo.removeOneIdFromSet(countryOfDtoToDelete, dto.id)
     }
 
     override fun checkLocationsAndAddToLocationsQuickRepos(dto: PlaceWriteDto, id: Long) {
@@ -53,10 +56,11 @@ class PlaceServiceImpl(
 
     override fun checkLocationsAndAddAndRemoveFromLocationsQuickRepos(dto: PlaceWriteDto) {
         val newCountryName = cityService.findByName(dto.cityName).country.name
-        val previousCountryName = placeRepo.findById(null, dto.id ?: throw UpdateException("Place", dto.name)).city.country.name
+        val previousCountryName =
+            placeRepo.findById(null, dto.id ?: throw UpdateException("Place", dto.name)).city.country.name
         if (newCountryName != previousCountryName) {
-                placeCountryRepo.addOneIdToCountry(newCountryName, dto.id)
-                placeCountryRepo.removeOneIdFromSet(previousCountryName, dto.id)
+            placeCountryRepo.addOneIdToCountry(newCountryName, dto.id)
+            placeCountryRepo.removeOneIdFromSet(previousCountryName, dto.id)
         }
     }
 
